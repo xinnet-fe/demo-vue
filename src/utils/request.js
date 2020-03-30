@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/demos/auth'
 
 const errorCodeMessage = {
   401: '用户没有权限（令牌、用户名、密码错误）。',

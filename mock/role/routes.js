@@ -8,28 +8,28 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path*',
-        component: 'views/redirect/index'
+        component: 'views/demos/redirect/index'
       }
     ]
   },
   {
     path: '/login',
-    component: 'views/login/index',
+    component: 'views/demos/login/index',
     hidden: true
   },
   {
     path: '/auth-redirect',
-    component: 'views/login/auth-redirect',
+    component: 'views/demos/login/auth-redirect',
     hidden: true
   },
   {
     path: '/404',
-    component: 'views/error-page/404',
+    component: 'views/demos/error-page/404',
     hidden: true
   },
   {
     path: '/401',
-    component: 'views/error-page/401',
+    component: 'views/demos/error-page/401',
     hidden: true
   },
   {
@@ -39,7 +39,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'dashboard',
-        component: 'views/dashboard/index',
+        component: 'views/demos/dashboard/index',
         name: 'Dashboard',
         meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
       }
@@ -51,7 +51,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: 'views/documentation/index',
+        component: 'views/demos/documentation/index',
         name: 'Documentation',
         meta: { title: 'Documentation', icon: 'documentation', affix: true }
       }
@@ -64,7 +64,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: 'views/guide/index',
+        component: 'views/demos/guide/index',
         name: 'Guide',
         meta: { title: 'Guide', icon: 'guide', noCache: true }
       }
@@ -86,7 +86,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'page',
-        component: 'views/permission/page',
+        component: 'views/demos/permission/page',
         name: 'PagePermission',
         meta: {
           title: 'Page Permission',
@@ -95,7 +95,7 @@ export const asyncRoutes = [
       },
       {
         path: 'directive',
-        component: 'views/permission/directive',
+        component: 'views/demos/permission/directive',
         name: 'DirectivePermission',
         meta: {
           title: 'Directive Permission'
@@ -103,7 +103,7 @@ export const asyncRoutes = [
       },
       {
         path: 'role',
-        component: 'views/permission/role',
+        component: 'views/demos/permission/role',
         name: 'RolePermission',
         meta: {
           title: 'Role Permission',
@@ -119,7 +119,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        component: 'views/icons/index',
+        component: 'views/demos/icons/index',
         name: 'Icons',
         meta: { title: 'Icons', icon: 'icon', noCache: true }
       }
@@ -138,85 +138,85 @@ export const asyncRoutes = [
     children: [
       {
         path: 'tinymce',
-        component: 'views/components-demo/tinymce',
+        component: 'views/demos/components-demo/tinymce',
         name: 'TinymceDemo',
         meta: { title: 'Tinymce' }
       },
       {
         path: 'markdown',
-        component: 'views/components-demo/markdown',
+        component: 'views/demos/components-demo/markdown',
         name: 'MarkdownDemo',
         meta: { title: 'Markdown' }
       },
       {
         path: 'json-editor',
-        component: 'views/components-demo/json-editor',
+        component: 'views/demos/components-demo/json-editor',
         name: 'JsonEditorDemo',
         meta: { title: 'Json Editor' }
       },
       {
         path: 'split-pane',
-        component: 'views/components-demo/split-pane',
+        component: 'views/demos/components-demo/split-pane',
         name: 'SplitpaneDemo',
         meta: { title: 'SplitPane' }
       },
       {
         path: 'avatar-upload',
-        component: 'views/components-demo/avatar-upload',
+        component: 'views/demos/components-demo/avatar-upload',
         name: 'AvatarUploadDemo',
         meta: { title: 'Avatar Upload' }
       },
       {
         path: 'dropzone',
-        component: 'views/components-demo/dropzone',
+        component: 'views/demos/components-demo/dropzone',
         name: 'DropzoneDemo',
         meta: { title: 'Dropzone' }
       },
       {
         path: 'sticky',
-        component: 'views/components-demo/sticky',
+        component: 'views/demos/components-demo/sticky',
         name: 'StickyDemo',
         meta: { title: 'Sticky' }
       },
       {
         path: 'count-to',
-        component: 'views/components-demo/count-to',
+        component: 'views/demos/components-demo/count-to',
         name: 'CountToDemo',
         meta: { title: 'Count To' }
       },
       {
         path: 'mixin',
-        component: 'views/components-demo/mixin',
+        component: 'views/demos/components-demo/mixin',
         name: 'ComponentMixinDemo',
         meta: { title: 'componentMixin' }
       },
       {
         path: 'back-to-top',
-        component: 'views/components-demo/back-to-top',
+        component: 'views/demos/components-demo/back-to-top',
         name: 'BackToTopDemo',
         meta: { title: 'Back To Top' }
       },
       {
         path: 'drag-dialog',
-        component: 'views/components-demo/drag-dialog',
+        component: 'views/demos/components-demo/drag-dialog',
         name: 'DragDialogDemo',
         meta: { title: 'Drag Dialog' }
       },
       {
         path: 'drag-select',
-        component: 'views/components-demo/drag-select',
+        component: 'views/demos/components-demo/drag-select',
         name: 'DragSelectDemo',
         meta: { title: 'Drag Select' }
       },
       {
         path: 'dnd-list',
-        component: 'views/components-demo/dnd-list',
+        component: 'views/demos/components-demo/dnd-list',
         name: 'DndListDemo',
         meta: { title: 'Dnd List' }
       },
       {
         path: 'drag-kanban',
-        component: 'views/components-demo/drag-kanban',
+        component: 'views/demos/components-demo/drag-kanban',
         name: 'DragKanbanDemo',
         meta: { title: 'Drag Kanban' }
       }
@@ -234,19 +234,19 @@ export const asyncRoutes = [
     children: [
       {
         path: 'keyboard',
-        component: 'views/charts/keyboard',
+        component: 'views/demos/charts/keyboard',
         name: 'KeyboardChart',
         meta: { title: 'Keyboard Chart', noCache: true }
       },
       {
         path: 'line',
-        component: 'views/charts/line',
+        component: 'views/demos/charts/line',
         name: 'LineChart',
         meta: { title: 'Line Chart', noCache: true }
       },
       {
         path: 'mixchart',
-        component: 'views/charts/mixChart',
+        component: 'views/demos/charts/mixChart',
         name: 'MixChart',
         meta: { title: 'Mix Chart', noCache: true }
       }
@@ -264,33 +264,33 @@ export const asyncRoutes = [
     children: [
       {
         path: 'menu1',
-        component: 'views/nested/menu1/index',
+        component: 'views/demos/nested/menu1/index',
         name: 'Menu1',
         meta: { title: 'Menu1' },
         redirect: '/nested/menu1/menu1-1',
         children: [
           {
             path: 'menu1-1',
-            component: 'views/nested/menu1/menu1-1',
+            component: 'views/demos/nested/menu1/menu1-1',
             name: 'Menu1-1',
             meta: { title: 'Menu1-1' }
           },
           {
             path: 'menu1-2',
-            component: 'views/nested/menu1/menu1-2',
+            component: 'views/demos/nested/menu1/menu1-2',
             name: 'Menu1-2',
             redirect: '/nested/menu1/menu1-2/menu1-2-1',
             meta: { title: 'Menu1-2' },
             children: [
               {
                 path: 'menu1-2-1',
-                component: 'views/nested/menu1/menu1-2/menu1-2-1',
+                component: 'views/demos/nested/menu1/menu1-2/menu1-2-1',
                 name: 'Menu1-2-1',
                 meta: { title: 'Menu1-2-1' }
               },
               {
                 path: 'menu1-2-2',
-                component: 'views/nested/menu1/menu1-2/menu1-2-2',
+                component: 'views/demos/nested/menu1/menu1-2/menu1-2-2',
                 name: 'Menu1-2-2',
                 meta: { title: 'Menu1-2-2' }
               }
@@ -298,7 +298,7 @@ export const asyncRoutes = [
           },
           {
             path: 'menu1-3',
-            component: 'views/nested/menu1/menu1-3',
+            component: 'views/demos/nested/menu1/menu1-3',
             name: 'Menu1-3',
             meta: { title: 'Menu1-3' }
           }
@@ -307,7 +307,7 @@ export const asyncRoutes = [
       {
         path: 'menu2',
         name: 'Menu2',
-        component: 'views/nested/menu2/index',
+        component: 'views/demos/nested/menu2/index',
         meta: { title: 'Menu2' }
       }
     ]
@@ -325,20 +325,20 @@ export const asyncRoutes = [
     children: [
       {
         path: 'create',
-        component: 'views/example/create',
+        component: 'views/demos/example/create',
         name: 'CreateArticle',
         meta: { title: 'Create Article', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
-        component: 'views/example/edit',
+        component: 'views/demos/example/edit',
         name: 'EditArticle',
         meta: { title: 'Edit Article', noCache: true },
         hidden: true
       },
       {
         path: 'list',
-        component: 'views/example/list',
+        component: 'views/demos/example/list',
         name: 'ArticleList',
         meta: { title: 'Article List', icon: 'list' }
       }
@@ -351,7 +351,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        component: 'views/tab/index',
+        component: 'views/demos/tab/index',
         name: 'Tab',
         meta: { title: 'Tab', icon: 'tab' }
       }
@@ -370,13 +370,13 @@ export const asyncRoutes = [
     children: [
       {
         path: '401',
-        component: 'views/error-page/401',
+        component: 'views/demos/error-page/401',
         name: 'Page401',
         meta: { title: 'Page 401', noCache: true }
       },
       {
         path: '404',
-        component: 'views/error-page/404',
+        component: 'views/demos/error-page/404',
         name: 'Page404',
         meta: { title: 'Page 404', noCache: true }
       }
@@ -390,7 +390,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'log',
-        component: 'views/error-log/index',
+        component: 'views/demos/error-log/index',
         name: 'ErrorLog',
         meta: { title: 'Error Log', icon: 'bug' }
       }
@@ -409,25 +409,25 @@ export const asyncRoutes = [
     children: [
       {
         path: 'export-excel',
-        component: 'views/excel/export-excel',
+        component: 'views/demos/excel/export-excel',
         name: 'ExportExcel',
         meta: { title: 'Export Excel' }
       },
       {
         path: 'export-selected-excel',
-        component: 'views/excel/select-excel',
+        component: 'views/demos/excel/select-excel',
         name: 'SelectExcel',
         meta: { title: 'Select Excel' }
       },
       {
         path: 'export-merge-header',
-        component: 'views/excel/merge-header',
+        component: 'views/demos/excel/merge-header',
         name: 'MergeHeader',
         meta: { title: 'Merge Header' }
       },
       {
         path: 'upload-excel',
-        component: 'views/excel/upload-excel',
+        component: 'views/demos/excel/upload-excel',
         name: 'UploadExcel',
         meta: { title: 'Upload Excel' }
       }
@@ -443,7 +443,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'download',
-        component: 'views/zip/index',
+        component: 'views/demos/zip/index',
         name: 'ExportZip',
         meta: { title: 'Export Zip' }
       }
@@ -457,7 +457,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        component: 'views/pdf/index',
+        component: 'views/demos/pdf/index',
         name: 'PDF',
         meta: { title: 'PDF', icon: 'pdf' }
       }
@@ -465,7 +465,7 @@ export const asyncRoutes = [
   },
   {
     path: '/pdf/download',
-    component: 'views/pdf/download',
+    component: 'views/demos/pdf/download',
     hidden: true
   },
 
@@ -476,7 +476,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        component: 'views/theme/index',
+        component: 'views/demos/theme/index',
         name: 'Theme',
         meta: { title: 'Theme', icon: 'theme' }
       }
@@ -503,7 +503,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        component: 'views/i18n-demo/index',
+        component: 'views/demos/i18n-demo/index',
         name: 'I18n',
         meta: { title: 'I18n', icon: 'international' }
       }

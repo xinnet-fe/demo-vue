@@ -7,10 +7,10 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+import componentsRouter from './demos/components'
+import chartsRouter from './demos/charts'
+import tableRouter from './demos/table'
+import nestedRouter from './demos/nested'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -48,7 +48,7 @@ const demosConstantRoutes = hasDevelopment ? [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/demos/dashboard/index'),
         name: 'Dashboard',
         type: 'demo',
         meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
@@ -62,7 +62,7 @@ const demosConstantRoutes = hasDevelopment ? [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/documentation/index'),
+        component: () => import('@/views/demos/documentation/index'),
         name: 'Documentation',
         type: 'demo',
         meta: { title: 'Documentation', icon: 'documentation', affix: true }
@@ -77,7 +77,7 @@ const demosConstantRoutes = hasDevelopment ? [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/guide/index'),
+        component: () => import('@/views/demos/guide/index'),
         name: 'Guide',
         type: 'demo',
         meta: { title: 'Guide', icon: 'guide', noCache: true }
@@ -93,7 +93,7 @@ const demosConstantRoutes = hasDevelopment ? [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/profile/index'),
+        component: () => import('@/views/demos/profile/index'),
         name: 'Profile',
         type: 'demo',
         meta: { title: 'Profile', icon: 'user', noCache: true }
@@ -113,29 +113,29 @@ export const constantRoutes = [
       {
         path: '/redirect/:path(.*)',
         type: 'demo',
-        component: () => import('@/views/redirect/index')
+        component: () => import('@/views/demos/redirect/index')
       }
     ]
   },
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/demos/login/index'),
     hidden: true
   },
   {
     path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
+    component: () => import('@/views/demos/login/auth-redirect'),
     type: 'demo',
     hidden: true
   },
   {
     path: '/404',
-    component: () => import('@/views/error-page/404'),
+    component: () => import('@/views/demos/error-page/404'),
     hidden: true
   },
   {
     path: '/401',
-    component: () => import('@/views/error-page/401'),
+    component: () => import('@/views/demos/error-page/401'),
     hidden: true
   },
   {
@@ -164,7 +164,7 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'page',
-        component: () => import('@/views/permission/page'),
+        component: () => import('@/views/demos/permission/page'),
         name: 'PagePermission',
         type: 'demo',
         meta: {
@@ -174,7 +174,7 @@ const demosAsyncRoutes = hasDevelopment ? [
       },
       {
         path: 'directive',
-        component: () => import('@/views/permission/directive'),
+        component: () => import('@/views/demos/permission/directive'),
         name: 'DirectivePermission',
         type: 'demo',
         meta: {
@@ -184,7 +184,7 @@ const demosAsyncRoutes = hasDevelopment ? [
       },
       {
         path: 'role',
-        component: () => import('@/views/permission/role'),
+        component: () => import('@/views/demos/permission/role'),
         name: 'RolePermission',
         type: 'demo',
         meta: {
@@ -202,7 +202,7 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/icons/index'),
+        component: () => import('@/views/demos/icons/index'),
         name: 'Icons',
         type: 'demo',
         meta: { title: 'Icons', icon: 'icon', noCache: true }
@@ -229,14 +229,14 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'create',
-        component: () => import('@/views/example/create'),
+        component: () => import('@/views/demos/example/create'),
         name: 'CreateArticle',
         type: 'demo',
         meta: { title: 'Create Article', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
-        component: () => import('@/views/example/edit'),
+        component: () => import('@/views/demos/example/edit'),
         name: 'EditArticle',
         meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
         type: 'demo',
@@ -244,7 +244,7 @@ const demosAsyncRoutes = hasDevelopment ? [
       },
       {
         path: 'list',
-        component: () => import('@/views/example/list'),
+        component: () => import('@/views/demos/example/list'),
         name: 'ArticleList',
         type: 'demo',
         meta: { title: 'Article List', icon: 'list' }
@@ -259,7 +259,7 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/tab/index'),
+        component: () => import('@/views/demos/tab/index'),
         name: 'Tab',
         type: 'demo',
         meta: { title: 'Tab', icon: 'tab' }
@@ -280,14 +280,14 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: '401',
-        component: () => import('@/views/error-page/401'),
+        component: () => import('@/views/demos/error-page/401'),
         name: 'Page401',
         type: 'demo',
         meta: { title: '401', noCache: true }
       },
       {
         path: '404',
-        component: () => import('@/views/error-page/404'),
+        component: () => import('@/views/demos/error-page/404'),
         name: 'Page404',
         type: 'demo',
         meta: { title: '404', noCache: true }
@@ -302,7 +302,7 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'log',
-        component: () => import('@/views/error-log/index'),
+        component: () => import('@/views/demos/error-log/index'),
         name: 'ErrorLog',
         type: 'demo',
         meta: { title: 'Error Log', icon: 'bug' }
@@ -323,28 +323,28 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'export-excel',
-        component: () => import('@/views/excel/export-excel'),
+        component: () => import('@/views/demos/excel/export-excel'),
         name: 'ExportExcel',
         type: 'demo',
         meta: { title: 'Export Excel' }
       },
       {
         path: 'export-selected-excel',
-        component: () => import('@/views/excel/select-excel'),
+        component: () => import('@/views/demos/excel/select-excel'),
         name: 'SelectExcel',
         type: 'demo',
         meta: { title: 'Export Selected' }
       },
       {
         path: 'export-merge-header',
-        component: () => import('@/views/excel/merge-header'),
+        component: () => import('@/views/demos/excel/merge-header'),
         name: 'MergeHeader',
         type: 'demo',
         meta: { title: 'Merge Header' }
       },
       {
         path: 'upload-excel',
-        component: () => import('@/views/excel/upload-excel'),
+        component: () => import('@/views/demos/excel/upload-excel'),
         name: 'UploadExcel',
         type: 'demo',
         meta: { title: 'Upload Excel' }
@@ -363,7 +363,7 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'download',
-        component: () => import('@/views/zip/index'),
+        component: () => import('@/views/demos/zip/index'),
         name: 'ExportZip',
         type: 'demo',
         meta: { title: 'Export Zip' }
@@ -379,7 +379,7 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/pdf/index'),
+        component: () => import('@/views/demos/pdf/index'),
         name: 'PDF',
         type: 'demo',
         meta: { title: 'PDF', icon: 'pdf' }
@@ -388,7 +388,7 @@ const demosAsyncRoutes = hasDevelopment ? [
   },
   {
     path: '/pdf/download',
-    component: () => import('@/views/pdf/download'),
+    component: () => import('@/views/demos/pdf/download'),
     type: 'demo',
     hidden: true
   },
@@ -400,7 +400,7 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/theme/index'),
+        component: () => import('@/views/demos/theme/index'),
         name: 'Theme',
         type: 'demo',
         meta: { title: 'Theme', icon: 'theme' }
@@ -415,7 +415,7 @@ const demosAsyncRoutes = hasDevelopment ? [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/clipboard/index'),
+        component: () => import('@/views/demos/clipboard/index'),
         name: 'ClipboardDemo',
         type: 'demo',
         meta: { title: 'Clipboard', icon: 'clipboard' }
