@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import { deepClone } from '../../src/utils/demos/index.js'
+import { deepClone } from '../../../src/utils/demos/index.js'
 import { asyncRoutes, constantRoutes } from './routes.js'
 
 const routes = deepClone([...constantRoutes, ...asyncRoutes])

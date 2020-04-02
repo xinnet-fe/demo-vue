@@ -12,6 +12,8 @@ import chartsRouter from './demos/charts'
 import tableRouter from './demos/table'
 import nestedRouter from './demos/nested'
 
+import orderRouter from './modules/order'
+
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -51,7 +53,7 @@ const demosConstantRoutes = hasDevelopment ? [
         component: () => import('@/views/demos/dashboard/index'),
         name: 'Dashboard',
         type: 'demo',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: 'Dashboard', icon: 'dashboard' }
       }
     ]
   },
@@ -65,7 +67,7 @@ const demosConstantRoutes = hasDevelopment ? [
         component: () => import('@/views/demos/documentation/index'),
         name: 'Documentation',
         type: 'demo',
-        meta: { title: 'Documentation', icon: 'documentation', affix: true }
+        meta: { title: 'Documentation', icon: 'documentation' }
       }
     ]
   },
@@ -442,38 +444,8 @@ const demosAsyncRoutes = hasDevelopment ? [
 
 export const asyncRoutes = [
   ...demosAsyncRoutes,
-  {
-    path: '/el',
-    component: Layout,
-    // redirect: '/el/form',
-    alwaysShow: true, // will always show the root menu
-    name: 'El',
-    meta: {
-      title: 'El',
-      icon: 'user',
-      roles: ['admin', 'editor'] // you can set roles in root nav
-    },
-    children: [
-      {
-        path: 'form',
-        component: () => import('@/views/el/index'),
-        name: 'ElFormDemo',
-        meta: {
-          title: 'El Form',
-          roles: ['admin'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'table',
-        component: () => import('@/views/el/table'),
-        name: 'ElTableDemo',
-        meta: {
-          title: 'El Table',
-          roles: ['admin'] // or you can only set roles in sub nav
-        }
-      }
-    ]
-  }
+
+  orderRouter
 ]
 
 const createRouter = () => new Router({

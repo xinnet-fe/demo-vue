@@ -1,16 +1,20 @@
 import Mock from 'mockjs'
 import { param2Obj } from '../src/utils/demos'
 
-import user from './user'
-import role from './role'
-import article from './article'
-import search from './remote-search'
+import demoUser from './demos/user'
+import demoRole from './demos/role'
+import demoArticle from './demos/article'
+import demoSearch from './demos/remote-search'
+
+import order from './order'
 
 const mocks = [
-  ...user,
-  ...role,
-  ...article,
-  ...search
+  ...demoUser,
+  ...demoRole,
+  ...demoArticle,
+  ...demoSearch,
+
+  ...order
 ]
 
 // for front mock
