@@ -72,13 +72,13 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/PanJiaChen/vue-element-admin.git
+git clone https://github.com/xinnet-fe/demo-vue.git
 
 # nodejs版本
 建议使用v10.17.0
 
 # 进入项目目录
-cd vue-element-admin
+cd demo-vue
 
 # 安装依赖
 npm install
@@ -92,10 +92,9 @@ npm run dev
 
 浏览器访问 http://localhost:9527
 
-## 开发
 目录结构
 - mock 模拟数据
-  - mockjs 参数：http://mockjs.com/
+  - mockjs 参考：http://mockjs.com/
 - src 开发目录
   - api action
   - assets 资源
@@ -109,7 +108,8 @@ npm run dev
     - 全局loading 参考：https://www.ahwgs.cn/vuex-loading-plugin.html
   - styles 全局样式
   - utils 工具类
-    - request.js ajax请求基于axios
+    - request.js ajax请求
+      - 基于axios 参考：https://github.com/axios/axios
   - views 视图
   - main.js 入口文件
   - permission.js 权限文件
@@ -117,9 +117,10 @@ npm run dev
 - tests 测试目录
 - vue.config.js 环境配置文件
   - vue-cli-service 参考：https://cli.vuejs.org/zh/guide/cli-service.html
+- element-ui 参考：https://element.eleme.cn/#/zh-CN
 
 可参考订单查询
-- 1.添加router -> modules -> order.js,并在index中引入
+- 1.添加router -> modules -> order.js，并在index中引入
 - 2.添加views -> el -> index.vue
 - 3.添加api -> order.js
 - 4.添加store -> modules -> order.js
