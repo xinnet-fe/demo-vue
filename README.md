@@ -92,7 +92,8 @@ npm run dev
 
 浏览器访问 http://localhost:9527
 
-目录结构
+## 目录结构
+```
 - mock 模拟数据
   - mockjs 参考：http://mockjs.com/
 - src 开发目录
@@ -118,13 +119,16 @@ npm run dev
 - vue.config.js 环境配置文件
   - vue-cli-service 参考：https://cli.vuejs.org/zh/guide/cli-service.html
 - element-ui 参考：https://element.eleme.cn/#/zh-CN
+```
 
-可参考订单查询
+## demo
+```
+- 可参考订单查询
 - 1.添加router -> modules -> order.js，并在index中引入
 - 2.添加views -> el -> index.vue
 - 3.添加api -> order.js
 - 4.添加store -> modules -> order.js
-
+```
 
 ## 发布
 
