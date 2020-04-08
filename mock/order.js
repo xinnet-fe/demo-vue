@@ -1,7 +1,7 @@
 import Mock from 'mockjs'
-// import find from 'lodash/find'
+import find from 'lodash/find'
 // import remove from 'lodash/remove'
-// import forEach from 'lodash/forEach'
+import forEach from 'lodash/forEach'
 
 const List = []
 const count = 100
@@ -12,7 +12,12 @@ for (let i = 0; i < count; i++) {
     name: '@cname',
     domain: '@domain',
     datetime: '@date',
-    region: '@province',
+    // region: '@province',
+    'region|1': ['shanghai', 'beijing'],
+    'resource|1': ['1', '2'],
+    'delivery|1': [true, false],
+    type: ['1', '2'],
+    desc: '@cparagraph(2)',
     'state|1': [
       {
         name: '新增',
@@ -73,7 +78,35 @@ export default [
   {
     url: '/order/create',
     type: 'post',
-    response: () => {
+    response: config => {
+      const {
+        name,
+        domain,
+        region,
+        date1,
+        desc,
+        type,
+        delivery,
+        resource
+      } = config.body
+
+      const datetime = date1
+
+      List.unshift(Mock.mock({
+        id: '@increment',
+        name,
+        domain,
+        datetime,
+        region,
+        resource,
+        state: {
+          name: '新增',
+          value: 'add'
+        },
+        desc,
+        type,
+        delivery
+      }))
       return {
         code: 200,
         data: 'success'
@@ -84,7 +117,14 @@ export default [
   {
     url: '/order/update',
     type: 'post',
-    response: () => {
+    response: config => {
+      const { id, ...restProps } = config.body
+      const row = find(List, { id })
+      if (row) {
+        forEach(restProps, (v, k) => {
+          row[k] = v
+        })
+      }
       return {
         code: 200,
         data: 'success'

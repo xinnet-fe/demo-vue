@@ -95,4 +95,15 @@ service.interceptors.response.use(
   }
 )
 
+/**
+ * @param  {[function]} funs
+ */
+function when(...funs) {
+  return Promise.all(funs)
+}
+
+export {
+  when
+}
+
 export default service
