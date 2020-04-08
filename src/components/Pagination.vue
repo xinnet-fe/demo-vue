@@ -16,7 +16,7 @@
 </template>
 
 <script>
-// import { scrollTo } from '@/utils/demos/scroll-to'
+import { scrollTo } from '@/utils/demos/scroll-to'
 
 export default {
   name: 'Pagination',
@@ -77,15 +77,15 @@ export default {
   methods: {
     handleSizeChange(val) {
       this.$emit('pagination', { page: this.currentPage, limit: val })
-      // if (this.autoScroll) {
-      //   scrollTo(0, 800)
-      // }
+      if (this.autoScroll) {
+        scrollTo(0, 800)
+      }
     },
     handleCurrentChange(val) {
       this.$emit('pagination', { page: val, limit: this.pageSize })
-      // if (this.autoScroll) {
-      //   scrollTo(0, 800)
-      // }
+      if (this.autoScroll) {
+        scrollTo(0, 800)
+      }
     }
   }
 }

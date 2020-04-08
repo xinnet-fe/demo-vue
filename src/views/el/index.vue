@@ -5,9 +5,9 @@
       <el-form-item label="姓名" prop="name">
         <el-input v-model="searchForm.name" />
       </el-form-item>
-      <el-form-item label="年龄" prop="age" :rules="ageRule">
+      <!-- <el-form-item label="年龄" prop="age" :rules="ageRule">
         <el-input v-model.number="searchForm.age" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="状态" prop="state">
         <el-select v-model="searchForm.state">
           <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value" />
@@ -170,7 +170,7 @@ export default {
       formVisible: false,
       searchForm: {
         name: '',
-        age: '',
+        // age: '',
         state: ''
       },
       form: {
