@@ -7,9 +7,9 @@ const componentsRouter = {
   component: Layout,
   redirect: 'noRedirect',
   name: 'ComponentDemo',
-  type: 'demo',
   meta: {
     title: 'Components',
+    type: 'demo',
     icon: 'component'
   },
   children: [
@@ -17,99 +17,85 @@ const componentsRouter = {
       path: 'tinymce',
       component: () => import('@/views/demos/components-demo/tinymce'),
       name: 'TinymceDemo',
-      type: 'demo',
-      meta: { title: 'Tinymce' }
+      meta: { title: 'Tinymce', type: 'demo' }
     },
     {
       path: 'markdown',
       component: () => import('@/views/demos/components-demo/markdown'),
       name: 'MarkdownDemo',
-      type: 'demo',
-      meta: { title: 'Markdown' }
+      meta: { title: 'Markdown', type: 'demo' }
     },
     {
       path: 'json-editor',
       component: () => import('@/views/demos/components-demo/json-editor'),
       name: 'JsonEditorDemo',
-      type: 'demo',
-      meta: { title: 'JSON Editor' }
+      meta: { title: 'JSON Editor', type: 'demo' }
     },
     {
       path: 'split-pane',
       component: () => import('@/views/demos/components-demo/split-pane'),
       name: 'SplitpaneDemo',
-      type: 'demo',
-      meta: { title: 'SplitPane' }
+      meta: { title: 'SplitPane', type: 'demo' }
     },
     {
       path: 'avatar-upload',
       component: () => import('@/views/demos/components-demo/avatar-upload'),
       name: 'AvatarUploadDemo',
-      type: 'demo',
-      meta: { title: 'Upload' }
+      meta: { title: 'Upload', type: 'demo' }
     },
     {
       path: 'dropzone',
       component: () => import('@/views/demos/components-demo/dropzone'),
       name: 'DropzoneDemo',
-      type: 'demo',
-      meta: { title: 'Dropzone' }
+      meta: { title: 'Dropzone', type: 'demo' }
     },
     {
       path: 'sticky',
       component: () => import('@/views/demos/components-demo/sticky'),
       name: 'StickyDemo',
-      type: 'demo',
-      meta: { title: 'Sticky' }
+      meta: { title: 'Sticky', type: 'demo' }
     },
     {
       path: 'count-to',
       component: () => import('@/views/demos/components-demo/count-to'),
       name: 'CountToDemo',
-      type: 'demo',
-      meta: { title: 'Count To' }
+      meta: { title: 'Count To', type: 'demo' }
     },
     {
       path: 'mixin',
       component: () => import('@/views/demos/components-demo/mixin'),
       name: 'ComponentMixinDemo',
-      type: 'demo',
-      meta: { title: 'Component Mixin' }
+      meta: { title: 'Component Mixin', type: 'demo' }
     },
     {
       path: 'back-to-top',
       component: () => import('@/views/demos/components-demo/back-to-top'),
       name: 'BackToTopDemo',
-      type: 'demo',
-      meta: { title: 'Back To Top' }
+      meta: { title: 'Back To Top', type: 'demo' }
     },
     {
       path: 'drag-dialog',
       component: () => import('@/views/demos/components-demo/drag-dialog'),
       name: 'DragDialogDemo',
-      type: 'demo',
-      meta: { title: 'Drag Dialog' }
+      meta: { title: 'Drag Dialog', type: 'demo' }
     },
     {
       path: 'drag-select',
       component: () => import('@/views/demos/components-demo/drag-select'),
       name: 'DragSelectDemo',
-      type: 'demo',
-      meta: { title: 'Drag Select' }
+      meta: { title: 'Drag Select', type: 'demo' }
     },
     {
       path: 'dnd-list',
       component: () => import('@/views/demos/components-demo/dnd-list'),
       name: 'DndListDemo',
-      type: 'demo',
-      meta: { title: 'Dnd List' }
+      meta: { title: 'Dnd List', type: 'demo' }
     },
     {
       path: 'drag-kanban',
       component: () => import('@/views/demos/components-demo/drag-kanban'),
       name: 'DragKanbanDemo',
-      type: 'demo',
-      meta: { title: 'Drag Kanban' }
+      meta: { title: 'Drag Kanban', type: 'demo' }
     }
   ]
 }

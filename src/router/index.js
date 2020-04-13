@@ -32,6 +32,7 @@ import orderRouter from './modules/order'
     affix: true                  if set true, the tag will affix in the tags-view
     breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+    type: ''                     if set 'demo', no packaging
   }
  */
 
@@ -44,45 +45,49 @@ const hasDevelopment = process.env.NODE_ENV === 'development'
  */
 const demosConstantRoutes = hasDevelopment ? [
   {
-    path: '/dashboard',
+    path: '/',
     component: Layout,
-    type: 'demo',
+    redirect: '/dashboard',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/demos/dashboard/index'),
         name: 'Dashboard',
-        type: 'demo',
-        meta: { title: 'Dashboard', icon: 'dashboard' }
+        meta: { title: 'Dashboard', icon: 'dashboard', type: 'demo' }
       }
     ]
   },
   {
     path: '/documentation',
     component: Layout,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/demos/documentation/index'),
         name: 'Documentation',
-        type: 'demo',
-        meta: { title: 'Documentation', icon: 'documentation' }
+        meta: { title: 'Documentation', icon: 'documentation', type: 'demo' }
       }
     ]
   },
   {
     path: '/guide',
     component: Layout,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     redirect: '/guide/index',
     children: [
       {
         path: 'index',
         component: () => import('@/views/demos/guide/index'),
         name: 'Guide',
-        type: 'demo',
-        meta: { title: 'Guide', icon: 'guide', noCache: true }
+        meta: { title: 'Guide', icon: 'guide', noCache: true, type: 'demo' }
       }
     ]
   },
@@ -91,14 +96,15 @@ const demosConstantRoutes = hasDevelopment ? [
     component: Layout,
     redirect: '/profile/index',
     hidden: true,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/demos/profile/index'),
         name: 'Profile',
-        type: 'demo',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
+        meta: { title: 'Profile', icon: 'user', noCache: true, type: 'demo' }
       }
     ]
   }
@@ -110,12 +116,16 @@ export const constantRoutes = [
     path: '/redirect',
     component: Layout,
     hidden: true,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: '/redirect/:path(.*)',
-        type: 'demo',
-        component: () => import('@/views/demos/redirect/index')
+        component: () => import('@/views/demos/redirect/index'),
+        meta: {
+          type: 'demo'
+        }
       }
     ]
   },
@@ -127,7 +137,9 @@ export const constantRoutes = [
   {
     path: '/auth-redirect',
     component: () => import('@/views/demos/login/auth-redirect'),
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     hidden: true
   },
   {
@@ -157,10 +169,10 @@ const demosAsyncRoutes = hasDevelopment ? [
     redirect: '/permission/page',
     alwaysShow: true, // will always show the root menu
     name: 'Permission',
-    type: 'demo',
     meta: {
       title: 'Permission',
       icon: 'lock',
+      type: 'demo',
       roles: ['admin', 'editor'] // you can set roles in root nav
     },
     children: [
@@ -168,19 +180,19 @@ const demosAsyncRoutes = hasDevelopment ? [
         path: 'page',
         component: () => import('@/views/demos/permission/page'),
         name: 'PagePermission',
-        type: 'demo',
         meta: {
           title: 'Page Permission',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['admin'], // or you can only set roles in sub nav
+          type: 'demo'
         }
       },
       {
         path: 'directive',
         component: () => import('@/views/demos/permission/directive'),
         name: 'DirectivePermission',
-        type: 'demo',
         meta: {
-          title: 'Directive Permission'
+          title: 'Directive Permission',
+          type: 'demo'
           // if do not set roles, means: this page does not require permission
         }
       },
@@ -188,9 +200,9 @@ const demosAsyncRoutes = hasDevelopment ? [
         path: 'role',
         component: () => import('@/views/demos/permission/role'),
         name: 'RolePermission',
-        type: 'demo',
         meta: {
           title: 'Role Permission',
+          type: 'demo',
           roles: ['admin']
         }
       }
@@ -200,14 +212,15 @@ const demosAsyncRoutes = hasDevelopment ? [
   {
     path: '/icon',
     component: Layout,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/demos/icons/index'),
         name: 'Icons',
-        type: 'demo',
-        meta: { title: 'Icons', icon: 'icon', noCache: true }
+        meta: { title: 'Icons', icon: 'icon', noCache: true, type: 'demo' }
       }
     ]
   },
@@ -223,9 +236,9 @@ const demosAsyncRoutes = hasDevelopment ? [
     component: Layout,
     redirect: '/example/list',
     name: 'Example',
-    type: 'demo',
     meta: {
       title: 'Example',
+      type: 'demo',
       icon: 'example'
     },
     children: [
@@ -233,23 +246,20 @@ const demosAsyncRoutes = hasDevelopment ? [
         path: 'create',
         component: () => import('@/views/demos/example/create'),
         name: 'CreateArticle',
-        type: 'demo',
-        meta: { title: 'Create Article', icon: 'edit' }
+        meta: { title: 'Create Article', icon: 'edit', type: 'demo' }
       },
       {
         path: 'edit/:id(\\d+)',
         component: () => import('@/views/demos/example/edit'),
         name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
-        type: 'demo',
+        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list', type: 'demo' },
         hidden: true
       },
       {
         path: 'list',
         component: () => import('@/views/demos/example/list'),
         name: 'ArticleList',
-        type: 'demo',
-        meta: { title: 'Article List', icon: 'list' }
+        meta: { title: 'Article List', icon: 'list', type: 'demo' }
       }
     ]
   },
@@ -257,14 +267,15 @@ const demosAsyncRoutes = hasDevelopment ? [
   {
     path: '/tab',
     component: Layout,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/demos/tab/index'),
         name: 'Tab',
-        type: 'demo',
-        meta: { title: 'Tab', icon: 'tab' }
+        meta: { title: 'Tab', icon: 'tab', type: 'demo' }
       }
     ]
   },
@@ -274,9 +285,9 @@ const demosAsyncRoutes = hasDevelopment ? [
     component: Layout,
     redirect: 'noRedirect',
     name: 'ErrorPages',
-    type: 'demo',
     meta: {
       title: 'Error Pages',
+      type: 'demo',
       icon: '404'
     },
     children: [
@@ -284,15 +295,13 @@ const demosAsyncRoutes = hasDevelopment ? [
         path: '401',
         component: () => import('@/views/demos/error-page/401'),
         name: 'Page401',
-        type: 'demo',
-        meta: { title: '401', noCache: true }
+        meta: { title: '401', noCache: true, type: 'demo' }
       },
       {
         path: '404',
         component: () => import('@/views/demos/error-page/404'),
         name: 'Page404',
-        type: 'demo',
-        meta: { title: '404', noCache: true }
+        meta: { title: '404', noCache: true, type: 'demo' }
       }
     ]
   },
@@ -300,14 +309,15 @@ const demosAsyncRoutes = hasDevelopment ? [
   {
     path: '/error-log',
     component: Layout,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'log',
         component: () => import('@/views/demos/error-log/index'),
         name: 'ErrorLog',
-        type: 'demo',
-        meta: { title: 'Error Log', icon: 'bug' }
+        meta: { title: 'Error Log', icon: 'bug', type: 'demo' }
       }
     ]
   },
@@ -317,9 +327,9 @@ const demosAsyncRoutes = hasDevelopment ? [
     component: Layout,
     redirect: '/excel/export-excel',
     name: 'Excel',
-    type: 'demo',
     meta: {
       title: 'Excel',
+      type: 'demo',
       icon: 'excel'
     },
     children: [
@@ -327,29 +337,25 @@ const demosAsyncRoutes = hasDevelopment ? [
         path: 'export-excel',
         component: () => import('@/views/demos/excel/export-excel'),
         name: 'ExportExcel',
-        type: 'demo',
-        meta: { title: 'Export Excel' }
+        meta: { title: 'Export Excel', type: 'demo' }
       },
       {
         path: 'export-selected-excel',
         component: () => import('@/views/demos/excel/select-excel'),
         name: 'SelectExcel',
-        type: 'demo',
-        meta: { title: 'Export Selected' }
+        meta: { title: 'Export Selected', type: 'demo' }
       },
       {
         path: 'export-merge-header',
         component: () => import('@/views/demos/excel/merge-header'),
         name: 'MergeHeader',
-        type: 'demo',
-        meta: { title: 'Merge Header' }
+        meta: { title: 'Merge Header', type: 'demo' }
       },
       {
         path: 'upload-excel',
         component: () => import('@/views/demos/excel/upload-excel'),
         name: 'UploadExcel',
-        type: 'demo',
-        meta: { title: 'Upload Excel' }
+        meta: { title: 'Upload Excel', type: 'demo' }
       }
     ]
   },
@@ -360,15 +366,13 @@ const demosAsyncRoutes = hasDevelopment ? [
     redirect: '/zip/download',
     alwaysShow: true,
     name: 'Zip',
-    type: 'demo',
-    meta: { title: 'Zip', icon: 'zip' },
+    meta: { title: 'Zip', icon: 'zip', type: 'demo' },
     children: [
       {
         path: 'download',
         component: () => import('@/views/demos/zip/index'),
         name: 'ExportZip',
-        type: 'demo',
-        meta: { title: 'Export Zip' }
+        meta: { title: 'Export Zip', type: 'demo' }
       }
     ]
   },
@@ -377,35 +381,39 @@ const demosAsyncRoutes = hasDevelopment ? [
     path: '/pdf',
     component: Layout,
     redirect: '/pdf/index',
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/demos/pdf/index'),
         name: 'PDF',
-        type: 'demo',
-        meta: { title: 'PDF', icon: 'pdf' }
+        meta: { title: 'PDF', icon: 'pdf', type: 'demo' }
       }
     ]
   },
   {
     path: '/pdf/download',
     component: () => import('@/views/demos/pdf/download'),
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     hidden: true
   },
 
   {
     path: '/theme',
     component: Layout,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/demos/theme/index'),
         name: 'Theme',
-        type: 'demo',
-        meta: { title: 'Theme', icon: 'theme' }
+        meta: { title: 'Theme', icon: 'theme', type: 'demo' }
       }
     ]
   },
@@ -413,14 +421,15 @@ const demosAsyncRoutes = hasDevelopment ? [
   {
     path: '/clipboard',
     component: Layout,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/demos/clipboard/index'),
         name: 'ClipboardDemo',
-        type: 'demo',
-        meta: { title: 'Clipboard', icon: 'clipboard' }
+        meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
       }
     ]
   },
@@ -428,12 +437,13 @@ const demosAsyncRoutes = hasDevelopment ? [
   {
     path: 'external-link',
     component: Layout,
-    type: 'demo',
+    meta: {
+      type: 'demo'
+    },
     children: [
       {
         path: 'https://github.com/PanJiaChen/vue-element-admin',
-        type: 'demo',
-        meta: { title: 'External Link', icon: 'link' }
+        meta: { title: 'External Link', icon: 'link', type: 'demo' }
       }
     ]
   },
@@ -442,10 +452,14 @@ const demosAsyncRoutes = hasDevelopment ? [
   { path: '*', redirect: '/404', hidden: true }
 ] : []
 
+// dev routes
+const routes = [
+  orderRouter
+]
+
 export const asyncRoutes = [
   ...demosAsyncRoutes,
-
-  orderRouter
+  ...routes
 ]
 
 const createRouter = () => new Router({

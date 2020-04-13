@@ -7,9 +7,9 @@ const nestedRouter = {
   component: Layout,
   redirect: '/nested/menu1/menu1-1',
   name: 'Nested',
-  type: 'demo',
   meta: {
     title: 'Nested Routes',
+    type: 'demo',
     icon: 'nested'
   },
   children: [
@@ -17,38 +17,33 @@ const nestedRouter = {
       path: 'menu1',
       component: () => import('@/views/demos/nested/menu1/index'), // Parent router-view
       name: 'Menu1',
-      type: 'demo',
-      meta: { title: 'Menu 1' },
+      meta: { title: 'Menu 1', type: 'demo' },
       redirect: '/nested/menu1/menu1-1',
       children: [
         {
           path: 'menu1-1',
           component: () => import('@/views/demos/nested/menu1/menu1-1'),
           name: 'Menu1-1',
-          type: 'demo',
-          meta: { title: 'Menu 1-1' }
+          meta: { title: 'Menu 1-1', type: 'demo' }
         },
         {
           path: 'menu1-2',
           component: () => import('@/views/demos/nested/menu1/menu1-2'),
           name: 'Menu1-2',
-          type: 'demo',
           redirect: '/nested/menu1/menu1-2/menu1-2-1',
-          meta: { title: 'Menu 1-2' },
+          meta: { title: 'Menu 1-2', type: 'demo' },
           children: [
             {
               path: 'menu1-2-1',
               component: () => import('@/views/demos/nested/menu1/menu1-2/menu1-2-1'),
               name: 'Menu1-2-1',
-              type: 'demo',
-              meta: { title: 'Menu 1-2-1' }
+              meta: { title: 'Menu 1-2-1', type: 'demo' }
             },
             {
               path: 'menu1-2-2',
               component: () => import('@/views/demos/nested/menu1/menu1-2/menu1-2-2'),
               name: 'Menu1-2-2',
-              type: 'demo',
-              meta: { title: 'Menu 1-2-2' }
+              meta: { title: 'Menu 1-2-2', type: 'demo' }
             }
           ]
         },
@@ -56,17 +51,15 @@ const nestedRouter = {
           path: 'menu1-3',
           component: () => import('@/views/demos/nested/menu1/menu1-3'),
           name: 'Menu1-3',
-          type: 'demo',
-          meta: { title: 'Menu 1-3' }
+          meta: { title: 'Menu 1-3', type: 'demo' }
         }
       ]
     },
     {
       path: 'menu2',
       name: 'Menu2',
-      type: 'demo',
       component: () => import('@/views/demos/nested/menu2/index'),
-      meta: { title: 'Menu 2' }
+      meta: { title: 'Menu 2', type: 'demo' }
     }
   ]
 }

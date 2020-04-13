@@ -7,9 +7,9 @@ const tableRouter = {
   component: Layout,
   redirect: '/table/complex-table',
   name: 'Table',
-  type: 'demo',
   meta: {
     title: 'Table',
+    type: 'demo',
     icon: 'table'
   },
   children: [
@@ -17,29 +17,25 @@ const tableRouter = {
       path: 'dynamic-table',
       component: () => import('@/views/demos/table/dynamic-table/index'),
       name: 'DynamicTable',
-      type: 'demo',
-      meta: { title: 'Dynamic Table' }
+      meta: { title: 'Dynamic Table', type: 'demo' }
     },
     {
       path: 'drag-table',
       component: () => import('@/views/demos/table/drag-table'),
       name: 'DragTable',
-      type: 'demo',
-      meta: { title: 'Drag Table' }
+      meta: { title: 'Drag Table', type: 'demo' }
     },
     {
       path: 'inline-edit-table',
       component: () => import('@/views/demos/table/inline-edit-table'),
       name: 'InlineEditTable',
-      type: 'demo',
-      meta: { title: 'Inline Edit' }
+      meta: { title: 'Inline Edit', type: 'demo' }
     },
     {
       path: 'complex-table',
       component: () => import('@/views/demos/table/complex-table'),
       name: 'ComplexTable',
-      type: 'demo',
-      meta: { title: 'Complex Table' }
+      meta: { title: 'Complex Table', type: 'demo' }
     }
   ]
 }

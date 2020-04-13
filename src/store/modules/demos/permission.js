@@ -36,11 +36,11 @@ export function filterAsyncRoutes(routes, roles) {
 }
 
 export function filterDemoRoutes(routes) {
-  return filter(routes, route => route.type === 'demo')
+  return filter(routes, route => (route.meta && route.meta.type === 'demo'))
 }
 
 export function filterMainRoutes(routes) {
-  return filter(routes, route => route.type !== 'demo')
+  return filter(routes, route => (route.meta && route.meta.type !== 'demo'))
 }
 
 const state = {
@@ -62,12 +62,13 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
-      let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      }
+      // let accessedRoutes
+      // if (roles.includes('admin')) {
+      //   accessedRoutes = asyncRoutes || []
+      // } else {
+      //   accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      // }
+      const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
