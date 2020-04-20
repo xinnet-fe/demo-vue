@@ -48,7 +48,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/demos/Breadcrumb'
 import Hamburger from '@/components/demos/Hamburger'
-import logout from '@/utils/logout'
+import { hasDevelopment, logoutApi } from '@/settings'
 // import ErrorLog from '@/components/demos/ErrorLog'
 // import Screenfull from '@/components/demos/Screenfull'
 // import SizeSelect from '@/components/demos/SizeSelect'
@@ -80,7 +80,14 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      logout()
+      console.log('env：' + process.env.NODE_ENV)
+      console.log('logoutApi：' + logoutApi)
+      if (hasDevelopment) {
+        await this.$store.dispatch('user/logout')
+        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      } else {
+        global.location = logoutApi
+      }
     }
   }
 }

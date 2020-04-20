@@ -7,7 +7,7 @@ function resolve(dir) {
 }
 
 const name = defaultSettings.title || '新网运营平台管理中心' // page title
-
+console.log(process.env.LOGOUT_API)
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
@@ -47,7 +47,7 @@ module.exports = {
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
-    name: name,
+    name: process.env.LOGOUT_API,
     resolve: {
       alias: {
         '@': resolve('src')
