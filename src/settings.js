@@ -42,7 +42,7 @@ module.exports = {
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
   xbtoken: 'HooqlqfjydqtHLekD3Q',
 
-  xbTokenKey: 'xbtoken_id',
+  xbTokenKey: 'xbtoken'
 
-  logoutApi: process.env.NODE_ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/'
+  // logoutApi: process.env.NODE_ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/'
 }
