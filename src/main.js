@@ -3,7 +3,6 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import './setElement'
-
 import '@/styles/index.scss' // global css
 
 import App from './App'
@@ -36,9 +35,11 @@ Object.keys(filters).forEach(key => {
 
 Vue.config.productionTip = false
 
-new Vue({
+const app = new Vue({
   el: '#app',
   router,
   store,
   render: h => h(App)
 })
+
+export default app

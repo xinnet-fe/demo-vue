@@ -5,7 +5,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the settings right-panel
    */
-  showSettings: true,
+  showSettings: false,
 
   /**
    * @type {boolean} true | false
@@ -23,7 +23,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: false,
+  sidebarLogo: true,
 
   /**
    * @type {string | array} 'production' | ['production', 'development']
@@ -31,5 +31,16 @@ module.exports = {
    * The default is only used in the production env
    * If you want to also use it in dev, you can pass ['production', 'development']
    */
-  errorLog: 'production'
+  errorLog: 'production',
+
+  // 消息框停留时间
+  duration: 5000,
+
+  // 开发环境
+  hasDevelopment: process.env.NODE_ENV === 'development',
+
+  // 研发环境token，要每天登录测试环境从浏览器cookie中获取
+  xbtoken: 'HooqlqfjydqtHLekD3Q',
+
+  xbTokenKey: 'xbtoken'
 }

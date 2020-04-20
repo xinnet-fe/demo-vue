@@ -12,7 +12,7 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <el-submenu ref="subMenu" index="demos" popper-append-to-body>
+        <el-submenu v-if="isShowDemos" ref="subMenu" index="demos" popper-append-to-body>
           <template slot="title">
             <item icon="list" title="Demos" />
           </template>
@@ -59,6 +59,9 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    },
+    isShowDemos() {
+      return this.demo_permission_routes && this.demo_permission_routes.length
     }
   }
 }

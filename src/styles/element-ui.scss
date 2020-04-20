@@ -71,6 +71,9 @@
   a {
     display: block
   }
+  .el-dropdown-menu__item {
+    font-size: 12px;
+  }  
 }
 
 // fix date-picker ui bug in filter-item
@@ -81,4 +84,22 @@
 // to fix el-date-picker css style
 .el-range-separator {
   box-sizing: content-box;
+}
+
+// form
+.el-form-item__label {
+  padding: 0 15px 0 0;
+}
+
+// menu
+.el-menu {
+  .el-menu-item {
+    height: 40px;
+    line-height: 40px;
+  }
+
+  .el-submenu__title {
+    height: 45px;
+    line-height: 45px;
+  }
 }

@@ -1,10 +1,14 @@
-import router from './router'
+import Vue from 'vue'
+import router from '@/router'
 import store from './store'
-import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/demos/auth' // get token from cookie
+import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/demos/get-page-title'
+import { when } from './utils/request'
+import { xbTokenKey } from '@/settings'
+
+const vm = new Vue()
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -18,37 +22,31 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
-  const hasToken = getToken()
+  const hasXbToken = getToken(xbTokenKey)
 
-  if (hasToken) {
+  if (hasXbToken) {
     if (to.path === '/login') {
-      // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
-      // determine whether the user has obtained his permission roles through getInfo
-      const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (hasRoles) {
+      const hasMenus = store.getters.menus && store.getters.menus.length > 0
+      const hasUser = store.getters.user && store.getters.user.id
+      if (hasMenus && hasUser) {
         next()
       } else {
         try {
-          // get user info
-          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roles } = await store.dispatch('user/getInfo')
+          const [menus] = await when(
+            store.dispatch('userinfo/getSidebarMenus'),
+            store.dispatch('userinfo/getUser')
+          )
+          const accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
 
-          // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-
-          // dynamically add accessible routes
           router.addRoutes(accessRoutes)
-
-          // hack method to ensure that addRoutes is complete
-          // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
+          vm.$message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }

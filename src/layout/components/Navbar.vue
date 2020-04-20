@@ -6,38 +6,37 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
+        <!-- <search id="header-search" class="right-menu-item" /> -->
 
-        <error-log class="errLog-container right-menu-item hover-effect" />
+        <!-- <error-log class="errLog-container right-menu-item hover-effect" /> -->
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <!-- <screenfull id="screenfull" class="right-menu-item hover-effect" /> -->
 
-        <el-tooltip content="Global Size" effect="dark" placement="bottom">
+        <!-- <el-tooltip content="Global Size" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
+        </el-tooltip> -->
 
+        <div class="right-menu-item hover-effect">
+          <el-badge is-dot class="badge-item">
+            <router-link to="/">
+              <svg-icon icon-class="naoling" />
+            </router-link>
+          </el-badge>
+        </div>
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <svg-icon icon-class="touxiang" class="user-avatar" />
+          <span class="username">{{ username }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/profile/index">
-            <el-dropdown-item>Profile</el-dropdown-item>
+          <router-link to="/order/form">
+            <el-dropdown-item>修改密码</el-dropdown-item>
           </router-link>
-          <router-link to="/">
-            <el-dropdown-item>Dashboard</el-dropdown-item>
-          </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -49,19 +48,24 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/demos/Breadcrumb'
 import Hamburger from '@/components/demos/Hamburger'
-import ErrorLog from '@/components/demos/ErrorLog'
-import Screenfull from '@/components/demos/Screenfull'
-import SizeSelect from '@/components/demos/SizeSelect'
-import Search from '@/components/demos/HeaderSearch'
+// import ErrorLog from '@/components/demos/ErrorLog'
+// import Screenfull from '@/components/demos/Screenfull'
+// import SizeSelect from '@/components/demos/SizeSelect'
+// import Search from '@/components/demos/HeaderSearch'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger,
-    ErrorLog,
-    Screenfull,
-    SizeSelect,
-    Search
+    Hamburger
+    // ErrorLog,
+    // Screenfull,
+    // SizeSelect,
+    // Search
+  },
+  data() {
+    return {
+      username: '管理员'
+    }
   },
   computed: {
     ...mapGetters([
@@ -83,6 +87,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .navbar {
   height: 50px;
   overflow: hidden;
@@ -123,7 +129,7 @@ export default {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 8px;
+      padding: 0 15px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
@@ -137,6 +143,11 @@ export default {
           background: rgba(0, 0, 0, .025)
         }
       }
+
+      .badge-item {
+        height: 22px;
+        line-height: 25px;
+      }
     }
 
     .avatar-container {
@@ -148,16 +159,26 @@ export default {
 
         .user-avatar {
           cursor: pointer;
+          vertical-align: top;
           width: 40px;
           height: 40px;
           border-radius: 10px;
         }
 
+        .username {
+          display: inline-block;
+          vertical-align: top;
+          font-size: 12px;
+          height: 40px;
+          line-height: 46px;
+          color: $contentText;
+        }
+
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
-          right: -20px;
-          top: 25px;
+          right: -18px;
+          top: 18px;
           font-size: 12px;
         }
       }

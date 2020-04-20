@@ -36,6 +36,12 @@ module.exports = {
       warnings: false,
       errors: true
     },
+    proxy: {
+      '/portal': {
+        target: 'http://119.10.116.247:8082',
+        changeOrigin: true
+      }
+    },
     before: require('./mock/mock-server.js')
   },
   configureWebpack: {

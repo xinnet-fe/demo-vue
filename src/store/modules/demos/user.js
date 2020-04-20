@@ -1,9 +1,13 @@
 import { login, logout, getInfo } from '@/api/demos/user'
-import { getToken, setToken, removeToken } from '@/utils/demos/auth'
+import {
+  getToken, setToken, removeToken
+} from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import { xbtoken, xbTokenKey } from '@/settings'
 
 const state = {
   token: getToken(),
+  xbtoken: getToken(xbTokenKey),
   name: '',
   avatar: '',
   introduction: '',
@@ -11,7 +15,12 @@ const state = {
 }
 
 const mutations = {
+  SET_XBTOKEN: (state, xbtoken) => {
+    // boss api token
+    state.xbtoken = xbtoken
+  },
   SET_TOKEN: (state, token) => {
+    // demos token
     state.token = token
   },
   SET_INTRODUCTION: (state, introduction) => {
@@ -36,7 +45,9 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        setToken('Admin-Token', data.token)
+        commit('SET_XBTOKEN', xbtoken)
+        setToken(xbTokenKey, xbtoken)
         resolve()
       }).catch(error => {
         reject(error)
@@ -77,13 +88,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
+        commit('SET_XBTOKEN', '')
         commit('SET_ROLES', [])
-        removeToken()
+        removeToken('Admin-Token')
+        removeToken(xbTokenKey)
         resetRouter()
 
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
+        dispatch('userinfo/removeUserinfo', null, { root: true })
+        dispatch('permission/removePermission', null, { root: true })
 
         resolve()
       }).catch(error => {
@@ -96,8 +111,10 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
+      commit('SET_XBTOKEN', '')
       commit('SET_ROLES', [])
-      removeToken()
+      removeToken('Admin-Token')
+      removeToken(xbTokenKey)
       resolve()
     })
   },
@@ -108,7 +125,9 @@ const actions = {
       const token = role + '-token'
 
       commit('SET_TOKEN', token)
-      setToken(token)
+      commit('SET_XBTOKEN', token)
+      setToken('Admin-Token', token)
+      setToken(xbTokenKey, xbtoken)
 
       const { roles } = await dispatch('getInfo')
 
