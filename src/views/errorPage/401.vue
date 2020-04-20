@@ -29,22 +29,22 @@
       </el-col>
     </el-row>
     <el-dialog :visible.sync="dialogVisible" title="随便看">
-      <img :src="ewizardClap" class="pan-img">
+      <!-- <img :src="ewizardClap" class="pan-img"> -->
     </el-dialog>
   </div>
 </template>
 
 <script>
-import errGif from '@/assets/401_images/401.gif'
+// import errGif from '@/assets/401_images/401.gif'
 
 export default {
   name: 'Page401',
   desc: '没有权限，访问被拒绝',
   data() {
     return {
-      errGif: errGif + '?' + +new Date(),
-      ewizardClap: 'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
-      dialogVisible: false
+      // errGif: errGif + '?' + +new Date(),
+      // ewizardClap: 'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
+      // dialogVisible: false
     }
   },
   methods: {

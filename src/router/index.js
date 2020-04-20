@@ -436,13 +436,13 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/401',
-    component: () => import('@/views/errorPage/401'),
+    path: '/403',
+    component: () => import('@/views/errorPage/403'),
     hidden: true
   },
   {
-    path: '/5XX',
-    component: () => import('@/views/errorPage/5XX'),
+    path: '/500',
+    component: () => import('@/views/errorPage/500'),
     hidden: true
   }
 ]
