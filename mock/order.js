@@ -54,7 +54,7 @@ export default [
       const hasLast = page === total
 
       return {
-        code: 200,
+        code: 20000,
         data: {
           data: pageList,
           page: {
@@ -108,7 +108,7 @@ export default [
         delivery
       }))
       return {
-        code: 200,
+        code: 20000,
         data: 'success'
       }
     }
@@ -126,7 +126,7 @@ export default [
         })
       }
       return {
-        code: 200,
+        code: 20000,
         data: 'success'
       }
     }
@@ -136,7 +136,7 @@ export default [
     url: '/order/destroy',
     type: 'delete',
     response: {
-      code: 200
+      code: 20000
     }
   }
 ]

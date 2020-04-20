@@ -1,5 +1,10 @@
 import filter from 'lodash/filter'
-import { asyncRoutes, constantRoutes } from '@/router'
+import { constantRoutes, asyncRoutes } from '@/router'
+import forEach from 'lodash/forEach'
+import reduce from 'lodash/reduce'
+import isNull from 'lodash/isNull'
+import camelCase from 'lodash/camelCase'
+import Layout from '@/layout'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -21,7 +26,6 @@ function hasPermission(roles, route) {
  */
 export function filterAsyncRoutes(routes, roles) {
   const res = []
-
   routes.forEach(route => {
     const tmp = { ...route }
     if (hasPermission(roles, tmp)) {
@@ -40,7 +44,54 @@ export function filterDemoRoutes(routes) {
 }
 
 export function filterMainRoutes(routes) {
-  return filter(routes, route => (route.meta && route.meta.type !== 'demo'))
+  return reduce(routes, (res, route) => {
+    if (route.meta && route.meta.type === 'demo') {
+      return res
+    }
+    res.push(route)
+    return res
+  }, [])
+}
+
+const lazyLoadView = viewPath => resolve => require([`@/views/${viewPath}/index.vue`], resolve)
+
+function getAsyncRoutesByMenus(menus, parentViewPath) {
+  const routes = []
+  forEach(menus, (o, i) => {
+    const name = o.code
+    const icon = name
+    const isParent = isNull(o.parentCode)
+    const isUrl = !isNull(o.url)
+    const path = isUrl ? o.url
+      : (isParent ? `/${name}` : name)
+    const viewPath = isParent ? o.code : `${parentViewPath}/${o.code}`
+    const component = isParent ? Layout : lazyLoadView(viewPath)
+
+    const route = {
+      path,
+      meta: {
+        title: o.text
+      }
+    }
+
+    // 非外链
+    if (!isUrl) {
+      route.name = camelCase(name)
+      route.component = component
+    }
+
+    if (isParent) {
+      route.alwaysShow = true
+      route.redirect = 'noRedirect'
+      route.meta.icon = icon
+    }
+
+    if (o.children) {
+      route.children = getAsyncRoutesByMenus(o.children, viewPath)
+    }
+    routes.push(route)
+  })
+  return routes
 }
 
 const state = {
@@ -52,26 +103,42 @@ const state = {
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
-    state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
     state.demoRoutes = filterDemoRoutes(state.routes)
     state.mainRoutes = filterMainRoutes(state.routes)
+  },
+  SET_MAIN_ROUTES: (state, routes) => {
+    state.addRoutes = state.addRoutes.concat(routes)
+    state.routes = constantRoutes.concat(routes)
+    state.demoRoutes = filterDemoRoutes(state.routes)
+    state.mainRoutes = filterMainRoutes(state.routes)
+  },
+  REMOVE_PERMISSION: (state) => {
+    state.addRoutes = []
+    state.routes = []
+    state.demoRoutes = []
+    state.mainRoutes = []
   }
 }
 
 const actions = {
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
-      // let accessedRoutes
-      // if (roles.includes('admin')) {
-      //   accessedRoutes = asyncRoutes || []
-      // } else {
-      //   accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      // }
-      const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      const accessedRoutes = []
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
+  },
+  generateMainRoutes({ commit }, menus) {
+    return new Promise(resolve => {
+      const routes = getAsyncRoutesByMenus(menus).concat(asyncRoutes)
+
+      commit('SET_MAIN_ROUTES', routes)
+      resolve(routes)
+    })
+  },
+  removePermission({ commit }) {
+    commit('REMOVE_PERMISSION')
   }
 }
 

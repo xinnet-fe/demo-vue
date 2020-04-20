@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Element Admin' // page title
+const name = defaultSettings.title || '新网运营平台管理中心' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -35,6 +35,12 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    proxy: {
+      '/portal': {
+        target: 'http://119.10.116.247:8082',
+        changeOrigin: true
+      }
     },
     before: require('./mock/mock-server.js')
   },

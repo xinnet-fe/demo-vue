@@ -1,12 +1,22 @@
 import Vue from 'vue'
+import app from '@/main'
 import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/demos/auth'
+import { getToken } from '@/utils/auth'
+import { duration as _duration, hasDevelopment, logoutApi } from '@/settings'
 
-const errorCodeMessage = {
-  401: '用户没有权限（令牌、用户名、密码错误）。',
-  403: '用户得到授权，但是访问是被禁止的。'
+const errorCode = {
+  920000: '服务器发生错误',
+  925000: '参数不能为空',
+  925020: '所调用的业务应用服务不在线',
+  925030: '已经存在',
+  925040: '不存在',
+  925050: '参数异常，比如时间格式不正确',
+  925060: '违反约束，比如删除记录的时候，外键违反约束',
+  925070: '存在子内容，比如删除主表记录的时候，还有子表的内容存在',
+  925080: '存在多个值',
+  925090: '不允许的操作'
 }
 
 const vm = new Vue()
@@ -52,20 +62,33 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code in errorCodeMessage) {
-      const message = errorCodeMessage[res.code]
-      vm.$message.error({
-        message,
-        duration: 5 * 1000
-      })
+    const status = parseInt(res.status, 10)
+    // mock必返回code，请求接口错误才返回code
+    const code = isUndefined(res.code) ? parseInt(res.code, 10) : res.code
+    // console.log(`status: ${status}`)
+    // console.log(`code: ${code}`)
+    // status：996登录超时
+    if (status === 996) {
+      const message = '登录超时'
+      logoutToLogin(message)
       return Promise.reject(new Error(message))
-    } else if (res.code !== 20000 && res.code !== 200) {
-      vm.$message.error({
-        message: res.message || 'Error',
-        duration: 5 * 1000
-      })
+    }
+
+    // 925010 访问拒绝
+    if (code && code === 925010) {
+      app.$router.push(`/401`)
+      return errorResult('访问拒绝')
+    } else if (code && code in errorCode) {
+      return errorResult(errorCode[code])
+    } else if (code && code > 920001 && code < 924999) {
+      return errorResult('应用服务定义的自定义异常')
+    } else if (code && code > 925000 && code < 929999) {
+      return errorResult('公共异常')
+    }
+
+    // demos
+    if (hasDevelopment && isUndefined(code) && code !== 20000) {
+      errorMessage(res.message)
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
@@ -80,20 +103,61 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
-    } else {
-      return res
+      return Promise.reject(new Error(res.message))
     }
+
+    return res
   },
   error => {
-    console.log('err' + error) // for debug
-    vm.$message.error({
-      message: error.message,
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    const { status } = error.response
+    let message = ''
+    console.error(`error response: ${error.response}`)
+    console.error(`error status: ${status}`)
+    // '3XX-4XX': '服务器响应错误'
+    if (status >= 300 && status <= 499) {
+      message = '服务器响应错误'
+    // '5XX': '系统维护中'
+    } else if (status >= 500 && status < 600) {
+      message = '系统维护中'
+      app.$router.push(`/5XX`)
+      // 需要跳转到维护页面
+    } else {
+      message = error
+    }
+    return errorResult(message)
   }
 )
+
+function isUndefined(code) {
+  return code !== undefined
+}
+
+// 注销登录到登录页
+function logoutToLogin(message) {
+  store.dispatch('user/resetToken')
+  errorMessage(message)
+
+  const { $router, $route } = app
+  if (hasDevelopment) {
+    $router.push(`/login?redirect=${$route.fullPath}`)
+  } else {
+    global.location = logoutApi
+  }
+}
+
+// 显示错误提示，return reject
+function errorResult(message) {
+  errorMessage(message)
+  return Promise.reject(new Error(message))
+}
+
+// 显示错误提示
+function errorMessage(message, duration = _duration) {
+  vm.$message.error({
+    message,
+    duration
+  })
+}
 
 /**
  * @param  {[function]} funs
@@ -103,7 +167,10 @@ function when(...funs) {
 }
 
 export {
-  when
+  when,
+  errorMessage,
+  logoutToLogin,
+  isUndefined
 }
 
 export default service

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { hasDevelopment } from '@/settings'
 
 Vue.use(Router)
 
@@ -11,7 +12,6 @@ import componentsRouter from './demos/components'
 import chartsRouter from './demos/charts'
 import tableRouter from './demos/table'
 import nestedRouter from './demos/nested'
-
 import orderRouter from './modules/order'
 
 /**
@@ -36,8 +36,6 @@ import orderRouter from './modules/order'
   }
  */
 
-const hasDevelopment = process.env.NODE_ENV === 'development'
-
 /**
  * constantRoutes
  * a base page that does not have permission requirements
@@ -45,15 +43,14 @@ const hasDevelopment = process.env.NODE_ENV === 'development'
  */
 const demosConstantRoutes = hasDevelopment ? [
   {
-    path: '/',
+    path: '/dashboard',
     component: Layout,
-    redirect: '/dashboard',
     meta: {
       type: 'demo'
     },
     children: [
       {
-        path: 'dashboard',
+        path: 'index',
         component: () => import('@/views/demos/dashboard/index'),
         name: 'Dashboard',
         meta: { title: 'Dashboard', icon: 'dashboard', type: 'demo' }
@@ -107,27 +104,6 @@ const demosConstantRoutes = hasDevelopment ? [
         meta: { title: 'Profile', icon: 'user', noCache: true, type: 'demo' }
       }
     ]
-  }
-] : []
-
-export const constantRoutes = [
-  ...demosConstantRoutes,
-  {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/demos/redirect/index'),
-        meta: {
-          type: 'demo'
-        }
-      }
-    ]
   },
   {
     path: '/login',
@@ -137,37 +113,9 @@ export const constantRoutes = [
   {
     path: '/auth-redirect',
     component: () => import('@/views/demos/login/auth-redirect'),
-    meta: {
-      type: 'demo'
-    },
     hidden: true
   },
-  {
-    path: '/404',
-    component: () => import('@/views/demos/error-page/404'),
-    hidden: true
-  },
-  {
-    path: '/403',
-    component: () => import('@/views/demos/error-page/403'),
-    hidden: true
-  },
-  {
-    path: '/500',
-    component: () => import('@/views/demos/error-page/500'),
-    hidden: true
-  },
-  {
-    path: '/',
-    component: Layout
-  }
-]
-
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
-const demosAsyncRoutes = hasDevelopment ? [
+  orderRouter,
   {
     path: '/permission',
     component: Layout,
@@ -297,22 +245,16 @@ const demosAsyncRoutes = hasDevelopment ? [
     },
     children: [
       {
-        path: '403',
-        component: () => import('@/views/demos/error-page/403'),
-        name: 'Page403',
-        meta: { title: '403', noCache: true, type: 'demo' }
+        path: '401',
+        component: () => import('@/views/errorPage/401'),
+        name: 'Page401',
+        meta: { title: '401', noCache: true, type: 'demo' }
       },
       {
         path: '404',
-        component: () => import('@/views/demos/error-page/404'),
+        component: () => import('@/views/errorPage/404'),
         name: 'Page404',
         meta: { title: '404', noCache: true, type: 'demo' }
-      },
-      {
-        path: '500',
-        component: () => import('@/views/demos/error-page/500'),
-        name: 'Page500',
-        meta: { title: '500', noCache: true, type: 'demo' }
       }
     ]
   },
@@ -457,24 +399,61 @@ const demosAsyncRoutes = hasDevelopment ? [
         meta: { title: 'External Link', icon: 'link', type: 'demo' }
       }
     ]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ] : []
 
-// dev routes
-const routes = [
-  orderRouter
+export const constantRoutes = [
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/home',
+    hidden: true,
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/index'),
+        name: 'Home',
+        hidden: true,
+        meta: { title: 'Home', icon: 'home', affix: true }
+      }
+    ]
+  },
+  ...demosConstantRoutes,
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/errorPage/404'),
+    hidden: true
+  },
+  {
+    path: '/403',
+    component: () => import('@/views/errorPage/403'),
+    hidden: true
+  },
+  {
+    path: '/500',
+    component: () => import('@/views/errorPage/500'),
+    hidden: true
+  }
 ]
 
 export const asyncRoutes = [
-  ...demosAsyncRoutes,
-  ...routes
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
