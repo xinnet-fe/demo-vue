@@ -148,8 +148,13 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/401',
-    component: () => import('@/views/demos/error-page/401'),
+    path: '/403',
+    component: () => import('@/views/demos/error-page/403'),
+    hidden: true
+  },
+  {
+    path: '/500',
+    component: () => import('@/views/demos/error-page/500'),
     hidden: true
   },
   {
@@ -292,16 +297,22 @@ const demosAsyncRoutes = hasDevelopment ? [
     },
     children: [
       {
-        path: '401',
-        component: () => import('@/views/demos/error-page/401'),
-        name: 'Page401',
-        meta: { title: '401', noCache: true, type: 'demo' }
+        path: '403',
+        component: () => import('@/views/demos/error-page/403'),
+        name: 'Page403',
+        meta: { title: '403', noCache: true, type: 'demo' }
       },
       {
         path: '404',
         component: () => import('@/views/demos/error-page/404'),
         name: 'Page404',
         meta: { title: '404', noCache: true, type: 'demo' }
+      },
+      {
+        path: '500',
+        component: () => import('@/views/demos/error-page/500'),
+        name: 'Page500',
+        meta: { title: '500', noCache: true, type: 'demo' }
       }
     ]
   },
