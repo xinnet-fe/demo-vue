@@ -44,5 +44,5 @@ module.exports = {
 
   xbTokenKey: 'xbtoken_id',
 
-  logoutApi: process.env.NODE_ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/'
+  logoutApi: process.env.ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/'
 }
