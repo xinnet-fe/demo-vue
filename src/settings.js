@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Vue Element Admin',
+  title: '新网运营平台管理中心',
 
   /**
    * @type {boolean} true | false
@@ -42,5 +42,7 @@ module.exports = {
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
   xbtoken: 'HooqlqfjydqtHLekD3Q',
 
-  xbTokenKey: 'xbtoken'
+  xbTokenKey: 'xbtoken_id',
+
+  logoutApi: process.env.LOGOUT_API
 }

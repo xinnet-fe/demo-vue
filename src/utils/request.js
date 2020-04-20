@@ -4,7 +4,7 @@ import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { duration as _duration, hasDevelopment } from '@/settings'
+import { duration as _duration, hasDevelopment, logoutApi } from '@/settings'
 
 const errorCode = {
   920000: '服务器发生错误',
@@ -138,7 +138,11 @@ function logoutToLogin(message) {
   errorMessage(message)
 
   const { $router, $route } = app
-  $router.push(`/login?redirect=${$route.fullPath}`)
+  if (hasDevelopment) {
+    $router.push(`/login?redirect=${$route.fullPath}`)
+  } else {
+    global.location = logoutApi
+  }
 }
 
 // 显示错误提示，return reject

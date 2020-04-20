@@ -1,5 +1,5 @@
 import { getUser, getSidebarMenus } from '@/api/userinfo'
-import { getStore, setStore, removeStore } from '@/utils/auth'
+import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
   user: {},
@@ -19,49 +19,49 @@ const actions = {
   // get user info
   getUser({ commit, state }) {
     return new Promise((resolve, reject) => {
-      const storeUser = getStore('user')
-      if (storeUser && storeUser.id) {
-        commit('SET_USER', storeUser)
-        resolve(storeUser)
-      } else {
-        getUser().then(user => {
-          if (!user) {
-            reject('please Login again.')
-          }
+      // const storeUser = getStore('user')
+      // if (storeUser && storeUser.id) {
+      //   commit('SET_USER', storeUser)
+      //   resolve(storeUser)
+      // } else {
+      getUser().then(user => {
+        if (!user) {
+          reject('please Login again.')
+        }
 
-          commit('SET_USER', user)
-          setStore('user', user)
-          resolve(user)
-        }).catch(error => {
-          reject(error)
-        })
-      }
+        commit('SET_USER', user)
+        setStore('user', user)
+        resolve(user)
+      }).catch(error => {
+        reject(error)
+      })
+      // }
     })
   },
 
   getSidebarMenus({ commit, state }) {
     return new Promise((resolve, reject) => {
-      const storeMenus = getStore && getStore('menus')
-      if (storeMenus && storeMenus.length) {
-        commit('SET_MENUS', storeMenus)
-        resolve(storeMenus)
-      } else {
-        const query = {
-          resourceCode: 'xinnet-boss-navigation',
-          appCode: 'xinnet-boss'
-        }
-        getSidebarMenus(query).then(menus => {
-          if (!menus || !menus.length) {
-            reject('no menus.')
-          }
-
-          commit('SET_MENUS', menus)
-          setStore('menus', menus)
-          resolve(menus)
-        }).catch(error => {
-          reject(error)
-        })
+      // const storeMenus = getStore && getStore('menus')
+      // if (storeMenus && storeMenus.length) {
+      //   commit('SET_MENUS', storeMenus)
+      //   resolve(storeMenus)
+      // } else {
+      const query = {
+        resourceCode: 'xinnet-boss-navigation',
+        appCode: 'xinnet-boss'
       }
+      getSidebarMenus(query).then(menus => {
+        if (!menus || !menus.length) {
+          reject('no menus.')
+        }
+
+        commit('SET_MENUS', menus)
+        setStore('menus', menus)
+        resolve(menus)
+      }).catch(error => {
+        reject(error)
+      })
+      // }
     })
   },
 

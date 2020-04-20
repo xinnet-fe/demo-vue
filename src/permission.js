@@ -6,13 +6,21 @@ import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/demos/get-page-title'
 import { when } from './utils/request'
-import { xbTokenKey } from '@/settings'
+import { xbTokenKey, hasDevelopment, logoutApi } from '@/settings'
 
 const vm = new Vue()
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+
+function logout(cb) {
+  if (hasDevelopment) {
+    cb()
+  } else {
+    global.location = logoutApi
+  }
+}
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -47,7 +55,7 @@ router.beforeEach(async(to, from, next) => {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
+          logout(next(`/login?redirect=${to.path}`))
           NProgress.done()
         }
       }
@@ -60,7 +68,7 @@ router.beforeEach(async(to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
+      logout(next(`/login?redirect=${to.path}`))
       NProgress.done()
     }
   }
