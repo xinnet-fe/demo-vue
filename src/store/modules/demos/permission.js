@@ -81,12 +81,12 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     }
 
     if (isParent) {
-      route.alwaysShow = true
       route.redirect = 'noRedirect'
       route.meta.icon = icon
     }
 
     if (o.children) {
+      route.alwaysShow = true
       route.children = getAsyncRoutesByMenus(o.children, viewPath)
     }
     routes.push(route)

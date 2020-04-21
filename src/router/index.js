@@ -255,6 +255,18 @@ const demosConstantRoutes = hasDevelopment ? [
         component: () => import('@/views/errorPage/404'),
         name: 'Page404',
         meta: { title: '404', noCache: true, type: 'demo' }
+      },
+      {
+        path: '403',
+        component: () => import('@/views/errorPage/403'),
+        name: 'Page403',
+        meta: { title: '403', noCache: true, type: 'demo' }
+      },
+      {
+        path: '500',
+        component: () => import('@/views/errorPage/500'),
+        name: 'Page500',
+        meta: { title: '500', noCache: true, type: 'demo' }
       }
     ]
   },
