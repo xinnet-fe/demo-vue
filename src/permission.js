@@ -14,14 +14,6 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
-function logout(cb) {
-  if (hasDevelopment) {
-    cb()
-  } else {
-    global.location = logoutApi
-  }
-}
-
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -55,7 +47,11 @@ router.beforeEach(async(to, from, next) => {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
-          logout(next(`/login?redirect=${to.path}`))
+          if (hasDevelopment) {
+            next(`/login?redirect=${to.path}`)
+          } else {
+            global.location = logoutApi
+          }
           NProgress.done()
         }
       }
@@ -68,7 +64,11 @@ router.beforeEach(async(to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      logout(next(`/login?redirect=${to.path}`))
+      if (hasDevelopment) {
+        next(`/login?redirect=${to.path}`)
+      } else {
+        global.location = logoutApi
+      }
       NProgress.done()
     }
   }
