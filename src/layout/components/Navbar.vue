@@ -28,19 +28,23 @@
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <svg-icon icon-class="touxiang" class="user-avatar" />
-          <span class="username">{{ username }}</span>
+          <span class="username">{{ user.roles[0] }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/order/form">
+          <!-- <router-link to="/reset-pwd/index">
             <el-dropdown-item>修改密码</el-dropdown-item>
-          </router-link>
+          </router-link> -->
+          <el-dropdown-item @click.native="resetPwdFormVisible = true">
+            修改密码
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <reset-pwd :visible.sync="resetPwdFormVisible" />
   </div>
 </template>
 
@@ -53,11 +57,13 @@ import { hasDevelopment, logoutApi } from '@/settings'
 // import Screenfull from '@/components/demos/Screenfull'
 // import SizeSelect from '@/components/demos/SizeSelect'
 // import Search from '@/components/demos/HeaderSearch'
+import ResetPwd from '@/views/resetPwd/index'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    ResetPwd
     // ErrorLog,
     // Screenfull,
     // SizeSelect,
@@ -65,14 +71,16 @@ export default {
   },
   data() {
     return {
-      username: '管理员'
+      username: '管理员',
+      resetPwdFormVisible: false
     }
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'user'
     ])
   },
   methods: {
