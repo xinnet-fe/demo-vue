@@ -59,11 +59,15 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
   const routes = []
   forEach(menus, (o, i) => {
     const name = o.code
-    const icon = name
+    const icon = !isNull(o.icon) ? o.icon : o.code
     const isParent = isNull(o.parentCode)
     const isUrl = !isNull(o.url)
-    const path = isUrl ? o.url
-      : (isParent ? `/${name}` : name)
+
+    // url有值是外链，url无值是路由
+    // target：tab项目内t打开，target：blank新开页面
+    // url、target同步返回数据
+    const isTarget = !isNull(o.target) && o.target === 'tab'
+    const path = isUrl ? o.url : isParent ? `/${name}` : name
     const viewPath = isParent ? o.code : `${parentViewPath}/${o.code}`
     const component = isParent ? Layout : lazyLoadView(viewPath)
 
@@ -78,6 +82,13 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     if (!isUrl) {
       route.name = camelCase(name)
       route.component = component
+    }
+
+    // 外链网站内打开
+    if (isUrl && isTarget) {
+      route.path = isParent ? `/${name}` : name
+      route.component = lazyLoadView('staticPage')
+      route.meta.url = o.url
     }
 
     if (isParent) {
@@ -134,6 +145,7 @@ const actions = {
       const routes = getAsyncRoutesByMenus(menus).concat(asyncRoutes)
 
       commit('SET_MAIN_ROUTES', routes)
+      console.log(routes)
       resolve(routes)
     })
   },

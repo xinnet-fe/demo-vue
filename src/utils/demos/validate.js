@@ -2,6 +2,15 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
+// export function isTabExternal(path) {
+//   if (!path) {
+//     return false
+//   }
+//   const _self = path.slice(0, 5) === 'self-'
+//   const _path = path.slice(5)
+//   return _self && /^(https?:|mailto:|tel:)/.test(_path)
+// }
+
 /**
  * @param {string} path
  * @returns {Boolean}

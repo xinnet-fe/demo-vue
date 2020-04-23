@@ -398,7 +398,6 @@ const demosConstantRoutes = hasDevelopment ? [
       }
     ]
   },
-
   {
     path: 'external-link',
     component: Layout,

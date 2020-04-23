@@ -82,6 +82,9 @@ export default {
       return false
     },
     resolvePath(routePath) {
+      // if (isTabExternal(routePath)) {
+      //   return '/static-page/index?url=' + routePath.slice(5)
+      // }
       if (isExternal(routePath)) {
         return routePath
       }
