@@ -86,6 +86,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
 
     // 外链网站内打开
     if (isUrl && isTarget) {
+      route.name = camelCase(name)
       route.path = isParent ? `/${name}` : name
       route.component = lazyLoadView('staticPage')
       route.meta.url = o.url
