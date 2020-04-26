@@ -55,18 +55,22 @@ export function filterMainRoutes(routes) {
 
 const lazyLoadView = viewPath => resolve => require([`@/views/${viewPath}/index.vue`], resolve)
 
+function hasNull(val) {
+  return isNull(val) || val === ''
+}
+
 function getAsyncRoutesByMenus(menus, parentViewPath) {
   const routes = []
   forEach(menus, (o, i) => {
     const name = o.code
-    const icon = !isNull(o.icon) ? o.icon : o.code
-    const isParent = isNull(o.parentCode)
-    const isUrl = !isNull(o.url)
+    const icon = !hasNull(o.icon) ? o.icon : o.code
+    const isParent = hasNull(o.parentCode)
+    const isUrl = !hasNull(o.url)
 
     // url有值是外链，url无值是路由
     // target：tab项目内t打开，target：blank新开页面
     // url、target同步返回数据
-    const isTarget = !isNull(o.target) && o.target === 'tab'
+    const isTarget = !hasNull(o.target) && o.target === 'tab'
     const path = isUrl ? o.url : isParent ? `/${name}` : name
     const viewPath = isParent ? o.code : `${parentViewPath}/${o.code}`
     const component = isParent ? Layout : lazyLoadView(viewPath)
@@ -101,6 +105,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       route.alwaysShow = true
       route.children = getAsyncRoutesByMenus(o.children, viewPath)
     }
+
     routes.push(route)
   })
   return routes
@@ -146,7 +151,6 @@ const actions = {
       const routes = getAsyncRoutesByMenus(menus).concat(asyncRoutes)
 
       commit('SET_MAIN_ROUTES', routes)
-      console.log(routes)
       resolve(routes)
     })
   },
