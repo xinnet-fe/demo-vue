@@ -15,3 +15,11 @@ export function getSidebarMenus(query) {
     params: query
   })
 }
+// 修改密码
+export function changePwd(query) {
+  return request({
+    url: '/employee/changePwd',
+    method: 'post',
+    params: query
+  })
+}

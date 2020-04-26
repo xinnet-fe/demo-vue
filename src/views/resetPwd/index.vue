@@ -2,13 +2,21 @@
   <el-dialog title="修改密码" :before-close="beforeClose" :visible="visible">
     <el-form :model="form">
       <el-form-item label="旧密码" :label-width="formLabelWidth">
-        <el-input v-model="form.oldpassword" type="password" autocomplete="off" />
+        <el-input
+          v-model="form.oldpassword"
+          type="password"
+          autocomplete="off"
+        />
       </el-form-item>
       <el-form-item label="新密码" :label-width="formLabelWidth">
         <el-input v-model="form.password" type="password" autocomplete="off" />
       </el-form-item>
       <el-form-item label="确认新密码" :label-width="formLabelWidth">
-        <el-input v-model="form.confirmPassword" type="password" autocomplete="off" />
+        <el-input
+          v-model="form.confirmPassword"
+          type="password"
+          autocomplete="off"
+        />
       </el-form-item>
       <el-form-item label="短信验证码" :label-width="formLabelWidth">
         <el-input v-model="form.verifcode" autocomplete="off" />
@@ -19,10 +27,11 @@
       <el-button type="primary" @click="handleClose">保 存</el-button>
     </div>
   </el-dialog>
-
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'ResetPwd',
   desc: '重置密码',
@@ -31,22 +40,39 @@ export default {
   },
   data() {
     return {
+      user: {},
       form: {
         name: '',
-        region: ''
+        region: '',
+        oldpassword: '',
+        password: '',
+        confirmPassword: '',
+        verifcode: ''
       },
       formLabelWidth: '120px'
     }
   },
+  computed: {
+    // ...mapGetters(["user"])
+  },
+  created() {},
   methods: {
     handleClose(e) {
+      const obj = {
+        originalPwd: this.form.oldpassword,
+        newPwd: this.form.newPwd,
+        confirmPwd: this.form.confirmPassword,
+        mobileyzm: this.form.verifcode
+      }
       this.$emit('update:visible', false)
+      this.changePwd(obj)
     },
     // 手动关闭
     beforeClose(done) {
       this.handleClose()
       done()
-    }
+    },
+    ...mapActions('userinfo', ['changePwd'])
   }
 }
 </script>
