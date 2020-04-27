@@ -24,13 +24,14 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">取 消</el-button>
-      <el-button type="primary" @click="handleClose">保 存</el-button>
+      <el-button type="primary" @click="sure">保 存</el-button>
+      <!-- <el-button type="primary" @click="handleClose">保 存</el-button> -->
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'ResetPwd',
@@ -41,44 +42,54 @@ export default {
   data() {
     return {
       user: {},
-      form: {
-        name: '',
-        region: '',
-        oldpassword: '',
-        password: '',
-        confirmPassword: '',
-        verifcode: ''
-      },
+      // form: {
+      //   name: '',
+      //   region: '',
+      //   oldpassword: '',
+      //   password: '',
+      //   confirmPassword: '',
+      //   verifcode: ''
+      // },
       formLabelWidth: '120px'
     }
   },
   computed: {
     // ...mapGetters(["user"])
+    ...mapState('userinfo', ['form'])
   },
-  created() {},
+  created() {
+  },
   methods: {
-    handleClose(e) {
+    sure() {
       const obj = {
         originalPwd: this.form.oldpassword,
-        newPwd: this.form.newPwd,
+        newPwd: this.form.password,
         confirmPwd: this.form.confirmPassword,
         mobileyzm: this.form.verifcode
       }
+      this.resetPwd((obj))
+    },
+    handleClose(e) {
       this.$emit('update:visible', false)
-      this.changePwd(obj)
     },
     // 手动关闭
     beforeClose(done) {
       this.handleClose()
       done()
     },
-    ...mapActions('userinfo', ['changePwd'])
+    ...mapActions('userinfo', ['resetPwd'])
   }
 }
 </script>
 
-<style scoped>
+<style>
 .reset-pwd {
   padding: 20px;
+}
+.el-dialog{
+  width: 25%;
+}
+.el-form-item{
+  width: 320px;
 }
 </style>

@@ -16,10 +16,10 @@ export function getSidebarMenus(query) {
   })
 }
 // 修改密码
-export function changePwd(query) {
+export function changePwd(data) {
   return request({
     url: '/employee/changePwd',
     method: 'post',
-    params: query
+    data
   })
 }

@@ -4,7 +4,12 @@ import { setStore, removeStore } from '@/utils/auth'
 const state = {
   user: {},
   menus: [],
-  obj: []
+  form: {
+    oldpassword: '',
+    password: '',
+    confirmPassword: '',
+    verifcode: ''
+  }
 }
 
 const mutations = {
@@ -15,7 +20,10 @@ const mutations = {
     state.menus = menus
   },
   SET_PWD: (state, payload) => {
-    state.obj = payload
+    state.form.oldpassword = payload.originalPwd
+    state.form.password = payload.newPwd
+    state.form.confirmPassword = payload.confirmPwd
+    state.form.verifcode = payload.mobileyzm
   }
 }
 
@@ -76,16 +84,17 @@ const actions = {
   },
 
   // 修改密码
-  changePwd({ commit, state }) {
+  resetPwd({ commit, state }, payload) {
     return new Promise((resolve, reject) => {
-      changePwd().then(payload => {
-        commit('SET_PWD', payload)
-        resolve(payload)
+      changePwd(payload).then(form => {
+        commit('SET_PWD', form)
+        resolve()
       }).catch(error => {
         reject(error)
       })
     })
   }
+
 }
 
 export default {
