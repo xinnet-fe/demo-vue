@@ -5,9 +5,14 @@
 </template>
 
 <script>
-// import replace from 'lodash/replace'
-
 export default {
+  name: 'StaticPage',
+  props: {
+    url: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       width: '100%'
@@ -17,12 +22,6 @@ export default {
     height() {
       const res = global.document.documentElement.clientHeight - 100
       return res + 'px'
-    },
-    url() {
-      return this.$route.meta.url
-      // let res = this.$route.query.url
-      // res = replace(res, ':/', '://')
-      // return res
     }
   },
   created() {

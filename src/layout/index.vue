@@ -7,7 +7,15 @@
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
-      <app-main />
+
+      <app-main v-show="!$route.meta.url" />
+      <static-page
+        v-for="item in iframeRoutes"
+        v-show="showIframe(item)"
+        :key="item.name"
+        :url="item.meta.url"
+      />
+
       <right-panel v-if="showSettings">
         <settings />
       </right-panel>
@@ -16,14 +24,17 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import RightPanel from '@/components/demos/RightPanel'
 import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
+import StaticPage from '@/views/staticPage'
 import ResizeMixin from './mixin/ResizeHandler'
-import { mapState } from 'vuex'
+import { filterIframeRoutes } from '@/store/modules/demos/permission'
 
 export default {
   name: 'Layout',
   components: {
+    StaticPage,
     AppMain,
     Navbar,
     RightPanel,
@@ -33,6 +44,9 @@ export default {
   },
   mixins: [ResizeMixin],
   computed: {
+    ...mapGetters([
+      'main_permission_routes'
+    ]),
     ...mapState({
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
@@ -47,10 +61,15 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
+    },
+    iframeRoutes() {
+      return filterIframeRoutes(this.main_permission_routes)
     }
   },
-  created() {},
   methods: {
+    showIframe(route) {
+      return this.$route.meta && route.meta && this.$route.meta.url === route.meta.url
+    },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     }

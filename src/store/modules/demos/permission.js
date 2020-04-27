@@ -53,6 +53,22 @@ export function filterMainRoutes(routes) {
   }, [])
 }
 
+export function filterIframeRoutes(routes, parentRes) {
+  const res = parentRes || []
+  forEach(routes, route => {
+    if (route.meta && route.meta.url) {
+      res.push(route)
+    }
+    if (route.children) {
+      filterIframeRoutes(route.children, res)
+    }
+  })
+
+  if (!parentRes) {
+    return res
+  }
+}
+
 const lazyLoadView = viewPath => resolve => require([`@/views/${viewPath}/index.vue`], resolve)
 
 function hasNull(val) {
@@ -92,7 +108,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     if (isUrl && isTarget) {
       route.name = camelCase(name)
       route.path = isParent ? `/${name}` : name
-      route.component = lazyLoadView('staticPage')
+      // route.component = lazyLoadView('staticPage')
       route.meta.url = o.url
     }
 
@@ -149,7 +165,7 @@ const actions = {
   generateMainRoutes({ commit }, menus) {
     return new Promise(resolve => {
       const routes = getAsyncRoutesByMenus(menus).concat(asyncRoutes)
-
+      // console.log(routes)
       commit('SET_MAIN_ROUTES', routes)
       resolve(routes)
     })
