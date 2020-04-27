@@ -1,9 +1,15 @@
-import { getUser, getSidebarMenus } from '@/api/userinfo'
+import { getUser, getSidebarMenus, changePwd } from '@/api/userinfo'
 import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
   user: {},
-  menus: []
+  menus: [],
+  form: {
+    oldpassword: '',
+    password: '',
+    confirmPassword: '',
+    verifcode: ''
+  }
 }
 
 const mutations = {
@@ -12,6 +18,12 @@ const mutations = {
   },
   SET_MENUS: (state, menus) => {
     state.menus = menus
+  },
+  SET_PWD: (state, payload) => {
+    state.form.oldpassword = payload.originalPwd
+    state.form.password = payload.newPwd
+    state.form.confirmPassword = payload.confirmPwd
+    state.form.verifcode = payload.mobileyzm
   }
 }
 
@@ -38,7 +50,6 @@ const actions = {
       // }
     })
   },
-
   getSidebarMenus({ commit, state }) {
     return new Promise((resolve, reject) => {
       // const storeMenus = getStore && getStore('menus')
@@ -70,7 +81,20 @@ const actions = {
     commit('SET_MENUS', [])
     removeStore('user')
     removeStore('menus')
+  },
+
+  // 修改密码
+  resetPwd({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      changePwd(payload).then(form => {
+        commit('SET_PWD', form)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
+
 }
 
 export default {
