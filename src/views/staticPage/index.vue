@@ -25,7 +25,6 @@ export default {
     }
   },
   created() {
-    console.log('created')
     window.addEventListener('message', this.receiveMessageFromIframePage, false)
   },
   methods: {
