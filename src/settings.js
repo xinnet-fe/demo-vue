@@ -1,5 +1,5 @@
 module.exports = {
-  title: '新网运营平台管理中心',
+  title: '牧野管理平台',
 
   /**
    * @type {boolean} true | false

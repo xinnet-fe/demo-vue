@@ -63,9 +63,7 @@ export default {
       }
     },
     iframeRoutes() {
-      const f = filterIframeRoutes(this.main_permission_routes)
-      console.log(f)
-      return f
+      return filterIframeRoutes(this.main_permission_routes)
     }
   },
   methods: {

@@ -86,7 +86,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     // url有值是外链，url无值是路由
     // target：tab项目内t打开，target：blank新开页面
     // url、target同步返回数据
-    const isTarget = !hasNull(o.target) && o.target === 'tab'
+    // const isTarget = !hasNull(o.target) && o.target === 'tab'
     const path = isUrl ? o.url : isParent ? `/${name}` : name
     const viewPath = isParent ? o.code : `${parentViewPath}/${o.code}`
     const component = isParent ? Layout : lazyLoadView(viewPath)
@@ -105,12 +105,12 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     }
 
     // 外链网站内打开
-    if (isUrl && isTarget) {
-      route.name = camelCase(name)
-      route.path = isParent ? `/${name}` : name
-      // route.component = lazyLoadView('staticPage')
-      route.meta.url = o.url
-    }
+    // if (isUrl && isTarget) {
+    //   route.name = camelCase(name)
+    //   route.path = isParent ? `/${name}` : name
+    //   // route.component = lazyLoadView('staticPage')
+    //   route.meta.url = o.url
+    // }
 
     if (isParent) {
       route.redirect = 'noRedirect'
