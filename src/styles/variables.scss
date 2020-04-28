@@ -27,8 +27,8 @@ $subMenuActiveText:#f4f4f5; // https://github.com/ElemeFE/element/issues/12951
 $menuBg:#364760;
 $menuHover:#2a394f;
 
-$subMenuBg:#1f2d3d;
-$subMenuHover:#001528;
+$subMenuBg:#374760;
+$subMenuHover:#2a3950;
 
 $tagsViewBg: #6382a9;
 
@@ -44,6 +44,8 @@ $contentText: #666666;
 $auxText: #999999;
 // 超链文字：常规超链接
 $linkText: #0180cd;
+// 二级菜单字体颜色
+$subMenuText:#96b0d5;
 
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
@@ -56,4 +58,5 @@ $linkText: #0180cd;
   subMenuBg: $subMenuBg;
   subMenuHover: $subMenuHover;
   sideBarWidth: $sideBarWidth;
+  subMenuText: $subMenuText;
 }

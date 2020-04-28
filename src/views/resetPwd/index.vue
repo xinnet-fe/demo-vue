@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="修改密码" :before-close="beforeClose" :visible="visible">
+  <el-dialog title="修改密码" :before-close="beforeClose" :visible="visible" width="500px">
     <el-form :model="form">
       <el-form-item label="旧密码" :label-width="formLabelWidth">
         <el-input
@@ -82,7 +82,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .reset-pwd {
   padding: 20px;
 }
@@ -91,5 +91,8 @@ export default {
 }
 .el-form-item{
   width: 320px;
+}
+.el-input {
+  width: 250px;
 }
 </style>
