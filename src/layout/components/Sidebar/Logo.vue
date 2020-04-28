@@ -5,13 +5,15 @@
         <!-- <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 v-else class="sidebar-title">{{ title }} </h1> -->
 
-        <i class="el-icon-menu sidebar-logo" />
+        <!-- <i class="el-icon-menu sidebar-logo" /> -->
+        <svg-icon icon-class="logo" />
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link center" to="/">
         <!-- <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1> -->
 
-        <i class="el-icon-menu sidebar-logo" />
+        <!-- <i class="el-icon-menu sidebar-logo" /> -->
+        <svg-icon icon-class="logo" />
         <h1 class="sidebar-title">{{ title }} </h1>
 
       </router-link>
@@ -30,7 +32,7 @@ export default {
   },
   data() {
     return {
-      title: '业务运营平台',
+      title: '牧野管理平台',
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }
@@ -61,7 +63,11 @@ export default {
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
-
+    .svg-icon{
+      width: 18px!important;
+      height: 18px!important;
+      margin: 0px 0px 0px 18px!important;
+    }
     & .sidebar-logo {
       // width: 32px;
       // height: 32px;
@@ -83,6 +89,9 @@ export default {
   }
 
   &.collapse {
+    .svg-icon{
+      margin: 0px!important;
+    }
     .sidebar-logo {
       margin-right: 0px;
       margin-left: 0px;
