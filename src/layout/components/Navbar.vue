@@ -16,13 +16,13 @@
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip> -->
 
-        <div class="right-menu-item hover-effect">
+        <!-- <div class="right-menu-item hover-effect">
           <el-badge is-dot class="badge-item">
             <router-link to="/">
               <svg-icon icon-class="naoling" />
             </router-link>
           </el-badge>
-        </div>
+        </div> -->
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
