@@ -2,7 +2,7 @@
   <div class="dashboard-container">
     <div class="home">
       <h1>WELCOME</h1>
-      <h3>欢迎进入新网业务运营平台</h3>
+      <h3>欢迎进入牧野管理平台</h3>
       <div class="home-pic">
         <img
           :src="welcome"
