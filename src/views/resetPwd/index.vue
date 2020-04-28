@@ -67,7 +67,7 @@ export default {
         confirmPwd: this.form.confirmPassword,
         mobileyzm: this.form.verifcode
       }
-      this.resetPwd((obj))
+      this.resetPwd(obj)
     },
     handleClose(e) {
       this.$emit('update:visible', false)
