@@ -104,3 +104,10 @@
     line-height: 45px;
   }
 }
+
+#app .sidebar-container .nest-menu .el-submenu > .el-submenu__title.is-active, #app .sidebar-container .el-submenu .el-menu-item.is-active {
+  background-color: #2a3950 !important;
+  > span {
+    color: #ffffff !important;
+  }
+}
