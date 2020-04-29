@@ -86,37 +86,49 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     // url有值是外链，url无值是路由
     // target：tab项目内t打开，target：blank新开页面
     // url、target同步返回数据
-    // const isTarget = !hasNull(o.target) && o.target === 'tab'
-    const path = isUrl ? o.url : isParent ? `/${name}` : name
+    const isTarget = !hasNull(o.target) && o.target === 'tab'
+    const path = isUrl && !isTarget ? o.url : isParent ? `/${name}` : name
     const viewPath = isParent ? o.code : `${parentViewPath}/${o.code}`
-    const component = isParent ? Layout : lazyLoadView(viewPath)
 
     const route = {
       path,
+      name: camelCase(name),
       meta: {
         title: o.text
       }
     }
 
-    // 非外链
-    if (!isUrl) {
-      route.name = camelCase(name)
-      route.component = component
+    // 非外链且无子路由
+    if (!isParent && !isUrl && !o.children) {
+      route.component = lazyLoadView(viewPath)
     }
 
-    // 外链网站内打开
-    // if (isUrl && isTarget) {
-    //   route.name = camelCase(name)
-    //   route.path = isParent ? `/${name}` : name
-    //   // route.component = lazyLoadView('staticPage')
-    //   route.meta.url = o.url
-    // }
+    // 外链网站内打开target=tab;
+    if (isUrl && isTarget) {
+      route.meta.url = o.url
+    }
 
+    // 根路由
     if (isParent) {
       route.redirect = 'noRedirect'
       route.meta.icon = icon
+      route.component = Layout
     }
 
+    // 根路由无子节点
+    if (isParent && !o.children && !isUrl) {
+      const title = route.meta.title
+      route.children = [
+        {
+          path: 'index',
+          name: 'Index',
+          component: lazyLoadView(o.code),
+          meta: { title }
+        }
+      ]
+    }
+
+    // 有子路由
     if (o.children) {
       route.alwaysShow = true
       route.children = getAsyncRoutesByMenus(o.children, viewPath)

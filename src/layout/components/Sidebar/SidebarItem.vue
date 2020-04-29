@@ -91,7 +91,13 @@ export default {
       if (isExternal(this.basePath)) {
         return this.basePath
       }
-      return path.resolve(this.basePath, routePath)
+      let resPath = path.resolve(this.basePath, routePath)
+      // const aResPath = resPath.slice(1).split('/')
+      // const newPath = aResPath.length > 1
+      //   ? [aResPath[0], aResPath[aResPath.length - 1]]
+      //   : [aResPath[0], 'index']
+      // resPath = `/${newPath.join('/')}`
+      return resPath
     }
   }
 }

@@ -14,6 +14,7 @@ const getters = {
   permission_routes: state => state.permission.routes,
   demo_permission_routes: state => state.permission.demoRoutes,
   main_permission_routes: state => state.permission.mainRoutes,
+  main_sidebar: state => state.permission.sidebar,
   errorLogs: state => state.errorLog.logs
 }
 export default getters

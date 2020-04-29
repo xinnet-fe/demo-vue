@@ -37,6 +37,7 @@ export default {
     ...mapGetters([
       'demo_permission_routes',
       'main_permission_routes',
+      'main_sidebar',
       'sidebar'
     ]),
     activeMenuNull() {
