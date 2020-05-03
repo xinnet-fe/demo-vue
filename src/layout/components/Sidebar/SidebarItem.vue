@@ -91,7 +91,7 @@ export default {
       if (isExternal(this.basePath)) {
         return this.basePath
       }
-      let resPath = path.resolve(this.basePath, routePath)
+      const resPath = path.resolve(this.basePath, routePath)
       // const aResPath = resPath.slice(1).split('/')
       // const newPath = aResPath.length > 1
       //   ? [aResPath[0], aResPath[aResPath.length - 1]]
