@@ -233,43 +233,43 @@ const demosConstantRoutes = hasDevelopment ? [
     ]
   },
 
-  {
-    path: '/error',
-    component: Layout,
-    redirect: 'noRedirect',
-    name: 'ErrorPages',
-    meta: {
-      title: 'Error Pages',
-      type: 'demo',
-      icon: '404'
-    },
-    children: [
-      {
-        path: '401',
-        component: () => import('@/views/errorPage/401'),
-        name: 'Page401',
-        meta: { title: '401', noCache: true, type: 'demo' }
-      },
-      {
-        path: '404',
-        component: () => import('@/views/errorPage/404'),
-        name: 'Page404',
-        meta: { title: '404', noCache: true, type: 'demo' }
-      },
-      {
-        path: '403',
-        component: () => import('@/views/errorPage/403'),
-        name: 'Page403',
-        meta: { title: '403', noCache: true, type: 'demo' }
-      },
-      {
-        path: '500',
-        component: () => import('@/views/errorPage/500'),
-        name: 'Page500',
-        meta: { title: '500', noCache: true, type: 'demo' }
-      }
-    ]
-  },
+  // {
+  //   path: '/error',
+  //   component: Layout,
+  //   redirect: 'noRedirect',
+  //   name: 'ErrorPages',
+  //   meta: {
+  //     title: 'Error Pages',
+  //     type: 'demo',
+  //     icon: '404'
+  //   },
+  //   children: [
+  //     {
+  //       path: '401',
+  //       component: () => import('@/views/errorPage/401'),
+  //       name: 'Page401',
+  //       meta: { title: '401', noCache: true, type: 'demo' }
+  //     },
+  //     {
+  //       path: '404',
+  //       component: () => import('@/views/errorPage/404'),
+  //       name: 'Page404',
+  //       meta: { title: '404', noCache: true, type: 'demo' }
+  //     },
+  //     {
+  //       path: '403',
+  //       component: () => import('@/views/errorPage/403'),
+  //       name: 'Page403',
+  //       meta: { title: '403', noCache: true, type: 'demo' }
+  //     },
+  //     {
+  //       path: '500',
+  //       component: () => import('@/views/errorPage/500'),
+  //       name: 'Page500',
+  //       meta: { title: '500', noCache: true, type: 'demo' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/error-log',
@@ -443,18 +443,37 @@ export const constantRoutes = [
   },
   {
     path: '/404',
-    component: () => import('@/views/errorPage/404'),
-    hidden: true
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/errorPage/404')
+      }
+    ]
   },
   {
     path: '/403',
-    component: () => import('@/views/errorPage/403'),
-    hidden: true
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/errorPage/403')
+      }
+    ]
   },
   {
     path: '/500',
-    component: () => import('@/views/errorPage/500'),
-    hidden: true
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/errorPage/500'),
+        hidden: true
+      }
+    ]
   }
 ]
 
