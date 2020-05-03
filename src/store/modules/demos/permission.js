@@ -79,7 +79,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
   const routes = []
   forEach(menus, (o, i) => {
     const name = o.code
-    const icon = !hasNull(o.icon) ? o.icon : o.code
+    const icon = !hasNull(o.icon) ? o.icon : ''
     const isParent = hasNull(o.parentCode)
     const isUrl = !hasNull(o.url)
 

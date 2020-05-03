@@ -86,13 +86,17 @@
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
-      padding-left: 52px!important;
       span {
         color: $subMenuText;
       }
       &:hover {
         background-color: $subMenuHover !important;
       }
+    }
+
+    & .nest-menu .el-submenu>.el-submenu__title > span,
+    & .el-submenu .nest-menu .el-menu-item > span {
+      padding-left: 12px !important;
     }
   }
 
