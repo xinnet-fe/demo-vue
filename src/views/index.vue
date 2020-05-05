@@ -2,7 +2,7 @@
   <div class="dashboard-container">
     <div class="home">
       <h1>WELCOME</h1>
-      <h3>欢迎进入牧野管理平台</h3>
+      <h3>欢迎进入{{ title }}</h3>
       <div class="home-pic">
         <img
           :src="welcome"
@@ -16,10 +16,12 @@
 </template>
 
 <script>
+import { title } from '@/settings'
 export default {
   name: 'Dashboard',
   data() {
     return {
+      title: title,
       welcome: require('@/assets/welcome/welcome.jpg')
     }
   }
