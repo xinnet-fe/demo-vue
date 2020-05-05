@@ -20,8 +20,10 @@
     z-index: 1001;
     overflow: hidden;
 
-    .el-submenu__title {
+    .el-menu .el-submenu__title {
       font-size: 12px;
+      height: 40px;
+      line-height: 40px;
     }
 
     // reset element-ui css
@@ -102,7 +104,7 @@
 
   .hideSidebar {
     .sidebar-container {
-      width: 54px !important;
+      width: 50px !important;
 
       a.center {
         text-align: center;
@@ -110,7 +112,7 @@
     }
 
     .main-container {
-      margin-left: 54px;
+      margin-left: 50px;
     }
 
     .submenu-title-noDropdown {
@@ -121,7 +123,7 @@
         padding: 0 !important;
 
         .svg-icon {
-          margin-left: 20px;
+          margin-left: 18px;
         }
       }
     }
@@ -133,7 +135,7 @@
         padding: 0 !important;
 
         .svg-icon {
-          margin-left: 20px;
+          margin-left: 18px;
         }
 
         .el-submenu__icon-arrow {

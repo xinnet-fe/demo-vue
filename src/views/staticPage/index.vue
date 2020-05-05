@@ -37,6 +37,7 @@ export default {
 
 <style scoped lang="scss">
 .static-page {
-  padding: 5px;
+  padding: 20px 20px 0;
+  background-color: #f3f7fa;
 }
 </style>

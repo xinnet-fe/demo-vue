@@ -38,7 +38,7 @@
           <el-dropdown-item @click.native="resetPwdFormVisible = true">
             修改密码
           </el-dropdown-item>
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>

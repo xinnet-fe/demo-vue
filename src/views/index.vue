@@ -34,13 +34,18 @@ export default {
   .home {
     width: 500px;
     margin: 50px auto;
-     h3{
+    h1 {
+      margin-bottom: 18px;
+      color: #7c9bc0;
+    }
+    h3{
       font-size: 14px;
+      color: #34475e;
     }
     .home-pic{
       width: 400px;
       height: 260px;
-      margin: 90px auto;
+      margin: 40px auto;
       img{
         width: 100%;
         height:auto;

@@ -88,7 +88,8 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     // url、target同步返回数据
     const isTarget = !hasNull(o.target) && o.target === 'tab'
     const path = isUrl && !isTarget ? o.url : isParent ? `/${name}` : name
-    const viewPath = isParent ? o.code : `${parentViewPath}/${o.code}`
+    // const viewPath = isParent ? o.code : `${parentViewPath}/${o.code}`
+    const viewPath = o.code
 
     const route = {
       path,
@@ -101,6 +102,11 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     // 非外链且无子路由
     if (!isParent && !isUrl && !o.children) {
       route.component = lazyLoadView(viewPath)
+    // 设置空组件
+    } else if (!isParent && !isUrl) {
+      route.component = {
+        render: h => h('router-view')
+      }
     }
 
     // 外链网站内打开target=tab;
@@ -121,7 +127,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       route.children = [
         {
           path: 'index',
-          name: 'Index',
+          name: `${o.code}-index`,
           component: lazyLoadView(o.code),
           meta: { title }
         }
