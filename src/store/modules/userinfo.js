@@ -24,6 +24,12 @@ const mutations = {
     state.form.password = payload.newPwd
     state.form.confirmPassword = payload.confirmPwd
     state.form.verifcode = payload.mobileyzm
+  },
+  CLEAR_PWD_FORM(state) {
+    state.form.oldpassword = ''
+    state.form.password = ''
+    state.form.confirmPassword = ''
+    state.form.verifcode = ''
   }
 }
 
@@ -93,8 +99,11 @@ const actions = {
         reject(error)
       })
     })
-  }
+  },
 
+  clearPwdForm({ commit }) {
+    commit('CLEAR_PWD_FORM')
+  }
 }
 
 export default {

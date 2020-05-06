@@ -34,13 +34,13 @@ module.exports = {
   errorLog: 'production',
 
   // 消息框停留时间
-  duration: 5000,
+  duration: 2000,
 
   // 开发环境
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: 'IMEi8bJEyBnw1PTrDpg',
+  xbtoken: 'njxLT4SxpsudUYjl801',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 

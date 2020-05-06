@@ -106,7 +106,10 @@ export default {
       // dynamic load tinymce from cdn
       load(tinymceCDN, (err) => {
         if (err) {
-          this.$message.error(err.message)
+          this.$message({
+            type: 'error',
+            message: err.message
+          })
           return
         }
         this.initTinymce()

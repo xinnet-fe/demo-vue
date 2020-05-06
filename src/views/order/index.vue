@@ -335,7 +335,8 @@ export default {
       if (this.multipleSelection.length) {
         this.destroyOrder()
       } else {
-        this.$message.error({
+        this.$message({
+          type: 'error',
           message: '请选择要删除的选项！'
         })
       }

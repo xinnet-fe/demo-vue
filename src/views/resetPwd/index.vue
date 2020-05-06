@@ -24,14 +24,14 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">取 消</el-button>
-      <el-button type="primary" @click="sure">确 认</el-button>
+      <el-button type="primary" :loading="loading.effects['userinfo/resetPwd']" @click="sure">确 认</el-button>
       <!-- <el-button type="primary" @click="handleClose">保 存</el-button> -->
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'ResetPwd',
@@ -40,21 +40,15 @@ export default {
     visible: Boolean
   },
   data() {
-    const equalsPassword = (rule, value, callback) => {
-      if (value !== this.form.password) {
-        callback(new Error('两次密码不一致'))
-      } else {
-        callback()
-      }
-    }
+    // const equalsPassword = (rule, value, callback) => {
+    //   if (value !== this.form.password) {
+    //     callback(new Error('两次密码不一致'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       user: {},
-      // form: {
-      //   oldpassword: '',
-      //   password: '',
-      //   confirmPassword: '',
-      //   verifcode: ''
-      // },
       formLabelWidth: '120px',
       resetPwdRules: {
         oldpassword: [
@@ -64,8 +58,8 @@ export default {
           { required: true, message: '请输入新密码', trigger: 'blur' }
         ],
         confirmPassword: [
-          { required: true, message: '请确认新密码', trigger: 'blur' },
-          { validator: equalsPassword, message: '两次密码不一致', trigger: 'blur' }
+          { required: true, message: '请确认新密码', trigger: 'blur' }
+          // { validator: equalsPassword, message: '两次密码不一致', trigger: 'blur' }
         ],
         verifcode: [
           { required: true, message: '请输入验证码', trigger: 'blur' }
@@ -74,24 +68,42 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters(["user"])
+    ...mapGetters(['loading']),
     ...mapState('userinfo', ['form'])
   },
-  created() {
-  },
   methods: {
+    ...mapActions('userinfo', ['resetPwd', 'clearPwdForm']),
     sure() {
       this.$refs.resetPwdForm.validate((valid) => {
+        const { oldpassword, password, confirmPassword, verifcode } = this.form
         if (valid) {
-          const obj = {
-            originalPwd: this.form.oldpassword,
-            newPwd: this.form.password,
-            confirmPwd: this.form.confirmPassword,
-            mobileyzm: this.form.verifcode
+          let validator = true
+          if (oldpassword === password) {
+            this.$message.error('新旧密码不能相同')
+            validator = false
           }
-          this.resetPwd(obj).then(() => {
-            this.handleClose()
-          })
+          if (password !== confirmPassword) {
+            setTimeout(() => {
+              this.$message.error('密码不一致')
+            }, 100)
+            validator = false
+          }
+
+          if (validator) {
+            const obj = {
+              originalPwd: oldpassword,
+              newPwd: password,
+              confirmPwd: confirmPassword,
+              mobileyzm: verifcode
+            }
+            this.resetPwd(obj).then(() => {
+              this.$message({
+                type: 'success',
+                message: '密码修改成功'
+              })
+              this.handleClose()
+            })
+          }
         }
       })
     },
@@ -101,9 +113,10 @@ export default {
     // 手动关闭
     beforeClose(done) {
       this.handleClose()
+      this.clearPwdForm()
+      this.$refs.resetPwdForm.clearValidate()
       done()
-    },
-    ...mapActions('userinfo', ['resetPwd'])
+    }
   }
 }
 </script>

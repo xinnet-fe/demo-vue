@@ -12,7 +12,6 @@ import router from './router'
 import './icons' // icon
 import './permission' // permission control
 import './utils/demos/error-log' // error log
-
 import * as filters from './filters/demos' // global filters
 
 /**
@@ -23,10 +22,10 @@ import * as filters from './filters/demos' // global filters
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
-if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
-}
+// if (process.env.NODE_ENV === 'production') {
+//   const { mockXHR } = require('../mock')
+//   mockXHR()
+// }
 
 // register global utility filters
 Object.keys(filters).forEach(key => {

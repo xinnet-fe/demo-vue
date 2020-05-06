@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Cookies from 'js-cookie'
+import assign from 'lodash/assign'
+import isString from 'lodash/isString'
+import { duration } from '@/settings'
 
 import {
   Pagination,
@@ -177,4 +180,26 @@ Vue.prototype.$alert = msgbox.alert
 Vue.prototype.$confirm = msgbox.confirm
 Vue.prototype.$prompt = msgbox.prompt
 Vue.prototype.$notify = ntftn
-Vue.prototype.$message = msg
+Vue.prototype.$_message = msg
+Vue.prototype.$message = function(...props) {
+  const message = assign({ duration }, ...props)
+  new Vue().$_message(message)
+}
+
+const msgTypes = ['success', 'error', 'info', 'warning']
+msgTypes.forEach(type => {
+  Vue.prototype.$message[type] = (...props) => {
+    const prop = props[0]
+    const msg = {
+      type,
+      duration
+    }
+
+    if (isString(prop)) {
+      msg.message = prop
+    } else {
+      assign(msg, prop)
+    }
+    new Vue().$_message(msg)
+  }
+})

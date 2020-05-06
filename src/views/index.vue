@@ -6,8 +6,6 @@
       <div class="home-pic">
         <img
           :src="welcome"
-          width="100%"
-          height="260px"
           alt=""
         >
       </div>
@@ -49,8 +47,8 @@ export default {
       height: 260px;
       margin: 40px auto;
       img{
-        width: 100%;
-        height:auto;
+        width: 436px;
+        height: 328px;
       }
     }
   }
