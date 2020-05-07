@@ -65,9 +65,9 @@ export default {
     height: 100%;
     width: 100%;
     .svg-icon{
-      width: 18px!important;
-      height: 18px!important;
-      margin: 0px 0px 0px 18px!important;
+      width: 26px !important;
+      height: 26px !important;
+      margin: 12px 7px 0px 12px !important;
     }
     & .sidebar-logo {
       // width: 32px;
@@ -85,7 +85,7 @@ export default {
       line-height: 50px;
       font-size: 15px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
-      vertical-align: middle;
+      vertical-align: top;
     }
   }
 
