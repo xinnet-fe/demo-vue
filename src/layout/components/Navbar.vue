@@ -136,7 +136,7 @@ export default {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 15px;
+      padding: 0 30px 0 15px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
@@ -158,7 +158,7 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 20px;
 
       .avatar-wrapper {
         margin-top: 5px;
@@ -184,7 +184,7 @@ export default {
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
-          right: -18px;
+          right: -15px;
           top: 18px;
           font-size: 12px;
         }

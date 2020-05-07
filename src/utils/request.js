@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import delay from 'lodash/delay'
 import app from '@/main'
 import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
@@ -111,8 +112,8 @@ service.interceptors.response.use(
   error => {
     const { status } = error.response
     let message = ''
-    console.error(`error response: ${error.response}`)
-    console.error(`error status: ${status}`)
+    // console.log(error.response)
+    // console.error(`error status: ${status}`)
     // '3XX-4XX': '服务器响应错误'
     if (status >= 300 && status <= 499) {
       message = '服务器响应错误'
@@ -124,9 +125,14 @@ service.interceptors.response.use(
     } else {
       message = error
     }
+    initLoading()
     return errorResult(message)
   }
 )
+
+export function initLoading() {
+  delay(() => store.commit('loading/INIT_LOADING'), 300)
+}
 
 function isUndefined(code) {
   return code !== undefined

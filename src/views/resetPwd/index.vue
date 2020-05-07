@@ -24,7 +24,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">取 消</el-button>
-      <el-button type="primary" :loading="loading.effects['userinfo/resetPwd']" @click="sure">确 认</el-button>
+      <el-button type="primary" :loading="sureLoading" @click="sure">确 认</el-button>
       <!-- <el-button type="primary" @click="handleClose">保 存</el-button> -->
     </div>
   </el-dialog>
@@ -69,7 +69,10 @@ export default {
   },
   computed: {
     ...mapGetters(['loading']),
-    ...mapState('userinfo', ['form'])
+    ...mapState('userinfo', ['form']),
+    sureLoading() {
+      return this.loading.effects['userinfo/resetPwd']
+    }
   },
   methods: {
     ...mapActions('userinfo', ['resetPwd', 'clearPwdForm']),
@@ -113,8 +116,6 @@ export default {
     // 手动关闭
     beforeClose(done) {
       this.handleClose()
-      this.clearPwdForm()
-      this.$refs.resetPwdForm.clearValidate()
       done()
     }
   }

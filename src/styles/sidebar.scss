@@ -70,8 +70,8 @@
       border: none;
       height: 100%;
       width: 100% !important;
-
     }
+
     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {
@@ -99,6 +99,13 @@
     & .nest-menu .el-submenu>.el-submenu__title > span,
     & .el-submenu .nest-menu .el-menu-item > span {
       padding-left: 15px !important;
+    }
+
+    .el-menu-item.is-active, .el-submenu.is-active > .el-submenu__title {
+      background-color: $subMenuHover !important;
+      > span {
+        color: $subMenuActiveText !important;
+      }
     }
   }
 

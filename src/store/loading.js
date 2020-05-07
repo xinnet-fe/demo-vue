@@ -1,3 +1,5 @@
+import forEach from 'lodash/forEach'
+
 // 定义模块名
 const NAMESPACE = 'loading'
 // 显示mutation 同步type
@@ -28,7 +30,6 @@ const createLoadingPlugin = ({
       mutations: {
         [SHOW](state, { payload }) {
           state.global = true
-          // console.log(state.effects)
           state.effects = {
             ...state.effects,
             // 将当前的action 置为true
@@ -36,14 +37,18 @@ const createLoadingPlugin = ({
           }
         },
         [HIDE](state, { payload }) {
-          // setTimeout(() => {
           state.global = false
           state.effects = {
             ...state.effects,
             // 将当前的action 置为false
             [payload]: false
           }
-          // }, 300)
+        },
+        'INIT_LOADING'(state) {
+          state.global = false
+          forEach(state.effects, (value, effect) => {
+            state.effects[effect] = false
+          })
         }
       }
     })
