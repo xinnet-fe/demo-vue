@@ -119,6 +119,9 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       route.redirect = 'noRedirect'
       route.meta.icon = icon
       route.component = Layout
+    // 根路由或非根路由并且有子路由的非站外url
+    } else if ((o.children && !isUrl) || (o.children && isUrl && isTarget)) {
+      route.redirect = 'noRedirect'
     }
 
     // 根路由无子节点
