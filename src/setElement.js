@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Cookies from 'js-cookie'
+import delay from 'lodash/delay'
 import assign from 'lodash/assign'
 import isString from 'lodash/isString'
 import { duration } from '@/settings'
@@ -181,9 +182,11 @@ Vue.prototype.$confirm = msgbox.confirm
 Vue.prototype.$prompt = msgbox.prompt
 Vue.prototype.$notify = ntftn
 Vue.prototype.$_message = msg
+
 Vue.prototype.$message = function(...props) {
-  const message = assign({ duration }, ...props)
-  new Vue().$_message(message)
+  const msg = assign({ duration }, ...props)
+  const $message = new Vue().$_message
+  props[0].delay ? delay(() => $message(msg)) : $message(msg)
 }
 
 const msgTypes = ['success', 'error', 'info', 'warning']
@@ -195,11 +198,14 @@ msgTypes.forEach(type => {
       duration
     }
 
+    // 默认只接收message，多参数使用{}
     if (isString(prop)) {
       msg.message = prop
     } else {
       assign(msg, prop)
     }
-    new Vue().$_message(msg)
+
+    const $message = new Vue().$_message
+    prop.delay ? delay(() => $message(msg)) : $message(msg)
   }
 })

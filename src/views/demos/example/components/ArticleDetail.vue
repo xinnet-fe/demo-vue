@@ -80,7 +80,7 @@ import Tinymce from '@/components/demos/Tinymce'
 import Upload from '@/components/demos/Upload/SingleImage3'
 import MDinput from '@/components/demos/MDinput'
 import Sticky from '@/components/demos/Sticky' // 粘性header组件
-import { validURL } from '@/utils/demos/validate'
+import { validURL } from '@/utils/validate'
 import { fetchArticle } from '@/api/demos/article'
 import { searchUser } from '@/api/demos/remote-search'
 import Warning from './Warning'

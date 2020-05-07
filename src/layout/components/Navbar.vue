@@ -50,13 +50,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/demos/Breadcrumb'
-import Hamburger from '@/components/demos/Hamburger'
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
 import { hasDevelopment, logoutApi } from '@/settings'
-// import ErrorLog from '@/components/demos/ErrorLog'
-// import Screenfull from '@/components/demos/Screenfull'
-// import SizeSelect from '@/components/demos/SizeSelect'
-// import Search from '@/components/demos/HeaderSearch'
 import ResetPwd from '@/views/resetPwd/index'
 
 export default {
@@ -64,10 +60,6 @@ export default {
     Breadcrumb,
     Hamburger,
     ResetPwd
-    // ErrorLog,
-    // Screenfull,
-    // SizeSelect,
-    // Search
   },
   data() {
     return {

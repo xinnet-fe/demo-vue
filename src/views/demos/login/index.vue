@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/demos/validate'
+import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
 
 export default {

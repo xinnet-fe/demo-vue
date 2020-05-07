@@ -1,4 +1,4 @@
-import { validUsername, validURL, validLowerCase, validUpperCase, validAlphabets } from '@/utils/demos/validate.js'
+import { validUsername, validURL, validLowerCase, validUpperCase, validAlphabets } from '@/utils/validate.js'
 describe('Utils:validate', () => {
   it('validUsername', () => {
     expect(validUsername('admin')).toBe(true)

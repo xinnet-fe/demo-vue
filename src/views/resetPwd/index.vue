@@ -83,9 +83,7 @@ export default {
             validator = false
           }
           if (password !== confirmPassword) {
-            setTimeout(() => {
-              this.$message.error('密码不一致')
-            }, 100)
+            this.$message.error({ message: '密码不一致', delay: 100 })
             validator = false
           }
 
@@ -109,6 +107,8 @@ export default {
     },
     handleClose(e) {
       this.$emit('update:visible', false)
+      this.clearPwdForm()
+      this.$refs.resetPwdForm.clearValidate()
     },
     // 手动关闭
     beforeClose(done) {

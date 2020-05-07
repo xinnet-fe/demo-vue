@@ -15,21 +15,16 @@
         :key="item.name"
         :url="item.meta.url"
       />
-
-      <right-panel v-if="showSettings">
-        <settings />
-      </right-panel>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import RightPanel from '@/components/demos/RightPanel'
-import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
+import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import StaticPage from '@/views/staticPage'
 import ResizeMixin from './mixin/ResizeHandler'
-import { filterIframeRoutes } from '@/store/modules/demos/permission'
+import { filterIframeRoutes } from '@/store/modules/permission'
 
 export default {
   name: 'Layout',
@@ -37,8 +32,6 @@ export default {
     StaticPage,
     AppMain,
     Navbar,
-    RightPanel,
-    Settings,
     Sidebar,
     TagsView
   },
