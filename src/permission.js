@@ -78,3 +78,13 @@ router.afterEach(() => {
   // finish progress bar
   NProgress.done()
 })
+
+router.onError(error => {
+  const cannotFindModule = 'Cannot find module'
+  const { message } = error
+
+  if (message && message.indexOf(cannotFindModule) > -1) {
+    router.replace('/404')
+    NProgress.done()
+  }
+})

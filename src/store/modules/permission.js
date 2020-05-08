@@ -4,6 +4,7 @@ import forEach from 'lodash/forEach'
 import reduce from 'lodash/reduce'
 import isNull from 'lodash/isNull'
 import camelCase from 'lodash/camelCase'
+import upperFirst from 'lodash/upperFirst'
 import Layout from '@/layout'
 
 /**
@@ -93,7 +94,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
 
     const route = {
       path,
-      name: camelCase(name),
+      name: upperFirst(camelCase(name)),
       meta: {
         title: o.text
       }
@@ -186,7 +187,6 @@ const actions = {
   generateMainRoutes({ commit }, menus) {
     return new Promise(resolve => {
       const routes = getAsyncRoutesByMenus(menus).concat(asyncRoutes)
-      // console.log(routes)
       commit('SET_MAIN_ROUTES', routes)
       resolve(routes)
     })
