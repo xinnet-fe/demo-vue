@@ -137,6 +137,12 @@ export default {
     closeSelectedTag(view) {
       this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
         if (this.isActive(view)) {
+          const url = view.meta.url
+          if (url.indexOf('?') > -1) {
+            view.meta.url = view.meta.url.slice(0, url.indexOf('?')) + '?' + new Date().getTime()
+          } else {
+            view.meta.url = view.meta.url + '?' + new Date().getTime()
+          }
           this.toLastView(visitedViews, view)
         }
       })

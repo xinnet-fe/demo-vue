@@ -151,3 +151,9 @@
     margin-right: 10px;
   }
 }
+
+.navbar .breadcrumb-container {
+  .el-breadcrumb__item .no-redirect {
+    color: #333333 !important;
+  }
+}
