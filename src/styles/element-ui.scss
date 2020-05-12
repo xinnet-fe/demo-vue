@@ -103,6 +103,12 @@
 
     .svg-icon {
       margin-right: 19px !important;
+
+      & + span {
+        display: inline-block !important;
+        height: 40px !important;
+        line-height: 36px !important;
+      }
     }
   }
 }
