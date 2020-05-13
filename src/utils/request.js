@@ -40,6 +40,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['X-Token'] = getToken()
     }
+    config.headers['X-Requested-With'] = 'XMLHttpRequest'
     return config
   },
   error => {
@@ -78,12 +79,16 @@ service.interceptors.response.use(
     // 925010 访问拒绝
     if (code && code === 925010) {
       app.$router.push(`/401`)
+      initLoading()
       return errorResult('访问拒绝')
     } else if (code && code in errorCode) {
-      return errorResult(errorCode[code])
+      initLoading()
+      return errorResult(res.msg || errorCode[code])
     } else if (code && code > 920001 && code < 924999) {
+      initLoading()
       return errorResult('应用服务定义的自定义异常')
     } else if (code && code > 925000 && code < 929999) {
+      initLoading()
       return errorResult('公共异常')
     }
 
@@ -104,6 +109,7 @@ service.interceptors.response.use(
           })
         })
       }
+      initLoading()
       return Promise.reject(new Error(res.message))
     }
 
