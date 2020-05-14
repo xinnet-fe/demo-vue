@@ -25,13 +25,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .app-main {
   /* 50= navbar  50  */
   min-height: calc(100vh - 50px);
   width: 100%;
   position: relative;
   overflow: hidden;
-  background-color: #f3f7fa;
+  background-color: $appMainBg;
 }
 .app-content {
   min-height: calc(100vh - 50px);

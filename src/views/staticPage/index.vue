@@ -36,8 +36,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/variables.scss';
+
 .static-page {
   padding: 20px 20px 0;
-  background-color: #f3f7fa;
+  background-color: $appMainBg;
 }
 </style>

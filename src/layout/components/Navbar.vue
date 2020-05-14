@@ -178,7 +178,7 @@ export default {
           font-size: 12px;
           height: 40px;
           line-height: 46px;
-          color: $contentText;
+          color: $contentTextColor;
         }
 
         .el-icon-caret-bottom {
