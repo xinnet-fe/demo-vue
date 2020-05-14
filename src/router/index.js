@@ -431,6 +431,18 @@ export const constantRoutes = [
   },
   ...demosConstantRoutes,
   {
+    path: '/data',
+    component: Layout,
+    children: [
+      {
+        path: 'chart',
+        component: () => import('@/views/data-chart/index'),
+        name: 'DataChart',
+        meta: { title: '数据监控', icon: 'home', affix: true }
+      }
+    ]
+  },
+  {
     path: '/redirect',
     component: Layout,
     hidden: true,

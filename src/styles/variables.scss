@@ -35,17 +35,20 @@ $tagsViewBg: #6382a9;
 $sideBarWidth: 210px;
 
 // 重要文字：提示性文字，需要特别注意的内容
-$hintText: #f35b5c;
+$hintTextColor: #f35b5c;
 // 常规文字：普通信息，标题
-$titleText: #333333;
+$titleTextColor: #333333;
 // 次级文字：帮助信息，说明性文字
-$contentText: #666666;
+$contentTextColor: #666666;
 // 辅助文字：页面中的一些辅助性的文字
-$auxText: #999999;
+$auxTextColor: #999999;
 // 超链文字：常规超链接
-$linkText: #0180cd;
+$linkTextColor: #0180cd;
 // 二级菜单字体颜色
 // $subMenuText:#96b0d5;
+
+// appMain背景色
+$appMainBg: #f3f7fa;
 
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
