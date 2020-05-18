@@ -29,20 +29,13 @@ import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
 
 export default {
-  name: 'Chart1',
+  name: 'Chart5',
   mixins: [mixin, resize],
-  props: {
-    chartData: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return {
-      title: '注册转化率趋势分布'
+      title: 'UV趋势分布'
     }
   },
-
   methods: {
     initChart(childData) {
       this.checkList = []
@@ -112,8 +105,7 @@ export default {
           }
         ],
         xAxis: {
-          data: xAxisData,
-          boundaryGap: false
+          data: xAxisData
         },
         yAxis: {},
         grid: {
@@ -124,22 +116,22 @@ export default {
         series: [
           {
             name: legendData[0],
-            type: 'line',
+            type: 'bar',
             data: riseData
           },
           {
             name: legendData[1],
-            type: 'line',
+            type: 'bar',
             data: declineData
           },
           {
             name: legendData[2],
-            type: 'line',
+            type: 'bar',
             data: averageData
           },
           {
             name: legendData[3],
-            type: 'line',
+            type: 'bar',
             data: warningData
           }
         ]

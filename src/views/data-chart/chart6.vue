@@ -15,8 +15,47 @@
         </p>
       </div>
     </custom-chart-head>
-    <el-button v-if="step !== 1" class="fixed-button" size="mini" @click="backView">返 回</el-button>
     <div ref="data-chart" class="data-chart" />
+    <div v-if="step !== 1" class="data-view">
+      <el-table
+        :data="tableData"
+        border
+        class="data-table"
+      >
+        <el-table-column
+          label="日期"
+        >
+          <template v-slot="scope">
+            {{ formatTime(scope.row.date) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="用户数"
+        >
+          <template v-slot="scope">
+            {{ scope.row.num }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="均值"
+        >
+          <template v-slot="scope">
+            {{ scope.row.average.num }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="上涨值"
+        >
+          <template v-slot="scope">
+            {{ scope.row.rise.num }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="chart-bread">
+        <span class="clickable" @click="backView">2020 14</span> /
+        <span>明细</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -29,21 +68,16 @@ import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
 
 export default {
-  name: 'Chart1',
+  name: 'Chart5',
   mixins: [mixin, resize],
-  props: {
-    chartData: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return {
-      title: '注册转化率趋势分布'
+      title: '订单用户数趋势分布',
+      tableData: []
     }
   },
-
   methods: {
+    formatTime: formatTime,
     initChart(childData) {
       this.checkList = []
       const xAxisData = []
@@ -59,6 +93,7 @@ export default {
       const start = dataLen > 7 ? (100 - 7 / dataLen * 100) : 0
       const end = 100
       const data = childData ? this.chartData.slice(0, 2) : this.chartData
+      this.tableData = data
       forEach(data, (o, k) => {
         if (k === 0) {
           legendData.push(
@@ -112,8 +147,7 @@ export default {
           }
         ],
         xAxis: {
-          data: xAxisData,
-          boundaryGap: false
+          data: xAxisData
         },
         yAxis: {},
         grid: {
@@ -124,22 +158,26 @@ export default {
         series: [
           {
             name: legendData[0],
-            type: 'line',
+            type: 'bar',
+            stack: 'one',
             data: riseData
           },
           {
             name: legendData[1],
-            type: 'line',
+            type: 'bar',
+            stack: 'one',
             data: declineData
           },
           {
             name: legendData[2],
-            type: 'line',
+            type: 'bar',
+            stack: 'one',
             data: averageData
           },
           {
             name: legendData[3],
-            type: 'line',
+            type: 'bar',
+            stack: 'one',
             data: warningData
           }
         ]
@@ -150,3 +188,32 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.chart-container {
+
+  .data-view {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    width: 100%;
+    height: calc(100% - 40px);
+
+    > .data-table {
+      width: 94%;
+      margin-left: 3%;
+      margin-top: 30px;
+    }
+  }
+
+  .chart-bread {
+    color: #333;
+    margin: 20px;
+
+    .clickable {
+      cursor: pointer;
+    }
+  }
+}
+</style>

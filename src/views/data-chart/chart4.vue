@@ -29,20 +29,13 @@ import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
 
 export default {
-  name: 'Chart1',
+  name: 'Chart4',
   mixins: [mixin, resize],
-  props: {
-    chartData: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return {
-      title: '注册转化率趋势分布'
+      title: 'GMV趋势分布'
     }
   },
-
   methods: {
     initChart(childData) {
       this.checkList = []
@@ -125,22 +118,26 @@ export default {
           {
             name: legendData[0],
             type: 'line',
+            areaStyle: {},
             data: riseData
           },
           {
             name: legendData[1],
             type: 'line',
+            areaStyle: {},
             data: declineData
           },
           {
             name: legendData[2],
             type: 'line',
+            areaStyle: {},
             data: averageData
           },
           {
             name: legendData[3],
             type: 'line',
-            data: warningData
+            data: warningData,
+            areaStyle: {}
           }
         ]
       }
@@ -150,3 +147,4 @@ export default {
   }
 }
 </script>
+

@@ -1,7 +1,7 @@
 <template>
   <div class="data-monitor">
     <div class="stat">
-      <el-form class="form" ref="searchForm" :model="searchForm" :inline="true">
+      <el-form ref="searchForm" class="form" :model="searchForm" :inline="true">
         <el-form-item label="时间粒度" prop="duration">
           <el-select v-model="searchForm.duration" clearable>
             <el-option v-for="(label, val) in duration" :key="val" :label="label" :value="val" />
@@ -22,7 +22,7 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button>查 询</el-button>
+          <el-button @click="submitForm">查 询</el-button>
         </el-form-item>
       </el-form>
 
@@ -122,24 +122,44 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <div class="grid-content bg-purple">
-            <chart1 />
+            <chart1 :chart-data="chartData" />
           </div>
         </el-col>
-        <el-col :span="12"><div class="grid-content bg-purple-light">2</div></el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <chart2 :chart-data="chartData" />
+          </div>
+        </el-col>
       </el-row>
     </div>
 
     <div class="chart block">
       <el-row :gutter="20">
-        <el-col :span="12"><div class="grid-content bg-purple">3</div></el-col>
-        <el-col :span="12"><div class="grid-content bg-purple-light">4</div></el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <chart3 :chart-data="chartData" />
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <chart4 :chart-data="chartData" />
+          </div>
+        </el-col>
       </el-row>
     </div>
 
     <div class="chart block">
       <el-row :gutter="20">
-        <el-col :span="12"><div class="grid-content bg-purple">5</div></el-col>
-        <el-col :span="12"><div class="grid-content bg-purple-light">6</div></el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <chart5 :chart-data="chartData" />
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <chart6 :chart-data="chartData" />
+          </div>
+        </el-col>
       </el-row>
     </div>
   </div>
@@ -147,12 +167,28 @@
 
 <script>
 import Chart1 from './chart1'
+import Chart2 from './chart2'
+import Chart3 from './chart3'
+import Chart4 from './chart4'
+import Chart5 from './chart5'
+import Chart6 from './chart6'
+import reduce from 'lodash/reduce'
+import isNumber from 'lodash/isNumber'
 
 export default {
   name: 'DataMonitor',
-  components: { Chart1 },
+  components: {
+    Chart1,
+    Chart2,
+    Chart3,
+    Chart4,
+    Chart5,
+    Chart6
+  },
   data() {
     return {
+      chartData: [],
+      oneDay: 3600 * 1000 * 24,
       searchForm: {
         duration: '',
         range: ''
@@ -168,18 +204,18 @@ export default {
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
-          onClick(picker) {
+          onClick: (picker) => {
             const end = new Date()
             const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 6)
+            start.setTime(start.getTime() - this.oneDay * 6)
             picker.$emit('pick', [start, end])
           }
         }, {
           text: '最近一个月',
-          onClick(picker) {
+          onClick: (picker) => {
             const end = new Date()
             const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 29)
+            start.setTime(start.getTime() - this.oneDay * 29)
             picker.$emit('pick', [start, end])
           }
         }],
@@ -210,6 +246,7 @@ export default {
   computed: {
   },
   mounted() {
+    this.getData()
   },
   beforeDestroy() {
   },
@@ -225,6 +262,75 @@ export default {
         this.pickerMinDate = ''
         this.pickerMaxDate = ''
       }
+    },
+    submitForm() {
+      this.getData()
+    },
+    getData() {
+      const { range } = this.searchForm
+      const selectAll = true
+      let days
+      if (range.length) {
+        days = (range[1].getTime() - range[0].getTime())
+      }
+      const _days = parseInt(days) / parseInt(this.oneDay)
+      this.generateChartData(_days, selectAll).then(data => {
+        this.chartData = data
+      })
+    },
+    generateChartData(_days = 7, selectAll) {
+      const days = isNumber(_days) && !isNaN(_days) ? _days : 7
+      // 每天生成一条数据
+      return new Promise((resolve) => {
+        const arr = new Array(days)
+        const data = reduce(arr, (res, v, k) => {
+          const rise = (Math.random() * 100).toFixed(2)
+          const decline = (Math.random() * 100).toFixed(2)
+          const average = (Math.random() * 100).toFixed(2)
+          const warning = (Math.random() * 100).toFixed(2)
+          const date = new Date().getTime() - this.oneDay * (days - k)
+          const selected = selectAll
+          res[k] = {
+            // 上升
+            rise: {
+              name: '上涨值',
+              value: 0,
+              data: rise,
+              selected,
+              num: parseInt(Math.random() * 100)
+            },
+            // 下降
+            decline: {
+              name: '均值',
+              value: 1,
+              selected: true,
+              data: decline,
+              num: parseInt(Math.random() * 100)
+            },
+            // 平均
+            average: {
+              name: '转化率',
+              value: 2,
+              selected,
+              data: average,
+              num: parseInt(Math.random() * 100)
+            },
+            // 警告
+            warning: {
+              name: '警告值',
+              value: 3,
+              selected,
+              data: warning,
+              num: parseInt(Math.random() * 100)
+            },
+            // 日期
+            date,
+            num: parseInt(Math.random() * 100)
+          }
+          return res
+        }, [])
+        resolve(data)
+      })
     }
   }
 }

@@ -29,20 +29,13 @@ import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
 
 export default {
-  name: 'Chart1',
+  name: 'Chart2',
   mixins: [mixin, resize],
-  props: {
-    chartData: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return {
-      title: '注册转化率趋势分布'
+      title: '客户价趋势分布'
     }
   },
-
   methods: {
     initChart(childData) {
       this.checkList = []
