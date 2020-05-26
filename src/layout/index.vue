@@ -1,11 +1,11 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
-    <div :class="{hasTagsView:needTagsView}" class="main-container">
+    <sidebar v-if="showLayout" class="sidebar-container" />
+    <div :class="{hasTagsView:needTagsView}" class="main-container" :style="[!showLayout ? leftSidebar : '']">
       <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
-        <tags-view v-if="needTagsView" />
+        <navbar v-if="showLayout" />
+        <tags-view v-if="showLayout && needTagsView" />
       </div>
 
       <app-main v-show="!$route.meta.url" />
@@ -25,6 +25,7 @@ import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import StaticPage from '@/views/staticPage'
 import ResizeMixin from './mixin/ResizeHandler'
 import { filterIframeRoutes } from '@/store/modules/permission'
+import { showLayout } from '@/settings'
 
 export default {
   name: 'Layout',
@@ -36,6 +37,12 @@ export default {
     TagsView
   },
   mixins: [ResizeMixin],
+  data() {
+    return {
+      showLayout,
+      leftSidebar: { marginLeft: 0 }
+    }
+  },
   computed: {
     ...mapGetters([
       'main_permission_routes'

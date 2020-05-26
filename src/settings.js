@@ -36,11 +36,14 @@ module.exports = {
   // 消息框停留时间
   duration: 2000,
 
+  // 是否显示layout
+  showLayout: true,
+
   // 开发环境
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: 'YQ771qyEbzspstcKatS',
+  xbtoken: 'tn9lFRs2dJe33ELFfGW',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 
