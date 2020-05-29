@@ -12,9 +12,11 @@
 
 <script>
 import { showLayout } from '@/settings'
+import ShowLayoutMixin from '../mixin/ShowLayout'
 
 export default {
   name: 'AppMain',
+  mixins: [ShowLayoutMixin],
   data() {
     return {
       showLayout,

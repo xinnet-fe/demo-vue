@@ -24,6 +24,7 @@ import { mapState, mapGetters } from 'vuex'
 import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import StaticPage from '@/views/staticPage'
 import ResizeMixin from './mixin/ResizeHandler'
+import ShowLayoutMixin from './mixin/ShowLayout'
 import { filterIframeRoutes } from '@/store/modules/permission'
 import { showLayout } from '@/settings'
 
@@ -36,7 +37,7 @@ export default {
     Sidebar,
     TagsView
   },
-  mixins: [ResizeMixin],
+  mixins: [ResizeMixin, ShowLayoutMixin],
   data() {
     return {
       showLayout,
