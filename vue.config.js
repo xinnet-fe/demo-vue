@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const webpack = require('webpack')
 const defaultSettings = require('./src/settings.js')
 
 function resolve(dir) {
@@ -39,6 +40,11 @@ module.exports = {
       '/portal': {
         target: 'http://119.10.116.247:8082',
         changeOrigin: true
+      },
+      '/linkurl': {
+        target: 'http://localhost:3003',
+        pathRewrite: { '^/linkurl': '' },
+        changeOrigin: true
       }
     },
     before: require('./mock/mock-server.js')
@@ -51,7 +57,12 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    plugins: [
+      new webpack.ProvidePlugin({
+        $: 'jquery'
+      })
+    ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
