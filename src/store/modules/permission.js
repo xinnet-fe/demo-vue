@@ -22,6 +22,7 @@ function hasPermission(roles, route) {
 
 /**
  * Filter asynchronous routing tables by recursion
+ * 用当前用户权限过滤出可访问的路由
  * @param routes asyncRoutes
  * @param roles
  */
@@ -76,6 +77,7 @@ function hasNull(val) {
   return isNull(val) || val === ''
 }
 
+// 使用接口返回菜单（当前用户可访问）生成路由
 function getAsyncRoutesByMenus(menus, parentViewPath) {
   const routes = []
   forEach(menus, (o, i) => {
@@ -179,7 +181,7 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
-      const accessedRoutes = []
+      const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

@@ -7,6 +7,7 @@ import demoArticle from './demos/article'
 import demoSearch from './demos/remote-search'
 
 import order from './order'
+import agentManage from './agentManage'
 
 const mocks = [
   ...demoUser,
@@ -14,7 +15,8 @@ const mocks = [
   ...demoArticle,
   ...demoSearch,
 
-  ...order
+  ...order,
+  ...agentManage
 ]
 
 // for front mock

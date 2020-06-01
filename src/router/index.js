@@ -13,6 +13,7 @@ import chartsRouter from './demos/charts'
 import tableRouter from './demos/table'
 import nestedRouter from './demos/nested'
 import orderRouter from './modules/order'
+import agentManageRouter from './modules/agentManage'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -478,6 +479,7 @@ export const constantRoutes = [
 ]
 
 export const asyncRoutes = [
+  agentManageRouter,
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
