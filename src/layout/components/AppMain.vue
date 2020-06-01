@@ -1,6 +1,6 @@
 <template>
   <section class="app-main">
-    <section class="app-content">
+    <section class="app-content" :style="[showLayout ? appMainMargin : '']">
       <transition name="fade-transform" mode="out-in">
         <keep-alive :include="cachedViews">
           <router-view :key="key" />
@@ -11,8 +11,18 @@
 </template>
 
 <script>
+import { showLayout } from '@/settings'
+import ShowLayoutMixin from '../mixin/ShowLayout'
+
 export default {
   name: 'AppMain',
+  mixins: [ShowLayoutMixin],
+  data() {
+    return {
+      showLayout,
+      appMainMargin: { margin: '20px 20px 0' }
+    }
+  },
   computed: {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
@@ -39,7 +49,11 @@ export default {
   min-height: calc(100vh - 50px);
   position: relative;
   overflow: hidden;
+<<<<<<< HEAD
   margin: 20px 20px;
+=======
+  // margin: 20px 20px 0;
+>>>>>>> master
   background-color: #ffffff;
 }
 
