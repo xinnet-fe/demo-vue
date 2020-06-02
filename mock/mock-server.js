@@ -65,6 +65,7 @@ module.exports = app => {
     ignored: /mock-server/,
     ignoreInitial: true
   }).on('all', (event, path) => {
+    console.log('mock！！！！！！！！！！')
     if (event === 'change' || event === 'add') {
       try {
         // remove mock routes stack

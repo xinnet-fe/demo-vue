@@ -34,7 +34,7 @@
       border
       tooltip-effect="dark"
       style="width: 100%"
-      :data="list"
+      :data="applyList"
     >
       <el-table-column
         prop="agentCode"
@@ -96,7 +96,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'AgentManageApply',
@@ -121,6 +121,9 @@ export default {
       ],
       list: []
     }
+  },
+  computed: {
+    ...mapState('agentManage', ['applyList', 'applyPage'])
   },
   methods: {
     ...mapActions('agentManage', ['getApplyList']),

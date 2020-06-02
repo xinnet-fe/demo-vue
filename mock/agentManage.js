@@ -1,11 +1,11 @@
 import Mock from 'mockjs'
 
-Mock.Random.extend({
-  phone() {
-    var phonePrefixs = ['132', '135', '189']
-    return this.pick(phonePrefixs) + Mock.mock(/\d{8}/)
-  }
-})
+// Mock.Random.extend({
+//   phone() {
+//     var phonePrefixs = ['132', '135', '189']
+//     return this.pick(phonePrefixs) + Mock.mock(/\d{8}/)
+//   }
+// })
 
 const applyList = []
 const count = 100
@@ -13,8 +13,8 @@ const count = 100
 for (let i = 0; i < count; i++) {
   applyList.push(Mock.mock({
     agentCode: '@increment',
-    phone: '@phone',
-    domain: '@domain',
+    phone: '13766668888',
+    email: '@email',
     contacts: '@cname',
     province: '@province',
     city: '@city',
@@ -28,40 +28,33 @@ export default [
     url: '/agentManage/applyList',
     type: 'get',
     response: config => {
-      const { name, state, page = 1, limit = 10 } = config.query
-
-      // 筛选条件
-      const mockList = applyList.filter(item => {
-        if (name && item.name !== name) return false
-        if (state && item.state.value !== state) return false
-        return true
-      })
+      const { page = 1, limit = 10 } = config.query
+      const mockList = applyList
 
       // 筛选分页
       const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
 
       const total = mockList.length
       const pageCount = Math.ceil(total / limit)
-      const hasFirst = page === 1
-      const hasLast = page === total
+      const hasPrev = page === 1
+      const hasNext = page === pageCount
+      console.log(222)
 
       return {
         code: 20000,
-        data: {
-          data: pageList,
-          page: {
-            // 总条数
-            total,
-            // 总页数
-            pageCount,
-            // 当前页
-            page: parseInt(page, 10),
-            // 每页显示数
-            limit: parseInt(limit, 10),
-            // 是否有上一页,下一页
-            hasFirst: !hasFirst,
-            hasLast: !hasLast
-          }
+        data: pageList,
+        page: {
+          // 总条数
+          total,
+          // 总页数
+          pageCount,
+          // 当前页
+          page: parseInt(page, 10),
+          // 每页显示数
+          limit: parseInt(limit, 10),
+          // 是否有上一页,下一页
+          hasPrev: !hasPrev,
+          hasNext: !hasNext
         }
       }
     }

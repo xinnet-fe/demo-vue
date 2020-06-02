@@ -11,7 +11,7 @@ const state = {
 
 const mutations = {
   GET_APPLY_LIST: (state, res) => {
-    const { data, page } = res.data
+    const { data, page } = res
     state.applyList = data
     state.applyPage = page
   }

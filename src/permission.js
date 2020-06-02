@@ -14,7 +14,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 const customPermission = ['admin']
-
+let hasLogin = false
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -31,12 +31,13 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       // const hasMenus = store.getters.menus && store.getters.menus.length > 0
-      const hasUser = store.getters.user && store.getters.user.id
-      if (hasUser) {
+      // const hasUser = store.getters.user && store.getters.user.id
+      if (hasLogin) {
         next()
       } else {
         try {
-          await store.dispatch('userinfo/getUser')
+          // await store.dispatch('userinfo/getUser')
+          hasLogin = true
           const accessRoutes = await store.dispatch('permission/generateRoutes', customPermission)
 
           // const [menus] = await when(
