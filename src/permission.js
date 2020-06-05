@@ -49,6 +49,7 @@ router.beforeEach(async(to, from, next) => {
           router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
         } catch (error) {
+          hasLogin = false
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
@@ -70,6 +71,7 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // other pages that do not have permission to access are redirected to the login page.
       if (hasDevelopment) {
+        hasLogin = false
         next(`/login?redirect=${to.path}`)
       } else {
         global.location = logoutApi

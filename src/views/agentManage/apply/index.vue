@@ -7,6 +7,9 @@
           <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
+      <el-form-item prop="keywords">
+        <el-input v-model="form.keywords" placeholder="请输入关键词" />
+      </el-form-item>
       <el-form-item label="申请时间" prop="date">
         <el-date-picker
           v-model="form.date"
@@ -22,91 +25,36 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSearch">查 询</el-button>
+        <el-button :loading="loading" type="primary" @click="onSearch">查 询</el-button>
         <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
       </el-form-item>
     </el-form>
     <!-- search -->
 
-    <!-- table -->
-    <el-table
-      ref="table"
-      border
-      tooltip-effect="dark"
-      style="width: 100%"
-      :data="applyList"
-    >
-      <el-table-column
-        prop="agentCode"
-        label="代理编号"
-      />
-      <el-table-column
-        prop="phone"
-        label="手机号"
-        width="120"
-      />
-      <el-table-column
-        prop="email"
-        label="邮箱"
-      />
-      <el-table-column
-        prop="contacts"
-        label="联系人"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="province"
-        label="省份"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="city"
-        label="城市"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="applyTime"
-        label="申请时间"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="state"
-        label="状态"
-        show-overflow-tooltip
-      />
-      <el-table-column label="操作" fixed="right">
-        <template v-slot="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            @click="showModal(scope.row)"
-          >
-            开通
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- <pagination
-      :total="page.total"
-      :page.sync="page.page"
-      :limit.sync="page.limit"
-      @pagination="getList"
-    /> -->
-    <!-- table -->
+    <apply-table :visible.sync="formVisible" :row.sync="row" />
+    <dialog-apply-form :visible.sync="formVisible" :row.sync="row" />
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+import assign from 'lodash/assign'
+import ApplyTable from './table'
+import DialogApplyForm from './form'
 
 export default {
   name: 'AgentManageApply',
   components: {
+    ApplyTable,
+    DialogApplyForm
   },
   data() {
     return {
+      formVisible: false,
+      row: {},
       form: {
         memberId: '',
         date: '',
+        keywords: '',
         state: 0
       },
       memberType: [
@@ -118,19 +66,26 @@ export default {
       stateType: [
         { label: '未开通', value: 0 },
         { label: '已开通', value: 1 }
-      ],
-      list: []
+      ]
     }
   },
   computed: {
-    ...mapState('agentManage', ['applyList', 'applyPage'])
+    ...mapState({
+      loading: state => state.loading.effects['agentManage/getApplyList']
+    })
   },
   methods: {
     ...mapActions('agentManage', ['getApplyList']),
-    onSearch(formName) {
-      this.getApplyList(this.form)
+    onSearch(page) {
+      const query = {
+        ...this.form
+      }
+      if (page) {
+        assign(query, page)
+      }
+      this.getApplyList(query)
     },
-    resetForm(formName) {
+    resetForm() {
       const { form } = this.$refs
       form.resetFields()
       form.clearValidate('form')

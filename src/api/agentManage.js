@@ -7,3 +7,11 @@ export function applyList(query) {
     params: query
   })
 }
+
+export function infoList(query) {
+  return request({
+    url: '/agentManage/infoList',
+    method: 'get',
+    params: query
+  })
+}
