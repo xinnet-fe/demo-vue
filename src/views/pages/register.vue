@@ -5,26 +5,31 @@
       <div class="step1" v-show="step === 1">
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px">
           <h3>立即申请加盟新网代理</h3>
-          <el-form-item label="联系人" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+          <el-form-item label="联系人" prop="name" ref="name">
+            <el-input v-model="ruleForm.name" @blur="handleBlur"></el-input>
           </el-form-item>
-          <el-form-item label="登录密码" prop="password">
-            <el-input v-model="ruleForm.password"></el-input>
+          <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
+            <el-form-item label="登录密码" prop="password" ref="password">
+              <el-input v-model="ruleForm.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlur"></el-input>
+              <span class="show-pwd" @click="showPwd">
+                <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+              </span>
+            </el-form-item>
+          </el-tooltip>
+          <el-form-item label="确认密码" prop="repassword" ref="repassword">
+            <el-input :type="passwordType" v-model="ruleForm.repassword" @blur="handleBlur"></el-input>
           </el-form-item>
-          <el-form-item label="确认密码" prop="repassword">
-            <el-input v-model="ruleForm.repassword"></el-input>
+          <el-form-item label="手机号码" prop="phone" ref="phone">
+            <el-input v-model="ruleForm.phone" @blur="handleBlur"></el-input>
           </el-form-item>
-          <el-form-item label="手机号码" prop="phone">
-            <el-input v-model="ruleForm.phone"></el-input>
+          <el-form-item label="电子邮箱" prop="email" ref="email">
+            <el-input v-model="ruleForm.email" @blur="handleBlur"></el-input>
           </el-form-item>
-          <el-form-item label="电子邮箱" prop="email">
-            <el-input v-model="ruleForm.email"></el-input>
+          <el-form-item label="所属省份/城市" prop="area" ref="area">
+              <el-cascader :options="ruleForm.options" v-model="ruleForm.area" expand-trigger="hover" @change="handleBlur"></el-cascader>
           </el-form-item>
-          <el-form-item label="所属省份/城市" prop="area">
-              <el-cascader :options="ruleForm.options" v-model="ruleForm.area" expand-trigger="hover"></el-cascader>
-          </el-form-item>
-          <el-form-item label="详细地址" prop="desc">
-            <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+          <el-form-item label="详细地址" prop="desc" ref="desc">
+            <el-input type="textarea" v-model="ruleForm.desc" maxlength="100" @blur="handleBlur"></el-input>
           </el-form-item>
           <el-form-item label="" v-if="showVerifyBar">
             <Vcode :show="isShow" @success="handleSuccess" @close="close" />
@@ -32,12 +37,12 @@
           </el-form-item>
         </el-form>
         <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="120px">
-          <el-form-item label="手机验证码" prop="vcode" v-show="showVcode">
+          <el-form-item label="手机验证码" prop="vcode"  ref="vcode" v-show="showVcode">
             <el-input v-model="ruleForm2.vcode" maxlength="4" class="inputVcode" @blur="handleBlur"></el-input>
             <el-button class="getVcode" @click="getVerificationCode" v-show="!success">获取验证码</el-button>
             <span class="tips" v-show="success">重新发送({{downTime}})</span>
           </el-form-item>
-          <el-form-item label="" prop="checked">
+          <el-form-item label="" prop="checked" ref="checked">
             <el-checkbox v-model="ruleForm2.checked" @change="handleChange">我已阅读并同意</el-checkbox>
             <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
             <a href="/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
@@ -64,7 +69,10 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
+// import { getCoreProvice } from '@/api/agent/area'
+// import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
+// import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 import citysList from '@/utils/crm_citys.js'
 import isNumber from '@/utils/isNumber'
 import isPassword from '@/utils/isPassword'
@@ -104,7 +112,7 @@ export default {
       },
       ruleForm2: {
         vcode: "",
-        checked: []
+        checked: true
       },
       rules: {
         name: [
@@ -130,16 +138,12 @@ export default {
         area: [
           { type: 'array', required: true, message: '请选择区域', trigger: 'change' }
         ],
-        desc: [
-          { required: true, message: '请输入详细地址', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
-        ],
         vcode: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
           { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' }
         ],
         checked: [
-          { type: 'array', required: true, message: '请勾选', trigger: 'change' }
+          { type: 'boolean', required: true, message: '请勾选', trigger: 'change' }
         ]
       },
       step: 1,
@@ -148,25 +152,29 @@ export default {
       showVerifyBar: true,
       showVcode: false,
       btnDisabled: true,
-      barSize: {width: '378px', height: '40px'},
       valid: false,
       valid2: false,
       btnLoading: false,
-      isShow: false
+      isShow: false,
+      passwordType: 'password',
+      capsTooltip: false,
+      formItems: ['name', 'password', 'repassword', 'phone', 'email', 'area'],
+      formItems2: ['vcode', 'checked']
     };
   },
-  mounted () {
+  mounted () {    
+    this.$refs.checked.validateState = 'success'
     this.ruleForm.options = citysList.CITYS_LIST
     // console.log(this.getCoreProvice)
-    this.getCoreProvice({}).then((response) => {
+    getCoreProvice({}).then((response) => {
       this.options = response.data
     })
 
   },
   methods: {
-    ...mapActions('users', ['registDl']),
-    ...mapActions('area', ['getCoreProvice']),
-    ...mapActions('smsCaptcha', ['sendCaptchaWithMobile']),
+    // ...mapActions('users', ['registDl']),
+    // ...mapActions('area', ['getCoreProvice']),
+    // ...mapActions('smsCaptcha', ['sendCaptchaWithMobile']),
     close () {
       this.isShow = false
     },
@@ -229,19 +237,26 @@ export default {
     //     console.log(value);
     // },
     handleSuccess (obj) {
-      if (this.checkForm()) {
-        this.showVcode = true
-        this.showVerifyBar = false
-        this.getVerificationCode()
-      } else {
-        obj.refresh()
-      }
+      this.isShow = false
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          this.showVcode = true
+          this.showVerifyBar = false
+          this.getVerificationCode()
+        } else {
+        }
+      })
     },
     handleBlur () {
-      if (this.checkForm2() && this.checkForm()) {
-        this.btnDisabled = false
-      } else {
-        this.btnDisabled = true
+      if (this.showVcode) {
+        setTimeout(() => {
+          console.log(this.checkForm() + "-----" + this.checkForm2())
+          if (this.checkForm() && this.checkForm2()) {
+            this.btnDisabled = false
+          } else {
+            this.btnDisabled = true
+          }
+        }, 10)
       }
     },
     handleChange (v) {
@@ -256,28 +271,51 @@ export default {
       }
     },
     checkForm () {
-      this.$refs.ruleForm.validate((valid) => {
-        this.valid = valid
-      })
-      return this.valid
+      let flag = true
+      for (let index = 0; index < this.formItems.length; index++) {
+        console.log(this.$refs[this.formItems[index]].validateState)
+        if (this.$refs[this.formItems[index]].validateState !== 'success') {
+          flag = false
+          break
+        }
+      }
+      return flag
     },
     checkForm2 () {
-      this.$refs.ruleForm2.validate((valid) => {
-        this.valid2 = valid
-      })
-      return this.valid2
+      let flag = true
+      for (let index = 0; index < this.formItems2.length; index++) {
+        if (this.$refs[this.formItems2[index]].validateState !== 'success') {
+          flag = false
+          break
+        }
+      }
+      return flag
+    },
+    checkCapslock(e) {
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    showPwd() {
+      this.passwordType = this.passwordType === 'password' ? '' : 'password'
+      // this.$nextTick(() => {
+      //   this.$refs.password.focus()
+      // })
     },
     onSubmit() {
       this.btnLoading = true
       if (this.checkForm2() && this.checkForm()) {
         let params = this.ruleForm;
         console.log(params)
-        this.registDl(params).then((response) => {
+        registDl(params).then((response) => {
           this.step = 2
         })
       } else {
         this.btnLoading = false
         this.btnDisabled = true
+        this.$refs.ruleForm.validate((valid) => {
+        })
+        this.$refs.ruleForm2.validate((valid) => {
+        })
       }
     }
   }
@@ -308,6 +346,15 @@ body{
   background: #fff;
   border-radius: 5px;
   padding: 20px 50px;
+}
+.main-body .show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
 }
 .main-body .step1 h3{
   text-align: center;

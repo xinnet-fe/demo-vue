@@ -7,10 +7,3 @@ export function getCoreProvice(query) {
     params: query
   })
 }
-export function registDl(query) {
-  return request({
-    url: '/agent/user/registDl',
-    method: 'POST',
-    params: query
-  })
-}

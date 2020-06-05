@@ -7,9 +7,14 @@
         <el-form-item ref="agentCode" label="" prop="agentCode">
           <el-input v-model="ruleForm.agentCode" placeholder="请输入代理商编号" @blur="handleBlur"></el-input>
         </el-form-item>
-        <el-form-item ref="password" label="" prop="password" >
-          <el-input v-model="ruleForm.password" placeholder="请输入登录密码" @blur="handleBlur"></el-input>
-        </el-form-item>
+        <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
+          <el-form-item ref="password" label="" prop="password">
+            <el-input v-model="ruleForm.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlur" placeholder="请输入登录密码"></el-input>
+            <span class="show-pwd" @click="showPwd">
+              <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            </span>
+          </el-form-item>
+        </el-tooltip>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" :disabled="btnDisabled" :loading="btnLoading">确定</el-button>
         </el-form-item>
@@ -29,10 +34,12 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
 import isPassword from '@/utils/isPassword'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
+// import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
+// import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 export default {
     components: {
       agentFooter,
@@ -55,19 +62,28 @@ export default {
         ]
       },
       step: 1,
-      btnDisabled: false,
+      btnDisabled: true,
       btnLoading: false,
-      formItems: ['agentCode', 'password']
+      formItems: ['agentCode', 'password'],
+      passwordType: 'password',
+      capsTooltip: false
     };
   },
   beforeMount () {
   },
   methods: {
-    ...mapActions('users', ['inviteCustomerRegistered']),
+    // ...mapActions('users', ['inviteCustomerRegistered']),
+    checkCapslock(e) {
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    showPwd() {
+      this.passwordType = this.passwordType === 'password' ? '' : 'password'
+      // this.$nextTick(() => {
+      //   this.$refs.password.focus()
+      // })
+    },
     handleBlur (v) {
-      // console.log("this.$refs.password.validateState")
-      // console.log(this.$refs.password.validateState)
-      // console.log(this.$refs.ruleForm)
       setTimeout(() => {
         if (this.checkForm()) {
           this.btnDisabled = false
@@ -90,8 +106,17 @@ export default {
       this.btnLoading = true
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          this.inviteCustomerRegistered({}).then((response) => {
-            this.step = 2
+          let params = {
+            agentCode: this.ruleForm.agentCode,
+            password: this.ruleForm.password,
+            userName: 'userName'
+          }
+          inviteCustomerRegistered(params).then((response) => {
+            if (response.data.code === '0000') {
+              this.step = 2
+            } else {
+              this.$message.error(response.data.msg)
+            }
           })
         } else {
           this.btnLoading = false
@@ -123,6 +148,15 @@ body{
   background: #fff;
   border-radius: 5px;
   padding: 20px 80px;
+}
+.main-body .show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
 }
 .main-body .el-button{
   width: 100%;

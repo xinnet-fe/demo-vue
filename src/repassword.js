@@ -1,25 +1,26 @@
 /*
  * @Author: your name
  * @Date: 2020-06-02 09:30:09
- * @LastEditTime: 2020-06-04 09:33:28
+ * @LastEditTime: 2020-06-05 09:10:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\repassword.js
  */ 
 import Vue from 'vue'
-
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import './setElement'
 import '@/styles/index.scss' // global css
 
 import App from './App'
-import router from './router/repassword'
-import store from './store'
+import createRouter from './router/repassword'
+// import createStore from './store/agent/repassword'
 
 import './icons' // icon
 import * as filters from './filters' // global filters
-
+// Vue.use(Vuex)
+// const store = createStore()
+const router = createRouter()
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -41,7 +42,7 @@ Vue.config.productionTip = false
 const app = new Vue({
   el: '#app',
   router,
-  store,
+  // store,
   render: h => h(App)
 })
 

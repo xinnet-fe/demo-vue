@@ -5,17 +5,15 @@
       <div class="step1" v-show="step === 1">
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px">
           <h3>代理商重置密码</h3>
-          <el-form-item label="" prop="code" ref="code">
-            <el-input v-model="ruleForm.code" placeholder="请输入代理商编号" @blur="handleBlur"></el-input>
+          <el-form-item label="" prop="agentCode" ref="agentCode">
+            <el-input v-model="ruleForm.agentCode" placeholder="请输入代理商编号" @blur="handleBlur"></el-input>
           </el-form-item>
           <el-form-item label="" prop="phone" ref="phone">
             <el-input v-model="ruleForm.phone" placeholder="请输入您的手机号" @blur="handleBlur"></el-input>
           </el-form-item>
           <el-form-item label="" v-if="showVerifyBar">
             <Vcode :show="isShow" @success="handleSuccess" @close="close" />
-            <!-- <el-button type="primary" @click="handleShowVcode">验证</el-button> -->
             <span class="btnShowVcode"  @click="handleShowVcode">点击开始验证</span>
-            <!-- <Verify class="verifyBar" mode="pop" :type="5" :imgUrl="imgUrl" :imgName="imgName" :imgSize="imgSize" @success="handleSuccess" :showButton="false" :barSize="barSize"></Verify> -->
           </el-form-item>
         </el-form>
         <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px">
@@ -33,9 +31,15 @@
       <div class="step2" v-show="step === 2">
         <el-form ref="ruleForm3" :model="ruleForm3" :rules="rules" label-width="0px">
           <h3>设置新密码</h3>
-          <el-form-item label="" prop="password" ref="password">
-            <el-input v-model="ruleForm3.password" placeholder="请输入新密码" @blur="handleBlurPw"></el-input>
-          </el-form-item>
+          <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
+            <el-form-item ref="password" label="" prop="password">
+              <el-input v-model="ruleForm3.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlurPw" placeholder="请输入新密码"></el-input>
+              <span class="show-pwd" @click="showPwd">
+                <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+              </span>
+            </el-form-item>
+          </el-tooltip>
+
           <el-form-item label="" prop="repassword" ref="repassword">
             <el-input v-model="ruleForm3.repassword" placeholder="请再次输入新密码" @blur="handleBlurPw"></el-input>
           </el-form-item>
@@ -60,7 +64,9 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
+// import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
+// import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 import Vcode from "vue-puzzle-vcode"
 import isNumber from '@/utils/isNumber'
 import isPassword from '@/utils/isPassword'
@@ -85,7 +91,7 @@ export default {
     };
     return {
       ruleForm: {
-        code: '',
+        agentCode: '',
         phone: ""
       },
       ruleForm2: {
@@ -96,7 +102,7 @@ export default {
         repassword: ""
       },
       rules: {
-        code: [
+        agentCode: [
           { required: true, message: '请输入代理商编号', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
@@ -117,7 +123,7 @@ export default {
           { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' }
         ]
       },
-      step: 2,
+      step: 1,
       success: false,
       downTime: 60,
       showVerifyBar: true,
@@ -129,19 +135,35 @@ export default {
       valid3: false,
       btnLoadingNext: false,
       btnLoadingUpdate: false,
-      imgUrl: '/static/img/',
-      imgName: ['bg-01.jpg', 'bg-02.jpg'],
-      barSize: {width: '338px', height: '40px'},
-      imgSize: {width: '338px', height: '150px'},
+      // imgUrl: '/static/img/',
+      // imgName: ['bg-01.jpg', 'bg-02.jpg'],
+      // barSize: {width: '338px', height: '40px'},
+      // imgSize: {width: '338px', height: '150px'},
       isShow: false,
-      formItems: ['code', 'phone'],
+      formItems: ['agentCode', 'phone'],
       formItems2: ['vcode'],
-      formItems3: ['password', 'repassword']
-    };
+      formItems3: ['password', 'repassword'],
+      s_vid: '',
+      captcha: '',
+      redisKey: '',
+      captchCode: '',
+      passwordType: 'password',
+      capsTooltip: false
+    }
   },
   methods: {
-    ...mapActions('users', ['selectAgentByParam', 'nextStep', 'updateAgentPwd']),
-    ...mapActions('smsCaptcha', ['sendCaptchaWithMobile']),
+    // ...mapActions('users', ['genelCaptcha', 'selectAgentByParam', 'nextStep', 'updateAgentPwd']),
+    // ...mapActions('smsCaptcha', ['sendCaptchaWithMobile']),
+    checkCapslock(e) {
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    showPwd() {
+      this.passwordType = this.passwordType === 'password' ? '' : 'password'
+      // this.$nextTick(() => {
+      //   this.$refs.password.focus()
+      // })
+    },
     close () {
       this.isShow = false
     },
@@ -164,6 +186,21 @@ export default {
       this.success = true
       this.countDown()
       if (result) {
+        // 获取滑块生成的验证码
+        genelCaptcha({}).then((response) => {
+          this.redisKey = response.data.redisKey
+          this.captcha = response.data.code
+          let params = {
+            mobileNum: this.ruleForm.phone,
+            bustype: 'INVITED_REGISTER',
+            captcha: this.captcha,
+            key: this.redisKey
+          }
+          // 发送短信验证码
+          sendCaptchaWithMobile(params).then((response) => {
+            this.step = 2
+          })
+        })
         // 验证手机号
         // this.$store.dispatch('CHECK_USER_PHONE', {'userMobile': this.$refs.userMobile.value}).then(response => {
         //   if (response) {
@@ -252,10 +289,6 @@ export default {
         }
       }
       return flag
-      // this.$refs.ruleForm2.validate((valid) => {
-      //   this.valid2 = valid
-      // })
-      // return this.valid2
     },
     checkForm3 () {
       let flag = true
@@ -284,8 +317,8 @@ export default {
     onNext () {
       this.btnLoadingNext = true
       if (this.checkForm2() && this.checkForm()) {
-        this.selectAgentByParam({}).then((response) => {
-          this.nextStep({}).then((response) => {
+        selectAgentByParam({}).then((response) => {
+          nextStep({}).then((response) => {
             this.step = 2
           })
         })
@@ -298,8 +331,16 @@ export default {
       this.btnLoadingUpdate = true
       this.$refs.ruleForm3.validate((valid) => {
         if (valid) {
-          this.updateAgentPwd({}).then((response) => {
-            this.step = 3
+          let params = {
+            agentCode: this.ruleForm.agentCode,
+            password: this.ruleForm3.password
+          }
+          updateAgentPwd(params).then((response) => {
+            if (response.data.code === '0000') {
+              this.step = 3
+            } else {
+              this.$message.error(response.data.msg)
+            }
           })
         } else {
           this.btnLoadingUpdate = false
@@ -325,6 +366,15 @@ body{
   font-size: 26px;
   font-weight: normal;
   text-align: center;
+}
+.main-body .show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
 }
 .main-body .step1{
   width: 500px;

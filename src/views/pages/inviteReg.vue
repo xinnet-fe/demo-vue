@@ -8,14 +8,32 @@
           <el-form-item label="" prop="email" ref="email">
             <el-input v-model="ruleForm.email" placeholder="请输入邮箱地址"  @blur="handleBlur"></el-input>
           </el-form-item>
-          <el-form-item label="" prop="password" ref="password">
-            <el-input v-model="ruleForm.password" placeholder="请输入登录密码"  @blur="handleBlur"></el-input>
-          </el-form-item>
+
+          <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
+            <el-form-item ref="password" label="" prop="password">
+              <el-input v-model="ruleForm.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlur" placeholder="请输入登录密码"></el-input>
+              <span class="show-pwd" @click="showPwd">
+                <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+              </span>
+            </el-form-item>
+          </el-tooltip>
+
           <el-form-item label="" prop="mobileNum" ref="mobileNum">
             <el-input v-model="ruleForm.mobileNum" placeholder="请输入您的手机号"  @blur="handleBlur"></el-input>
           </el-form-item>
+          <el-form-item label="" v-if="showVerifyBar">
+            <Vcode :show="isShow" @success="handleSuccess" @close="close" />
+            <span class="btnShowVcode"  @click="handleShowVcode">点击开始验证</span>
+          </el-form-item>
+        </el-form>
+        <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px">
+          <el-form-item label="" prop="vcode" v-show="showVcode" ref="vcode">
+            <el-input v-model="ruleForm2.vcode" maxlength="4" class="inputVcode" @blur="handleBlur"></el-input>
+            <el-button class="getVcode" @click="getVerificationCode" v-show="!success">获取验证码</el-button>
+            <span class="tips" v-show="success">重新发送({{downTime}})</span>
+          </el-form-item>
           <el-form-item label="" prop="checked" ref="checked">
-            <el-checkbox v-model="ruleForm.checked" @change="handleChange">我已阅读并同意</el-checkbox>
+            <el-checkbox v-model="ruleForm2.checked" @change="handleChange">我已阅读并同意</el-checkbox>
             <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
             <a href="/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
           </el-form-item>
@@ -40,25 +58,32 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import Vcode from "vue-puzzle-vcode"
 import isNumber from '@/utils/isNumber'
 import isPassword from '@/utils/isPassword'
 import isPhone from '@/utils/isPhone'
 import isEmail from '@/utils/isEmail'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
+// import { mapActions } from 'vuex'
+// import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
+// import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 export default {
     components: {
       agentFooter,
-      agentHeader
+      agentHeader,
+      Vcode
     },
   data() {
     return {
       ruleForm: {
         email: '',
         password: "",
-        mobileNum: "",
-        checked: []
+        mobileNum: ""
+      },
+      ruleForm2: {
+        vcode: '',
+        checked: true
       },
       rules: {
         email: [
@@ -73,50 +98,151 @@ export default {
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: isPhone, trigger: 'blur' }
         ],
+        vcode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' }
+        ],
         checked: [
-          { type: 'array', required: true, message: '请勾选', trigger: 'change' }
+          { type: 'boolean', required: true, message: '请勾选', trigger: 'change' }
         ]
       },
       step: 1,
       success: false,
       downTime: 60,
       showVcode: false,
+      showVerifyBar: true,
       btnDisabled: true,
-      barSize: {width: '338px', height: '40px'},
       valid: false,
       valid2: false,
       btnLoading: false,
-      formItems: ['email', 'password', 'mobileNum', 'checked']
-    };
+      isShow: false,
+      formItems: ['email', 'password', 'mobileNum'],
+      formItems2: ['vcode', 'checked'],
+      passwordType: 'password',
+      capsTooltip: false
+    }
   },
   methods: {
-    ...mapActions('users', ['validPhoneOrMail', 'inviteCustomerRegister']),
-    handleBlur (v) {
-      setTimeout(() => {
-        if (this.checkForm()) {
-          this.btnDisabled = false
+    // ...mapActions('users', ['validPhoneOrMail', 'inviteCustomerRegister']),
+    checkCapslock(e) {
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    showPwd() {
+      this.passwordType = this.passwordType === 'password' ? '' : 'password'
+      // this.$nextTick(() => {
+      //   this.$refs.password.focus()
+      // })
+    },
+    close () {
+      this.isShow = false
+    },
+    handleShowVcode () {
+      this.isShow = true
+    },
+    handleSuccess (obj) {
+      this.isShow = false
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          this.showVcode = true
+          this.showVerifyBar = false
+          this.getVerificationCode()
         } else {
-          this.btnDisabled = true
+
         }
-      }, 10)
+      })
+    },
+    handleBlur (v) {
+      if (this.showVcode) {
+        setTimeout(() => {
+          if (this.checkForm() && this.checkForm2()) {
+            this.btnDisabled = false
+          } else {
+            this.btnDisabled = true
+          }
+        }, 10)
+      }
     },
     handleChange (v) {
-      // console.log(v)
-      // console.log(this.checkForm())
-      setTimeout(()=>{
-        if (this.checkForm()) {
-          this.btnDisabled = false
-        } else {
-          this.btnDisabled = true
-          // this.ruleForm.checked = []
-          // setTimeout(()=>{
-          // // this.$refs.readme.validateMessage = 'error'
-          // // this.$refs.readme.validateState = 'error'
-          //   this.$refs.checked.clearValidate()
-          // }, 10)
+      if (v) {
+        setTimeout(() => {
+          // console.log(this.checkForm2()+"-----"+this.checkForm())
+          if (this.checkForm2() && this.checkForm()) {
+            this.btnDisabled = false
+          } else {
+            this.btnDisabled = true
+          }
+        }, 10)
+      } else {
+        this.btnDisabled = true
+      }
+    },
+    getVerificationCode () {
+      let result = true
+      this.success = true
+      this.countDown()
+      if (result) {
+        // 获取滑块生成的验证码
+        genelCaptcha({}).then((response) => {
+          this.redisKey = response.data.redisKey
+          this.captcha = response.data.code
+          let params = {
+            mobileNum: this.ruleForm.phone,
+            bustype: 'INVITED_REGISTER',
+            captcha: this.captcha,
+            key: this.redisKey
+          }
+          // 发送短信验证码
+          sendCaptchaWithMobile(params).then((response) => {
+            this.step = 2
+          })
+        })
+        // 验证手机号
+        // this.$store.dispatch('CHECK_USER_PHONE', {'userMobile': this.$refs.userMobile.value}).then(response => {
+        //   if (response) {
+        //     if (response.data.code === '1000') {
+        //       this.$store.dispatch('ACTIVATION_CODE', {userMobile: this.$refs.userMobile.value}).then(response => {
+        //         this.loadingBtn = false
+        //         if (response) {
+        //           if (response.data.code === '1000') {
+        //             this.$Message.success('发送成功')
+        //             this.success = true
+        //             this.countDown()
+        //           } else {
+        //             if (response.data.code === '300') {
+        //               this.$Message.error('短信验证码已发送')
+        //             } else if (response.data.code === '500') {
+        //               this.$Message.error('手机号码错误')
+        //             } else {
+        //               this.$Message.error('发送失败')
+        //             }
+        //           }
+        //         }
+        //       }).catch(() => {})
+        //     } else {
+        //       this.loadingBtn = false
+        //       if (response.data.code === '100') {
+        //         this.$refs.userMobile.showValidateResult({text: '号码已存在'})
+        //       } else {
+        //         this.$Message.error('发送失败')
+        //       }
+        //     }
+        //   }
+        // }).catch(() => {})
+      } else {
+        // this.loadingBtn = false
+      }
+    },
+    countDown () {
+      let clock = window.setInterval(() => {
+        this.downTime--
+        // 当倒计时小于0时清除定时器
+        if (this.downTime < 0) {
+          window.clearInterval(clock)
+          this.success = false
+          this.downTime = 60
         }
-      }, 10)
-
+      }, 1000)
     },
     checkForm () {
       let flag = true
@@ -129,31 +255,37 @@ export default {
       }
       return flag
     },
+    checkForm2 () {
+      let flag = true
+      for (let index = 0; index < this.formItems2.length; index++) {
+        if (this.$refs[this.formItems2[index]].validateState !== 'success') {
+          flag = false
+          break
+        }
+      }
+      return flag
+    },
     onSubmit() {
       this.btnLoading = true
-      this.$refs.ruleForm.validate((valid) => {
-        if (valid) {
-          this.validPhoneOrMail({}).then((response) => {
-            this.inviteCustomerRegister({}).then((response) => {
-              this.step = 2
-            })
+      if (this.checkForm2() && this.checkForm()) {
+        validPhoneOrMail({}).then((response) => {
+          inviteCustomerRegister({}).then((response) => {
+            this.step = 2
           })
-        } else {
-          this.btnLoading = false
-          this.btnDisabled = true
-          this.ruleForm.checked = []
-          setTimeout(()=>{
-          // this.$refs.readme.validateMessage = 'error'
-          // this.$refs.readme.validateState = 'error'
-            this.$refs.checked.clearValidate()
-          }, 10)
-        }
-      })
-
+        })
+      } else {
+        this.btnLoading = false
+        this.btnDisabled = true
+        this.ruleForm.checked = false
+        this.$refs.ruleForm.validate((valid) => {
+        })
+        this.$refs.ruleForm2.validate((valid) => {
+        })
+      }
     }
   },
   mounted () {
-
+    this.$refs.checked.validateState = 'success'
   }
 };
 </script>
@@ -172,6 +304,15 @@ body{
   text-align: center;
   font-size: 26px;
   font-weight: normal;
+}
+.main-body .show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
 }
 .main-body .step1{
   width: 500px;
@@ -198,6 +339,28 @@ body{
 }
 .main-body .step1 a{
   color: #2495ca;
+}
+.main-body .btnShowVcode{
+  cursor: pointer;
+  -webkit-appearance: none;
+  background-color: #fff;
+  background-image: none;
+  border-radius: 4px;
+  border: 1px solid #DCDFE6;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #606266;
+  display: inline-block;
+  font-size: inherit;
+  height: 38px;
+  line-height: 38px;
+  outline: none;
+  padding: 0 15px;
+  -webkit-transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  width: 100%;
+  font-size: 14px;
+  text-align: center;
 }
 .main-body .step2{
   width: 500px;
