@@ -52,31 +52,54 @@
     <!-- search -->
 
     <div class="mult-operation">
-      <el-button type="warning" size="mini" @click="onSearch">业务归属</el-button>
-      <el-button type="warning" size="mini" @click="resetForm">财务归属</el-button>
-      <el-button type="warning" size="mini" @click="resetForm">修改级别</el-button>
+      <el-button type="warning" size="mini" @click="showModal('businessModalVisible')">业务归属</el-button>
+      <el-button type="warning" size="mini" @click="showModal('financeModalVisible')">财务归属</el-button>
+      <el-button type="warning" size="mini" @click="showModal('levelModalVisible')">修改级别</el-button>
     </div>
 
-    <info-table :visible.sync="formVisible" :row.sync="row" />
-    <dialog-info-detail :visible.sync="formVisible" :row.sync="row" />
+    <info-table
+      :visible.sync="detailModalVisible"
+      :account-visible.sync="accountModalVisible"
+      :row.sync="row"
+      :multiple-selection.sync="multipleSelection"
+    />
+    <dialog-detail :visible.sync="detailModalVisible" :row.sync="row" />
+    <dialog-business-form :visible.sync="businessModalVisible" :selected="multipleSelection" />
+    <dialog-finance-form :visible.sync="financeModalVisible" :selected="multipleSelection" />
+    <dialog-level-form :visible.sync="levelModalVisible" :selected="multipleSelection" />
+    <dialog-account-form :visible.sync="accountModalVisible" :row.sync="row" />
   </div>
 </template>
 <script>
 import { mapActions } from 'vuex'
 import assign from 'lodash/assign'
 import InfoTable from './table'
-import DialogInfoDetail from './detail'
+import DialogDetail from './detail'
+import DialogBusinessForm from './businessForm'
+import DialogFinanceForm from './financeForm'
+import DialogLevelForm from './levelForm'
+import DialogAccountForm from './accountForm'
 
 export default {
   name: 'AgentManageInfo',
   components: {
     InfoTable,
-    DialogInfoDetail
+    DialogDetail,
+    DialogBusinessForm,
+    DialogFinanceForm,
+    DialogLevelForm,
+    DialogAccountForm
   },
   data() {
     return {
-      formVisible: false,
+      detailModalVisible: false,
+      businessModalVisible: false,
+      financeModalVisible: false,
+      levelModalVisible: false,
+      accountModalVisible: false,
       row: {},
+      // table中复选框选中值
+      multipleSelection: [],
       searchForm: {
         memberId: '',
         keywords: '',
@@ -100,6 +123,10 @@ export default {
       companyOptions: [
         { label: '第一份公司', value: 'one' },
         { label: '第二分公司', value: 'two' }
+      ],
+      marketOptions: [
+        { label: '复兴', value: 'fuxing' },
+        { label: '王伟', value: 'wangwei' }
       ],
       businessOptions: [
         { label: '业务1', value: 'one' },
@@ -130,6 +157,15 @@ export default {
       const { searchForm } = this.$refs
       searchForm.resetFields()
       searchForm.clearValidate('searchForm')
+    },
+    showModal(modalVisible) {
+      const selected = this.multipleSelection
+      if (selected.length) {
+        // console.log(selected)
+        this[modalVisible] = true
+      } else {
+        this.$message.warning('请选择代理商！')
+      }
     }
   }
 }

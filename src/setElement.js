@@ -84,7 +84,8 @@ import {
   Message,
   Notification,
   Scrollbar,
-  InfiniteScroll
+  InfiniteScroll,
+  Popconfirm
 } from 'element-ui'
 import './styles/element-variables.scss'
 
@@ -97,6 +98,12 @@ const options = {
   // set element-ui default size
   size: Cookies.get('size') || 'medium'
 }
+
+const pluginComponents = require.context('./plugin', false, /\.js$/)
+pluginComponents.keys().forEach(filename => {
+  const comp = pluginComponents(filename).default
+  Vue.use(comp, options)
+})
 
 Vue.use(Pagination, options)
 Vue.use(Dialog, options)
@@ -135,6 +142,7 @@ Vue.use(Form, options)
 Vue.use(FormItem, options)
 Vue.use(Tabs, options)
 Vue.use(TabPane, options)
+// Vue.use(ElTabPaneExt, options)
 Vue.use(Tag, options)
 Vue.use(Tree, options)
 Vue.use(Alert, options)
@@ -174,6 +182,7 @@ Vue.use(CascaderPanel, options)
 Vue.use(loadingDirective, options)
 Vue.use(Scrollbar, options)
 Vue.use(InfiniteScroll, options)
+Vue.use(Popconfirm, options)
 
 Vue.prototype.$loading = loadingService
 Vue.prototype.$messageBox = msgbox

@@ -31,7 +31,9 @@ for (let i = 0; i < count; i++) {
     'finance|1': ['beijing', 'shanghai'],
     'level|1': ['putong', 'baijin'],
     sale: '@cname',
-    'state|1': [0, 1]
+    'state|1': [0, 1],
+    phone: '@phone',
+    email: '@email'
   }))
 }
 

@@ -58,15 +58,20 @@
       />
       <el-table-column label="操作" fixed="right" width="180">
         <template v-slot="scope">
-          <el-link type="primary" @click="showModal(scope.row)">
+          <el-link type="primary" @click="showDetailModal(scope.row)">
             详情
           </el-link>
-          <el-link type="primary" @click="showModal(scope.row)">
+          <el-link type="primary" @click="showAccountModal(scope.row)">
             修改账号
           </el-link>
-          <el-link v-if="scope.row.state === 1" type="primary" @click="showModal(scope.row)">
-            终止
-          </el-link>
+          <el-popconfirm
+            v-if="scope.row.state === 1"
+            title="确定终止吗？"
+            @onConfirm="stop"
+          >
+            <el-link slot="reference" type="primary">终止</el-link>
+          </el-popconfirm>
+
         </template>
       </el-table-column>
     </el-table>
@@ -85,14 +90,12 @@ import find from 'lodash/find'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'AgentManageInfoTable',
+  name: 'InfoTable',
   components: {
     Pagination
   },
   data() {
-    return {
-      multipleSelection: []
-    }
+    return {}
   },
   computed: {
     ...mapState('agentManage', ['infoList', 'infoPage']),
@@ -104,17 +107,25 @@ export default {
     getList(page) {
       this.$parent.onSearch(page)
     },
-    showModal(row) {
+    showDetailModal(row) {
       this.$emit('update:visible', true)
       this.$emit('update:row', row)
     },
+    showAccountModal(row) {
+      this.$emit('update:accountVisible', true)
+      this.$emit('update:row', row)
+    },
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      console.log(val)
+      this.$emit('update:multipleSelection', val)
     },
     convertIdToName(row, item) {
       const options = this.$parent[`${item}Options`]
       const option = find(options, { value: row[item] })
       return option.label
+    },
+    stop() {
+      this.$message.success('操作成功！')
     }
   }
 }
