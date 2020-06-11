@@ -24,7 +24,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: '',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
@@ -36,17 +36,14 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    proxy: {
-      '/portal': {
-        target: 'http://10.12.35.105',
-        changeOrigin: true
-      },
-      '/linkurl': {
-        target: 'http://10.12.35.105',
-        // pathRewrite: { '^/linkurl': '' },
-        changeOrigin: true
-      }
-    },
+    // proxy: {
+    //   '/api': {
+    //     target: 'https://console.xinnet.com',
+    //     changeOrigin: true,
+    //     pathRewrite: { '^/api': '' },
+    //   }
+    // },
+    disableHostCheck: true,
     before: require('./mock/mock-server.js')
   },
   configureWebpack: {
@@ -74,7 +71,7 @@ module.exports = {
       filename: 'index.html',
       // 当使用 title 选项时，
       // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-      chunks: ['chunk-vendors', 'chunk-common', 'index']
+      chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'index']
     },
     register: {
       // page 的入口
@@ -85,7 +82,7 @@ module.exports = {
       filename: 'register.html',
       // 当使用 title 选项时，
       // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-      chunks: ['chunk-vendors', 'chunk-common', 'register']
+      chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'register']
     },
     repassword: {
       // page 的入口
@@ -96,7 +93,7 @@ module.exports = {
       filename: 'repassword.html',
       // 当使用 title 选项时，
       // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-      chunks: ['chunk-vendors', 'chunk-common', 'repassword']
+      chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'repassword']
     },
     inviteReg: {
       // page 的入口
@@ -107,7 +104,7 @@ module.exports = {
       filename: 'inviteReg.html',
       // 当使用 title 选项时，
       // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-      chunks: ['chunk-vendors', 'chunk-common', 'inviteReg']
+      chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'inviteReg']
     },
     invite: {
       // page 的入口
@@ -118,13 +115,18 @@ module.exports = {
       filename: 'invite.html',
       // 当使用 title 选项时，
       // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-      chunks: ['chunk-vendors', 'chunk-common', 'invite']
+      chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'invite']
     }
   },
   chainWebpack(config) {
-    config.plugins.delete('preload') // TODO: need test
-    config.plugins.delete('prefetch') // TODO: need test
-
+    // config.plugins.delete('preload-register') // TODO: need test
+    // config.plugins.delete('prefetch-register') // TODO: need test
+    // config.plugins.delete('preload-invite') // TODO: need test
+    // config.plugins.delete('prefetch-invite') // TODO: need test
+    // config.plugins.delete('preload-inviteReg') // TODO: need test
+    // config.plugins.delete('prefetch-inviteReg') // TODO: need test
+    // config.plugins.delete('preload-repassword') // TODO: need test
+    // config.plugins.delete('prefetch-repassword') // TODO: need test
     // set svg-sprite-loader
     config.module
       .rule('svg')
@@ -159,43 +161,43 @@ module.exports = {
         config => config.devtool('cheap-source-map')
       )
 
-    // config
-    //   .when(process.env.NODE_ENV !== 'development',
-    //     config => {
-    //       config
-    //         .plugin('ScriptExtHtmlWebpackPlugin')
-    //         .after('html')
-    //         .use('script-ext-html-webpack-plugin', [{
-    //         // `runtime` must same as runtimeChunk name. default is `runtime`
-    //           inline: /runtime\..*\.js$/
-    //         }])
-    //         .end()
-    //       config
-    //         .optimization.splitChunks({
-    //           chunks: 'all',
-    //           cacheGroups: {
-    //             libs: {
-    //               name: 'chunk-libs',
-    //               test: /[\\/]node_modules[\\/]/,
-    //               priority: 10,
-    //               chunks: 'initial' // only package third parties that are initially dependent
-    //             },
-    //             elementUI: {
-    //               name: 'chunk-elementUI', // split elementUI into a single package
-    //               priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-    //               test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-    //             },
-    //             commons: {
-    //               name: 'chunk-commons',
-    //               test: resolve('src/components'), // can customize your rules
-    //               minChunks: 3, //  minimum common number
-    //               priority: 5,
-    //               reuseExistingChunk: true
-    //             }
-    //           }
-    //         })
-    //       config.optimization.runtimeChunk('single')
-    //     }
-    //   )
+    config
+      .when(process.env.NODE_ENV !== 'development',
+        config => {
+          // config
+          //   .plugin('ScriptExtHtmlWebpackPlugin')
+          //   .after('html')
+          //   .use('script-ext-html-webpack-plugin', [{
+          //   // `runtime` must same as runtimeChunk name. default is `runtime`
+          //     inline: /runtime\..*\.js$/
+          //   }])
+          //   .end()
+          config
+            .optimization.splitChunks({
+              chunks: 'all',
+              cacheGroups: {
+                libs: {
+                  name: 'chunk-libs',
+                  test: /[\\/]node_modules[\\/]/,
+                  priority: 10,
+                  chunks: 'initial' // only package third parties that are initially dependent
+                },
+                elementUI: {
+                  name: 'chunk-elementUI', // split elementUI into a single package
+                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+                },
+                commons: {
+                  name: 'chunk-commons',
+                  test: resolve('src/components'), // can customize your rules
+                  minChunks: 3, //  minimum common number
+                  priority: 5,
+                  reuseExistingChunk: true
+                }
+              }
+            })
+          // config.optimization.runtimeChunk('single')
+        }
+      )
   }
 }

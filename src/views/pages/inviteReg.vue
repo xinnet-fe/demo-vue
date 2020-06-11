@@ -19,7 +19,7 @@
           </el-tooltip>
 
           <el-form-item label="" prop="mobileNum" ref="mobileNum">
-            <el-input v-model="ruleForm.mobileNum" placeholder="请输入您的手机号"  @blur="handleBlur"></el-input>
+            <el-input v-model="ruleForm.mobileNum" placeholder="请输入您的手机号" maxlength="11" @blur="handleBlur" @keyup.native="restPhone"></el-input>
           </el-form-item>
           <el-form-item label="" v-if="showVerifyBar">
             <Vcode :show="isShow" @success="handleSuccess" @close="close" />
@@ -28,8 +28,8 @@
         </el-form>
         <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px">
           <el-form-item label="" prop="vcode" v-show="showVcode" ref="vcode">
-            <el-input v-model="ruleForm2.vcode" maxlength="4" class="inputVcode" @blur="handleBlur"></el-input>
-            <el-button class="getVcode" @click="getVerificationCode" v-show="!success">获取验证码</el-button>
+            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" @blur="handleBlur"></el-input>
+            <el-button class="getVcode" @click="getVerificationCode" v-show="!success" :loading="vcodeLoading">获取验证码</el-button>
             <span class="tips" v-show="success">重新发送({{downTime}})</span>
           </el-form-item>
           <el-form-item label="" prop="checked" ref="checked">
@@ -45,14 +45,20 @@
 
       <div class="result step2" v-show="step === 2">
         <div class="icon"><i class="el-icon-circle-check"></i></div>
-        <h3>恭喜您！您的代理账号已经申请成功！</h3>
-        <p>您的代理账号（登录账号）为：<span>dfdf</span><br />目前该账户未开通，<a href="http://" target="_blank" rel="noopener noreferrer">去登录</a></p>
+        <h3>操作成功！</h3>
+        <p style="text-align:left;">您的账号成功与代理商绑定，如需购买商品请按如下步骤操作：<br /><br />
+          1.选购商品<br />
+          2.提交订单<br />
+          3.与代理商取的联系，完成交易<br />
+          4.管理商品<br />
+        </p>
+        <p><a href="http://www.xinnet.com" target="_blank" rel="noopener noreferrer">返回首页</a></p>
       </div>
     </div>
     <div class="slideshow">
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-01.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-02.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-03.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-01.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-02.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-03.jpg')"></div>
     </div>
     <agent-footer></agent-footer>
   </div>
@@ -65,15 +71,22 @@ import isPhone from '@/utils/isPhone'
 import isEmail from '@/utils/isEmail'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
+import { getCoreProvice } from '@/api/agent/area'
+import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
+import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+
+const Base64 = require('js-Base64').Base64
 // import { mapActions } from 'vuex'
 // import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
 // import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 export default {
-    components: {
-      agentFooter,
-      agentHeader,
-      Vcode
-    },
+  name: 'agentInviteReg',
+  desc: '代理商邀请并注册',
+  components: {
+    agentFooter,
+    agentHeader,
+    Vcode
+  },
   data() {
     return {
       ruleForm: {
@@ -87,20 +100,20 @@ export default {
       },
       rules: {
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { validator: isEmail, trigger: 'blur' }
+          { required: true, message: '请填写正确的电子邮箱', trigger: 'blur' },
+          { validator: isEmail, message: '请填写正确的电子邮箱', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { validator: isPassword, trigger: 'blur' }
+          { required: true, message: '密码格式错误，密码为8-16个字符，区分大小写', trigger: 'blur' },
+          { validator: isPassword, message: '密码格式错误，密码为8-16个字符，区分大小写', trigger: 'blur' }
         ],
         mobileNum: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
-          { validator: isPhone, trigger: 'blur' }
+          { required: true, message: '请填写正确的手机号码', trigger: 'blur' },
+          { validator: isPhone, message: '请填写正确的手机号码', trigger: 'blur' }
         ],
         vcode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' }
+          { required: true, message: '请输入手机短信验证码', trigger: 'blur' },
+          { min: 6, max: 6, message: '验证码错误', trigger: 'blur' }
         ],
         checked: [
           { type: 'boolean', required: true, message: '请勾选', trigger: 'change' }
@@ -115,15 +128,80 @@ export default {
       valid: false,
       valid2: false,
       btnLoading: false,
+      vcodeLoading: true,
       isShow: false,
       formItems: ['email', 'password', 'mobileNum'],
       formItems2: ['vcode', 'checked'],
       passwordType: 'password',
-      capsTooltip: false
+      capsTooltip: false,
+      s_vid: '',
+      captcha: '',
+      redisKey: '',
+      captchCode: '',
+      leftNum: 0,
+      agentCode: ''
     }
   },
   methods: {
     // ...mapActions('users', ['validPhoneOrMail', 'inviteCustomerRegister']),
+    restPhone () {
+      this.ruleForm.mobileNum = this.ruleForm.mobileNum.replace(/[^\d.]/g,'')
+    },
+    hashCode (str) {
+      let hash = 0;
+      if (!str.length) {
+        return hash
+      }
+      for (let i = 0; i < str.length; i++) {
+        let char = str.charCodeAt(i)
+        hash = ((hash<<5) - hash) + char
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return hash
+    },
+    encryptionCode (leftNum, captcha) {
+      const move_left = parseInt(leftNum) //偏差值
+      const code = Base64.encode(move_left + "UA" + Base64.encode(Base64.encode(Base64.encode(String(parseInt(move_left + this.hashCode(captcha)))))))
+      return code
+    },
+    getVerificationCode () {
+      this.vcodeLoading = true
+      // 获取滑块生成的验证码
+      genelCaptcha({}).then((response) => {
+        console.log(response)
+        if (!response.code) {
+          this.redisKey = response.data.redisKey
+          this.captcha = this.encryptionCode(this.leftNum, response.data.code)
+          const params = {
+            mobileNum: this.ruleForm.mobileNum,
+            bustype: 'INVITED_REGISTER',
+            captcha: this.captcha,
+            key: this.redisKey
+          }
+          // 发送短信验证码
+          sendCaptchaWithMobile(params).then((response) => {
+            this.vcodeLoading = false
+            if (!response.code) {
+              if (response.data.isSuccess === 1) {
+                this.s_vid = response.data.s_vid
+                this.success = true
+                this.countDown()
+              } else {
+                this.$refs.vcode.validateState = 'error'
+                this.$refs.vcode.validateMessage = response.msg
+              }
+            } else {
+              this.$refs.vcode.validateState = 'error'
+              this.$refs.vcode.validateMessage = response.msg
+            }
+          }).catch((error) => {
+            this.vcodeLoading = false
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
+    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
@@ -140,15 +218,14 @@ export default {
     handleShowVcode () {
       this.isShow = true
     },
-    handleSuccess (obj) {
+    handleSuccess (num) {
+      this.leftNum = num
       this.isShow = false
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           this.showVcode = true
           this.showVerifyBar = false
           this.getVerificationCode()
-        } else {
-
         }
       })
     },
@@ -175,62 +252,6 @@ export default {
         }, 10)
       } else {
         this.btnDisabled = true
-      }
-    },
-    getVerificationCode () {
-      let result = true
-      this.success = true
-      this.countDown()
-      if (result) {
-        // 获取滑块生成的验证码
-        genelCaptcha({}).then((response) => {
-          this.redisKey = response.data.redisKey
-          this.captcha = response.data.code
-          let params = {
-            mobileNum: this.ruleForm.phone,
-            bustype: 'INVITED_REGISTER',
-            captcha: this.captcha,
-            key: this.redisKey
-          }
-          // 发送短信验证码
-          sendCaptchaWithMobile(params).then((response) => {
-            this.step = 2
-          })
-        })
-        // 验证手机号
-        // this.$store.dispatch('CHECK_USER_PHONE', {'userMobile': this.$refs.userMobile.value}).then(response => {
-        //   if (response) {
-        //     if (response.data.code === '1000') {
-        //       this.$store.dispatch('ACTIVATION_CODE', {userMobile: this.$refs.userMobile.value}).then(response => {
-        //         this.loadingBtn = false
-        //         if (response) {
-        //           if (response.data.code === '1000') {
-        //             this.$Message.success('发送成功')
-        //             this.success = true
-        //             this.countDown()
-        //           } else {
-        //             if (response.data.code === '300') {
-        //               this.$Message.error('短信验证码已发送')
-        //             } else if (response.data.code === '500') {
-        //               this.$Message.error('手机号码错误')
-        //             } else {
-        //               this.$Message.error('发送失败')
-        //             }
-        //           }
-        //         }
-        //       }).catch(() => {})
-        //     } else {
-        //       this.loadingBtn = false
-        //       if (response.data.code === '100') {
-        //         this.$refs.userMobile.showValidateResult({text: '号码已存在'})
-        //       } else {
-        //         this.$Message.error('发送失败')
-        //       }
-        //     }
-        //   }
-        // }).catch(() => {})
-      } else {
-        // this.loadingBtn = false
       }
     },
     countDown () {
@@ -268,10 +289,42 @@ export default {
     onSubmit() {
       this.btnLoading = true
       if (this.checkForm2() && this.checkForm()) {
-        validPhoneOrMail({}).then((response) => {
-          inviteCustomerRegister({}).then((response) => {
-            this.step = 2
-          })
+        const params = {
+          agentCode: this.agentCode,
+          password: this.ruleForm.password,
+          email: this.ruleForm.email,
+          mobileNum: this.ruleForm.mobileNum,
+          captcha: this.captcha,
+          key: this.redisKey,
+          s_vid: this.s_vid,
+          smsCaptcha: this.ruleForm2.vcode
+        }
+        inviteCustomerRegister(params).then((response) => {
+          this.btnLoading = false
+          this.btnDisabled = true
+          if (!response.code) {
+            if (response.data.isSuccess === '1') {
+              this.step = 2
+            } else {
+              this.$message.error(response.msg)
+            }
+          } else {
+            if (response.code === '595030') {
+              if (response.msg === '手机号已注册') {
+                this.$refs.mobileNum.validateState = 'error'
+                this.$refs.mobileNum.validateMessage = response.msg
+              } else if (response.msg === '邮箱已存在') {
+                this.$refs.email.validateState = 'error'
+                this.$refs.email.validateMessage = response.msg
+              }
+            } else {
+              this.$message.error(response.msg)
+            }
+          }
+          
+        }).catch((error) => {
+          this.btnLoading = false
+          this.btnDisabled = true
         })
       } else {
         this.btnLoading = false
@@ -283,6 +336,9 @@ export default {
         })
       }
     }
+  },
+  beforeMount () {
+    this.agentCode = this.GLOBALS.QUERY_STRING('agentCode')
   },
   mounted () {
     this.$refs.checked.validateState = 'success'

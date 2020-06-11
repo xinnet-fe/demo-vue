@@ -6,7 +6,7 @@
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px">
           <h3>立即申请加盟新网代理</h3>
           <el-form-item label="联系人" prop="name" ref="name">
-            <el-input v-model="ruleForm.name" @blur="handleBlur"></el-input>
+            <el-input v-model="ruleForm.name" @blur="handleBlur" maxlength="15"></el-input>
           </el-form-item>
           <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
             <el-form-item label="登录密码" prop="password" ref="password">
@@ -20,7 +20,7 @@
             <el-input :type="passwordType" v-model="ruleForm.repassword" @blur="handleBlur"></el-input>
           </el-form-item>
           <el-form-item label="手机号码" prop="phone" ref="phone">
-            <el-input v-model="ruleForm.phone" @blur="handleBlur"></el-input>
+            <el-input v-model="ruleForm.phone" @blur="handleBlur" maxlength="11"  @keyup.native="restPhone"></el-input>
           </el-form-item>
           <el-form-item label="电子邮箱" prop="email" ref="email">
             <el-input v-model="ruleForm.email" @blur="handleBlur"></el-input>
@@ -38,8 +38,8 @@
         </el-form>
         <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="120px">
           <el-form-item label="手机验证码" prop="vcode"  ref="vcode" v-show="showVcode">
-            <el-input v-model="ruleForm2.vcode" maxlength="4" class="inputVcode" @blur="handleBlur"></el-input>
-            <el-button class="getVcode" @click="getVerificationCode" v-show="!success">获取验证码</el-button>
+            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" @blur="handleBlur"></el-input>
+            <el-button class="getVcode" @click="getVerificationCode" v-show="!success" :loading="vcodeLoading">获取验证码</el-button>
             <span class="tips" v-show="success">重新发送({{downTime}})</span>
           </el-form-item>
           <el-form-item label="" prop="checked" ref="checked">
@@ -55,32 +55,33 @@
 
       <div class="result step2" v-show="step === 2">
         <div class="icon"><i class="el-icon-circle-check"></i></div>
-        <h3>恭喜您！您的代理账号已经申请成功！</h3>
-        <p>您的代理账号（登录账号）为：<span>dfdf</span><br />目前该账户未开通，<a href="http://" target="_blank" rel="noopener noreferrer">去登录</a></p>
-
+        <h3>恭喜您！您的代理账号已申请成功！</h3>
+        <p>您的代理账号（登录账号）为：<span>{{agentCode}}</span><br />目前该账号还未正式开通，不能进入控制台，我们的区域主管会与您沟通，完成后续开通流程，请保持电话畅通。<br /><a href="http://www.xinnet.com" target="_blank" rel="noopener noreferrer">返回首页</a></p>
       </div>
     </div>
     <div class="slideshow">
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-01.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-02.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-03.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-01.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-02.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-03.jpg')"></div>
     </div>
     <agent-footer></agent-footer>
   </div>
 </template>
 <script>
 // import { mapActions } from 'vuex'
-// import { getCoreProvice } from '@/api/agent/area'
-// import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
-// import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+import { getCoreProvice } from '@/api/agent/area'
+import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
+import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 import citysList from '@/utils/crm_citys.js'
 import isNumber from '@/utils/isNumber'
 import isPassword from '@/utils/isPassword'
 import isEmail from '@/utils/isEmail'
 import isPhone from '@/utils/isPhone'
+import isContacts from '@/utils/isContacts'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
 import Vcode from "vue-puzzle-vcode"
+const Base64 = require('js-Base64').Base64
 export default {
   name: 'agentRegister',
   desc: '代理商注册',
@@ -92,9 +93,9 @@ export default {
   data() {
     let validatePass2 = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入密码'))
+        callback(new Error('确认密码格式错误，确认密码与登录密码不一致'))
       } else if (value !== this.ruleForm.password) {
-        callback(new Error('两次输入密码不一致!'))
+        callback(new Error('确认密码格式错误，确认密码与登录密码不一致'))
       } else {
         callback()
       }
@@ -116,34 +117,34 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '联系人格式错误', trigger: 'blur' },
+          { validator: isContacts, min: 2, max: 15, message: '联系人格式错误', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          { required: true, message: '密码格式错误，密码为8-16个字符，区分大小写', trigger: 'blur' },
           { validator: isPassword, trigger: 'blur' }
         ],
         repassword: [
-          { required: true, message: '请再次输入密码', trigger: 'blur' },
+          { required: true, message: '确认密码格式错误，确认密码与登录密码不一致', trigger: 'blur' },
           { validator: validatePass2, trigger: 'blur' }
         ],
         phone: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { required: true, message: '请填写正确的手机号码', trigger: 'blur' },
           { validator: isPhone, trigger: 'blur' }
         ],
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { required: true, message: '请填写正确的电子邮箱', trigger: 'blur' },
           { validator: isEmail, trigger: 'blur' }
         ],
         area: [
-          { type: 'array', required: true, message: '请选择区域', trigger: 'change' }
+          { type: 'array', required: true, message: '请选择省份/城市', trigger: 'change' }
         ],
         vcode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' }
+          { required: true, message: '请输入手机短信验证码', trigger: 'blur' },
+          { min: 6, max: 6, message: '验证码不正确', trigger: 'blur' }
         ],
         checked: [
-          { type: 'boolean', required: true, message: '请勾选', trigger: 'change' }
+          { type: 'boolean', required: true, message: '请阅读新网用户协议及代理协议并确认勾选', trigger: 'change' }
         ]
       },
       step: 1,
@@ -155,72 +156,97 @@ export default {
       valid: false,
       valid2: false,
       btnLoading: false,
+      vcodeLoading: true,
       isShow: false,
       passwordType: 'password',
       capsTooltip: false,
       formItems: ['name', 'password', 'repassword', 'phone', 'email', 'area'],
-      formItems2: ['vcode', 'checked']
+      formItems2: ['vcode', 'checked'],
+      s_vid: '',
+      captcha: '',
+      redisKey: '',
+      captchCode: '',
+      agentCode: '',
+      leftNum: 0
     };
   },
-  mounted () {    
+  mounted () {
     this.$refs.checked.validateState = 'success'
     this.ruleForm.options = citysList.CITYS_LIST
     // console.log(this.getCoreProvice)
     getCoreProvice({}).then((response) => {
-      this.options = response.data
+      // this.ruleForm.options = response.data
     })
-
   },
   methods: {
     // ...mapActions('users', ['registDl']),
     // ...mapActions('area', ['getCoreProvice']),
     // ...mapActions('smsCaptcha', ['sendCaptchaWithMobile']),
+    restPhone () {
+      this.ruleForm.phone = this.ruleForm.phone.replace(/[^\d.]/g,'')
+    },
     close () {
       this.isShow = false
     },
     handleShowVcode () {
       this.isShow = true
     },
-    getVerificationCode () {
-      let result = true
-      this.success = true
-      this.countDown()
-      if (result) {
-        // 验证手机号
-        // this.$store.dispatch('CHECK_USER_PHONE', {'userMobile': this.$refs.userMobile.value}).then(response => {
-        //   if (response) {
-        //     if (response.data.code === '1000') {
-        //       this.$store.dispatch('ACTIVATION_CODE', {userMobile: this.$refs.userMobile.value}).then(response => {
-        //         this.loadingBtn = false
-        //         if (response) {
-        //           if (response.data.code === '1000') {
-        //             this.$Message.success('发送成功')
-        //             this.success = true
-        //             this.countDown()
-        //           } else {
-        //             if (response.data.code === '300') {
-        //               this.$Message.error('短信验证码已发送')
-        //             } else if (response.data.code === '500') {
-        //               this.$Message.error('手机号码错误')
-        //             } else {
-        //               this.$Message.error('发送失败')
-        //             }
-        //           }
-        //         }
-        //       }).catch(() => {})
-        //     } else {
-        //       this.loadingBtn = false
-        //       if (response.data.code === '100') {
-        //         this.$refs.userMobile.showValidateResult({text: '号码已存在'})
-        //       } else {
-        //         this.$Message.error('发送失败')
-        //       }
-        //     }
-        //   }
-        // }).catch(() => {})
-      } else {
-        // this.loadingBtn = false
+    hashCode (str) {
+      let hash = 0;
+      if (!str.length) {
+        return hash
       }
+      for (let i = 0; i < str.length; i++) {
+        let char = str.charCodeAt(i)
+        hash = ((hash<<5) - hash) + char
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return hash
+    },
+    encryptionCode (leftNum, captcha) {
+      const move_left = parseInt(leftNum) //偏差值
+      const code = Base64.encode(move_left + "UA" + Base64.encode(Base64.encode(Base64.encode(String(parseInt(move_left + this.hashCode(captcha)))))))
+      return code
+    },
+    getVerificationCode () {
+      this.vcodeLoading = true
+      // 获取滑块生成的验证码
+      genelCaptcha({}).then((response) => {
+        console.log(response)
+        if (!response.code) {
+          this.redisKey = response.data.redisKey
+          this.captcha = this.encryptionCode(this.leftNum, response.data.code)
+          const params = {
+            mobileNum: this.ruleForm.phone,
+            bustype: 'AGENT_REGISTER',
+            captcha: this.captcha,
+            key: this.redisKey
+          }
+          // 发送短信验证码
+          sendCaptchaWithMobile(params).then((response) => {
+            this.vcodeLoading = false
+            if (!response.code) {
+              if (response.data.isSuccess === 1) {
+                this.s_vid = response.data.s_vid
+                this.success = true
+                this.countDown()
+              } else {
+                this.$refs.vcode.validateState = 'error'
+                this.$refs.vcode.validateMessage = response.msg
+              }
+            } else {
+              this.$refs.vcode.validateState = 'error'
+              this.$refs.vcode.validateMessage = response.msg
+            }
+          }).catch((error) => {
+            this.vcodeLoading = false
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      }).catch((error) => {
+
+      })
     },
     countDown () {
       let clock = window.setInterval(() => {
@@ -236,7 +262,8 @@ export default {
     // handleChange(value) {
     //     console.log(value);
     // },
-    handleSuccess (obj) {
+    handleSuccess (num) {
+      this.leftNum = num
       this.isShow = false
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -304,10 +331,51 @@ export default {
     onSubmit() {
       this.btnLoading = true
       if (this.checkForm2() && this.checkForm()) {
-        let params = this.ruleForm;
+        const params = {
+          userName: this.ruleForm.name,
+          password: this.ruleForm.password,
+          userNameEmail: this.ruleForm.email,
+          provicesCode: this.ruleForm.area[0],
+          cityCode: this.ruleForm.area[1],
+          address: this.ruleForm.desc,
+          telenumber: this.ruleForm.phone,
+          s_vid: this.s_vid,
+          captcha: this.ruleForm2.vcode,
+          redisKey: this.redisKey,
+          captchCode: this.captcha
+        }
         console.log(params)
         registDl(params).then((response) => {
-          this.step = 2
+          this.btnLoading = false
+          this.btnDisabled = true
+          if (!response.code) {
+            if (parseInt(response.data.isSuccess) === 1) {
+              this.agentCode = response.data.agentCode
+              this.step = 2
+            } else {
+              this.$message.error('注册失败')
+            }
+          } else {
+            if (response.code === '595000') {
+              this.$message.error(response.msg)
+            } else if (response.code === '595030') {
+              if (response.msg === '手机号已注册') {
+                this.$refs.phone.validateState = 'error'
+                this.$refs.phone.validateMessage = response.msg
+              } else if (response.msg === '邮箱已存在') {
+                this.$refs.email.validateState = 'error'
+                this.$refs.email.validateMessage = response.msg
+              }
+            } else {
+              this.$message.error(response.msg)
+            }
+          }
+        }).catch((error)=>{
+          console.log("=================")
+          console.log(error)
+          this.$message.error(error.msg)
+          this.btnLoading = false
+          this.btnDisabled = true
         })
       } else {
         this.btnLoading = false

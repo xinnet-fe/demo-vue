@@ -9,7 +9,7 @@
             <el-input v-model="ruleForm.agentCode" placeholder="请输入代理商编号" @blur="handleBlur"></el-input>
           </el-form-item>
           <el-form-item label="" prop="phone" ref="phone">
-            <el-input v-model="ruleForm.phone" placeholder="请输入您的手机号" @blur="handleBlur"></el-input>
+            <el-input v-model="ruleForm.phone" placeholder="请输入您的手机号码，以进行密码重置" maxlength="11" @blur="handleBlur" @keyup.native="restPhone"></el-input>
           </el-form-item>
           <el-form-item label="" v-if="showVerifyBar">
             <Vcode :show="isShow" @success="handleSuccess" @close="close" />
@@ -17,9 +17,9 @@
           </el-form-item>
         </el-form>
         <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px">
-          <el-form-item label="" prop="vcode" v-show="showVcode">
-            <el-input v-model="ruleForm2.vcode" maxlength="4" class="inputVcode" @blur="handleBlur"></el-input>
-            <el-button class="getVcode" @click="getVerificationCode" v-show="!success">获取验证码</el-button>
+          <el-form-item label="" prop="vcode" v-show="showVcode" ref="vcode">
+            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" @blur="handleBlur" placeholder="短信验证码"></el-input>
+            <el-button class="getVcode" @click="getVerificationCode" v-show="!success" :loading="vcodeLoading">获取验证码</el-button>
             <span class="tips" v-show="success">重新发送({{downTime}})</span>
           </el-form-item>
           <el-form-item class="item-btn">
@@ -41,24 +41,24 @@
           </el-tooltip>
 
           <el-form-item label="" prop="repassword" ref="repassword">
-            <el-input v-model="ruleForm3.repassword" placeholder="请再次输入新密码" @blur="handleBlurPw"></el-input>
+            <el-input v-model="ruleForm3.repassword" type="password" placeholder="请再次输入新密码" @blur="handleBlurPw"></el-input>
           </el-form-item>
           <el-form-item class="item-btn">
             <el-button type="primary" @click="onSubmit" :disabled="btnDisabledSubmit" :loading="btnLoadingUpdate">重置密码</el-button>
           </el-form-item>
         </el-form>
       </div>
-      <div class="result step3" v-show="step === 3">
+      <!-- <div class="result step3" v-show="step === 3">
         <div class="icon"><i class="el-icon-circle-check"></i></div>
         <h3>恭喜您！您的代理账号已经申请成功！</h3>
         <p>您的代理账号（登录账号）为：<span>dfdf</span><br />目前该账户未开通，<a href="http://" target="_blank" rel="noopener noreferrer">去登录</a></p>
 
-      </div>
+      </div> -->
     </div>
     <div class="slideshow">
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-01.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-02.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-03.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-01.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-02.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-03.jpg')"></div>
     </div>
     <agent-footer></agent-footer>
   </div>
@@ -73,12 +73,17 @@ import isPassword from '@/utils/isPassword'
 import isPhone from '@/utils/isPhone'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
+import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
+import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+const Base64 = require('js-Base64').Base64
 export default {
-    components: {
-      Vcode,
-      agentFooter,
-      agentHeader
-    },
+  name: 'agentRepassword',
+  desc: '代理商密码重置',
+  components: {
+    Vcode,
+    agentFooter,
+    agentHeader
+  },
   data() {
     let validatePass2 = (rule, value, callback) => {
       if (value === '') {
@@ -104,7 +109,7 @@ export default {
       rules: {
         agentCode: [
           { required: true, message: '请输入代理商编号', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { min: 3, max: 30, message: '代理商编号格式错误', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -115,12 +120,12 @@ export default {
           { validator: validatePass2, trigger: 'blur' }
         ],
         phone: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
           { validator: isPhone, trigger: 'blur' }
         ],
         vcode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' }
+          { required: true, message: '请输入手机短信验证码', trigger: 'blur' },
+          { min: 6, max: 6, message: '验证码错误', trigger: 'blur' }
         ]
       },
       step: 1,
@@ -130,6 +135,7 @@ export default {
       showVcode: false,
       btnDisabledNext: true,
       btnDisabledSubmit: true,
+      vcodeLoading: true,
       valid: false,
       valid2: false,
       valid3: false,
@@ -148,12 +154,72 @@ export default {
       redisKey: '',
       captchCode: '',
       passwordType: 'password',
-      capsTooltip: false
+      capsTooltip: false,
+      leftNum: 0
     }
   },
   methods: {
     // ...mapActions('users', ['genelCaptcha', 'selectAgentByParam', 'nextStep', 'updateAgentPwd']),
     // ...mapActions('smsCaptcha', ['sendCaptchaWithMobile']),
+    restPhone () {
+      this.ruleForm.phone = this.ruleForm.phone.replace(/[^\d.]/g,'')
+    },
+    hashCode (str) {
+      let hash = 0
+      if (!str.length) {
+        return hash
+      }
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i)
+        hash = ((hash<<5) - hash) + char
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return hash
+    },
+    encryptionCode (leftNum, captcha) {
+      const move_left = parseInt(leftNum) //偏差值
+      const code = Base64.encode(move_left + "UA" + Base64.encode(Base64.encode(Base64.encode(String(parseInt(move_left + this.hashCode(captcha)))))))
+      return code
+    },
+    getVerificationCode () {
+      this.vcodeLoading = true
+      // 获取滑块生成的验证码
+      genelCaptcha({}).then((response) => {
+        console.log(response)
+        if (!response.code) {
+          this.redisKey = response.data.redisKey
+          this.captcha = this.encryptionCode(this.leftNum, response.data.code)
+          const params = {
+            mobileNum: this.ruleForm.phone,
+            bustype: 'RESET_PASSWORD',
+            captcha: this.captcha,
+            key: this.redisKey,
+            agentCode: this.ruleForm.agentCode
+          }
+          // 发送短信验证码
+          sendCaptchaWithMobile(params).then((response) => {
+            this.vcodeLoading = false
+            if (!response.code) {
+              if (response.data.isSuccess === 1) {
+                this.s_vid = response.data.s_vid
+                this.success = true
+                this.countDown()
+              } else {
+                this.$refs.vcode.validateState = 'error'
+                this.$refs.vcode.validateMessage = response.msg
+              }
+            } else {
+              this.$refs.vcode.validateState = 'error'
+              this.$refs.vcode.validateMessage = response.msg
+            }
+          }).catch((error) => {
+            this.vcodeLoading = false
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
+    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
@@ -181,62 +247,6 @@ export default {
         }, 10)
       }
     },
-    getVerificationCode () {
-      let result = true
-      this.success = true
-      this.countDown()
-      if (result) {
-        // 获取滑块生成的验证码
-        genelCaptcha({}).then((response) => {
-          this.redisKey = response.data.redisKey
-          this.captcha = response.data.code
-          let params = {
-            mobileNum: this.ruleForm.phone,
-            bustype: 'INVITED_REGISTER',
-            captcha: this.captcha,
-            key: this.redisKey
-          }
-          // 发送短信验证码
-          sendCaptchaWithMobile(params).then((response) => {
-            this.step = 2
-          })
-        })
-        // 验证手机号
-        // this.$store.dispatch('CHECK_USER_PHONE', {'userMobile': this.$refs.userMobile.value}).then(response => {
-        //   if (response) {
-        //     if (response.data.code === '1000') {
-        //       this.$store.dispatch('ACTIVATION_CODE', {userMobile: this.$refs.userMobile.value}).then(response => {
-        //         this.loadingBtn = false
-        //         if (response) {
-        //           if (response.data.code === '1000') {
-        //             this.$Message.success('发送成功')
-        //             this.success = true
-        //             this.countDown()
-        //           } else {
-        //             if (response.data.code === '300') {
-        //               this.$Message.error('短信验证码已发送')
-        //             } else if (response.data.code === '500') {
-        //               this.$Message.error('手机号码错误')
-        //             } else {
-        //               this.$Message.error('发送失败')
-        //             }
-        //           }
-        //         }
-        //       }).catch(() => {})
-        //     } else {
-        //       this.loadingBtn = false
-        //       if (response.data.code === '100') {
-        //         this.$refs.userMobile.showValidateResult({text: '号码已存在'})
-        //       } else {
-        //         this.$Message.error('发送失败')
-        //       }
-        //     }
-        //   }
-        // }).catch(() => {})
-      } else {
-        // this.loadingBtn = false
-      }
-    },
     countDown () {
       let clock = window.setInterval(() => {
         this.downTime--
@@ -248,15 +258,41 @@ export default {
         }
       }, 1000)
     },
-    handleSuccess (obj) {
+    handleSuccess (num) {
+      this.leftNum = num
       this.isShow = false
-      if (this.checkForm()) {
-        this.showVcode = true
-        this.showVerifyBar = false
-        this.getVerificationCode()
-      } else {
-        
-      }
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          const params = {
+            agentCode: this.ruleForm.agentCode,
+            telenumber: this.ruleForm.phone,
+            consumerType: 'DL'
+          }
+          selectAgentByParam(params).then((response) => {
+            if (!response.code) {
+              this.showVcode = true
+              this.showVerifyBar = false
+              this.getVerificationCode()
+            } else {
+              // this.btnLoadingNext = true
+              // this.btnDisabledNext = true
+              if (response.code === '595040') {
+                this.$refs.agentCode.validateState = 'error'
+                this.$refs.agentCode.validateMessage = response.msg
+              } else if (response.code === '590102') {
+                this.$refs.phone.validateState = 'error'
+                this.$refs.phone.validateMessage = response.msg
+              } else if (response.code === '590107') {
+                this.$refs.agentCode.validateState = 'error'
+                this.$refs.agentCode.validateMessage = response.msg
+              } else {
+                this.$message.error(response.msg)
+              }
+            }
+          })
+
+        }
+      })
     },
     // handleChange () {
     //   if (this.checkForm2() && this.checkForm()) {
@@ -317,10 +353,61 @@ export default {
     onNext () {
       this.btnLoadingNext = true
       if (this.checkForm2() && this.checkForm()) {
-        selectAgentByParam({}).then((response) => {
-          nextStep({}).then((response) => {
-            this.step = 2
-          })
+        const params = {
+          agentCode: this.ruleForm.agentCode,
+          telenumber: this.ruleForm.phone,
+          consumerType: 'DL'
+        }
+        selectAgentByParam(params).then((response) => {
+          if (!response.code) {
+            const params2 = {
+              s_vid: this.s_vid,
+              captcha: this.ruleForm2.vcode,
+              redisKey: this.redisKey,
+              captchCode: this.captcha,
+              agentCode: this.ruleForm.agentCode,
+              telenumber: this.ruleForm.phone
+            }
+            nextStep(params2).then((response) => {
+              this.btnLoadingNext = false
+              this.btnDisabledNext = true
+              if (!response.code) {
+                if (response.data.isSuccess === '1') {
+                  this.step = 2
+                } else {
+                  this.$message.error(response.msg)
+                }
+              } else {
+                if (response.code === '595030') { //手机号已注册
+                  this.$refs.phone.validateState = 'error'
+                  this.$refs.phone.validateMessage = response.msg
+                } else {
+                  this.$message.error(response.msg)
+                }
+              }
+            }).catch((error) => {
+              this.btnLoadingNext = false
+              this.btnDisabledNext = true
+            })
+          } else {
+            this.btnLoadingNext = false
+            this.btnDisabledNext = true
+            if (response.code === '595040') {
+              this.$refs.agentCode.validateState = 'error'
+              this.$refs.agentCode.validateMessage = response.msg
+            } else if (response.code === '590102') {
+              this.$refs.phone.validateState = 'error'
+              this.$refs.phone.validateMessage = response.msg
+            } else if (response.code === '590107') {
+              this.$refs.agentCode.validateState = 'error'
+              this.$refs.agentCode.validateMessage = response.msg
+            } else {
+              this.$message.error(response.msg)
+            }
+          }
+        }).catch((error) => {
+          this.btnLoadingNext = false
+          this.btnDisabledNext = true
         })
       } else {
         this.btnLoadingNext = false
@@ -336,11 +423,23 @@ export default {
             password: this.ruleForm3.password
           }
           updateAgentPwd(params).then((response) => {
-            if (response.data.code === '0000') {
-              this.step = 3
+            if (!response.code) {
+              if (response.data.isSuccess === '1') {
+                this.$alert('密码修改成功！', {
+                  title: '提示',
+                  confirmButtonText: '确定',
+                  callback: action => {
+                    window.location.href = 'https://login.xinnet.com/?service=https://console.xinnet.com/agent'
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
+              }
             } else {
-              this.$message.error(response.data.msg)
+              this.$message.error(response.msg)
             }
+            this.btnLoadingUpdate = false
+            this.btnDisabledSubmit = true
           })
         } else {
           this.btnLoadingUpdate = false
@@ -348,6 +447,9 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+
   }
 };
 </script>

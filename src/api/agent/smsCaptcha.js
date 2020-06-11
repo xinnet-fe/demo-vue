@@ -1,8 +1,8 @@
-import request from '@/utils/request'
+import request from '@/utils/http'
 
 export function sendCaptchaWithMobile(query) {
   return request({
-    url: '/smsCaptcha/sendCaptchaWithMobile',
+    url: '/agent/api/smsCaptcha/sendCaptchaWithMobile',
     method: 'POST',
     params: query
   })

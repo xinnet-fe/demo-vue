@@ -21,13 +21,14 @@ const vm = new Vue()
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 10000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
     config.headers['X-Requested-With'] = 'XMLHttpRequest'
+    // config.headers['Referer'] = 'https://console.xinnet.com'
     return config
   },
   error => {
@@ -51,7 +52,9 @@ service.interceptors.response.use(
       console.error('996')
       return Promise.reject(new Error(message))
     }
-
+    if (!code) {
+      return res
+    }
     // 925010 访问拒绝
     if (code && code === 925010) {
       console.error('error 925010')
@@ -62,15 +65,17 @@ service.interceptors.response.use(
       return errorResult('应用服务定义的自定义异常')
     } else if (code && code > 925000 && code < 929999) {
       return errorResult('公共异常')
+    } else {
+      return res
     }
 
-    // demos
-    if (hasDevelopment && isUndefined(code) && code !== 20000) {
-      errorMessage(res.message)
-      return Promise.reject(new Error(res.message))
-    }
+    // // demos
+    // if (hasDevelopment && isUndefined(code) && code !== 20000) {
+    //   errorMessage(res.message)
+    //   return Promise.reject(new Error(res.message))
+    // }
 
-    return res
+    // return res
   },
   error => {
     const { status } = error.response

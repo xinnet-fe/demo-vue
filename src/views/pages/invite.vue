@@ -4,12 +4,12 @@
     <div class="main-body">
       <el-form class="step1" v-show="step === 1" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px">
         <h3>接受代理邀请</h3>
-        <el-form-item ref="agentCode" label="" prop="agentCode">
-          <el-input v-model="ruleForm.agentCode" placeholder="请输入代理商编号" @blur="handleBlur"></el-input>
+        <el-form-item ref="userName" label="" prop="userName">
+          <el-input v-model="ruleForm.userName" placeholder="请输入您的手机号或邮箱" @blur="handleBlur"></el-input>
         </el-form-item>
         <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
           <el-form-item ref="password" label="" prop="password">
-            <el-input v-model="ruleForm.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlur" placeholder="请输入登录密码"></el-input>
+            <el-input v-model="ruleForm.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlur" placeholder="请输入密码"></el-input>
             <span class="show-pwd" @click="showPwd">
               <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
             </span>
@@ -22,54 +22,66 @@
       <div class="result step2" v-show="step === 2">
         <div class="icon"><i class="el-icon-circle-check"></i></div>
         <h3>操作成功！</h3>
-        <p>您的代理账号（登录账号）为：<span>dfdf</span><br />目前该账户未开通，<a href="http://" target="_blank" rel="noopener noreferrer">去登录</a></p>
+        <p style="text-align:left;">您的账号已成功与代理商绑定，如需购买商品请按如下步骤操作：<br /><br />
+            1、选购商品<br />
+            2、提交订单<br />
+            3、与代理商取得联系，完成交易<br />
+            4、管理商品
+        </p>
       </div>
     </div>
     <div class="slideshow">
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-01.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-02.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('/static/img/bg-03.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-01.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-02.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-03.jpg')"></div>
     </div>
     <agent-footer></agent-footer>
   </div>
 </template>
 <script>
 // import { mapActions } from 'vuex'
+import isPhoneOrEmail from '@/utils/isPhoneOrEmail'
+import isEmail from '@/utils/isEmail'
 import isPassword from '@/utils/isPassword'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
-// import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
-// import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+import { getCoreProvice } from '@/api/agent/area'
+import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
+import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 export default {
-    components: {
-      agentFooter,
-      agentHeader
-    },
+  name: 'agentInvite',
+  desc: '接受代理邀请',
+  components: {
+    agentFooter,
+    agentHeader
+  },
   data() {
     return {
       ruleForm: {
-        agentCode: '',
+        userName: '',
         password: ""
       },
       rules: {
-        agentCode: [
-          { required: true, message: '请输入代理商编号', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        userName: [
+          { required: true, message: '请输入您的手机号或邮箱', trigger: 'blur' },
+          { validator: isPhoneOrEmail, message: '账号格式错误', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          { required: true, message: '密码格式错误，密码为8-16个字符，区分大小写', trigger: 'blur' },
           { validator: isPassword, trigger: 'blur' }
         ]
       },
       step: 1,
       btnDisabled: true,
       btnLoading: false,
-      formItems: ['agentCode', 'password'],
+      formItems: ['userName', 'password'],
       passwordType: 'password',
-      capsTooltip: false
+      capsTooltip: false,
+      agentCode: ''
     };
   },
   beforeMount () {
+    this.agentCode = this.GLOBALS.QUERY_STRING('agentCode')
   },
   methods: {
     // ...mapActions('users', ['inviteCustomerRegistered']),
@@ -107,15 +119,32 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           let params = {
-            agentCode: this.ruleForm.agentCode,
+            agentCode: this.agentCode,
             password: this.ruleForm.password,
-            userName: 'userName'
+            userName: this.ruleForm.userName
           }
           inviteCustomerRegistered(params).then((response) => {
-            if (response.data.code === '0000') {
-              this.step = 2
+            this.btnLoading = false
+            this.btnDisabled = true
+            if (!response.code) {
+              if (response.data.isSuccess === '1') {
+                this.step = 2
+              } else {
+                this.$message.error('接受代理邀请失败')
+              }
             } else {
-              this.$message.error(response.data.msg)
+              if (response.code === '590102') {
+                this.$refs.password.validateState = 'error'
+                this.$refs.password.validateMessage = '账号密码不匹配'
+              } else if (response.code === '595040') {
+                this.$refs.userName.validateState = 'error'
+                this.$refs.userName.validateMessage = '账户不存在'
+              } else if (response.code === '590104') {
+                this.$refs.userName.validateState = 'error'
+                this.$refs.userName.validateMessage = '当前用户已绑定其他代理商'
+              } else {
+                this.$message.error(response.msg)
+              }
             }
           })
         } else {

@@ -1,65 +1,65 @@
 /*
  * @Author: your name
  * @Date: 2020-06-03 14:37:36
- * @LastEditTime: 2020-06-04 21:37:07
- * @LastEditors: your name
+ * @LastEditTime: 2020-06-10 12:05:57
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\api\agent\users.js
  */ 
-import request from '@/utils/request'
+import request from '@/utils/http'
 
 export function selectAgentByParam(query) {
   return request({
-    url: '/agent/user/selectAgentByParam',
+    url: '/agent/api/user/selectAgentByParam',
     method: 'POST',
     params: query
   })
 }
 export function updateAgentPwd(query) {
   return request({
-    url: '/agent/user/updateAgentPwd',
+    url: '/agent/api/user/updateAgentPwd',
     method: 'POST',
     params: query
   })
 }
 export function inviteCustomerRegistered(query) {
   return request({
-    url: '/agent/user/inviteCustomerRegistered',
+    url: '/agent/api/user/inviteCustomerRegistered',
     method: 'POST',
     params: query
   })
 }
 export function inviteCustomerRegister(query) {
   return request({
-    url: '/agent/user/inviteCustomerRegister',
+    url: '/agent/api/user/inviteCustomerRegister',
     method: 'POST',
     params: query
   })
 }
-export function validPhoneOrMail(query) {
+export function validPhoneOrMail(data) {
   return request({
-    url: '/agent/user/validPhoneOrMail',
+    url: '/agent/api/user/validPhoneOrMail',
     method: 'POST',
-    params: query
+    data
   })
 }
 export function nextStep(query) {
   return request({
-    url: '/agent/user/nextStep',
+    url: '/agent/api/user/nextStep',
     method: 'POST',
     params: query
   })
 }
 export function registDl(query) {
   return request({
-    url: '/agent/user/registDl',
+    url: '/agent/api/user/registDl',
     method: 'POST',
     params: query
   })
 }
 export function genelCaptcha(query) {
   return request({
-    url: '/agent/user/genelCaptcha',
+    url: '/agent/api/user/genelCaptcha',
     method: 'POST',
     params: query
   })

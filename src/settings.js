@@ -1,5 +1,5 @@
 module.exports = {
-  title: '牧野管理平台',
+  title: '新网--ICANN认证国际域名注册机构、CNNIC金牌授权代理',
 
   /**
    * @type {boolean} true | false
