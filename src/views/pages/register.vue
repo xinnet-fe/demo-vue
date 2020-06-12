@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app" style="height:100%;position:relative">
     <agent-header></agent-header>
     <div class="main-body">
       <div class="step1" v-show="step === 1">
@@ -10,7 +10,7 @@
           </el-form-item>
           <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
             <el-form-item label="登录密码" prop="password" ref="password">
-              <el-input v-model="ruleForm.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlur"></el-input>
+              <el-input v-model="ruleForm.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlur('pw')" auto-complete="off"></el-input>
               <span class="show-pwd" @click="showPwd">
                 <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
               </span>
@@ -20,7 +20,7 @@
             <el-input :type="passwordType" v-model="ruleForm.repassword" @blur="handleBlur"></el-input>
           </el-form-item>
           <el-form-item label="手机号码" prop="phone" ref="phone">
-            <el-input v-model="ruleForm.phone" @blur="handleBlur" maxlength="11"  @keyup.native="restPhone"></el-input>
+            <el-input v-model="ruleForm.phone" @blur="handleBlur" maxlength="11"  @keyup.native="restPhone" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="电子邮箱" prop="email" ref="email">
             <el-input v-model="ruleForm.email" @blur="handleBlur"></el-input>
@@ -43,7 +43,9 @@
             <span class="tips" v-show="success">重新发送({{downTime}})</span>
           </el-form-item>
           <el-form-item label="" prop="checked" ref="checked">
-            <el-checkbox v-model="ruleForm2.checked" @change="handleChange">我已阅读并同意</el-checkbox>
+            <el-checkbox-group v-model="ruleForm2.checked" @change="handleChange" style="display:inline-block">
+              <el-checkbox name="checked" label="checked">我已阅读并同意</el-checkbox>
+            </el-checkbox-group>
             <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
             <a href="/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
           </el-form-item>
@@ -113,7 +115,7 @@ export default {
       },
       ruleForm2: {
         vcode: "",
-        checked: true
+        checked: ['checked']
       },
       rules: {
         name: [
@@ -144,7 +146,7 @@ export default {
           { min: 6, max: 6, message: '验证码不正确', trigger: 'blur' }
         ],
         checked: [
-          { type: 'boolean', required: true, message: '请阅读新网用户协议及代理协议并确认勾选', trigger: 'change' }
+          { type: 'array', required: true, message: '请阅读新网用户协议及代理协议并确认勾选', trigger: 'change' }
         ]
       },
       step: 1,
@@ -206,7 +208,7 @@ export default {
     encryptionCode (leftNum, captcha) {
       const move_left = parseInt(leftNum) //偏差值
       const code = Base64.encode(move_left + "UA" + Base64.encode(Base64.encode(Base64.encode(String(parseInt(move_left + this.hashCode(captcha)))))))
-      return code
+      return (code + '-' + this.redisKey)
     },
     getVerificationCode () {
       this.vcodeLoading = true
@@ -214,13 +216,14 @@ export default {
       genelCaptcha({}).then((response) => {
         console.log(response)
         if (!response.code) {
-          this.redisKey = response.data.redisKey
-          this.captcha = this.encryptionCode(this.leftNum, response.data.code)
+          const idx = response.data.code.lastIndexOf('-')
+          this.redisKey = response.data.code.substring(idx + 1, response.data.code.length)
+          this.captcha = this.encryptionCode(this.leftNum, response.data.code.substring(0, idx))
           const params = {
             mobileNum: this.ruleForm.phone,
             bustype: 'AGENT_REGISTER',
-            captcha: this.captcha,
-            key: this.redisKey
+            captcha: this.captcha
+            // key: this.redisKey
           }
           // 发送短信验证码
           sendCaptchaWithMobile(params).then((response) => {
@@ -265,16 +268,22 @@ export default {
     handleSuccess (num) {
       this.leftNum = num
       this.isShow = false
-      this.$refs.ruleForm.validate((valid) => {
-        if (valid) {
-          this.showVcode = true
-          this.showVerifyBar = false
-          this.getVerificationCode()
-        } else {
-        }
-      })
+      setTimeout(() => {
+        this.$refs.ruleForm.validate((valid) => {
+          if (valid) {
+            this.showVcode = true
+            this.showVerifyBar = false
+            this.getVerificationCode()
+          }
+        })
+      }, 10)
     },
-    handleBlur () {
+    handleBlur (v) {
+      if (v && v === 'pw') {
+        if (this.ruleForm.repassword.length) {
+          this.$refs.ruleForm.validateField('repassword')
+        }
+      }
       if (this.showVcode) {
         setTimeout(() => {
           console.log(this.checkForm() + "-----" + this.checkForm2())
@@ -366,6 +375,9 @@ export default {
                 this.$refs.email.validateState = 'error'
                 this.$refs.email.validateMessage = response.msg
               }
+            } else if (response.code === '595070') {
+              this.$refs.vcode.validateState = 'error'
+              this.$refs.vcode.validateMessage = response.msg
             } else {
               this.$message.error(response.msg)
             }
@@ -392,6 +404,9 @@ export default {
 <style>
 #app{
   position: relative;
+}
+html,body{
+  height: auto!important;
 }
 body{
   background: #000;

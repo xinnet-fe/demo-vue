@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app" style="height:100%;position:relative">
     <agent-header></agent-header>
     <div class="main-body">
       <div class="step1" v-show="step === 1">
@@ -33,7 +33,7 @@
           <h3>设置新密码</h3>
           <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
             <el-form-item ref="password" label="" prop="password">
-              <el-input v-model="ruleForm3.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlurPw" placeholder="请输入新密码"></el-input>
+              <el-input v-model="ruleForm3.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlurPw('pw')" placeholder="请输入新密码"></el-input>
               <span class="show-pwd" @click="showPwd">
                 <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
               </span>
@@ -41,7 +41,7 @@
           </el-tooltip>
 
           <el-form-item label="" prop="repassword" ref="repassword">
-            <el-input v-model="ruleForm3.repassword" type="password" placeholder="请再次输入新密码" @blur="handleBlurPw"></el-input>
+            <el-input v-model="ruleForm3.repassword" :type="passwordType" placeholder="请再次输入新密码" @blur="handleBlurPw"></el-input>
           </el-form-item>
           <el-form-item class="item-btn">
             <el-button type="primary" @click="onSubmit" :disabled="btnDisabledSubmit" :loading="btnLoadingUpdate">重置密码</el-button>
@@ -179,7 +179,7 @@ export default {
     encryptionCode (leftNum, captcha) {
       const move_left = parseInt(leftNum) //偏差值
       const code = Base64.encode(move_left + "UA" + Base64.encode(Base64.encode(Base64.encode(String(parseInt(move_left + this.hashCode(captcha)))))))
-      return code
+      return (code + '-' + this.redisKey)
     },
     getVerificationCode () {
       this.vcodeLoading = true
@@ -187,13 +187,14 @@ export default {
       genelCaptcha({}).then((response) => {
         console.log(response)
         if (!response.code) {
-          this.redisKey = response.data.redisKey
-          this.captcha = this.encryptionCode(this.leftNum, response.data.code)
+          const idx = response.data.code.lastIndexOf('-')
+          this.redisKey = response.data.code.substring(idx + 1, response.data.code.length)
+          this.captcha = this.encryptionCode(this.leftNum, response.data.code.substring(0, idx))
           const params = {
             mobileNum: this.ruleForm.phone,
             bustype: 'RESET_PASSWORD',
             captcha: this.captcha,
-            key: this.redisKey,
+            // key: this.redisKey,
             agentCode: this.ruleForm.agentCode
           }
           // 发送短信验证码
@@ -261,38 +262,40 @@ export default {
     handleSuccess (num) {
       this.leftNum = num
       this.isShow = false
-      this.$refs.ruleForm.validate((valid) => {
-        if (valid) {
-          const params = {
-            agentCode: this.ruleForm.agentCode,
-            telenumber: this.ruleForm.phone,
-            consumerType: 'DL'
-          }
-          selectAgentByParam(params).then((response) => {
-            if (!response.code) {
-              this.showVcode = true
-              this.showVerifyBar = false
-              this.getVerificationCode()
-            } else {
-              // this.btnLoadingNext = true
-              // this.btnDisabledNext = true
-              if (response.code === '595040') {
-                this.$refs.agentCode.validateState = 'error'
-                this.$refs.agentCode.validateMessage = response.msg
-              } else if (response.code === '590102') {
-                this.$refs.phone.validateState = 'error'
-                this.$refs.phone.validateMessage = response.msg
-              } else if (response.code === '590107') {
-                this.$refs.agentCode.validateState = 'error'
-                this.$refs.agentCode.validateMessage = response.msg
-              } else {
-                this.$message.error(response.msg)
-              }
+      setTimeout(() => {
+        this.$refs.ruleForm.validate((valid) => {
+          if (valid) {
+            const params = {
+              agentCode: this.ruleForm.agentCode,
+              telenumber: this.ruleForm.phone,
+              consumerType: 'DL'
             }
-          })
+            selectAgentByParam(params).then((response) => {
+              if (!response.code) {
+                this.showVcode = true
+                this.showVerifyBar = false
+                this.getVerificationCode()
+              } else {
+                // this.btnLoadingNext = true
+                // this.btnDisabledNext = true
+                if (response.code === '595040') { // 账号不存在 账号异常，请联系客服 账户未开通
+                  this.$refs.agentCode.validateState = 'error'
+                  this.$refs.agentCode.validateMessage = response.msg
+                } else if (response.code === '590102') { // 当前账户与手机号不匹配
+                  this.$refs.phone.validateState = 'error'
+                  this.$refs.phone.validateMessage = response.msg
+                } else if (response.code === '590107') { // 当前用户非代理商用户
+                  this.$refs.agentCode.validateState = 'error'
+                  this.$refs.agentCode.validateMessage = response.msg
+                } else {
+                  this.$message.error(response.msg)
+                }
+              }
+            })
 
-        }
-      })
+          }
+        })
+      }, 10)
     },
     // handleChange () {
     //   if (this.checkForm2() && this.checkForm()) {
@@ -340,7 +343,12 @@ export default {
       // })
       // return this.valid3
     },
-    handleBlurPw () {
+    handleBlurPw (v) {
+      if (v && v === 'pw') {
+        if (this.ruleForm3.repassword.length) {
+          this.$refs.ruleForm3.validateField('repassword')
+        }
+      }
       setTimeout(() => {
         console.log(this.checkForm3())
         if (this.checkForm3()) {
@@ -363,7 +371,7 @@ export default {
             const params2 = {
               s_vid: this.s_vid,
               captcha: this.ruleForm2.vcode,
-              redisKey: this.redisKey,
+              // redisKey: this.redisKey,
               captchCode: this.captcha,
               agentCode: this.ruleForm.agentCode,
               telenumber: this.ruleForm.phone
@@ -378,7 +386,7 @@ export default {
                   this.$message.error(response.msg)
                 }
               } else {
-                if (response.code === '595030') { //手机号已注册
+                if (response.code === '590102') { // 手机号不匹配
                   this.$refs.phone.validateState = 'error'
                   this.$refs.phone.validateMessage = response.msg
                 } else {
@@ -429,7 +437,7 @@ export default {
                   title: '提示',
                   confirmButtonText: '确定',
                   callback: action => {
-                    window.location.href = 'https://login.xinnet.com/?service=https://console.xinnet.com/agent'
+                    window.location.href = 'https://login.xinnet.com/new/login'
                   }
                 })
               } else {

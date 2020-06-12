@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app" style="height:100%;position:relative">
     <agent-header></agent-header>
     <div class="main-body">
       <div class="step1" v-show="step === 1">
@@ -33,7 +33,9 @@
             <span class="tips" v-show="success">重新发送({{downTime}})</span>
           </el-form-item>
           <el-form-item label="" prop="checked" ref="checked">
-            <el-checkbox v-model="ruleForm2.checked" @change="handleChange">我已阅读并同意</el-checkbox>
+            <el-checkbox-group v-model="ruleForm2.checked" @change="handleChange" style="display:inline-block">
+              <el-checkbox name="checked" label="checked">我已阅读并同意</el-checkbox>
+            </el-checkbox-group>
             <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
             <a href="/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
           </el-form-item>
@@ -52,7 +54,7 @@
           3.与代理商取的联系，完成交易<br />
           4.管理商品<br />
         </p>
-        <p><a href="http://www.xinnet.com" target="_blank" rel="noopener noreferrer">返回首页</a></p>
+        <p><a href="https://login.xinnet.com/new/login" rel="noopener noreferrer">去登录</a></p>
       </div>
     </div>
     <div class="slideshow">
@@ -96,7 +98,7 @@ export default {
       },
       ruleForm2: {
         vcode: '',
-        checked: true
+        checked: ['checked']
       },
       rules: {
         email: [
@@ -116,7 +118,7 @@ export default {
           { min: 6, max: 6, message: '验证码错误', trigger: 'blur' }
         ],
         checked: [
-          { type: 'boolean', required: true, message: '请勾选', trigger: 'change' }
+          { type: 'array', required: true, message: '请阅读新网用户协议及代理协议并确认勾选', trigger: 'change' }
         ]
       },
       step: 1,
@@ -162,7 +164,7 @@ export default {
     encryptionCode (leftNum, captcha) {
       const move_left = parseInt(leftNum) //偏差值
       const code = Base64.encode(move_left + "UA" + Base64.encode(Base64.encode(Base64.encode(String(parseInt(move_left + this.hashCode(captcha)))))))
-      return code
+      return (code + '-' + this.redisKey)
     },
     getVerificationCode () {
       this.vcodeLoading = true
@@ -170,13 +172,14 @@ export default {
       genelCaptcha({}).then((response) => {
         console.log(response)
         if (!response.code) {
-          this.redisKey = response.data.redisKey
-          this.captcha = this.encryptionCode(this.leftNum, response.data.code)
+          const idx = response.data.code.lastIndexOf('-')
+          this.redisKey = response.data.code.substring(idx + 1, response.data.code.length)
+          this.captcha = this.encryptionCode(this.leftNum, response.data.code.substring(0, idx))
           const params = {
             mobileNum: this.ruleForm.mobileNum,
             bustype: 'INVITED_REGISTER',
-            captcha: this.captcha,
-            key: this.redisKey
+            captcha: this.captcha
+            // key: this.redisKey
           }
           // 发送短信验证码
           sendCaptchaWithMobile(params).then((response) => {
@@ -221,17 +224,20 @@ export default {
     handleSuccess (num) {
       this.leftNum = num
       this.isShow = false
-      this.$refs.ruleForm.validate((valid) => {
-        if (valid) {
-          this.showVcode = true
-          this.showVerifyBar = false
-          this.getVerificationCode()
-        }
-      })
+      setTimeout(() => {
+        this.$refs.ruleForm.validate((valid) => {
+          if (valid) {
+            this.showVcode = true
+            this.showVerifyBar = false
+            this.getVerificationCode()
+          }
+        })
+      }, 10)
     },
     handleBlur (v) {
       if (this.showVcode) {
         setTimeout(() => {
+          console.log(this.checkForm() +"------"+ this.checkForm2())
           if (this.checkForm() && this.checkForm2()) {
             this.btnDisabled = false
           } else {
@@ -241,6 +247,7 @@ export default {
       }
     },
     handleChange (v) {
+      console.log(this.ruleForm2.checked)
       if (v) {
         setTimeout(() => {
           // console.log(this.checkForm2()+"-----"+this.checkForm())
@@ -251,6 +258,7 @@ export default {
           }
         }, 10)
       } else {
+        this.$refs.checked.validateState = 'error'
         this.btnDisabled = true
       }
     },
@@ -309,7 +317,10 @@ export default {
               this.$message.error(response.msg)
             }
           } else {
-            if (response.code === '595030') {
+            if (response.code === '595070') {
+              this.$refs.vcode.validateState = 'error'
+              this.$refs.vcode.validateMessage = response.msg
+            } else if (response.code === '595030') {
               if (response.msg === '手机号已注册') {
                 this.$refs.mobileNum.validateState = 'error'
                 this.$refs.mobileNum.validateMessage = response.msg

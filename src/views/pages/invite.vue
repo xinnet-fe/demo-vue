@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app" style="height:100%;position:relative">
     <agent-header></agent-header>
     <div class="main-body">
       <el-form class="step1" v-show="step === 1" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px">
@@ -133,15 +133,18 @@ export default {
                 this.$message.error('接受代理邀请失败')
               }
             } else {
-              if (response.code === '590102') {
+              if (response.code === '590102') { // 账号密码不匹配
                 this.$refs.password.validateState = 'error'
-                this.$refs.password.validateMessage = '账号密码不匹配'
-              } else if (response.code === '595040') {
+                this.$refs.password.validateMessage = response.msg
+              } else if (response.code === '590100') { // 代理商未注册或暂未开通
                 this.$refs.userName.validateState = 'error'
                 this.$refs.userName.validateMessage = '账户不存在'
-              } else if (response.code === '590104') {
+              } else if (response.code === '590104') { // 当前用户已绑定其他代理商
                 this.$refs.userName.validateState = 'error'
-                this.$refs.userName.validateMessage = '当前用户已绑定其他代理商'
+                this.$refs.userName.validateMessage = response.msg
+              } else if (response.code === '590107') { // 受邀用户只能为会员用户
+                this.$refs.userName.validateState = 'error'
+                this.$refs.userName.validateMessage = response.msg
               } else {
                 this.$message.error(response.msg)
               }
