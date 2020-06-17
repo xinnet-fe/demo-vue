@@ -5,7 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/demos/get-page-title'
-// import { when } from './utils/request'
+import { when } from './utils/request'
 import { xbTokenKey, hasDevelopment, logoutApi } from '@/settings'
 
 const vm = new Vue()
@@ -13,8 +13,7 @@ const vm = new Vue()
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
-const customPermission = ['admin']
-let hasLogin = false
+// const customPermission = ['admin']
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -31,25 +30,20 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       // const hasMenus = store.getters.menus && store.getters.menus.length > 0
-      // const hasUser = store.getters.user && store.getters.user.id
-      if (hasLogin) {
+      const hasUser = store.getters.user && store.getters.user.id
+      if (hasUser) {
         next()
       } else {
         try {
-          // await store.dispatch('userinfo/getUser')
-          hasLogin = true
-          const accessRoutes = await store.dispatch('permission/generateRoutes', customPermission)
-
-          // const [menus] = await when(
-          //   store.dispatch('userinfo/getSidebarMenus'),
-          //   store.dispatch('userinfo/getUser')
-          // )
-          // const accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
+          const [menus] = await when(
+            store.dispatch('userinfo/getSidebarMenus'),
+            store.dispatch('userinfo/getUser')
+          )
+          const accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
 
           router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
         } catch (error) {
-          hasLogin = false
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
@@ -71,7 +65,6 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // other pages that do not have permission to access are redirected to the login page.
       if (hasDevelopment) {
-        hasLogin = false
         next(`/login?redirect=${to.path}`)
       } else {
         global.location = logoutApi
