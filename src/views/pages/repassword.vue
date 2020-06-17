@@ -74,7 +74,7 @@ import isPhone from '@/utils/isPhone'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
 import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
-import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhone, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 const Base64 = require('js-Base64').Base64
 export default {
   name: 'agentRepassword',
@@ -437,7 +437,7 @@ export default {
                   title: '提示',
                   confirmButtonText: '确定',
                   callback: action => {
-                    window.location.href = 'https://login.xinnet.com/new/login'
+                    window.location.href = 'https://login.xinnet.com/?service=https://console.xinnet.com/agent'
                   }
                 })
               } else {

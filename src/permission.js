@@ -6,6 +6,7 @@ import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/demos/get-page-title'
 import { when } from './utils/request'
+import { navMenu } from './utils/menu'
 import { xbTokenKey, hasDevelopment, logoutApi } from '@/settings'
 
 const vm = new Vue()
@@ -13,6 +14,8 @@ const vm = new Vue()
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+
+let hasLogin = false
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -29,21 +32,23 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasMenus = store.getters.menus && store.getters.menus.length > 0
-      const hasUser = store.getters.user && store.getters.user.id
-      if (hasMenus && hasUser) {
+      // const hasMenus = store.getters.menus && store.getters.menus.length > 0
+      // const hasUser = store.getters.user && store.getters.user.id
+      if (hasLogin) {
         next()
       } else {
+        hasLogin = true
         try {
           const [menus] = await when(
             store.dispatch('userinfo/getSidebarMenus'),
-            store.dispatch('userinfo/getUser')
+            // store.dispatch('userinfo/getUser')
           )
           const accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
 
           router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
         } catch (error) {
+          hasLogin = false
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')

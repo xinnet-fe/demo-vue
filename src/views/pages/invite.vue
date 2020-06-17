@@ -47,7 +47,7 @@ import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
 import { getCoreProvice } from '@/api/agent/area'
 import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
-import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhone, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 export default {
   name: 'agentInvite',
   desc: '接受代理邀请',

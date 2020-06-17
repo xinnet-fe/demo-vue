@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-03 14:37:36
- * @LastEditTime: 2020-06-10 12:05:57
+ * @LastEditTime: 2020-06-12 17:16:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\api\agent\users.js
@@ -36,11 +36,11 @@ export function inviteCustomerRegister(query) {
     params: query
   })
 }
-export function validPhoneOrMail(data) {
+export function validPhone(query) {
   return request({
-    url: '/agent/api/user/validPhoneOrMail',
+    url: '/agent/api/user/validPhone',
     method: 'POST',
-    data
+    params: query
   })
 }
 export function nextStep(query) {

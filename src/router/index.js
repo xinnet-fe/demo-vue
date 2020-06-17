@@ -416,18 +416,18 @@ const demosConstantRoutes = hasDevelopment ? [
 export const constantRoutes = [
   {
     path: '/',
-    component: Layout,
-    redirect: '/home',
-    hidden: true,
-    children: [
-      {
-        path: 'home',
-        component: () => import('@/views/index'),
-        name: 'Home',
-        hidden: true,
-        meta: { title: 'Home', icon: 'home', affix: true }
-      }
-    ]
+    // component: Layout,
+    redirect: '/agent-client-app/agent-client',
+    // hidden: true,
+    // children: [
+    //   {
+    //     path: 'home',
+    //     component: () => import('@/views/index'),
+    //     name: 'Home',
+    //     hidden: true,
+    //     meta: { title: 'Home', icon: 'home', affix: true }
+    //   }
+    // ]
   },
   ...demosConstantRoutes,
   {

@@ -54,7 +54,7 @@
           3.与代理商取的联系，完成交易<br />
           4.管理商品<br />
         </p>
-        <p><a href="https://login.xinnet.com/new/login" rel="noopener noreferrer">去登录</a></p>
+        <p><a href="https://login.xinnet.com/?service=https://console.xinnet.com/agent" rel="noopener noreferrer">去登录</a></p>
       </div>
     </div>
     <div class="slideshow">
@@ -75,7 +75,7 @@ import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
 import { getCoreProvice } from '@/api/agent/area'
 import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
-import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhone, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 
 const Base64 = require('js-Base64').Base64
 // import { mapActions } from 'vuex'
@@ -227,9 +227,22 @@ export default {
       setTimeout(() => {
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            this.showVcode = true
-            this.showVerifyBar = false
-            this.getVerificationCode()
+            validPhone({ teleNumber: this.ruleForm.mobileNum }).then((response) => {
+              if (!response.code) {
+                this.showVcode = true
+                this.showVerifyBar = false
+                this.getVerificationCode()
+              } else {
+                // this.btnLoadingNext = true
+                // this.btnDisabledNext = true
+                if (response.code === '595030') { // 手机号已注册
+                  this.$refs.mobileNum.validateState = 'error'
+                  this.$refs.mobileNum.validateMessage = response.msg
+                } else {
+                  this.$message.error(response.msg)
+                }
+              }
+            })
           }
         })
       }, 10)
@@ -352,6 +365,7 @@ export default {
     this.agentCode = this.GLOBALS.QUERY_STRING('agentCode')
   },
   mounted () {
+    console.log("===========================")
     this.$refs.checked.validateState = 'success'
   }
 };

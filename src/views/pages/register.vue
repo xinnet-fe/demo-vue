@@ -73,7 +73,7 @@
 // import { mapActions } from 'vuex'
 import { getCoreProvice } from '@/api/agent/area'
 import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
-import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhone, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
 import citysList from '@/utils/crm_citys.js'
 import isNumber from '@/utils/isNumber'
 import isPassword from '@/utils/isPassword'
@@ -271,9 +271,22 @@ export default {
       setTimeout(() => {
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            this.showVcode = true
-            this.showVerifyBar = false
-            this.getVerificationCode()
+            validPhone({ teleNumber: this.ruleForm.phone }).then((response) => {
+              if (!response.code) {
+                this.showVcode = true
+                this.showVerifyBar = false
+                this.getVerificationCode()
+              } else {
+                // this.btnLoadingNext = true
+                // this.btnDisabledNext = true
+                if (response.code === '595030') { // 手机号已注册
+                  this.$refs.phone.validateState = 'error'
+                  this.$refs.phone.validateMessage = response.msg
+                } else {
+                  this.$message.error(response.msg)
+                }
+              }
+            })
           }
         })
       }, 10)
