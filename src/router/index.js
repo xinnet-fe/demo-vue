@@ -442,6 +442,17 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/boss-nav-cmsmanage-neaws',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/boss-nav-cmsmanage-neaws/index')
+      }
+    ]
+  },
+  {
     path: '/404',
     component: Layout,
     hidden: true,

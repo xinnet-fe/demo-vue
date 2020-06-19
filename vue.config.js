@@ -39,6 +39,10 @@ module.exports = {
       '/portal': {
         target: 'http://119.10.116.247:8082',
         changeOrigin: true
+      },
+      '/admin': {
+        target: 'http://kcms.xinnet.com:8065',
+        changeOrigin: true
       }
     },
     before: require('./mock/mock-server.js')
