@@ -37,7 +37,10 @@ router.beforeEach(async(to, from, next) => {
         try {
           const [menus] = await when(
             store.dispatch('userinfo/getSidebarMenus'),
-            store.dispatch('userinfo/getUser')
+            store.dispatch('userinfo/getUser'),
+            store.dispatch('userManager/findAllGrade'),
+            store.dispatch('userManager/queryFinanclAttrList'),
+            store.dispatch('userManager/queryOrganSaleList')
           )
           const accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
 

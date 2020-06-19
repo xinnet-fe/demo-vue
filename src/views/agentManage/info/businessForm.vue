@@ -2,16 +2,18 @@
   <div class="info-business-form">
     <el-dialog :before-close="beforeClose" destroy-on-close title="修改业务归属" :visible.sync="formVisible" width="500px" @open="open">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="选择分公司" prop="company" required>
-          <el-select v-model="form.company" placeholder="请选择分公司">
-            <el-option v-for="item in companyOptions" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
+        <el-form-item label="选择分公司/选择销售" prop="company" required>
+          <el-cascader
+            :options="queryOrganSaleList"
+            v-model="selectedOptions"
+            @change="handleChange">
+          </el-cascader>
         </el-form-item>
-        <el-form-item label="选择销售" prop="market" required>
+        <!-- <el-form-item label="选择销售" prop="market" required>
           <el-select v-model="form.market" placeholder="请绑定销售">
             <el-option v-for="item in marketOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeModal">取 消</el-button>
@@ -23,7 +25,7 @@
 
 <script>
 import clearFormData from '@/utils/clearFormData'
-
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'BusinessForm',
   props: {
@@ -40,6 +42,7 @@ export default {
   },
   data() {
     return {
+      selectedOptions: '',
       form: {
         company: '',
         market: '',
@@ -57,7 +60,18 @@ export default {
       marketOptions: this.$parent.marketOptions
     }
   },
+  mounted () {
+    console.log("state.userManager.queryOrganSaleList")
+    console.log(this.queryOrganSaleList)
+    // this.queryOrganSaleList
+  },
   computed: {
+    ...mapState({
+      queryOrganSaleList (state) {
+        // console.log(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value'))
+        return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
+      }
+    }),
     formVisible: {
       get() {
         return this.visible
@@ -68,6 +82,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('userManager', ['batchUpdate']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
@@ -82,6 +97,9 @@ export default {
           return false
         }
       })
+    },
+    handleChange () {
+
     },
     closeModal() {
       const { form } = this.$refs

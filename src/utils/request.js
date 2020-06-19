@@ -66,7 +66,8 @@ service.interceptors.response.use(
     const res = response.data
     const status = parseInt(res.status, 10)
     // mock必返回code，请求接口错误才返回code
-    const code = isUndefined(res.code) ? parseInt(res.code, 10) : res.code
+    const code = res.code
+    // debugger
     // console.log(`status: ${status}`)
     // console.log(`code: ${code}`)
     // status：996登录超时
@@ -93,7 +94,7 @@ service.interceptors.response.use(
     }
 
     // demos
-    if (hasDevelopment && isUndefined(code) && code !== 20000) {
+    if (hasDevelopment && isUndefined(code) && code !== null && code !== 20000) {
       errorMessage(res.message)
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
@@ -112,7 +113,9 @@ service.interceptors.response.use(
       initLoading()
       return Promise.reject(new Error(res.message))
     }
-
+    console.log("======================")
+    console.log(res)
+    console.log("======================")
     return res
   },
   error => {

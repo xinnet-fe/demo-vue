@@ -33,6 +33,7 @@ module.exports = {
     before: require('./mock/mock-server.js'),
     port: port,
     open: false,
+    disableHostCheck: true,
     overlay: {
       warnings: false,
       errors: true
@@ -42,9 +43,8 @@ module.exports = {
         target: 'http://119.10.116.247:8082',
         changeOrigin: true
       },
-      '/linkurl': {
-        target: 'http://localhost:3003',
-        pathRewrite: { '^/linkurl': '' },
+      '/userManager': {
+        target: 'https://agentmanagement.xinnet.com',
         changeOrigin: true
       }
     }

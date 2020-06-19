@@ -4,7 +4,7 @@
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="设置级别" prop="level" required>
           <el-select v-model="form.level" placeholder="请设置级别">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+            <el-option v-for="item in allGrade" :key="item.id" :label="item.gradeName" :value="item.id" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -18,7 +18,7 @@
 
 <script>
 import clearFormData from '@/utils/clearFormData'
-
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'LevelForm',
   props: {
@@ -42,11 +42,11 @@ export default {
         level: [
           { required: true, message: '必须填写！', trigger: 'blur' }
         ]
-      },
-      options: this.$parent.levelOptions
+      }
     }
   },
   computed: {
+    ...mapState('userManager', ['allGrade']),
     formVisible: {
       get() {
         return this.visible
@@ -57,6 +57,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('userManager', ['batchUpdate']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
@@ -65,8 +66,21 @@ export default {
           // 列表中选中行数据
           console.log(this.selected)
           // submit
-          this.$message.success('修改成功!')
-          this.closeModal()
+          const params = {
+            type: 'level',
+            agentCodes: this.selected.map((v) => {
+              return v.agentCode
+            }).join(','),
+            gradeCode: this.form.level
+          }
+          this.batchUpdate(params).then(res => {
+            if (!res.code) {
+              this.$message.success('修改成功!')
+              this.closeModal()
+              this.$parent.onSearch()
+            }
+          }).catch(error => {})
+
         } else {
           return false
         }
@@ -83,14 +97,14 @@ export default {
       this.closeModal()
       done()
     },
-    setData(selected) {
-      this.form.level = selected[0].level
-    },
+    // setData(selected) {
+    //   this.form.level = selected[0].level
+    // },
     open() {
-      const selected = this.$parent.multipleSelection
-      if (selected.length === 1) {
-        this.setData(selected)
-      }
+      // const selected = this.$parent.multipleSelection
+      // if (selected.length === 1) {
+      //   this.setData(selected)
+      // }
     }
   }
 }

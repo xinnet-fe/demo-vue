@@ -4,7 +4,7 @@
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="选择归属" prop="finance" required>
           <el-select v-model="form.finance" placeholder="请绑定销售">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+            <el-option v-for="item in queryFinanclAttrList" :key="item.financeCode" :label="item.financeName" :value="item.financeCode" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -18,7 +18,7 @@
 
 <script>
 import clearFormData from '@/utils/clearFormData'
-
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'FinanceForm',
   props: {
@@ -47,6 +47,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('userManager', ['queryFinanclAttrList']),
     formVisible: {
       get() {
         return this.visible
@@ -57,6 +58,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('userManager', ['batchUpdate']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
@@ -65,8 +67,20 @@ export default {
           // 列表中选中行数据
           console.log(this.selected)
           // submit
-          this.$message.success('修改成功!')
-          this.closeModal()
+          const params = {
+            type: 'fince',
+            agentCodes: this.selected.map((v) => {
+              return v.agentCode
+            }).join(','),
+            attribution: this.form.finance
+          }
+          this.batchUpdate(params).then(res => {
+            if (!res.code) {
+              this.$message.success('修改成功!')
+              this.closeModal()
+              this.$parent.onSearch()
+            }
+          }).catch(error => {})
         } else {
           return false
         }
@@ -87,10 +101,10 @@ export default {
       this.form.finance = selected[0].finance
     },
     open() {
-      const selected = this.$parent.multipleSelection
-      if (selected.length === 1) {
-        this.setData(selected)
-      }
+      // const selected = this.$parent.multipleSelection
+      // if (selected.length === 1) {
+      //   this.setData(selected)
+      // }
     }
   }
 }

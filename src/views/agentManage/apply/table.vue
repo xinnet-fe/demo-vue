@@ -6,7 +6,7 @@
       border
       tooltip-effect="dark"
       style="width: 100%"
-      :data="applyList"
+      :data="findDlApplyList"
     >
       <el-table-column
         prop="agentCode"
@@ -60,9 +60,9 @@
       </el-table-column>
     </el-table>
     <pagination
-      :total="applyPage.total"
-      :page.sync="applyPage.page"
-      :limit.sync="applyPage.limit"
+      :total="findDlApplyPage.total"
+      :page.sync="findDlApplyPage.page"
+      :limit.sync="findDlApplyPage.limit"
       @pagination="getList"
     />
   </div>
@@ -78,9 +78,9 @@ export default {
     Pagination
   },
   computed: {
-    ...mapState('agentManage', ['applyList', 'applyPage']),
+    ...mapState('userManager', ['findDlApplyList', 'findDlApplyPage']),
     ...mapState({
-      loading: state => state.loading.effects['agentManage/getApplyList']
+      loading: state => state.loading.effects['userManager/findDlApply']
     })
   },
   methods: {

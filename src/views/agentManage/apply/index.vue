@@ -3,12 +3,12 @@
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true">
       <el-form-item label="会员ID" prop="memberId">
-        <el-select v-model="form.memberId">
+        <el-select v-model="form.memberId" @change="handleSelectChange">
           <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item prop="keywords">
-        <el-input v-model="form.keywords" placeholder="请输入关键词" />
+        <el-input v-model="form.keywords" :placeholder="placeholder" />
       </el-form-item>
       <el-form-item label="申请时间" prop="date">
         <el-date-picker
@@ -31,31 +31,108 @@
     </el-form>
     <!-- search -->
 
-    <apply-table :visible.sync="formVisible" :row.sync="row" />
+    <div class="table-section">
+      <el-table
+        ref="table"
+        v-loading="loading"
+        border
+        tooltip-effect="dark"
+        style="width: 100%"
+        :data="list"
+      >
+        <el-table-column
+          prop="agentCode"
+          label="代理编号"
+          width="150"
+        />
+        <el-table-column
+          prop="telenumber"
+          label="手机号"
+          width="120"
+        />
+        <el-table-column
+          prop="userNameEmail"
+          label="邮箱"
+        />
+        <el-table-column
+          prop="organizeNameCn"
+          label="联系人"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="publicProvinceCn"
+          label="省份"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="publicCityCn"
+          label="城市"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="applyDate"
+          label="申请时间"
+          show-overflow-tooltip
+        />
+        <el-table-column label="状态" width="100">
+          <template v-slot="scope">
+            <span v-if="scope.row.state === '01'">未开通</span>
+            <span v-if="scope.row.state === '02'">已开通</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" width="150">
+          <template v-slot="scope">
+            <el-button
+              v-if="scope.row.state === '01'"
+              size="mini"
+              type="primary"
+              @click="handleOpen(scope.row)"
+            >
+              开通
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        :total="page.total"
+        :page.sync="page.page"
+        :limit.sync="page.limit"
+        @pagination="onSearch"
+      />
+    </div>
     <dialog-apply-form :visible.sync="formVisible" :row.sync="row" />
   </div>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
-import assign from 'lodash/assign'
-import ApplyTable from './table'
 import DialogApplyForm from './form'
-
+import Pagination from '@/components/Pagination'
 export default {
   name: 'AgentManageApply',
   components: {
-    ApplyTable,
-    DialogApplyForm
+    DialogApplyForm,
+    Pagination
   },
   data() {
     return {
       formVisible: false,
       row: {},
+      placeholder: '',
       form: {
-        memberId: '',
-        date: '',
-        keywords: '',
-        state: 0
+        agentCode: '',
+        telenumber: '',
+        userNameEmail: '',
+        organizeNameCn: '',
+        startDate: '',
+        endDate: '',
+        pageNum: '',
+        state: ''
+      },
+      list: [],
+      page: {
+        total: 0,
+        page: 0,
+        limit: 20
       },
       memberType: [
         { label: '代理编号', value: 'agentCode' },
@@ -71,25 +148,40 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['agentManage/getApplyList']
+      loading: state => state.loading.effects['userManager/findDlApply']
     })
   },
   methods: {
-    ...mapActions('agentManage', ['getApplyList']),
+    ...mapActions('userManager', ['findDlApply']),
+    handleSelectChange(v) {
+      console.log(v)
+    },
     onSearch(page) {
       const query = {
         ...this.form
       }
       if (page) {
-        assign(query, page)
+        query.pageNum = page.page
+      } else {
+        query.pageNum = 1
       }
-      this.getApplyList(query)
+      this.findDlApply(query).then(res => {
+        if (!res.code) {
+          console.log(res)
+          this.list = res.data.list
+          this.page.total = res.data.count
+        }
+      }).catch(error => {
+      })
     },
     resetForm() {
       const { form } = this.$refs
       form.resetFields()
       form.clearValidate('form')
     }
+  },
+  mounted(){
+    this.onSearch(1)
   }
 }
 </script>

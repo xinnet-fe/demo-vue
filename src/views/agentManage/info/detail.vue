@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'InfoDetail',
   props: {
@@ -102,15 +103,15 @@ export default {
         address: '详细地址'
       },
       basicInfo: {
-        agentCode: 'agent35133',
-        company: '北京分公司',
-        phone: 19488851118,
-        email: 'chengyanpeng@xinnet.com',
-        province: '北京',
-        city: '北京',
-        level: '白金代理',
-        market: '复兴',
-        address: '北京大兴区经济开发区'
+        agentCode: '',
+        company: '',
+        phone: '',
+        email: '',
+        province: '',
+        city: '',
+        level: '',
+        market: '',
+        address: ''
       },
       realNameLabel: {
         type: '实名制类型',
@@ -140,7 +141,27 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.basicInfo.agentCode = this.row.agentCode
+    // 获取实名信息
+    this.queryDlRealInfo({ agentCode: this.row.agentCode }).then(res => {
+      if (!res.code) {
+        this.realNameInfo.type = res.data
+        
+        
+        // : {
+        //   type: '企业认证',
+        //   state: '已认证',
+        //   companyName: '北京新网信息技术有限公司',
+        //   code: '911008288989497'
+        // },
+      }
+    }).catch(error => {})
+  },
   computed: {
+    ...mapState({
+      loading: state => state.loading.effects['userManager/queryDlRealInfo']
+    }),
     formVisible: {
       get() {
         // console.log(this.visible)
@@ -153,6 +174,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('userManager', ['queryDlRealInfo']),
     closeModal() {
       this.$emit('update:visible', false)
       this.$emit('update:row', {})
@@ -164,6 +186,7 @@ export default {
     handleClick(e) {
       console.log(e)
     }
-  }
+  },
+
 }
 </script>

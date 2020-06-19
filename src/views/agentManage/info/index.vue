@@ -57,38 +57,109 @@
       <el-button type="warning" size="mini" @click="showModal('levelModalVisible')">修改级别</el-button>
     </div>
 
-    <info-table
-      :visible.sync="detailModalVisible"
-      :account-visible.sync="accountModalVisible"
-      :row.sync="row"
-      :multiple-selection.sync="multipleSelection"
-    />
-    <dialog-detail :visible.sync="detailModalVisible" :row.sync="row" />
-    <dialog-business-form :visible.sync="businessModalVisible" :selected="multipleSelection" />
+    <div class="table-section">
+      <el-table
+        ref="table"
+        v-loading="loading"
+        border
+        tooltip-effect="dark"
+        style="width: 100%"
+        :data="list"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column fixed type="selection" width="55" />
+        <el-table-column
+          prop="agentCode"
+          label="代理编号"
+        />
+        <el-table-column
+          prop="organizeNameCn"
+          label="渠道名称"
+        />
+        <el-table-column
+          prop="startDate"
+          label="开通时间"
+        />
+        <el-table-column
+          prop="organName"
+          label="所属分公司"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="financeName"
+          label="财务归属"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="saleName"
+          label="绑定销售"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="gradeName"
+          label="级别"
+          show-overflow-tooltip
+        />
+        <el-table-column label="状态" width="100">
+          <template v-slot="scope">
+            <span v-if="scope.row.state === '01'">未开通</span>
+            <span v-if="scope.row.state === '02'">已开通</span>
+            <span v-if="scope.row.state === '03'">已冻结</span>
+            <span v-if="scope.row.state === '04'">已关闭</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" width="180">
+          <template v-slot="scope">
+            <el-button size="mini" type="primary" @click="showDetailModal(scope.row)">
+              详情
+            </el-button>
+            <el-button size="mini" type="primary" @click="showAccountModal(scope.row)">
+              修改账号
+            </el-button>
+            <el-popconfirm
+              title="确定终止吗？"
+              v-if="scope.row.state !== '04'"
+              @onConfirm="stop(scope.row)"
+            >
+              <el-button slot="reference" size="mini" type="warning">
+                终止
+              </el-button>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        :total="page.total"
+        :page.sync="page.page"
+        :limit.sync="page.limit"
+        @pagination="onSearch"
+      />
+    </div>
+    <dialog-detail v-if="detailModalVisible" :visible.sync="detailModalVisible" :row.sync="row" />
+    <dialog-business-form v-if="businessModalVisible" :visible.sync="businessModalVisible" :selected="multipleSelection" />
     <dialog-finance-form :visible.sync="financeModalVisible" :selected="multipleSelection" />
     <dialog-level-form :visible.sync="levelModalVisible" :selected="multipleSelection" />
-    <dialog-account-form :visible.sync="accountModalVisible" :row.sync="row" />
+    <dialog-account-form v-if="accountModalVisible" :visible.sync="accountModalVisible" :row.sync="row" @onSearch = "onSearch" />
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import assign from 'lodash/assign'
-import InfoTable from './table'
 import DialogDetail from './detail'
 import DialogBusinessForm from './businessForm'
 import DialogFinanceForm from './financeForm'
 import DialogLevelForm from './levelForm'
 import DialogAccountForm from './accountForm'
-
+import Pagination from '@/components/Pagination'
 export default {
   name: 'AgentManageInfo',
   components: {
-    InfoTable,
     DialogDetail,
     DialogBusinessForm,
     DialogFinanceForm,
     DialogLevelForm,
-    DialogAccountForm
+    DialogAccountForm,
+    Pagination
   },
   data() {
     return {
@@ -109,6 +180,12 @@ export default {
         business: '',
         finance: '',
         level: ''
+      },
+      list: [],
+      page: {
+        total: 0,
+        page: 0,
+        limit: 20
       },
       memberType: [
         { label: '代理编号', value: 'agentCode' },
@@ -142,21 +219,66 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapState({
+      loading: state => state.loading.effects['userManager/findDlInfo'],
+      loading: state => state.loading.effects['userManager/breakInfomation']
+    })
+  },
   methods: {
-    ...mapActions('agentManage', ['getInfoList']),
+    ...mapActions('userManager', ['findDlInfo', 'breakInfomation']),
     onSearch(page) {
       const query = {
-        ...this.searchForm
+        ...this.form
       }
       if (page) {
-        assign(query, page)
+        query.pageNum = page.page
+      } else {
+        query.pageNum = 1
       }
-      this.getInfoList(query)
+      this.findDlInfo(query).then(res => {
+        if (!res.code) {
+          this.list = res.data.list
+          this.page.total = res.data.count
+        }
+      }).catch(error => {})
     },
     resetForm() {
       const { searchForm } = this.$refs
       searchForm.resetFields()
       searchForm.clearValidate('searchForm')
+    },
+    showDetailModal(row) {
+      this.detailModalVisible = true
+      this.row = row
+    },
+    showAccountModal(row) {
+      this.accountModalVisible = true
+      this.row = row
+    },
+    handleSelectionChange(val) {
+      console.log(val)
+      this.multipleSelection = val
+    },
+    convertIdToName(row, item) {
+      const options = this.$parent[`${item}Options`]
+      const option = find(options, { value: row[item] })
+      return option.label
+    },
+    stop(row) {
+      console.log(row)
+      this.breakInfomation({ agentCode: row.agentCode }).then(res => {
+        if (!res.code) {
+          if (res.data.isSuccess === '1') {
+            this.$message.success('操作成功！')
+            this.onSearch()
+          } else {
+            this.$message.error(res.msg)
+          }
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(error => {})
     },
     showModal(modalVisible) {
       const selected = this.multipleSelection
@@ -167,6 +289,11 @@ export default {
         this.$message.warning('请选择代理商！')
       }
     }
+  },
+  mounted() {
+    this.onSearch(1)
+    // 获取级别数据
+
   }
 }
 </script>
