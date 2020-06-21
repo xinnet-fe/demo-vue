@@ -1,4 +1,9 @@
-import { applyList, infoList } from '@/api/agentManage'
+import {
+  applyList,
+  infoList,
+  levelList,
+  clientList
+} from '@/api/agentManage'
 
 const state = {
   applyList: [],
@@ -34,6 +39,12 @@ const actions = {
   },
   getInfoList({ commit }, query) {
     return infoList(query).then(res => commit('GET_INFO_LIST', res))
+  },
+  getLevelList({ commit }, query) {
+    return levelList(query)
+  },
+  getClientList({ commit }, query) {
+    return clientList(query)
   }
 }
 

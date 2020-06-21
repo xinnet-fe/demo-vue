@@ -15,3 +15,19 @@ export function infoList(query) {
     params: query
   })
 }
+
+export function levelList(query) {
+  return request({
+    url: '/agentManage/levelList',
+    method: 'get',
+    params: query
+  })
+}
+
+export function clientList(query) {
+  return request({
+    url: '/agentManage/clientList',
+    method: 'get',
+    params: query
+  })
+}

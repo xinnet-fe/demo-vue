@@ -29,6 +29,24 @@ const agentManageRouter = {
         title: '代理商信息',
         roles: ['admin']
       }
+    },
+    {
+      path: 'level',
+      component: () => import('@/views/agentManage/level'),
+      name: 'AgentLevel',
+      meta: {
+        title: '级别管理',
+        roles: ['admin']
+      }
+    },
+    {
+      path: 'client',
+      component: () => import('@/views/agentManage/client'),
+      name: 'AgentClient',
+      meta: {
+        title: '代理商客户管理',
+        roles: ['admin']
+      }
     }
   ]
 }
