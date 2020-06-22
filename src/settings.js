@@ -1,3 +1,5 @@
+const webpackConfig = require('./webpackConfig.js')
+
 module.exports = {
   title: '牧野管理平台',
 
@@ -43,9 +45,12 @@ module.exports = {
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: '4CZb7IN40qOpE0t5UvZ',
+  xbtoken: 'HFam47a3CJS0P1tq6lL',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 
-  logoutApi: process.env.VUE_APP_ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/'
+  logoutApi: process.env.VUE_APP_ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/',
+
+  // webpack配置，覆盖掉vue.config.js中初始值
+  webpackConfig
 }
