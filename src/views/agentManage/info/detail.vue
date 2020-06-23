@@ -143,10 +143,18 @@ export default {
   },
   mounted() {
     this.basicInfo.agentCode = this.row.agentCode
+    this.basicInfo.company = this.row.organizeNameCn
+    this.basicInfo.market = this.row.organizeNameCn
+    this.basicInfo.level = this.row.gradeName
+    this.basicInfo.phone = this.row.telenumber
+    this.basicInfo.email = this.row.userNameEmail
+    this.basicInfo.province = this.row.organizeNameCn
+    this.basicInfo.city = this.row.organizeNameCn
+    this.basicInfo.address = this.row.organizeNameCn
     // 获取实名信息
     this.queryDlRealInfo({ agentCode: this.row.agentCode }).then(res => {
       if (!res.code) {
-        this.realNameInfo.type = res.data
+        // this.realNameInfo.type = res.data
         
         
         // : {
@@ -190,3 +198,4 @@ export default {
 
 }
 </script>
+

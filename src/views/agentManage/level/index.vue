@@ -3,7 +3,7 @@
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true">
       <el-form-item label="级别名称" prop="level">
-        <el-select v-model="form.memberId" @change="handleSelectChange">
+        <el-select v-model="form.type" @change="handleSelectChange">
           <el-option v-for="item in levelOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -11,8 +11,8 @@
         <el-input v-model="form.keywords" :placeholder="placeholder" />
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="primary" @click="onSearch">查 询</el-button>
-        <el-button type="danger" @click="add">添加级别</el-button>
+        <el-button :loading="loading" type="default" @click="onSearch">查 询</el-button>
+        <el-button type="primary" @click="add">添加级别</el-button>
         <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
       </el-form-item>
     </el-form>
@@ -28,24 +28,24 @@
         :data="list"
       >
         <el-table-column
-          prop="levelName"
+          prop="gradeName"
           label="级别名称"
         />
         <el-table-column
-          prop="levelId"
+          prop="id"
           label="级别ID"
         />
         <el-table-column
-          prop="updateDate"
+          prop="updateTime"
           label="更新时间"
         />
         <el-table-column
-          prop="updatePerson"
+          prop="updateName"
           label="更新人"
           show-overflow-tooltip
         />
         <el-table-column
-          prop="remarks"
+          prop="remark"
           label="备注"
           show-overflow-tooltip
         />
@@ -53,7 +53,7 @@
           <template v-slot="scope">
             <el-button
               size="mini"
-              type="primary"
+              type="text"
               @click="edit(scope.row)"
             >
               修改
@@ -62,7 +62,7 @@
               title="确定删除吗？"
               @onConfirm="destroy(scope.row)"
             >
-              <el-button slot="reference" size="mini" type="danger">
+              <el-button style="margin-left: 10px" slot="reference" size="mini" type="text">
                 删除
               </el-button>
             </el-popconfirm>
@@ -98,8 +98,8 @@ export default {
       row: {},
       placeholder: '请输入关键字',
       form: {
-        name: '',
-        remarks: ''
+        type: '',
+        keywords: ''
       },
       list: [],
       page: {
@@ -108,38 +108,40 @@ export default {
         limit: 20
       },
       levelOptions: [
-        { label: '普通代理', value: 'putong' },
-        { label: '白金代理', value: 'baijin' }
+        { label: '全部', value: '' },
+        { label: '级别名称', value: 'gradleName' }
       ]
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['agentManage/getLevelList']
+      loading: state => state.loading.effects['userManager/queryGradleInfoList'],
+      allGrade (state) {
+        return state.userManager.allGrade
+      }
     })
   },
   methods: {
-    ...mapActions('agentManage', ['getLevelList']),
+    ...mapActions('userManager', ['queryGradleInfoList', 'delGradeById']),
     handleSelectChange(v) {
-      // console.log(v)
+      console.log(this.form.type)
     },
     onSearch(page) {
       const query = {
-        ...this.form
+        gradleName: this.form.type === 'gradleName' ? this.form.keywords : '',
+        name: this.form.type === 'name' ? this.form.keywords : ''
       }
       if (page) {
         query.pageNum = page.page
       } else {
         query.pageNum = 1
       }
-      this.getLevelList(query).then(res => {
-        this.list = map(res.data, o => {
-          const level = find(this.levelOptions, { value: o.level })
-          o.levelName = level ? level.label : ''
-          return o
-        })
-        this.page = res.page
-      })
+      this.queryGradleInfoList(query).then(res => {
+        if (!res.code) {
+          this.list = res.data.list
+          this.page.total = res.data.count
+        }
+      }).catch(error => {})
     },
     resetForm() {
       const { form } = this.$refs
@@ -148,13 +150,28 @@ export default {
     },
     add() {
       this.formVisible = true
+      this.row.title = '添加级别'
     },
     edit(row) {
+      console.log(row)
       this.formVisible = true
       this.row = row
+      this.row.title = '修改级别'
     },
-    destroy() {
-
+    destroy(row) {
+      console.log(row)
+      this.delGradeById({ id: row.id }).then(res => {
+        if (!res.code) {
+          if (res.data.isSuccess === '1') {
+            this.$message.success('操作成功！')
+            this.onSearch()
+          } else {
+            this.$message.error('操作失败！')
+          }
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(error => {})
     }
   },
   mounted() {

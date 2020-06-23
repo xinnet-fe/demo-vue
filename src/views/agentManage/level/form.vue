@@ -1,22 +1,23 @@
 <template>
   <div class="apply-form">
-    <el-dialog :before-close="beforeClose" destroy-on-close title="添加级别" :visible.sync="formVisible" width="500px">
+    <el-dialog :before-close="beforeClose" destroy-on-close :title="title" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="级别名称" prop="levelName" required>
-          <el-input v-model="form.levelName" placeholder="请输入级别名称，限20个字符" />
+        <el-form-item label="级别名称" prop="gradleName" required>
+          <el-input v-model="form.gradleName" maxlength="20" placeholder="请输入级别名称，限20个字符" />
         </el-form-item>
-        <el-form-item label="备注" prop="remarks">
+        <el-form-item label="备注" prop="remark">
           <el-input
-            v-model="form.remarks"
+            v-model="form.remark"
             type="textarea"
             :rows="3"
+            maxlength="500"
             placeholder="请填写备注，限500个字符"
           />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeModal">取 消</el-button>
-        <el-button type="primary" @click="onSubmit">确定开通</el-button>
+        <el-button type="primary" @click="onSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -24,7 +25,7 @@
 
 <script>
 import { within20Len, within500Len } from '@/utils/textLength'
-
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'AgentManageLevelForm',
   props: {
@@ -41,22 +42,26 @@ export default {
   },
   data() {
     return {
+      title: '',
       form: {
-        levelName: '',
-        remarks: ''
+        gradleName: '',
+        remark: ''
       },
       rules: {
-        levelName: [
+        gradleName: [
           { required: true, message: '必须填写！', trigger: 'blur' },
           { validator: within20Len, trigger: 'blur' }
         ],
-        remarks: [
+        remark: [
           { validator: within500Len, trigger: 'blur' }
         ]
       }
     }
   },
   computed: {
+    ...mapState({
+      loading: state => state.loading.effects['userManager/saveGradleInfo']
+    }),
     formVisible: {
       get() {
         return this.visible
@@ -67,15 +72,30 @@ export default {
     }
   },
   methods: {
+    ...mapActions('userManager', ['saveGradleInfo']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
+        console.log(valid)
         if (valid) {
           console.log(this.form)
           // 列表中选中行数据
-          console.log(this.row)
+          console.log(this.selected)
           // submit
+          this.saveGradleInfo(this.form).then(res => {
+            if (!res.code) {
+              if (res.data.isSuccess === '1') {
+                this.$message.success('处理成功!')
+                this.closeModal()
+                this.$parent.onSearch()
+              } else {
+                this.$message.error('处理失败!')
+              }
+            }
+          }).catch(error => {
+            this.$message.error(error)
+          })
+
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -93,10 +113,11 @@ export default {
     }
   },
   mounted() {
-    if (this.row.levelId) {
-      this.form.levelName = this.row.levelName
-      this.form.remarks = this.row.remarks
+    if (this.row.id) {
+      this.form.gradleName = this.row.gradeName
+      this.form.remark = this.row.remark
     }
+    this.title = this.row.title
   }
 }
 </script>

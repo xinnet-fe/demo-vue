@@ -3,7 +3,7 @@
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true">
       <el-form-item label="会员ID" prop="memberId">
-        <el-select v-model="form.memberId" @change="handleSelectChange">
+        <el-select v-model="form.type" @change="handleSelectChange">
           <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -17,6 +17,7 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
         />
       </el-form-item>
       <el-form-item label="状态" prop="state">
@@ -25,7 +26,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="primary" @click="onSearch">查 询</el-button>
+        <el-button :loading="loading" type="default" @click="onSearch">查 询</el-button>
         <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
       </el-form-item>
     </el-form>
@@ -85,7 +86,7 @@
             <el-button
               v-if="scope.row.state === '01'"
               size="mini"
-              type="primary"
+              type="text"
               @click="handleOpen(scope.row)"
             >
               开通
@@ -100,7 +101,7 @@
         @pagination="onSearch"
       />
     </div>
-    <dialog-apply-form :visible.sync="formVisible" :row.sync="row" />
+    <dialog-apply-form v-if="formVisible" :visible.sync="formVisible" :row.sync="row" />
   </div>
 </template>
 <script>
@@ -117,16 +118,12 @@ export default {
     return {
       formVisible: false,
       row: {},
-      placeholder: '',
+      placeholder: '请输入关键字',
       form: {
-        agentCode: '',
-        telenumber: '',
-        userNameEmail: '',
-        organizeNameCn: '',
-        startDate: '',
-        endDate: '',
-        pageNum: '',
-        state: ''
+        type: '',
+        date: '',
+        keywords: '',
+        state: '01'
       },
       list: [],
       page: {
@@ -136,13 +133,16 @@ export default {
       },
       memberType: [
         { label: '代理编号', value: 'agentCode' },
-        { label: '手机号', value: 'phone' },
-        { label: '邮箱', value: 'email' },
-        { label: '联系人', value: 'contacts' }
+        { label: '手机号', value: 'telenumber' },
+        { label: '邮箱', value: 'userNameEmail' },
+        { label: '联系人', value: 'organizeNameCn' }
       ],
       stateType: [
-        { label: '未开通', value: 0 },
-        { label: '已开通', value: 1 }
+        { label: '全部', value: '' },
+        { label: '未开通', value: '01' },
+        { label: '已开通', value: '02' },
+        { label: '已锁定', value: '03' },
+        { label: '已关闭', value: '04' }
       ]
     }
   },
@@ -157,9 +157,18 @@ export default {
       console.log(v)
     },
     onSearch(page) {
+      console.log(this.form.date)
       const query = {
-        ...this.form
+        agentCode: this.form.type === 'agentCode' ? this.form.keywords : '',
+        telenumber: this.form.type === 'telenumber' ? this.form.keywords : '',
+        userNameEmail: this.form.type === 'userNameEmail' ? this.form.keywords : '',
+        organizeNameCn: this.form.type === 'organizeNameCn' ? this.form.keywords : '',
+        pageNum: '',
+        state: this.form.state,
+        startDate: this.form.date[0] ? `${this.form.date[0]} 00.00.00` : '',
+        endDate: this.form.date[1] ? `${this.form.date[1]} 23.59.59` : ''
       }
+
       if (page) {
         query.pageNum = page.page
       } else {
@@ -173,6 +182,10 @@ export default {
         }
       }).catch(error => {
       })
+    },
+    handleOpen(row) {
+      this.formVisible = true
+      this.row = row
     },
     resetForm() {
       const { form } = this.$refs

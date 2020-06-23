@@ -2,8 +2,8 @@
   <div class="agent-manage-apply">
     <!-- search -->
     <el-form ref="searchForm" :model="searchForm" :inline="true">
-      <el-form-item label="会员ID" prop="memberId">
-        <el-select v-model="searchForm.memberId">
+      <el-form-item label="会员ID" prop="type">
+        <el-select v-model="searchForm.type">
           <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -17,6 +17,7 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
         />
       </el-form-item>
       <el-form-item label="状态" prop="state">
@@ -24,37 +25,32 @@
           <el-option v-for="item in stateType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属分公司" prop="company">
-        <el-select v-model="searchForm.company">
-          <el-option v-for="item in companyOptions" :key="item.value" :label="item.label" :value="item.value" />
+      <el-form-item label="所属分公司" prop="organCode">
+        <el-select v-model="searchForm.organCode">
+          <el-option v-for="item in queryOrganSaleList" :key="item.orgCode" :label="item.name" :value="item.orgCode" />
         </el-select>
       </el-form-item>
-      <el-form-item label="业务归属" prop="business">
-        <el-select v-model="searchForm.business">
-          <el-option v-for="item in businessOptions" :key="item.value" :label="item.label" :value="item.value" />
+      <el-form-item label="财务归属" prop="financeCode">
+        <el-select v-model="searchForm.financeCode">
+          <el-option v-for="item in queryFinanclAttrList" :key="item.financeCode" :label="item.financeName" :value="item.financeCode" />
         </el-select>
       </el-form-item>
-      <el-form-item label="财务归属" prop="finance">
-        <el-select v-model="searchForm.finance">
-          <el-option v-for="item in financeOptions" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="级别" prop="level">
-        <el-select v-model="searchForm.level">
-          <el-option v-for="item in levelOptions" :key="item.value" :label="item.label" :value="item.value" />
+      <el-form-item label="级别" prop="gradeCode">
+        <el-select v-model="searchForm.gradeCode">
+          <el-option v-for="item in allGrade" :key="item.id" :label="item.gradeName" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSearch">查 询</el-button>
-        <el-button type="primary" @click="resetForm">重 置</el-button>
+        <el-button :loading="loading" type="default" @click="onSearch">查 询</el-button>
+        <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
       </el-form-item>
     </el-form>
     <!-- search -->
 
     <div class="mult-operation">
-      <el-button type="warning" size="mini" @click="showModal('businessModalVisible')">业务归属</el-button>
-      <el-button type="warning" size="mini" @click="showModal('financeModalVisible')">财务归属</el-button>
-      <el-button type="warning" size="mini" @click="showModal('levelModalVisible')">修改级别</el-button>
+      <el-button type="default" size="mini" @click="showModal('businessModalVisible')">业务归属</el-button>
+      <el-button type="default" size="mini" @click="showModal('financeModalVisible')">财务归属</el-button>
+      <el-button type="default" size="mini" @click="showModal('levelModalVisible')">修改级别</el-button>
     </div>
 
     <div class="table-section">
@@ -110,18 +106,16 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="180">
           <template v-slot="scope">
-            <el-button size="mini" type="primary" @click="showDetailModal(scope.row)">
+            <el-button size="mini" type="text" @click="showDetailModal(scope.row)">
               详情
             </el-button>
-            <el-button size="mini" type="primary" @click="showAccountModal(scope.row)">
-              修改账号
-            </el-button>
+            <el-button size="mini" type="text" @click="showAccountModal(scope.row)">修改账号</el-button>
             <el-popconfirm
               title="确定终止吗？"
               v-if="scope.row.state !== '04'"
               @onConfirm="stop(scope.row)"
             >
-              <el-button slot="reference" size="mini" type="warning">
+              <el-button style="margin-left:10px" slot="reference" size="mini" type="text">
                 终止
               </el-button>
             </el-popconfirm>
@@ -172,14 +166,14 @@ export default {
       // table中复选框选中值
       multipleSelection: [],
       searchForm: {
+        type: '',
         memberId: '',
         keywords: '',
-        date: '',
+        date: [],
         state: '',
-        company: '',
-        business: '',
-        finance: '',
-        level: ''
+        organCode: '',
+        financeCode: '',
+        gradeCode: ''
       },
       list: [],
       page: {
@@ -188,48 +182,47 @@ export default {
         limit: 20
       },
       memberType: [
+        { label: '全部', value: '' },
         { label: '代理编号', value: 'agentCode' },
-        { label: '手机号', value: 'phone' },
-        { label: '邮箱', value: 'email' },
-        { label: '联系人', value: 'contacts' }
+        { label: '销售编号', value: 'saleCode' },
+        { label: '渠道名称', value: 'organizeNameCn' }
       ],
       stateType: [
-        { label: '未开通', value: 0 },
-        { label: '已开通', value: 1 }
-      ],
-      companyOptions: [
-        { label: '第一份公司', value: 'one' },
-        { label: '第二分公司', value: 'two' }
-      ],
-      marketOptions: [
-        { label: '复兴', value: 'fuxing' },
-        { label: '王伟', value: 'wangwei' }
-      ],
-      businessOptions: [
-        { label: '业务1', value: 'one' },
-        { label: '业务2', value: 'two' }
-      ],
-      financeOptions: [
-        { label: '北京总部', value: 'beijing' },
-        { label: '上海分部', value: 'shanghai' }
-      ],
-      levelOptions: [
-        { label: '普通代理', value: 'putong' },
-        { label: '白金代理', value: 'baijin' }
+        { label: '全部', value: '' },
+        { label: '未开通', value: '01' },
+        { label: '已开通', value: '02' },
+        { label: '已锁定', value: '03' },
+        { label: '已关闭', value: '04' }
       ]
     }
   },
   computed: {
     ...mapState({
       loading: state => state.loading.effects['userManager/findDlInfo'],
-      loading: state => state.loading.effects['userManager/breakInfomation']
+      allGrade (state) {
+        return [{ gradeName: '全部', id: '' }, ...state.userManager.allGrade]
+      },
+      queryFinanclAttrList (state) {
+        return [{ financeName: '全部', financeCode: '' }, ...state.userManager.queryFinanclAttrList]
+      },
+      queryOrganSaleList (state) {
+        return [{ name: '全部', orgCode: '' }, ...state.userManager.queryOrganSaleList]
+      }
     })
   },
   methods: {
     ...mapActions('userManager', ['findDlInfo', 'breakInfomation']),
     onSearch(page) {
       const query = {
-        ...this.form
+        agentCode: this.searchForm.type === 'agentCode' ? this.searchForm.keywords : '',
+        saleCode: this.searchForm.type === 'saleCode' ? this.searchForm.keywords : '',
+        organizeNameCn: this.searchForm.type === 'organizeNameCn' ? this.searchForm.keywords : '',
+        organCode: this.searchForm.organCode,
+        financeCode: this.searchForm.financeCode,
+        gradeCode: this.searchForm.gradeCode,
+        startDate: this.searchForm.date[0] ? `${this.searchForm.date[0]} 00.00.00` : '',
+        endDate: this.searchForm.date[1] ? `${this.searchForm.date[1]} 23.59.59` : '',
+        state: this.searchForm.state
       }
       if (page) {
         query.pageNum = page.page
@@ -291,9 +284,8 @@ export default {
     }
   },
   mounted() {
-    this.onSearch(1)
+    this.onSearch()
     // 获取级别数据
-
   }
 }
 </script>

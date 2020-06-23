@@ -1,11 +1,11 @@
 <template>
   <div class="info-business-form">
     <el-dialog :before-close="beforeClose" destroy-on-close title="修改业务归属" :visible.sync="formVisible" width="500px" @open="open">
-      <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="选择分公司/选择销售" prop="company" required>
+      <el-form ref="form" :model="form" label-width="180px" :rules="rules">
+        <el-form-item label="选择分公司/选择销售" prop="selectedOptions" required>
           <el-cascader
             :options="queryOrganSaleList"
-            v-model="selectedOptions"
+            v-model="form.selectedOptions"
             @change="handleChange">
           </el-cascader>
         </el-form-item>
@@ -42,34 +42,39 @@ export default {
   },
   data() {
     return {
-      selectedOptions: '',
       form: {
-        company: '',
-        market: '',
-        level: ''
+        selectedOptions: []
       },
       rules: {
-        company: [
-          { required: true, message: '必须填写！', trigger: 'blur' }
-        ],
-        market: [
-          { required: true, message: '必须填写！', trigger: 'blur' }
+        selectedOptions: [
+          { required: true, message: '必须填写！', trigger: 'change' }
         ]
-      },
-      companyOptions: this.$parent.companyOptions,
-      marketOptions: this.$parent.marketOptions
+      }
     }
   },
   mounted () {
-    console.log("state.userManager.queryOrganSaleList")
-    console.log(this.queryOrganSaleList)
-    // this.queryOrganSaleList
   },
   computed: {
     ...mapState({
       queryOrganSaleList (state) {
         // console.log(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value'))
-        return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
+        // return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
+        return state.userManager.queryOrganSaleList.map((v) => {
+          const item = {
+            label: v.name,
+            value: v.orgCode
+          }
+          if (v.salemans && v.salemans.length) {
+            item.children = []
+            item.children = v.salemans.map((v2) => {
+              return {
+                label: v2.name,
+                value: v2.ptid
+              }
+            })
+          }
+          return item
+        })
       }
     }),
     formVisible: {
@@ -91,8 +96,21 @@ export default {
           // 列表中选中行数据
           console.log(this.selected)
           // submit
-          this.$message.success('修改成功!')
-          this.closeModal()
+          const params = {
+            type: 'yewu',
+            agentCodes: this.selected.map((v) => {
+              return v.agentCode
+            }).join(','),
+            organCode: this.form.selectedOptions[0],
+            saleCode: this.form.selectedOptions[1]
+          }
+          this.batchUpdate(params).then(res => {
+            if (!res.code) {
+              this.$message.success('修改成功!')
+              this.closeModal()
+              this.$parent.onSearch()
+            }
+          }).catch(error => {})
         } else {
           return false
         }

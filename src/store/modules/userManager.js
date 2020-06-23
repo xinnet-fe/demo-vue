@@ -84,6 +84,50 @@ const actions = {
     }).catch(error => {
       return error
     })
+  },
+  queryGradleInfoList({ commit }, query) {
+    return api.queryGradleInfoList(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  delGradeById(context, query) {
+    return api.delGradeById(query).then(res => {
+      context.dispatch('findAllGrade')
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  saveGradleInfo(context, query) {
+    return api.saveGradleInfo(query).then(res => {
+      context.dispatch('findAllGrade')
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  openAgentUser({ commit }, query) {
+    return api.openAgentUser(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  queryAgentCustomerList(context, query) {
+    return api.queryAgentCustomerList(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  unBund({ commit }, query) {
+    return api.unBund(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
   }
 }
 
