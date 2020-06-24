@@ -17,8 +17,8 @@ module.exports = {
   // },
   // devServer proxy
   proxy: {
-    '/portal': {
-      target: 'http://119.10.116.247:8082',
+    '/employee': {
+      target: 'https://agentmanagement.xinnet.com',
       changeOrigin: true
     },
     '/userManager': {

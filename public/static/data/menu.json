@@ -1,39 +1,39 @@
 [
     {
-        "code": "agent-client-app",
+        "code": "agent-manage",
         "parentCode": null,
+        "icon": "applicationCenter",
+        "text": "代理商管理",
+        "url": "",
+        "target": "",
         "children": [{
-            "code": "agent-client",
-            "parentCode": "agent-client-app",
+            "code": "apply",
+            "parentCode": "agent-manage",
             "icon": "",
-            "text": "专区首页",
+            "text": "代理申请",
             "url": "",
             "target": "tab"
         }, {
-            "code": "agent-client-mgmt",
-            "parentCode": "agent-client-app",
+            "code": "info",
+            "parentCode": "agent-manage",
             "icon": "",
-            "text": "客户管理",
+            "text": "代理商信息",
             "url": "",
             "target": "tab"
         },{
-            "code": "agent-client-order",
-            "parentCode": "agent-client-app",
+            "code": "level",
+            "parentCode": "agent-manage",
             "icon": "",
-            "text": "客户订单",
+            "text": "级别管理",
             "url": "",
             "target": "tab"
         },{
-            "code": "agent-client-prod-open",
-            "parentCode": "agent-client-app",
+            "code": "client",
+            "parentCode": "agent-manage",
             "icon": "",
-            "text": "商品开通",
+            "text": "代理商客户管理",
             "url": "",
             "target": "tab"
-        }],
-        "icon": "applicationCenter",
-        "text": "代理专区",
-        "url": "",
-        "target": ""
+        }]
     }
 ]
