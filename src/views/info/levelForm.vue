@@ -45,6 +45,10 @@ export default {
       }
     }
   },
+  mounted () {
+//     this.$refs.level.validateState = 'error'
+// this.$refs.level.validateMessage = 'res.msg'
+  },
   computed: {
     ...mapState('userManager', ['allGrade']),
     formVisible: {
@@ -78,6 +82,10 @@ export default {
               this.$message.success('修改成功!')
               this.closeModal()
               this.$parent.onSearch()
+            } else {
+              if (res.data.code === '665030') {
+                this.$refs.level.validateMessage = res.msg
+              }
             }
           }).catch(error => {})
 

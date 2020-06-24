@@ -26,9 +26,13 @@
         </el-select>
       </el-form-item>
       <el-form-item label="所属分公司" prop="organCode">
-        <el-select v-model="searchForm.organCode">
-          <el-option v-for="item in queryOrganSaleList" :key="item.orgCode" :label="item.name" :value="item.orgCode" />
-        </el-select>
+        <el-cascader
+          :clearable="true"
+          :change-on-select="true"
+          :options="queryOrganSaleList"
+          v-model="searchForm.selectedOptions"
+        >
+        </el-cascader>
       </el-form-item>
       <el-form-item label="财务归属" prop="financeCode">
         <el-select v-model="searchForm.financeCode">
@@ -170,7 +174,7 @@ export default {
         keywords: '',
         date: [],
         state: '',
-        organCode: '',
+        selectedOptions: '',
         financeCode: '',
         gradeCode: ''
       },
@@ -182,12 +186,11 @@ export default {
       },
       memberType: [
         { label: '代理编号', value: 'agentCode' },
-        { label: '销售编号', value: 'saleCode' },
+        // { label: '销售编号', value: 'saleCode' },
         { label: '渠道名称', value: 'organizeNameCn' }
       ],
       stateType: [
         { label: '全部', value: '' },
-        { label: '未开通', value: '01' },
         { label: '已开通', value: '02' },
         { label: '已锁定', value: '03' },
         { label: '已关闭', value: '04' }
@@ -204,7 +207,24 @@ export default {
         return [{ financeName: '全部', financeCode: '' }, ...state.userManager.queryFinanclAttrList]
       },
       queryOrganSaleList (state) {
-        return [{ name: '全部', orgCode: '' }, ...state.userManager.queryOrganSaleList]
+        // console.log(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value'))
+        // return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
+        return state.userManager.queryOrganSaleList.map((v) => {
+          const item = {
+            label: v.name,
+            value: v.orgCode
+          }
+          if (v.salemans && v.salemans.length) {
+            item.children = []
+            item.children = v.salemans.map((v2) => {
+              return {
+                label: v2.name,
+                value: v2.ptid
+              }
+            })
+          }
+          return item
+        })
       }
     })
   },
@@ -213,9 +233,9 @@ export default {
     onSearch(page) {
       const query = {
         agentCode: this.searchForm.type === 'agentCode' ? this.searchForm.keywords : '',
-        saleCode: this.searchForm.type === 'saleCode' ? this.searchForm.keywords : '',
+        saleCode: this.searchForm.selectedOptions[1] ? this.searchForm.selectedOptions[1] : '',
         organizeNameCn: this.searchForm.type === 'organizeNameCn' ? this.searchForm.keywords : '',
-        organCode: this.searchForm.organCode,
+        organCode: this.searchForm.selectedOptions[0] ? this.searchForm.selectedOptions[0] : '',
         financeCode: this.searchForm.financeCode,
         gradeCode: this.searchForm.gradeCode,
         startDate: this.searchForm.date[0] ? `${this.searchForm.date[0]} 00.00.00` : '',

@@ -202,7 +202,7 @@ export default {
     // 获取联系人信息
     this.queryContactList({ agentCode: this.row.agentCode }).then(res => {
       if (!res.code) {
-        this.contactsInfo = [{contactsName: this.row.saleName, contactsEmail: this.row.userNameEmail, contactsMobile: this.row.telenumber, remark: this.row.userNameEmail}, ...res.data]
+        this.contactsInfo = [{contactsName: this.row.saleName, contactsEmail: this.row.userNameEmail, contactsMobile: this.row.telenumber, remark: ''}, ...res.data]
       }
     }).catch(error => {})
   },

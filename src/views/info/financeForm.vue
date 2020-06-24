@@ -3,7 +3,7 @@
     <el-dialog :before-close="beforeClose" destroy-on-close title="修改财务归属" :visible.sync="formVisible" width="500px" @open="open">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="选择归属" prop="finance" required>
-          <el-select v-model="form.finance" placeholder="请绑定销售">
+          <el-select v-model="form.finance" placeholder="请选择归属">
             <el-option v-for="item in queryFinanclAttrList" :key="item.financeCode" :label="item.financeName" :value="item.financeCode" />
           </el-select>
         </el-form-item>

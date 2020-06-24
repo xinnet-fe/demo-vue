@@ -138,6 +138,8 @@ export default {
         if (!res.code) {
           this.list = res.data.list
           this.page.total = res.data.count
+        } else {
+
         }
       }).catch(error => {})
     },
