@@ -2,7 +2,6 @@
 
 @mixin colorBtn($color) {
   background: $color;
-
   &:hover {
     color: $color;
 
@@ -96,4 +95,7 @@
   padding: 10px 15px;
   font-size: 14px;
   border-radius: 4px;
+}
+.el-button{
+  font-size: 12px;
 }

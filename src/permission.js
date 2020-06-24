@@ -14,6 +14,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
+// let loginin = 'notuse'
+let loginin = false
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -29,21 +31,35 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasMenus = store.getters.menus && store.getters.menus.length > 0
-      const hasUser = store.getters.user && store.getters.user.id
-      if (hasMenus && hasUser) {
+      let hasMenus = 0
+      let hasUser = 0
+      if (loginin==='notuse') {
+        hasMenus = store.getters.menus && store.getters.menus.length > 0
+        hasUser = store.getters.user && store.getters.user.id
+      }
+
+      if (loginin === true || (hasMenus && hasUser)) {
         next()
       } else {
         try {
-          const [menus] = await when(
-            store.dispatch('userinfo/getSidebarMenus'),
-            store.dispatch('userinfo/getUser')
-          )
-          const accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
+          let accessRoutes
+          if (loginin === false) {
+            loginin = true
+            accessRoutes = await store.dispatch('permission/generateRoutes')
+          } else {
+            const [menus] = await when(
+              store.dispatch('userinfo/getSidebarMenus'),
+              store.dispatch('userinfo/getUser')
+            )
+            accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
+          }
 
           router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
         } catch (error) {
+          if (loginin !== 'notuse') {
+            loginin = false
+          }
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
@@ -58,7 +74,9 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
+    if (loginin !== 'notuse') {
+      loginin = false
+    }
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

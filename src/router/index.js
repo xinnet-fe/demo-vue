@@ -201,6 +201,21 @@ const demosConstantRoutes = hasDevelopment ? [
   tableRouter,
   formRouter,
   {
+    path: '/pagination',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/pagination/index'),
+        name: 'Pagination',
+        meta: { title: 'Pagination', icon: 'icon', noCache: true, type: 'demo' }
+      }
+    ]
+  },
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/list',
