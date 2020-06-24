@@ -1,3 +1,13 @@
+/*
+ * @Author: your name
+ * @Date: 2020-06-23 12:34:19
+ * @LastEditTime: 2020-06-24 10:52:31
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\settings.js
+ */ 
+const webpackConfig = require('./webpackConfig.js')
+
 module.exports = {
   title: '代理管理平台',
 
@@ -47,5 +57,8 @@ module.exports = {
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 
-  logoutApi: process.env.VUE_APP_ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/'
+  logoutApi: process.env.VUE_APP_ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/',
+
+  // webpack配置，覆盖掉vue.config.js中初始值
+  webpackConfig
 }

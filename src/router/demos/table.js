@@ -1,5 +1,3 @@
-/** When your routing table is too long, you can split it into small modules **/
-
 import Layout from '@/layout'
 
 const tableRouter = {
@@ -13,6 +11,12 @@ const tableRouter = {
     icon: 'table'
   },
   children: [
+    {
+      path: 'base-table',
+      component: () => import('@/views/demos/table/base-table'),
+      name: 'baseTable',
+      meta: { title: 'Base Table', type: 'demo' }
+    },
     {
       path: 'dynamic-table',
       component: () => import('@/views/demos/table/dynamic-table/index'),

@@ -13,7 +13,9 @@ const vm = new Vue()
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
-// const customPermission = ['admin']
+
+// let loginin = 'notuse'
+let loginin = false
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -47,6 +49,9 @@ router.beforeEach(async(to, from, next) => {
           router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
         } catch (error) {
+          if (loginin !== 'notuse') {
+            loginin = false
+          }
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
@@ -61,7 +66,9 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
+    if (loginin !== 'notuse') {
+      loginin = false
+    }
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

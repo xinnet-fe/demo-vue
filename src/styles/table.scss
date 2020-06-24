@@ -1,0 +1,12 @@
+@import './variables.scss';
+
+.el-table th.is-leaf{
+  background: #f7f7f7;
+  font-size: 12px;
+  font-weight: normal;
+  border-bottom: 1px solid #ededed;
+}
+.el-table td{
+  font-size: 12px;
+  border-bottom: 1px solid #ededed;
+}

@@ -1,4 +1,7 @@
-module.exports = {
+const webpackConfig = require('./src/settings.js').webpackConfig
+const customConfig = webpackConfig.babelConfig
+
+const defaultConfig = {
   presets: [
     '@vue/app',
     [
@@ -15,4 +18,9 @@ module.exports = {
       }
     ]
   ]
+}
+
+module.exports = {
+  ...defaultConfig,
+  ...customConfig
 }
