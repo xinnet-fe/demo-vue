@@ -36,7 +36,6 @@
       <el-table
         ref="table"
         v-loading="loading"
-        border
         tooltip-effect="dark"
         style="width: 100%"
         :data="list"
@@ -120,7 +119,7 @@ export default {
       row: {},
       placeholder: '请输入关键字',
       form: {
-        type: '',
+        type: 'agentCode',
         date: '',
         keywords: '',
         state: '01'

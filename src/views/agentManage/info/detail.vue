@@ -16,20 +16,28 @@
             <el-tab-pane label="实名制信息" name="second">
               <template v-slot:default>
                 <el-descriptions
+                  v-if="type==='P'"
                   :column="2"
-                  :labels="realNameLabel"
+                  :labels="realNameLabel_P"
+                  :data="realNameInfo"
+                />
+                <el-descriptions
+                  v-if="type==='C'"
+                  :column="2"
+                  :labels="realNameLabel_C"
                   :data="realNameInfo"
                 />
                 <br>
-                <el-row>
+                <el-row :gutter="10">
                   <el-col
-                    v-for="(o, index) in 3"
-                    :key="o"
-                    :span="7"
-                    :offset="index > 0 ? 1 : 0"
+                    class="col-img"
+                    v-for="(val, key, i) in realNameImg"
+                    :key="key"
+                    :span="8"
+                    v-if="val"
                   >
-                    <el-card :body-style="{ padding: '0px' }">
-                      <img width="100%" src="/static/img/test.jpg" class="image">
+                    <el-card :body-style="{ padding:'0px' }">
+                      <img width="100%" :src="val" class="image">
                     </el-card>
                   </el-col>
                 </el-row>
@@ -44,15 +52,15 @@
                   :data="contactsInfo"
                 >
                   <el-table-column
-                    prop="name"
+                    prop="contactsName"
                     label="姓名"
                   />
                   <el-table-column
-                    prop="email"
+                    prop="contactsEmail"
                     label="邮箱"
                   />
                   <el-table-column
-                    prop="phone"
+                    prop="contactsMobile"
                     label="手机"
                   />
                   <el-table-column
@@ -91,6 +99,7 @@ export default {
   data() {
     return {
       activeTab: 'first',
+      type: '',
       basicLabel: {
         agentCode: '代理编号',
         company: '所属分公司',
@@ -113,56 +122,87 @@ export default {
         market: '',
         address: ''
       },
-      realNameLabel: {
-        type: '实名制类型',
-        state: '实名制状态',
-        companyName: '企业名称',
-        code: '社会信用统一编码'
+      realNameLabel_P: {
+        organizeNameCn: '姓名',
+        authPersonCardCode: '居民身份证号码'
+      },
+      realNameLabel_C: {
+        organizeNameCn: '企业名称',
+        authPersonCardCode: '授权人个人居民身份证号码',
+        businessLicenseCode: '社会信用统一编码',
+        authPersonName: '经企业授权的个人名称'
       },
       realNameInfo: {
-        type: '企业认证',
-        state: '已认证',
-        companyName: '北京新网信息技术有限公司',
-        code: '911008288989497'
+        organizeNameCn: '',
+        authPersonCardCode: '',
+        businessLicenseCode: '',
+        authPersonName: ''
+      },
+      realNameImg: {
+        businessLicensePath: '',
+        authPersonCardPath: '',
+        authPersonCardbackPath: '',
+        grantCertPath: ''
       },
       contactsInfo: [
-        {
-          name: '陈燕鹏',
-          email: 'cheng@xinnet.com',
-          phone: '13899996638',
-          remark: '负责人联系人'
-        },
-        {
-          name: '陈鹏',
-          email: 'peng@xinnet.com',
-          phone: '13860663831',
-          remark: '财务联系人'
-        }
+        // {
+        //   name: '陈燕鹏',
+        //   email: 'cheng@xinnet.com',
+        //   phone: '13899996638',
+        //   remark: '负责人联系人'
+        // },
+        // {
+        //   name: '陈鹏',
+        //   email: 'peng@xinnet.com',
+        //   phone: '13860663831',
+        //   remark: '财务联系人'
+        // }
       ]
     }
   },
   mounted() {
     this.basicInfo.agentCode = this.row.agentCode
-    this.basicInfo.company = this.row.organizeNameCn
-    this.basicInfo.market = this.row.organizeNameCn
+    this.basicInfo.company = this.row.organName
+    this.basicInfo.market = this.row.saleName
     this.basicInfo.level = this.row.gradeName
     this.basicInfo.phone = this.row.telenumber
     this.basicInfo.email = this.row.userNameEmail
-    this.basicInfo.province = this.row.organizeNameCn
-    this.basicInfo.city = this.row.organizeNameCn
-    this.basicInfo.address = this.row.organizeNameCn
+    this.basicInfo.province = this.row.publicProvinceCn
+    this.basicInfo.city = this.row.publicCityCn
+    this.basicInfo.address = this.row.publicStreetCn
     // 获取实名信息
     this.queryDlRealInfo({ agentCode: this.row.agentCode }).then(res => {
       if (!res.code) {
-        // this.realNameInfo.type = res.data
-        
-        
-        // : {
-        //   type: '企业认证',
-        //   state: '已认证',
-        //   companyName: '北京新网信息技术有限公司',
-        //   code: '911008288989497'
-        // },
+        this.realNameInfo.organizeNameCn = res.data.organizeNameCn
+        this.realNameInfo.authPersonCardCode = res.data.authPersonCardCode
+        this.realNameImg.authPersonCardPath = res.data.authPersonCardPath
+        this.realNameImg.authPersonCardbackPath = res.data.authPersonCardbackPath
+
+        if (typeof res.data.authPersonName === 'undefined') {
+          this.type = 'P'
+        } else {
+          this.realNameInfo.businessLicenseCode = res.data.businessLicenseCode
+          this.realNameInfo.authPersonName = res.data.authPersonName
+          this.realNameImg.businessLicensePath = res.data.businessLicensePath
+          this.realNameImg.grantCertPath = res.data.grantCertPath
+          this.type = 'C'
+        }
+        console.log(this.realNameImg)
+        let params = {
+          agentCode: this.row.agentCode,
+          imgUrl: this.realNameImg.authPersonCardPath
+        }
+        for (let key in this.realNameImg) {
+          if (this.realNameImg[key].length) {
+            this.realNameImg[key] = `/userManager/echoImage?agentCode=${this.row.agentCode}&imgUrl=${this.realNameImg[key]}`
+          }
+        }
+      }
+    }).catch(error => {})
+    // 获取联系人信息
+    this.queryContactList({ agentCode: this.row.agentCode }).then(res => {
+      if (!res.code) {
+        this.contactsInfo = [{contactsName: this.row.saleName, contactsEmail: this.row.userNameEmail, contactsMobile: this.row.telenumber, remark: this.row.userNameEmail}, ...res.data]
       }
     }).catch(error => {})
   },
@@ -182,7 +222,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('userManager', ['queryDlRealInfo']),
+    ...mapActions('userManager', ['queryDlRealInfo', 'queryContactList', 'echoImage']),
     closeModal() {
       this.$emit('update:visible', false)
       this.$emit('update:row', {})
@@ -194,8 +234,12 @@ export default {
     handleClick(e) {
       console.log(e)
     }
-  },
-
+  }
 }
 </script>
 
+<style lang="scss" scoped>
+.col-img{
+  margin-bottom: 10px;
+}
+</style>

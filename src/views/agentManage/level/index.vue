@@ -22,7 +22,6 @@
       <el-table
         ref="table"
         v-loading="loading"
-        border
         tooltip-effect="dark"
         style="width: 100%"
         :data="list"
@@ -98,7 +97,7 @@ export default {
       row: {},
       placeholder: '请输入关键字',
       form: {
-        type: '',
+        type: 'gradleName',
         keywords: ''
       },
       list: [],
@@ -108,7 +107,6 @@ export default {
         limit: 20
       },
       levelOptions: [
-        { label: '全部', value: '' },
         { label: '级别名称', value: 'gradleName' }
       ]
     }

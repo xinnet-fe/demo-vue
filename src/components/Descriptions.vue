@@ -115,9 +115,11 @@ export default {
           align-items: center;
           min-height: 48px;
           > p {
+            padding: 0 5px;
             flex-basis: 100%;
-            text-align: center;
+            text-align: left;
             margin: 0;
+            font-size: 12px;
           }
         }
       }

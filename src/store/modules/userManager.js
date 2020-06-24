@@ -128,6 +128,20 @@ const actions = {
     }).catch(error => {
       return error
     })
+  },
+  queryContactList({ commit }, query) {
+    return api.queryContactList(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  echoImage({ commit }, query) {
+    return api.echoImage(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
   }
 }
 

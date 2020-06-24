@@ -135,3 +135,11 @@ export function delGradeById(query) {
     params: query
   })
 }
+// 返回图片
+export function echoImage(query) {
+  return request({
+    url: '/userManager/echoImage',
+    method: 'get',
+    params: query
+  })
+}

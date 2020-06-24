@@ -57,7 +57,6 @@
       <el-table
         ref="table"
         v-loading="loading"
-        border
         tooltip-effect="dark"
         style="width: 100%"
         :data="list"
@@ -166,7 +165,7 @@ export default {
       // table中复选框选中值
       multipleSelection: [],
       searchForm: {
-        type: '',
+        type: 'agentCode',
         memberId: '',
         keywords: '',
         date: [],
@@ -182,7 +181,6 @@ export default {
         limit: 20
       },
       memberType: [
-        { label: '全部', value: '' },
         { label: '代理编号', value: 'agentCode' },
         { label: '销售编号', value: 'saleCode' },
         { label: '渠道名称', value: 'organizeNameCn' }

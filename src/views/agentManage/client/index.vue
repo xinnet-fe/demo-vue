@@ -46,7 +46,6 @@
       <el-table
         ref="table"
         v-loading="loading"
-        border
         tooltip-effect="dark"
         style="width: 100%"
         :data="list"
@@ -117,7 +116,7 @@ export default {
       row: {},
       placeholder: '请输入关键字',
       form: {
-        type: '',
+        type: 'agentCode',
         keywords: '',
         registerDate: '',
         bindingDate: '',
@@ -130,9 +129,8 @@ export default {
         limit: 20
       },
       memberType: [
-        { label: '全部', value: '' },
-        { label: '会员编号', value: 'hyCode' },
         { label: '代理编号', value: 'agentCode' },
+        { label: '会员编号', value: 'hyCode' },
         { label: '邮箱', value: 'userEmail' }
       ],
       stateType: [
