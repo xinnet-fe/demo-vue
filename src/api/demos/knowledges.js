@@ -40,6 +40,13 @@ export function knowledgeAdd(data) {
   })
 }
 
+export function categoryList() {
+  return request({
+    url: '/category/list',
+    method: 'get'
+  })
+}
+
 export function fetchArticle(id) {
   return request({
     url: '/vue-element-admin/article/detail',

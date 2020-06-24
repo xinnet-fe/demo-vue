@@ -7,8 +7,8 @@
         <span style="width:8%;display:inline-block;">标题：</span>
         <el-input v-model="listQuery.title" placeholder="请输入文章标题" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
         <span style="width:8%;display:inline-block;">所属栏目：</span>
-        <el-select v-model="listQuery.column" placeholder="请选择文章所属栏目" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
-          <el-option v-for="item in columns" :key="item" :label="item" :value="item" />
+        <el-select v-model="listQuery.classId" placeholder="请选择文章所属栏目" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
+          <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
         </el-select>
         <!-- <span style="width:8%;display:inline-block;">关键词：</span>
         <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
@@ -23,7 +23,7 @@
           <el-option v-for="item in publishState" :key="item.num" :label="item.name" :value="item.num" />
         </el-select>
         <span style="width:8%;display:inline-block;" class="demonstration">发布时间： </span>
-        <el-date-picker v-model="listQuery.releaseTime" type="datetime" class="filter-item" style="width:22%;margin-right: 20px;" placeholder="请选择发布时间" />
+        <el-date-picker v-model="listQuery.publishDate" type="datetime" value-format="yyyy-MM-dd hh:mm:ss" format="yyyy-MM-dd hh:mm:ss" class="filter-item" style="width:22%;margin-right: 20px;" placeholder="请选择发布时间" />
       </div>
       <div style="width:100%">
         <span style="width:8%;display:inline-block;">置顶状态： </span>
@@ -31,10 +31,10 @@
           <el-option v-for="item in isTop" :key="item.num" :label="item.name" :value="item.num" />
         </el-select>
       </div>
-      <el-button v-waves class="filter-item" type="primary" style="margin-right: 20px;" @click="handleFilter">
+      <el-button v-waves style="margin-right: 20px;" @click="handleFilter">
         搜索
       </el-button>
-      <el-button class="filter-item" type="primary" style="margin-right: 20px;" @click="resetModal">
+      <el-button style="margin-right: 20px;" @click="resetModal">
         重置
       </el-button>
       <!-- <el-button class="filter-item" style="margin-left: 10px;margin-right: 20px;" type="primary" @click="handleCreate">
@@ -66,17 +66,17 @@
           <span v-else>{{ row.title.substr(0, 20) }}...</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属栏目" class-name="status-col" width="20">
+      <el-table-column label="所属栏目" class-name="status-col" width="100">
         <template slot-scope="{row}">
-          <span>{{ row.column }}</span>
+          <span>{{ row.categoryName }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="设置置顶" width="70">
+      <!-- <el-table-column class-name="status-col" label="设置置顶" width="70">
         <template slot-scope="{row}">
           <el-switch v-if="row.top !== undefined" v-model="row.top" @change="handleUpdateswitch(row)" />
           <span v-else>1</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="关键词标签" align="center" width="175">
         <template slot-scope="{row}">
           <!-- <span v-if="row.summary.length < 20">{{ row.summary }}</span>
@@ -84,39 +84,42 @@
           <span>{{ row.tag }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" width="132">
+      <el-table-column label="创建时间" align="center" width="152">
         <template slot-scope="{row}">
-          <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{m}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发布时间" align="center" width="132">
+      <el-table-column label="发布时间" align="center" width="152">
         <template slot-scope="{row}">
-          <span>{{ row.publishTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.publishTime | parseTime('{y}-{m}-{d} {h}:{m}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="审核状态" align="center" width="63">
+      <el-table-column label="审核状态" align="center" width="80">
         <template slot-scope="{row}">
-          <span>{{ row.auditStates }}</span>
+          <span v-if="row.auditStates === '已通过'" style="color:#65c13c;">{{ row.auditStates }}</span>
+          <span v-else>{{ row.auditStates }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发布状态" align="center" width="63">
+      <el-table-column label="发布状态" align="center" width="80">
         <template slot-scope="{row}">
-          <span>{{ row.publishStates }}</span>
+          <span v-if="row.publishStates === '已发布'" style="color:#65c13c;">{{ row.publishStates }}</span>
+          <span v-else>{{ row.publishStates }}</span>
           <!-- <span v-if="row.publishStatus">{{ row.publishStatus }}</span>
           <span v-else>未发布</span> -->
         </template>
       </el-table-column>
-      <el-table-column label="审核结果" align="center" width="52">
+      <el-table-column label="审核结果" align="center" width="60">
         <template slot-scope="{row}">
-          <span>{{ row.auditResult }}</span>
+          <span style="color:#0069ff;cursor:pointer;" @click="handleLookover(row)">查看</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="60" class-name="small-padding fixed-width">
         <!-- <template slot-scope="{row,$index}"> -->
         <template slot-scope="{row}">
-          <el-button type="primary" class="btnstyle" size="mini" @click="handleAudit(row)">
+          <span style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">审核</span>
+          <!-- <el-button type="primary" class="btnstyle" size="mini" @click="handleAudit(row)">
             审核
-          </el-button>
+          </el-button> -->
           <!-- <el-bu    -->
         </template>
       </el-table-column>
@@ -131,32 +134,36 @@
         </el-form-item>
         <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span>
         <el-form-item label="所属栏目：" prop="column">
-          <el-select v-model="temp.column" placeholder="请选择文章所属栏目" clearable style="width: 100%;" class="filter-item">
+          <el-input v-model="temp.categoryName" disabled />
+          <!-- <el-select v-model="temp.categoryName" placeholder="请选择文章所属栏目" clearable style="width: 100%;" class="filter-item">
             <el-option v-for="item in columns" :key="item" :label="item" :value="item" />
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="关键词：" prop="keyword">
-          <el-input v-model="temp.tag" />
-          <span
+          <el-input v-model="temp.tag" disabled />
+          <!-- <span
             style="position: absolute;display: inline-block;width: 160px;right: -170px;"
-          >(多个关键词用"、"号隔开)</span>
+          >(多个关键词用"、"号隔开)</span> -->
         </el-form-item>
-        <el-form-item label="发布时间：" prop="releaseTime">
-          <el-date-picker v-model="temp.publishDate" type="datetime" class="filter-item" placeholder="请选择发布时间" />
+        <el-form-item label="发布时间：">
+          <!-- <el-input v-model="temp.publishTime" /> -->
+          <el-date-picker v-model="temp.publishTime" disabled type="datetime" class="filter-item" placeholder="请选择发布时间" />
         </el-form-item>
-        <el-form-item label="文章图片：" prop="releaseTime">
-          <img :src="temp.imageUrl">
+        <el-form-item label="文章图片：">
+          <img :src="temp.imgContent" style="width:280px;height:140px;">
         </el-form-item>
         <el-form-item label="作者：" prop="author">
-          <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
+          <el-input v-if="temp.writer" v-model="temp.writer" disabled />
+          <span v-else>无</span>
+          <!-- <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
             <el-option v-for="item in authors" :key="item" :label="item" :value="item" />
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="内容简介：" prop="briefIntroduction">
           <el-input v-model="temp.summary" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="文章正文：">
-          <el-input v-model="temp.content" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+          <el-input v-model="temp.content" :autosize="{ minRows: 6, maxRows: 8}" style="width:350px;" type="textarea" placeholder="Please input" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -186,7 +193,7 @@
             style="position: absolute;display: inline-block;width: 160px;right: -170px;"
           >(多个关键词用"、"号隔开)</span>
         </el-form-item>
-        <el-form-item label="发布时间：" prop="releaseTime">
+        <el-form-item label="发布时间：">
           <el-date-picker v-model="temp.releaseTime" type="datetime" class="filter-item" placeholder="请选择发布时间" />
         </el-form-item>
         <el-form-item label="置顶设置：" prop="value">
@@ -239,11 +246,21 @@
         <el-button type="primary" @click="dialogStatusdele==='deletes'?handleDeletes():handleDelete()">确定</el-button>
       </span>
     </el-dialog>
+    <el-dialog :title="Looktitle" :visible.sync="dialogLookVisible">
+      <p>审核状态：{{ tempLookover.state }}</p>
+      <p v-if="tempLookover.state == '未通过'">未通过原因：{{ tempLookover.context }}</p>
+      <p v-else>{{ tempLookover.state }}</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogLookVisible = false">取消</el-button>
+        <!-- <el-button type="primary" @click="handleDeletes()">确定</el-button> -->
+        <el-button type="primary" @click="dialogLookVisible = false">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { newsList, auditDetail, handleAudit } from '@/api/demos/knowledges'
+import { newsList, auditDetail, handleAudit, categoryList } from '@/api/demos/knowledges'
 import { createArticle, updateArticle } from '@/api/demos/article'
 import waves from '@/directive/demos/waves' // waves directive
 import { parseTime } from '@/utils/demos'
@@ -302,12 +319,11 @@ export default {
         // sort: '+id',
         actId: undefined,
         title: undefined,
-        keyword: undefined,
-        columns: undefined,
+        classId: undefined,
         auditState: undefined,
         publishState: undefined,
         // publishState: '1591924192000',
-        releaseTime: undefined,
+        publishDate: undefined,
         isTop: undefined
       },
       importanceOptions: [1, 2, 3],
@@ -346,23 +362,29 @@ export default {
       temp: {
         actId: undefined,
         title: undefined,
-        keyword: undefined,
-        columns: undefined,
+        categoryName: undefined,
         auditState: undefined,
         publishState: undefined,
-        releaseTime: new Date(),
+        publishDate: new Date(),
         isTop: undefined,
         originalValue: undefined,
         value: undefined
+      },
+      tempLookover: {
+        state: '',
+        content: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
       dialogStatusdele: '',
       dialogauthor: false,
       dialogAudit: false,
+      dialogLookVisible: false,
+      Looktitle: '审核结果',
       textMap: {
         update: '编辑标签',
-        create: '新增标签'
+        create: '新增标签',
+        audit: '审核内容'
       },
       dialogPvVisible: false,
       rules: {
@@ -378,7 +400,8 @@ export default {
       multipleSelection: [],
       values: false,
       tempflag: false,
-      authorName: ''
+      authorName: '',
+      categorylist: []
     }
   },
   created() {
@@ -412,6 +435,9 @@ export default {
           this.listLoading = false
         }, 1.5 * 1000)
       })
+      categoryList().then(response => {
+        this.categorylist = response.data
+      })
     },
     resetModal() {
       this.listQuery = {
@@ -420,11 +446,10 @@ export default {
         // sort: '+id',
         actId: undefined,
         title: undefined,
-        keyword: undefined,
-        columns: undefined,
+        classId: undefined,
         auditState: undefined,
         publishState: undefined,
-        releaseTime: undefined,
+        publishDate: undefined,
         isTop: undefined
       }
     },
@@ -437,7 +462,7 @@ export default {
     },
     handleFilter() {
       this.listQuery.page = 1
-      this.getList()
+      // this.getList()
     },
     resetTemp() {
       this.temp = {
@@ -448,6 +473,12 @@ export default {
         title: '',
         status: 'published',
         type: ''
+      }
+    },
+    resetTemps() {
+      this.tempLookover = {
+        state: '',
+        context: ''
       }
     },
     addAuthorname() {
@@ -499,19 +530,33 @@ export default {
         }
       })
     },
+    handleLookover(row) {
+      this.tempLookover.state = row.auditStates
+      if (row.auditStates === '未通过') {
+        this.tempLookover.context = '文章包含违禁词：' + row.auditResult
+      }
+      this.dialogLookVisible = true
+    },
     handleAudits() {
-      console.log(this.temp, 'tt')
-      // { actId: this.temp.actId,
-      //     description: encodeURI(encodeURI(this.temp.summary)),
-      //     title: encodeURI(encodeURI(this.temp.title)),
-      //     content: encodeURI(encodeURI(this.temp.content)) }
       handleAudit(
         { actId: this.temp.actId,
-          description: this.temp.summary,
+          summary: this.temp.summary,
           title: this.temp.title,
           content: this.temp.content }
       ).then(data => {
-        console.log(data, 'aaad')
+        if (data.message === '文章审核不通过，含有违禁词！') {
+          this.$notify.error({
+            title: '审核失败',
+            message: '文章审核不通过，含有违禁词！'
+          })
+        } else if (data.message === '审核通过') {
+          this.$notify.success({
+            title: '审核成功',
+            message: '审核通过！'
+          })
+        }
+        this.dialogAudit = false
+        this.getList()
       })
     },
     handleAudit(row) {
@@ -522,7 +567,6 @@ export default {
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
-        console.log(data, 'ddda')
       })
     },
     handleUpdate(row) {
