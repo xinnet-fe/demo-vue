@@ -86,9 +86,11 @@ export default {
               } else {
                 this.$message.error(res.msg)
               }
+            } else {
+              this.$message.error(res.msg)
             }
           }).catch(error => {
-            this.$message.error(res.msg)
+            this.$message.error(error)
           })
         } else {
           return false

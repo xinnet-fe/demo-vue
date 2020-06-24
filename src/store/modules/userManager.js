@@ -108,6 +108,14 @@ const actions = {
       return error
     })
   },
+  updateGradle(context, query) {
+    return api.saveGradleInfo(query).then(res => {
+      context.dispatch('findAllGrade')
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
   openAgentUser({ commit }, query) {
     return api.openAgentUser(query).then(res => {
       return res

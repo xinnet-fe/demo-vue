@@ -182,7 +182,7 @@ export default {
       form.clearValidate('form')
     },
     unbind(row) {
-      this.unBund({ agentCode: row.agentCode }).then(res => {
+      this.unBund({ agentCode: row.agentCode, customerCode: row.customerCode }).then(res => {
         if (!res.code) {
           if (res.data.isSuccess === '1') {
             this.$message.success('操作成功！')

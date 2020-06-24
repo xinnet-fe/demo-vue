@@ -2,7 +2,7 @@
   <div class="apply-form">
     <el-dialog :before-close="beforeClose" destroy-on-close :title="title" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="级别名称" prop="gradleName" required>
+        <el-form-item label="级别名称" prop="gradleName" ref="gradleName" required>
           <el-input v-model="form.gradleName" maxlength="20" placeholder="请输入级别名称，限20个字符" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
@@ -72,7 +72,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('userManager', ['saveGradleInfo']),
+    ...mapActions('userManager', ['saveGradleInfo', 'updateGradle']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
@@ -81,20 +81,46 @@ export default {
           // 列表中选中行数据
           console.log(this.selected)
           // submit
-          this.saveGradleInfo(this.form).then(res => {
-            if (!res.code) {
-              if (res.data.isSuccess === '1') {
-                this.$message.success('处理成功!')
-                this.closeModal()
-                this.$parent.onSearch()
+          if (this.row.id) {
+            this.form.id = this.row.id
+            this.updateGradle(this.form).then(res => {
+              if (!res.code) {
+                if (res.data.isSuccess === '1') {
+                  this.$message.success('处理成功!')
+                  this.closeModal()
+                  this.$parent.onSearch()
+                } else {
+                  this.$message.error('处理失败!')
+                }
               } else {
-                this.$message.error('处理失败!')
+                if (res.code === '665030') {
+                  this.$refs.gradleName.validateState = 'error'
+                  this.$refs.gradleName.validateMessage = res.msg
+                }
               }
-            }
-          }).catch(error => {
-            this.$message.error(error)
-          })
-
+            }).catch(error => {
+              this.$message.error(error)
+            })
+          } else {
+            this.saveGradleInfo(this.form).then(res => {
+              if (!res.code) {
+                if (res.data.isSuccess === '1') {
+                  this.$message.success('处理成功!')
+                  this.closeModal()
+                  this.$parent.onSearch()
+                } else {
+                  this.$message.error('处理失败!')
+                }
+              } else {
+                if (res.code === '665030') {
+                  this.$refs.gradleName.validateState = 'error'
+                  this.$refs.gradleName.validateMessage = res.msg
+                }
+              }
+            }).catch(error => {
+              this.$message.error(error)
+            })
+          }
         } else {
           return false
         }
@@ -113,6 +139,7 @@ export default {
     }
   },
   mounted() {
+
     if (this.row.id) {
       this.form.gradleName = this.row.gradeName
       this.form.remark = this.row.remark

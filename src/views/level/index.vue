@@ -169,9 +169,14 @@ export default {
             this.$message.error('操作失败！')
           }
         } else {
+          if (res.code === '665030') {
+            this.$message.error(res.msg)
+          }
           this.$message.error(res.msg)
         }
-      }).catch(error => {})
+      }).catch(error => {
+        this.$message.error(error)
+      })
     }
   },
   mounted() {

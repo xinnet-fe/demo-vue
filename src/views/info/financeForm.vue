@@ -79,8 +79,12 @@ export default {
               this.$message.success('修改成功!')
               this.closeModal()
               this.$parent.onSearch()
+            } else {
+              this.$message.error(res.msg)
             }
-          }).catch(error => {})
+          }).catch(error => {
+            this.$message.error(error)
+          })
         } else {
           return false
         }

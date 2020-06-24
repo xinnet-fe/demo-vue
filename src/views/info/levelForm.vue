@@ -46,8 +46,7 @@ export default {
     }
   },
   mounted () {
-//     this.$refs.level.validateState = 'error'
-// this.$refs.level.validateMessage = 'res.msg'
+
   },
   computed: {
     ...mapState('userManager', ['allGrade']),
@@ -83,11 +82,11 @@ export default {
               this.closeModal()
               this.$parent.onSearch()
             } else {
-              if (res.data.code === '665030') {
-                this.$refs.level.validateMessage = res.msg
-              }
+              this.$message.error(res.msg)
             }
-          }).catch(error => {})
+          }).catch(error => {
+            this.$message.error(error)
+          })
 
         } else {
           return false
