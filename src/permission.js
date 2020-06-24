@@ -3,20 +3,30 @@ import router from '@/router'
 import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import {
+  getToken
+} from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/demos/get-page-title'
-import { when } from './utils/request'
-import { xbTokenKey, hasDevelopment, logoutApi } from '@/settings'
+import {
+  when
+} from './utils/request'
+import {
+  xbTokenKey,
+  hasDevelopment,
+  logoutApi
+} from '@/settings'
 
 const vm = new Vue()
 
-NProgress.configure({ showSpinner: false }) // NProgress Configuration
+NProgress.configure({
+  showSpinner: false
+}) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
-// let loginin = 'notuse'
-let loginin = false
-router.beforeEach(async(to, from, next) => {
+let loginin = 'notuse'
+// let loginin = false
+router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
 
@@ -28,26 +38,41 @@ router.beforeEach(async(to, from, next) => {
 
   if (hasXbToken) {
     if (to.path === '/login') {
-      next({ path: '/' })
+      next({
+        path: '/'
+      })
       NProgress.done()
     } else {
-      // const hasMenus = store.getters.menus && store.getters.menus.length > 0
-      const hasUser = store.getters.user && store.getters.user.id
-      if (hasUser) {
+      let hasMenus = 0
+      let hasUser = 0
+      if (loginin === 'notuse') {
+        hasMenus = store.getters.menus && store.getters.menus.length > 0
+        hasUser = store.getters.user && store.getters.user.id
+      }
+
+      if (loginin === true || (hasMenus && hasUser)) {
         next()
       } else {
         try {
-          const [menus] = await when(
-            store.dispatch('userinfo/getSidebarMenus'),
-            store.dispatch('userinfo/getUser'),
-            store.dispatch('userManager/findAllGrade'),
-            store.dispatch('userManager/queryFinanclAttrList'),
-            store.dispatch('userManager/queryOrganSaleList')
-          )
-          const accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
-
+          let accessRoutes
+          if (loginin === false) {
+            loginin = true
+            accessRoutes = await store.dispatch('permission/generateRoutes')
+          } else {
+            const [menus] = await when(
+              store.dispatch('userinfo/getSidebarMenus'),
+              store.dispatch('userinfo/getUser'),
+              store.dispatch('userManager/findAllGrade'),
+              store.dispatch('userManager/queryFinanclAttrList'),
+              store.dispatch('userManager/queryOrganSaleList')
+            )
+            accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
+          }
           router.addRoutes(accessRoutes)
-          next({ ...to, replace: true })
+          next({
+            ...to,
+            replace: true
+          })
         } catch (error) {
           if (loginin !== 'notuse') {
             loginin = false
@@ -91,7 +116,9 @@ router.afterEach(() => {
 
 router.onError(error => {
   const cannotFindModule = 'Cannot find module'
-  const { message } = error
+  const {
+    message
+  } = error
 
   if (message && message.indexOf(cannotFindModule) > -1) {
     router.replace('/404')
