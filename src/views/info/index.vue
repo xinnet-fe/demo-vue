@@ -192,7 +192,7 @@ export default {
       stateType: [
         { label: '全部', value: '' },
         { label: '已开通', value: '02' },
-        { label: '已锁定', value: '03' },
+        { label: '已冻结', value: '03' },
         { label: '已关闭', value: '04' }
       ]
     }
@@ -238,14 +238,15 @@ export default {
         organCode: this.searchForm.selectedOptions[0] ? this.searchForm.selectedOptions[0] : '',
         financeCode: this.searchForm.financeCode,
         gradeCode: this.searchForm.gradeCode,
-        startDate: this.searchForm.date[0] ? `${this.searchForm.date[0]} 00.00.00` : '',
-        endDate: this.searchForm.date[1] ? `${this.searchForm.date[1]} 23.59.59` : '',
+        startDate: this.searchForm.date && this.searchForm.date[0] ? `${this.searchForm.date[0]} 00.00.00` : '',
+        endDate: this.searchForm.date && this.searchForm.date[1] ? `${this.searchForm.date[1]} 23.59.59` : '',
         state: this.searchForm.state
       }
       if (page) {
         query.pageNum = page.page
       } else {
         query.pageNum = 1
+        this.page.page = 1
       }
       this.findDlInfo(query).then(res => {
         if (!res.code) {

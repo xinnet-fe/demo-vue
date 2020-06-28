@@ -10,7 +10,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeModal">取 消</el-button>
-        <el-button type="primary" @click="onSubmit">确定开通</el-button>
+        <el-button type="primary" @click="onSubmit">确定修改</el-button>
       </div>
     </el-dialog>
   </div>

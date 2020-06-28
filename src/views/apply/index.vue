@@ -164,14 +164,15 @@ export default {
         organizeNameCn: this.form.type === 'organizeNameCn' ? this.form.keywords : '',
         pageNum: '',
         state: this.form.state,
-        startDate: this.form.date[0] ? `${this.form.date[0]} 00.00.00` : '',
-        endDate: this.form.date[1] ? `${this.form.date[1]} 23.59.59` : ''
+        startDate: this.form.date && this.form.date[0] ? `${this.form.date[0]} 00.00.00` : '',
+        endDate: this.form.date && this.form.date[1] ? `${this.form.date[1]} 23.59.59` : ''
       }
 
       if (page) {
         query.pageNum = page.page
       } else {
         query.pageNum = 1
+        this.page.page = 1
       }
       this.findDlApply(query).then(res => {
         if (!res.code) {

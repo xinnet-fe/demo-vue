@@ -31,7 +31,7 @@
             "code": "client",
             "parentCode": "agent-manage",
             "icon": "",
-            "text": "代理商客户管理",
+            "text": "代理商绑定客户管理",
             "url": "",
             "target": "tab"
         }]

@@ -68,6 +68,10 @@
           show-overflow-tooltip
         />
         <el-table-column
+          prop="agentRealName"
+          label="实名信息"
+        />
+        <el-table-column
           prop="createTime"
           label="绑定时间"
           show-overflow-tooltip
@@ -116,7 +120,7 @@ export default {
       row: {},
       placeholder: '请输入关键字',
       form: {
-        type: 'agentCode',
+        type: 'hyCode',
         keywords: '',
         registerDate: '',
         bindingDate: '',
@@ -159,15 +163,16 @@ export default {
         userEmail: this.form.type === 'userEmail' ? this.form.keywords : '',
         agentCode: this.form.type === 'agentCode' ? this.form.keywords : '',
         bindStatus: this.form.state,
-        registerStartTime: this.form.registerDate[0] ? `${this.form.registerDate[0]} 00.00.00` : '',
-        registerEndTime: this.form.registerDate[1] ? `${this.form.registerDate[1]} 23.59.59` : '',
-        bindStartTime: this.form.bindingDate[0] ? `${this.form.bindingDate[0]} 00.00.00` : '',
-        bindEndTime: this.form.bindingDate[1] ? `${this.form.bindingDate[1]} 23.59.59` : ''
+        registerStartTime: this.form.registerDate && this.form.registerDate[0] ? `${this.form.registerDate[0]} 00.00.00` : '',
+        registerEndTime: this.form.registerDate && this.form.registerDate[1] ? `${this.form.registerDate[1]} 23.59.59` : '',
+        bindStartTime: this.form.bindingDate && this.form.bindingDate[0] ? `${this.form.bindingDate[0]} 00.00.00` : '',
+        bindEndTime: this.form.bindingDate && this.form.bindingDate[1] ? `${this.form.bindingDate[1]} 23.59.59` : ''
       }
       if (page) {
         query.pageIndex = page.page
       } else {
         query.pageIndex = 1
+        this.page.page = 1
       }
       this.queryAgentCustomerList(query).then(res => {
         if (!res.code) {
