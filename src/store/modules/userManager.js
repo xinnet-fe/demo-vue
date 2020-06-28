@@ -109,7 +109,7 @@ const actions = {
     })
   },
   updateGradle(context, query) {
-    return api.saveGradleInfo(query).then(res => {
+    return api.updateGradle(query).then(res => {
       context.dispatch('findAllGrade')
       return res
     }).catch(error => {

@@ -133,6 +133,7 @@ export default {
         query.pageNum = page.page
       } else {
         query.pageNum = 1
+        this.page.page = 1
       }
       this.queryGradleInfoList(query).then(res => {
         if (!res.code) {

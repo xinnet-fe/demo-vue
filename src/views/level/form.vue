@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { within20Len, within500Len } from '@/utils/textLength'
 import { mapActions, mapState } from 'vuex'
 export default {
   name: 'AgentManageLevelForm',
@@ -49,11 +48,7 @@ export default {
       },
       rules: {
         gradleName: [
-          { required: true, message: '必须填写！', trigger: 'blur' },
-          { validator: within20Len, trigger: 'blur' }
-        ],
-        remark: [
-          { validator: within500Len, trigger: 'blur' }
+          { required: true, message: '必须填写！', trigger: 'blur' }
         ]
       }
     }
@@ -79,10 +74,12 @@ export default {
         if (valid) {
           console.log(this.form)
           // 列表中选中行数据
-          console.log(this.selected)
+          console.log("==============")
+          console.log(this.row.id)
           // submit
           if (this.row.id) {
             this.form.id = this.row.id
+            this.form.reMark = this.form.remark
             this.updateGradle(this.form).then(res => {
               if (!res.code) {
                 if (res.data.isSuccess === '1') {
