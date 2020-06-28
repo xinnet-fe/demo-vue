@@ -20,6 +20,8 @@ const errorCode = {
   925090: '不允许的操作'
 }
 
+const demoErrorCode = [60204, 50008]
+
 const vm = new Vue()
 
 // create an axios instance
@@ -93,7 +95,7 @@ service.interceptors.response.use(
     }
 
     // demos
-    if (hasDevelopment && !isNull(code) && code !== 20000) {
+    if (hasDevelopment && !isNull(code) && code !== 20000 && code.indexOf(demoErrorCode) > -1) {
       errorMessage(res.message)
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
@@ -112,9 +114,9 @@ service.interceptors.response.use(
       initLoading()
       return Promise.reject(new Error(res.message))
     }
-    console.log("======================")
+    console.log('======================')
     console.log(res)
-    console.log("======================")
+    console.log('======================')
     return res
   },
   error => {
