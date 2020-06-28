@@ -2,7 +2,7 @@
   <div class="apply-form">
     <el-dialog :before-close="beforeClose" destroy-on-close :title="title" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="级别名称" prop="gradleName" ref="gradleName" required>
+        <el-form-item label="级别名称" prop="gradleName" ref="gradleName">
           <el-input v-model="form.gradleName" maxlength="20" placeholder="请输入级别名称，限20个字符" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
@@ -48,7 +48,7 @@ export default {
       },
       rules: {
         gradleName: [
-          { required: true, message: '必须填写！', trigger: 'blur' }
+          { required: true, message: '请填写级别名称!', trigger: 'blur' }
         ]
       }
     }

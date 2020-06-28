@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       form: {
-        level: ''
+        level: '1126'
       },
       rules: {
         level: [
@@ -104,14 +104,14 @@ export default {
       this.closeModal()
       done()
     },
-    // setData(selected) {
-    //   this.form.level = selected[0].level
-    // },
+    setData(selected) {
+      this.form.level = selected[0].gradeCode * 1
+    },
     open() {
-      // const selected = this.$parent.multipleSelection
-      // if (selected.length === 1) {
-      //   this.setData(selected)
-      // }
+      const selected = this.$parent.multipleSelection
+      if (selected.length === 1) {
+        this.setData(selected)
+      }
     }
   }
 }

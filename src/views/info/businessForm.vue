@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       form: {
-        selectedOptions: []
+        selectedOptions: ['', '']
       },
       rules: {
         selectedOptions: [
@@ -53,6 +53,12 @@ export default {
     }
   },
   mounted () {
+    this.$nextTick(() => {
+      const selected = this.$parent.multipleSelection
+      if (selected.length === 1) {
+        this.setData(selected)
+      }
+    })
   },
   computed: {
     ...mapState({
@@ -132,14 +138,14 @@ export default {
       done()
     },
     setData(selected) {
-      this.form.company = selected[0].company
-      this.form.market = selected[0].sale
+      this.form.selectedOptions[0] = selected[0].organCode
+      this.form.selectedOptions[1] = selected[0].saleCode
     },
     open() {
-      const selected = this.$parent.multipleSelection
-      if (selected.length === 1) {
-        this.setData(selected)
-      }
+      // const selected = this.$parent.multipleSelection
+      // if (selected.length === 1) {
+      //   this.setData(selected)
+      // }
     }
   }
 }

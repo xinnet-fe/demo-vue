@@ -10,7 +10,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeModal">取 消</el-button>
-        <el-button type="primary" @click="onSubmit">确定开通</el-button>
+        <el-button type="primary" @click="onSubmit">确定修改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -102,13 +102,13 @@ export default {
       done()
     },
     setData(selected) {
-      this.form.finance = selected[0].finance
+      this.form.finance = selected[0].financeCode
     },
     open() {
-      // const selected = this.$parent.multipleSelection
-      // if (selected.length === 1) {
-      //   this.setData(selected)
-      // }
+      const selected = this.$parent.multipleSelection
+      if (selected.length === 1) {
+        this.setData(selected)
+      }
     }
   }
 }

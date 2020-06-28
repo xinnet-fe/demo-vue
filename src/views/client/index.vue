@@ -124,7 +124,7 @@ export default {
         keywords: '',
         registerDate: '',
         bindingDate: '',
-        state: ''
+        state: 1
       },
       list: [],
       page: {
@@ -134,8 +134,7 @@ export default {
       },
       memberType: [
         { label: '代理编号', value: 'agentCode' },
-        { label: '会员编号', value: 'hyCode' },
-        { label: '邮箱', value: 'userEmail' }
+        { label: '会员编号', value: 'hyCode' }
       ],
       stateType: [
         { label: '全部', value: '' },

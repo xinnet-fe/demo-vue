@@ -110,13 +110,16 @@ export default {
       done()
     },
     setData(row) {
-      const { phone, email } = row
-      this.form.phone = phone
-      this.form.email = email
+      const { telenumber, userNameEmail } = row
+      this.form.telenumber = telenumber
+      this.form.userNameEmail = userNameEmail
     }
   },
   mounted () {
-    // this.form.telenumber = this.row.
+    this.$nextTick(() => {
+      console.log(this.row)
+      this.setData(this.row)
+    })
   }
 }
 </script>
