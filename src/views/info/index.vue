@@ -2,7 +2,7 @@
   <div class="agent-manage-apply">
     <!-- search -->
     <el-form ref="searchForm" :model="searchForm" :inline="true">
-      <el-form-item label="会员ID" prop="type">
+      <el-form-item label="" prop="type">
         <el-select v-model="searchForm.type">
           <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
@@ -243,9 +243,12 @@ export default {
         state: this.searchForm.state
       }
       if (page) {
-        query.pageNum = page.page
+        query.pageIndex = page.page
+        query.pageSize = page.limit
       } else {
-        query.pageNum = 1
+        query.pageIndex = 1
+        query.pageSize = 20
+        this.page.limit = 20
         this.page.page = 1
       }
       this.findDlInfo(query).then(res => {

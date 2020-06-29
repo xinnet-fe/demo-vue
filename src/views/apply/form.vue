@@ -1,6 +1,6 @@
 <template>
   <div class="apply-form">
-    <el-dialog :before-close="beforeClose" destroy-on-close title="代理商开通" :visible.sync="formVisible" width="500px">
+    <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="代理商开通" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="180px" :rules="rules">
         <el-form-item label="选择分公司/选择销售" prop="selectedOptions" required>
           <el-cascader

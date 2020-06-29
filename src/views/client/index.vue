@@ -156,6 +156,9 @@ export default {
     handleSelectChange(v) {
       // console.log(v)
     },
+    handleSizeChange() {
+      alert("v")
+    },
     onSearch(page) {
       const query = {
         hyCode: this.form.type === 'hyCode' ? this.form.keywords : '',
@@ -165,12 +168,16 @@ export default {
         registerStartTime: this.form.registerDate && this.form.registerDate[0] ? `${this.form.registerDate[0]} 00.00.00` : '',
         registerEndTime: this.form.registerDate && this.form.registerDate[1] ? `${this.form.registerDate[1]} 23.59.59` : '',
         bindStartTime: this.form.bindingDate && this.form.bindingDate[0] ? `${this.form.bindingDate[0]} 00.00.00` : '',
-        bindEndTime: this.form.bindingDate && this.form.bindingDate[1] ? `${this.form.bindingDate[1]} 23.59.59` : ''
+        bindEndTime: this.form.bindingDate && this.form.bindingDate[1] ? `${this.form.bindingDate[1]} 23.59.59` : '',
+        pageSize: this.page.limit
       }
       if (page) {
-        query.pageIndex = page.page
+        query.pageNum = page.page
+        query.pageSize = page.limit
       } else {
-        query.pageIndex = 1
+        query.pageNum = 1
+        query.pageSize = 20
+        this.page.limit = 20
         this.page.page = 1
       }
       this.queryAgentCustomerList(query).then(res => {

@@ -1,6 +1,6 @@
 <template>
   <div class="info-business-form">
-    <el-dialog :before-close="beforeClose" destroy-on-close title="修改级别" :visible.sync="formVisible" width="500px" @open="open">
+    <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="修改级别" :visible.sync="formVisible" width="500px" @open="open">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="设置级别" prop="level" required>
           <el-select v-model="form.level" placeholder="请设置级别">
@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       form: {
-        level: '1126'
+        level: ''
       },
       rules: {
         level: [

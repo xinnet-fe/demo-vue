@@ -1,6 +1,6 @@
 <template>
   <div class="account-form">
-    <el-dialog :before-close="beforeClose" destroy-on-close title="修改账号" :visible.sync="formVisible" width="500px">
+    <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="修改账号" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="手机号" prop="telenumber">
           <el-input v-model="form.telenumber" maxlength="11" />

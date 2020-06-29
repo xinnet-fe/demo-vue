@@ -130,9 +130,12 @@ export default {
         name: this.form.type === 'name' ? this.form.keywords : ''
       }
       if (page) {
-        query.pageNum = page.page
+        query.pageIndex = page.page
+        query.pageSize = page.limit
       } else {
-        query.pageNum = 1
+        query.pageIndex = 1
+        query.pageSize = 20
+        this.page.limit = 20
         this.page.page = 1
       }
       this.queryGradleInfoList(query).then(res => {
@@ -172,8 +175,9 @@ export default {
         } else {
           if (res.code === '665030') {
             this.$message.error(res.msg)
+          } else {
+            this.$message.error(res.msg)
           }
-          this.$message.error(res.msg)
         }
       }).catch(error => {
         this.$message.error(error)

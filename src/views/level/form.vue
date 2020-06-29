@@ -1,6 +1,6 @@
 <template>
   <div class="apply-form">
-    <el-dialog :before-close="beforeClose" destroy-on-close :title="title" :visible.sync="formVisible" width="500px">
+    <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close :title="title" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="级别名称" prop="gradleName" ref="gradleName">
           <el-input v-model="form.gradleName" maxlength="20" placeholder="请输入级别名称，限20个字符" />

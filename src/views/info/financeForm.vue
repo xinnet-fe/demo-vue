@@ -1,6 +1,6 @@
 <template>
   <div class="info-business-form">
-    <el-dialog :before-close="beforeClose" destroy-on-close title="修改财务归属" :visible.sync="formVisible" width="500px" @open="open">
+    <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="修改财务归属" :visible.sync="formVisible" width="500px" @open="open">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="选择归属" prop="finance" required>
           <el-select v-model="form.finance" placeholder="请选择归属">
