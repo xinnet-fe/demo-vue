@@ -67,7 +67,7 @@
 // import { mapActions } from 'vuex'
 // import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
 // import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
-import Vcode from "vue-puzzle-vcode"
+import Vcode from "@/components/vue-puzzle-vcode-master/src/index.js"
 import isNumber from '@/utils/isNumber'
 import isPassword from '@/utils/isPassword'
 import isPhone from '@/utils/isPhone'

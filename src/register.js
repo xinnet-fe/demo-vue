@@ -1,4 +1,4 @@
-import 'es6-shim'
+// import 'es6-shim'
 import Vue from 'vue'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
@@ -11,7 +11,7 @@ import App from './views/pages/register'
 
 import './icons' // icon
 import * as filters from './filters' // global filters
-require('es6-promise').polyfill()
+// require('es6-promise').polyfill()
 // Vue.use(Vuex)
 // const store = createStore()
 // const router = createRouter()

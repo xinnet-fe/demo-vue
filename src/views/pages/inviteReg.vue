@@ -66,7 +66,7 @@
   </div>
 </template>
 <script>
-import Vcode from "vue-puzzle-vcode"
+import Vcode from "@/components/vue-puzzle-vcode-master/src/index.js"
 import isNumber from '@/utils/isNumber'
 import isPassword from '@/utils/isPassword'
 import isPhone from '@/utils/isPhone'

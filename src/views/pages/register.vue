@@ -82,7 +82,7 @@ import isPhone from '@/utils/isPhone'
 import isContacts from '@/utils/isContacts'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
-import Vcode from "vue-puzzle-vcode"
+import Vcode from "@/components/vue-puzzle-vcode-master/src/index.js"
 const Base64 = require('js-Base64').Base64
 export default {
   name: 'agentRegister',
