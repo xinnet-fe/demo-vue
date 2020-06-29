@@ -44,6 +44,7 @@ export default {
       title: '',
       form: {
         gradleName: '',
+        oldGradeName: '',
         remark: ''
       },
       rules: {
@@ -136,8 +137,8 @@ export default {
     }
   },
   mounted() {
-
     if (this.row.id) {
+      this.form.oldGradeName = this.row.gradeName
       this.form.gradleName = this.row.gradeName
       this.form.remark = this.row.remark
     }
