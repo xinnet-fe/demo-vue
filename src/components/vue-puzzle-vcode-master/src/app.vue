@@ -592,9 +592,11 @@ export default {
   opacity: 0;
   pointer-events: none;
   transition: opacity 200ms;
+  display: none;
   &.show_ {
     opacity: 1;
     pointer-events: auto;
+    display: block;
   }
 }
 .vue-auth-box_ {
