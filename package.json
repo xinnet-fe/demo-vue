@@ -89,6 +89,7 @@
     "babel-polyfill": "^6.26.0",
     "chalk": "2.4.2",
     "chokidar": "3",
+    "classlist-polyfill": "^1.2.0",
     "connect": "3.6.6",
     "es6-promise": "^4.2.8",
     "es6-shim": "^0.35.5",

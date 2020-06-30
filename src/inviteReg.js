@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-02 09:30:09
- * @LastEditTime: 2020-06-10 11:47:16
+ * @LastEditTime: 2020-06-30 13:16:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\repassword.js
@@ -21,6 +21,7 @@ import './icons' // icon
 import * as filters from './filters' // global filters
 import GLOBAL from './utils/global'
 Vue.prototype.GLOBALS = GLOBAL
+require('classlist-polyfill')
 // Vue.use(Vuex)
 // const store = createStore()
 // const router = createRouter()

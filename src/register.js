@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-06-29 22:50:22
+ * @LastEditTime: 2020-06-30 13:16:35
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\register.js
+ */ 
 // import 'es6-shim'
 import Vue from 'vue'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
@@ -11,6 +19,7 @@ import App from './views/pages/register'
 
 import './icons' // icon
 import * as filters from './filters' // global filters
+require('classlist-polyfill')
 // require('es6-promise').polyfill()
 // Vue.use(Vuex)
 // const store = createStore()
