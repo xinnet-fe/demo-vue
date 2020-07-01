@@ -53,7 +53,7 @@ module.exports = {
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: 'G7is2dSKYqIgQRwC5kI',
+  xbtoken: 'J6SHZjAknBEI6u3Phov',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 

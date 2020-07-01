@@ -1,0 +1,367 @@
+[
+  {
+  "code" : "boss-nav-goodsseries",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-nav-workflow",
+    "parentCode" : "boss-nav-goodsseries",
+    "icon" : "",
+    "text" : "流程中心",
+    "url" : "https://workflow.xinnet.com",
+    "target" : "blank"
+  } ],
+  "icon" : "goodsSeries",
+  "text" : "商品体系",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "xinnet-boss-pmtest",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "xinnet-boss-pmtest-xuqiudiaoyan",
+    "parentCode" : "xinnet-boss-pmtest",
+    "icon" : "",
+    "text" : "需求调研",
+    "url" : "",
+    "target" : ""
+  } ],
+  "icon" : "",
+  "text" : "产品测试",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-resourcecenter",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-nav-domain",
+    "parentCode" : "boss-nav-resourcecenter",
+    "icon" : "",
+    "text" : "域名管理",
+    "url" : "",
+    "target" : ""
+  }, {
+    "code" : "boss-nav-xhs",
+    "parentCode" : "boss-nav-resourcecenter",
+    "icon" : "",
+    "text" : "虚机管理",
+    "url" : "https://xhs.xinnet.com/",
+    "target" : "blank"
+  }, {
+    "code" : "boss-nav-xhscost",
+    "parentCode" : "boss-nav-resourcecenter",
+    "icon" : "",
+    "text" : "虚机消耗",
+    "url" : "http://monitor-hmp.xinnet.com/",
+    "target" : "blank"
+  }, {
+    "code" : "boss-nav-cloudmarket",
+    "parentCode" : "boss-nav-resourcecenter",
+    "icon" : "",
+    "text" : "建站云",
+    "url" : "https://cloudmarketmanagement.xinnet.com/",
+    "target" : "blank"
+  }, {
+    "code" : "boss-nav-mailmanagement",
+    "parentCode" : "boss-nav-resourcecenter",
+    "icon" : "",
+    "text" : "邮局查询",
+    "url" : "https://mailmanagement.xinnet.com/",
+    "target" : "blank"
+  }, {
+    "code" : "boss-nav-customerservice",
+    "parentCode" : "boss-nav-resourcecenter",
+    "icon" : "",
+    "text" : "服务中心",
+    "url" : "https://customerservice.xinnet.com/",
+    "target" : "blank"
+  } ],
+  "icon" : "resourceCenter",
+  "text" : "资源中心",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-membercenter",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-nav-ucm",
+    "parentCode" : "boss-nav-membercenter",
+    "icon" : "",
+    "text" : "售前客户查询",
+    "url" : "https://ucm.xinnet.com/userquery/index.html",
+    "target" : "blank"
+  } ],
+  "icon" : "memberCenter",
+  "text" : "会员中心",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-marketingcenter",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-nav-yingxiaocenter",
+    "parentCode" : "boss-nav-marketingcenter",
+    "icon" : "",
+    "text" : "营销策略",
+    "url" : "https://mkt-web.xinnet.com/",
+    "target" : "blank"
+  } ],
+  "icon" : "marketingCenter",
+  "text" : "营销中心",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-tradingcenter",
+  "parentCode" : null,
+  "icon" : "tradingCenter",
+  "text" : "交易中心",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-financecenter",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-nav-financialtreatment",
+    "parentCode" : "boss-nav-financecenter",
+    "icon" : "",
+    "text" : "财务处理(会员)",
+    "url" : "https://financemanagement.xinnet.com/",
+    "target" : "blank"
+  }, {
+    "code" : "boss-nav-agentfinancialtreatment",
+    "parentCode" : "boss-nav-financecenter",
+    "icon" : "",
+    "text" : "财务处理(代理)",
+    "url" : "https://agentfinmanagement.xinnet.com/",
+    "target" : "blank"
+  } ],
+  "icon" : "financeCenter",
+  "text" : "财务中心",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-dataanalysis",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-nav-report",
+    "parentCode" : "boss-nav-dataanalysis",
+    "icon" : "",
+    "text" : "运营数据",
+    "url" : "https://report.xinnet.com/",
+    "target" : "blank"
+  }, {
+    "code" : "boss-nav-xa",
+    "parentCode" : "boss-nav-dataanalysis",
+    "icon" : "",
+    "text" : "流量洞察",
+    "url" : "https://xaview.xinnet.com/",
+    "target" : "blank"
+  }, {
+    "code" : "boss-nav-dashboard",
+    "parentCode" : "boss-nav-dataanalysis",
+    "icon" : "",
+    "text" : "看板",
+    "url" : "",
+    "target" : ""
+  }, {
+    "code" : "boss-nav-operationanalysis",
+    "parentCode" : "boss-nav-dataanalysis",
+    "icon" : "",
+    "text" : "产品运营分析",
+    "url" : "",
+    "target" : ""
+  } ],
+  "icon" : "dataAnalysis",
+  "text" : "数据分析",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-workordermanage",
+  "parentCode" : null,
+  "icon" : "workorderManage",
+  "text" : "工单管理",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-agencymanage",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-nav-agencymanage-apply",
+    "parentCode" : "boss-nav-agencymanage",
+    "icon" : "",
+    "text" : "代理申请管理",
+    "url" : "https://agentmanagement.xinnet.com/#/agent-manage/apply?showLayout=false",
+    "target" : "tab"
+  }, {
+    "code" : "boss-nav-agencymanage-info",
+    "parentCode" : "boss-nav-agencymanage",
+    "icon" : "",
+    "text" : "代理信息管理",
+    "url" : "https://agentmanagement.xinnet.com/#/agent-manage/info?showLayout=false",
+    "target" : "tab"
+  }, {
+    "code" : "boss-nav-agencymanage-Grade",
+    "parentCode" : "boss-nav-agencymanage",
+    "icon" : "",
+    "text" : "代理等级管理",
+    "url" : "https://agentmanagement.xinnet.com/#/agent-manage/level?showLayout=false",
+    "target" : "tab"
+  }, {
+    "code" : "boss-nav-agencymanage-client",
+    "parentCode" : "boss-nav-agencymanage",
+    "icon" : "",
+    "text" : "代理客户管理",
+    "url" : "https://agentmanagement.xinnet.com/#/agent-manage/client?showLayout=false",
+    "target" : "tab"
+  } ],
+  "icon" : "agencyManage",
+  "text" : "代理管理",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-cmsmanage",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-nav-cmsmanage-knowledges",
+    "parentCode" : "boss-nav-cmsmanage",
+    "children" : [ {
+      "code" : "boss-nav-cmsmanage-basic",
+      "parentCode" : "boss-nav-cmsmanage-knowledges",
+      "icon" : "",
+      "text" : "基本设置",
+      "url" : "",
+      "target" : ""
+    }, {
+      "code" : "boss-nav-cmsmanage-tags",
+      "parentCode" : "boss-nav-cmsmanage-knowledges",
+      "icon" : "",
+      "text" : "标签管理",
+      "url" : "",
+      "target" : ""
+    }, {
+      "code" : "boss-nav-cmsmanage-tab",
+      "parentCode" : "boss-nav-cmsmanage-knowledges",
+      "icon" : "",
+      "text" : "栏目管理",
+      "url" : "",
+      "target" : ""
+    }, {
+      "code" : "boss-nav-cmsmanage-news",
+      "parentCode" : "boss-nav-cmsmanage-knowledges",
+      "icon" : "",
+      "text" : "文章管理",
+      "url" : "",
+      "target" : ""
+    }, {
+      "code" : "boss-nav-cmsmanage-links",
+      "parentCode" : "boss-nav-cmsmanage-knowledges",
+      "icon" : "",
+      "text" : "友链管理",
+      "url" : "",
+      "target" : ""
+    }, {
+      "code" : "boss-nav-cmsmanage-contraband",
+      "parentCode" : "boss-nav-cmsmanage-knowledges",
+      "icon" : "",
+      "text" : "违禁词库",
+      "url" : "",
+      "target" : ""
+    } ],
+    "icon" : "",
+    "text" : "知识社区",
+    "url" : "",
+    "target" : ""
+  }, {
+    "code" : "boss-nav-cmsmanage-admanage",
+    "parentCode" : "boss-nav-cmsmanage",
+    "children" : [ {
+      "code" : "boss-nav-cmsmanage-knowledge",
+      "parentCode" : "boss-nav-cmsmanage-admanage",
+      "icon" : "",
+      "text" : "知识社区",
+      "url" : "",
+      "target" : ""
+    } ],
+    "icon" : "",
+    "text" : "广告管理",
+    "url" : "",
+    "target" : ""
+  } ],
+  "icon" : "cmsManage",
+  "text" : "CMS管理",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-permission",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-perm-org",
+    "parentCode" : "boss-nav-permission",
+    "icon" : "",
+    "text" : "组织机构",
+    "url" : "https://boss.xinnet.com/department/org.html",
+    "target" : "tab"
+  }, {
+    "code" : "boss-perm-role",
+    "parentCode" : "boss-nav-permission",
+    "icon" : "",
+    "text" : "角色授权",
+    "url" : "https://boss.xinnet.com/role/index.html",
+    "target" : "tab"
+  }, {
+    "code" : "boss-perm-position",
+    "parentCode" : "boss-nav-permission",
+    "icon" : "",
+    "text" : "岗位管理",
+    "url" : "https://boss.xinnet.com/position/index.html",
+    "target" : "tab"
+  } ],
+  "icon" : "authManage",
+  "text" : "权限管理",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-applicationcenter",
+  "parentCode" : null,
+  "children" : [ {
+    "code" : "boss-navigation-systemsetup",
+    "parentCode" : "boss-nav-applicationcenter",
+    "children" : [ {
+      "code" : "boss-app",
+      "parentCode" : "boss-navigation-systemsetup",
+      "icon" : "",
+      "text" : "应用管理",
+      "url" : "https://boss.xinnet.com/app/index.html",
+      "target" : "tab"
+    }, {
+      "code" : "boss-resource",
+      "parentCode" : "boss-navigation-systemsetup",
+      "icon" : "",
+      "text" : "资源管理",
+      "url" : "https://boss.xinnet.com/resource/index.html",
+      "target" : "tab"
+    } ],
+    "icon" : "",
+    "text" : "系统设置",
+    "url" : "",
+    "target" : ""
+  }, {
+    "code" : "boss-nav-logcenter",
+    "parentCode" : "boss-nav-applicationcenter",
+    "icon" : "",
+    "text" : "日志中心",
+    "url" : "https://logcenter.xinnet.com/",
+    "target" : "blank"
+  } ],
+  "icon" : "applicationCenter",
+  "text" : "应用中心",
+  "url" : "",
+  "target" : ""
+}, {
+  "code" : "boss-nav-messagemanage",
+  "parentCode" : null,
+  "icon" : "messageManage",
+  "text" : "消息管理",
+  "url" : "",
+  "target" : ""
+}
+]
