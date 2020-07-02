@@ -8,12 +8,12 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="keywords">
-        <el-input v-model="form.keywords" :placeholder="placeholder" />
+        <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="default" @click="onSearch">查 询</el-button>
-        <el-button type="primary" @click="add">添加级别</el-button>
         <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
+        <el-button type="primary" @click="add">添加级别</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -130,10 +130,10 @@ export default {
         name: this.form.type === 'name' ? this.form.keywords : ''
       }
       if (page) {
-        query.pageIndex = page.page
+        query.pageNum = page.page
         query.pageSize = page.limit
       } else {
-        query.pageIndex = 1
+        query.pageNum = 1
         query.pageSize = 20
         this.page.limit = 20
         this.page.page = 1

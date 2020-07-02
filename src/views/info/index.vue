@@ -8,7 +8,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="keywords">
-        <el-input v-model="searchForm.keywords" placeholder="请输入关键词" />
+        <el-input v-model="searchForm.keywords" placeholder="请输入关键词" :clearable="true" />
       </el-form-item>
       <el-form-item label="开通时间" prop="date">
         <el-date-picker
@@ -243,10 +243,10 @@ export default {
         state: this.searchForm.state
       }
       if (page) {
-        query.pageIndex = page.page
+        query.pageNum = page.page
         query.pageSize = page.limit
       } else {
-        query.pageIndex = 1
+        query.pageNum = 1
         query.pageSize = 20
         this.page.limit = 20
         this.page.page = 1

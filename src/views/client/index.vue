@@ -8,7 +8,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="keywords">
-        <el-input v-model="form.keywords" :placeholder="placeholder" />
+        <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
       <el-form-item label="申请时间" prop="registerDate">
         <el-date-picker

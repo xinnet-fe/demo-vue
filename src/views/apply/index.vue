@@ -8,7 +8,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="keywords">
-        <el-input v-model="form.keywords" :placeholder="placeholder" />
+        <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
       <el-form-item label="申请时间" prop="date">
         <el-date-picker
@@ -78,6 +78,8 @@
           <template v-slot="scope">
             <span v-if="scope.row.state === '01'">未开通</span>
             <span v-if="scope.row.state === '02'">已开通</span>
+            <span v-if="scope.row.state === '03'">已锁定</span>
+            <span v-if="scope.row.state === '04'">已关闭</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="150">
@@ -169,10 +171,10 @@ export default {
       }
 
       if (page) {
-        query.pageIndex = page.page
+        query.pageNum = page.page
         query.pageSize = page.limit
       } else {
-        query.pageIndex = 1
+        query.pageNum = 1
         query.pageSize = 20
         this.page.limit = 20
         this.page.page = 1
