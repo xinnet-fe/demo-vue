@@ -47,7 +47,7 @@
               <el-checkbox name="checked" label="checked">我已阅读并同意</el-checkbox>
             </el-checkbox-group>
             <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
-            <a href="/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
+            <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
           </el-form-item>
           <el-form-item class="item-btn">
             <el-button type="primary" @click="onSubmit" :disabled="btnDisabled" :loading="btnLoading">提交申请</el-button>
@@ -174,10 +174,10 @@ export default {
   },
   mounted () {
     this.$refs.checked.validateState = 'success'
-    this.ruleForm.options = citysList.CITYS_LIST
+    // this.ruleForm.options = citysList.CITYS_LIST
     // console.log(this.getCoreProvice)
     getCoreProvice({}).then((response) => {
-      // this.ruleForm.options = response.data
+      this.ruleForm.options = response.data
     })
   },
   methods: {
