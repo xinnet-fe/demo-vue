@@ -78,7 +78,7 @@
           <template v-slot="scope">
             <span v-if="scope.row.state === '01'">未开通</span>
             <span v-if="scope.row.state === '02'">已开通</span>
-            <span v-if="scope.row.state === '03'">已锁定</span>
+            <span v-if="scope.row.state === '03'">已冻结</span>
             <span v-if="scope.row.state === '04'">已关闭</span>
           </template>
         </el-table-column>
@@ -142,7 +142,7 @@ export default {
         { label: '全部', value: '' },
         { label: '未开通', value: '01' },
         { label: '已开通', value: '02' },
-        { label: '已锁定', value: '03' },
+        { label: '已冻结', value: '03' },
         { label: '已关闭', value: '04' }
       ]
     }
