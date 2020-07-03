@@ -1,5 +1,5 @@
 import request from '@/utils/requests'
-
+// 获取新知文章列表
 export function newsList(param) {
   return request({
     url: '/article/list',
@@ -7,7 +7,7 @@ export function newsList(param) {
     params: param
   })
 }
-
+// 获取新知文章详情
 export function auditDetail(param) {
   return request({
     url: '/article/detail',
@@ -15,7 +15,7 @@ export function auditDetail(param) {
     params: param
   })
 }
-
+// 审核新知文章
 export function handleAudit(data) {
   return request({
     url: '/article/audit',
@@ -23,7 +23,7 @@ export function handleAudit(data) {
     data
   })
 }
-
+// 获取新知广告列表
 export function knowledgeList(param) {
   return request({
     url: '/ad/list',
@@ -31,7 +31,7 @@ export function knowledgeList(param) {
     params: param
   })
 }
-
+// 添加新知广告
 export function knowledgeAdd(data) {
   return request({
     url: '/ad/addormodify',
@@ -40,6 +40,7 @@ export function knowledgeAdd(data) {
   })
 }
 
+// 获取所属栏目接口
 export function categoryList() {
   return request({
     url: '/category/list',

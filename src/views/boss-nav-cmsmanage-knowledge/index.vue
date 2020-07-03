@@ -1,30 +1,33 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      广告标题：<el-input v-model="listQuery.title" placeholder="请输入广告标题" style="width: 200px;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <span style="width:8%;display:inline-block;">广告状态：</span>
-      <el-select v-model="listQuery.publish" placeholder="请选择广告状态" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
-        <el-option v-for="item in publish" :key="item.num" :label="item.name" :value="item.num" />
-      </el-select>
-      <!-- 广告位置：<el-select v-model="listQuery.position" style="width: 140px;margin-right:20px;" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in position" :key="item" :label="item" :value="item" />
-      </el-select> -->
-      <!-- <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select> -->
-      <el-button v-waves style="margin-right: 20px;" @click="handleFilter">
-        搜索
-      </el-button>
-      <el-button style="margin-left: 10px;margin-right: 20px;" @click="handleCreate">
-        新增
-      </el-button>
-      <!-- <el-button type="danger" class="filter-item" style="margin-right: 20px;" @click="handleDeletehints">批量删除</el-button> -->
+      <el-form style="margin-bottom: 20px;">
+        广告标题：<el-input v-model="listQuery.title" placeholder="请输入广告标题" style="width: 200px;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
+        <span style="width:8%;display:inline-block;">广告状态：</span>
+        <el-select v-model="listQuery.publish" placeholder="请选择广告状态" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
+          <el-option v-for="item in publish" :key="item.num" :label="item.name" :value="item.num" />
+        </el-select>
+        <el-button v-waves style="margin-right: 20px;" @click="handleFilter">
+          搜索
+        </el-button>
+        <el-button style="margin-left: 10px;margin-right: 20px;" @click="handleCreate">
+          新增
+        </el-button>
+      </el-form>
+    <!-- <div class="filter-container"> -->
+    <!-- 广告位置：<el-select v-model="listQuery.position" style="width: 140px;margin-right:20px;" class="filter-item" @change="handleFilter">
+      <el-option v-for="item in position" :key="item" :label="item" :value="item" />
+    </el-select> -->
+    <!-- <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+      <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
+    </el-select> -->
+    <!-- <el-button type="danger" class="filter-item" style="margin-right: 20px;" @click="handleDeletehints">批量删除</el-button> -->
+    <!-- </div> -->
     </div>
 
     <el-table
       v-loading="listLoading"
       :data="list"
-      border
       fit
       highlight-current-row
       style="width: 100%;"
@@ -109,17 +112,18 @@
           <el-radio v-model="adType" label="1">新增</el-radio>
           <!-- <el-radio v-model="temp.types" label="2">替换</el-radio> -->
         </el-form-item>
-        <el-form-item v-if="temp.adType === '0'">
+        <el-form-item v-if="temp.adType === '0'" style="position:relative">
           <el-upload
             ref="uploadImage"
             action="#"
             :on-change="imageChange"
             list-type="picture-card"
+            class="uploadImages"
             name="files"
             :limit="1"
+            :auto-upload="false"
             accept=".png,.jpg,.jpeg,.bmp,.gif,.webp"
             :on-exceed="handlePictureCardPreviews"
-            :auto-upload="false"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemovePicture"
           >
@@ -144,10 +148,10 @@
           <el-radio v-model="temp.publish" label="1">是</el-radio>
         </el-form-item>
         <el-form-item v-if="temp.publish === '1'" label="发布时间：" prop="releaseTime">
-          <el-date-picker v-model="temp.publishTime" value-format="yyyy-MM-dd hh:mm:ss" format="yyyy-MM-dd hh:mm:ss" type="datetime" class="filter-item" placeholder="请选择发布时间" />
+          <el-date-picker v-model="temp.publishTime" :picker-options="pickerOptions" value-format="yyyy-MM-dd hh:mm:ss" format="yyyy-MM-dd hh:mm:ss" type="datetime" class="filter-item" placeholder="请选择发布时间" />
         </el-form-item>
         <el-form-item v-if="temp.publish === '1'" label="结束时间：" prop="releaseTime">
-          <el-date-picker v-model="temp.endTime" value-format="yyyy-MM-dd hh:mm:ss" format="yyyy-MM-dd hh:mm:ss" type="datetime" class="filter-item" placeholder="请选择结束时间" />
+          <el-date-picker v-model="temp.endTime" :picker-options="pickerOptions" value-format="yyyy-MM-dd hh:mm:ss" format="yyyy-MM-dd hh:mm:ss" type="datetime" class="filter-item" placeholder="请选择结束时间" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -186,6 +190,7 @@ import Pagination from '@/components/demos/Pagination' // secondary package base
 import reduce from 'lodash/reduce'
 import remove from 'lodash/remove'
 import forEach from 'lodash/forEach'
+import $ from 'jquery'
 
 export default {
   name: 'ComplexTable',
@@ -203,6 +208,12 @@ export default {
   },
   data() {
     return {
+      // 设置发布时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now()
+        }
+      },
       picflag: false,
       disabless: true,
       list: null,
@@ -216,15 +227,15 @@ export default {
       },
       publish: [
         {
-          name: '正常',
+          name: '未发布',
           num: 0
         },
         {
-          name: '下架',
+          name: '已发布',
           num: 1
         },
         {
-          name: '全部',
+          name: '已下架',
           num: 2
         }
       ],
@@ -301,6 +312,13 @@ export default {
           } else if (row.dispaly === 0) {
             row.dispalys = false
           }
+          if (row.publishState === 0) {
+            row.publishState = '未发布'
+          } else if (row.publishState === 1) {
+            row.publishState = '已发布'
+          } else if (row.publishState === 2) {
+            row.publishState = '已下架'
+          }
           aa.push(row)
         })
         this.list = aa
@@ -337,7 +355,10 @@ export default {
     imageChange(file, fileList, name) {
       const isImage = file.raw.type === 'image/png' || file.raw.type === 'image/jpg' || file.raw.type === 'image/jpeg' || file.raw.type === 'image/bmp' || file.raw.type === 'image/gif' || file.raw.type === 'image/webp'
       const isLt2M = file.size < 1024 * 1024 * 2
+      // this.$refs.uploadImage.style.background = '#000'style.position = 'absolute' 找到ul标签后添加absolute样式
+      // console.log($('.uploadImages').find('ul')[0].style.position = 'absolute', 'ress')
       if (isImage && isLt2M) {
+        $('.uploadImages').find('ul')[0].style.position = 'absolute'
         this.imageList = fileList
         this.images['images'] = fileList
         this.fileurl = file.url
@@ -364,7 +385,7 @@ export default {
       if (!Object.entries(this.images).length) {
         this.picflag = true
       } else if (Object.entries(this.images).length === 1) {
-        if (Object.entries(this.images)[1]) {
+        if (Object.entries(this.images)[0][1]) {
           this.picflag = false
         } else {
           this.picflag = true
@@ -479,6 +500,7 @@ export default {
     handleCreate() {
       this.resetTemp()
       this.dialogStatus = 'create'
+      this.picflag = ''
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -488,6 +510,7 @@ export default {
       this.temp = Object.assign({}, row) // copy obj
       this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'update'
+      this.picflag = ''
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()

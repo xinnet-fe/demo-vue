@@ -71,9 +71,11 @@ service.interceptors.response.use(
     // status：996登录超时
 
     // 925010 访问拒绝
-    if (code !== 'success') {
-      initLoading()
-      return errorResult('公共异常')
+    if (code) {
+      if (code !== 'success') {
+        initLoading()
+        return errorResult('公共异常')
+      }
     }
     // if (code && code === 925010) {
     //   app.$router.push(`/401`)
@@ -91,25 +93,25 @@ service.interceptors.response.use(
     // }
 
     // demos
-    if (isUndefined(code) && code !== 'success') {
-      errorMessage(res.message)
+    // if (isUndefined(code) && code !== 'success') {
+    //   errorMessage(res.message)
 
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        // to re-login
-        vm.$msgBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
-      initLoading()
-      return Promise.reject(new Error(res.message))
-    }
+    //   // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+    //   if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+    //     // to re-login
+    //     vm.$msgBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+    //       confirmButtonText: 'Re-Login',
+    //       cancelButtonText: 'Cancel',
+    //       type: 'warning'
+    //     }).then(() => {
+    //       store.dispatch('user/resetToken').then(() => {
+    //         location.reload()
+    //       })
+    //     })
+    //   }
+    //   initLoading()
+    //   return Promise.reject(new Error(res.message))
+    // }
 
     return res
   },

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <div style="width:100%">
+      <el-form>
         <span style="width:8%;display:inline-block;">ID：</span>
         <el-input v-model="listQuery.actId" placeholder="请输入ID" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
         <span style="width:8%;display:inline-block;">标题：</span>
@@ -10,10 +10,6 @@
         <el-select v-model="listQuery.classId" placeholder="请选择文章所属栏目" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
           <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
         </el-select>
-        <!-- <span style="width:8%;display:inline-block;">关键词：</span>
-        <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
-      </div>
-      <div style="width:100%">
         <span style="width:8%;display:inline-block;">审核状态：</span>
         <el-select v-model="listQuery.auditState" placeholder="请选择审核状态" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
           <el-option v-for="item in auditState" :key="item.num" :label="item.name" :value="item.num" />
@@ -23,20 +19,20 @@
           <el-option v-for="item in publishState" :key="item.num" :label="item.name" :value="item.num" />
         </el-select>
         <span style="width:8%;display:inline-block;" class="demonstration">发布时间： </span>
-        <el-date-picker v-model="listQuery.publishDate" type="datetime" value-format="yyyy-MM-dd hh:mm:ss" format="yyyy-MM-dd hh:mm:ss" class="filter-item" style="width:22%;margin-right: 20px;" placeholder="请选择发布时间" />
-      </div>
-      <div style="width:100%">
+        <el-date-picker v-model="listQuery.publishDate" type="datetime" value-format="yyyy-MM-dd" format="yyyy-MM-dd" class="filter-item" style="width:22%;margin-right: 20px;" placeholder="请选择发布时间" />
         <span style="width:8%;display:inline-block;">置顶状态： </span>
         <el-select v-model="listQuery.isTop" placeholder="请选择置顶状态" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
           <el-option v-for="item in isTop" :key="item.num" :label="item.name" :value="item.num" />
         </el-select>
-      </div>
-      <el-button v-waves style="margin-right: 20px;" @click="handleFilter">
-        搜索
-      </el-button>
-      <el-button style="margin-right: 20px;" @click="resetModal">
-        重置
-      </el-button>
+        <el-button v-waves style="margin-right: 20px;" @click="handleFilter">
+          搜索
+        </el-button>
+        <el-button style="margin-right: 20px;" @click="resetModal">
+          重置
+        </el-button>
+      </el-form>
+      <!-- <span style="width:8%;display:inline-block;">关键词：</span>
+        <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
       <!-- <el-button class="filter-item" style="margin-left: 10px;margin-right: 20px;" type="primary" @click="handleCreate">
         新增
       </el-button> -->
@@ -47,7 +43,6 @@
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
-      border
       fit
       highlight-current-row
       style="width: 100%;"
@@ -71,12 +66,12 @@
           <span>{{ row.categoryName }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column class-name="status-col" label="设置置顶" width="70">
+      <el-table-column class-name="status-col" label="设置置顶" width="70">
         <template slot-scope="{row}">
-          <el-switch v-if="row.top !== undefined" v-model="row.top" @change="handleUpdateswitch(row)" />
+          <el-switch v-if="row.top !== undefined" v-model="row.top" disabled @change="handleUpdateswitch(row)" />
           <span v-else>1</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column label="关键词标签" align="center" width="175">
         <template slot-scope="{row}">
           <!-- <span v-if="row.summary.length < 20">{{ row.summary }}</span>
@@ -116,7 +111,8 @@
       <el-table-column label="操作" align="center" width="60" class-name="small-padding fixed-width">
         <!-- <template slot-scope="{row,$index}"> -->
         <template slot-scope="{row}">
-          <span style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">审核</span>
+          <span v-if="row.publishStates !== '已发布'" style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">审核</span>
+          <span v-if="row.publishStates === '已发布'" disabled style="color:#aaa;cursor:pointer;">审核</span>
           <!-- <el-button type="primary" class="btnstyle" size="mini" @click="handleAudit(row)">
             审核
           </el-button> -->
@@ -160,14 +156,18 @@
           </el-select> -->
         </el-form-item>
         <el-form-item label="内容简介：" prop="briefIntroduction">
-          <el-input v-model="temp.summary" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+          <el-input v-model="temp.summary" :autosize="{ minRows: 4, maxRows: 6}" type="textarea" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="文章正文：">
-          <el-input v-model="temp.content" :autosize="{ minRows: 6, maxRows: 8}" style="width:350px;" type="textarea" placeholder="Please input" />
+          <el-input v-model="temp.content" :autosize="{ minRows: 16, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" />
         </el-form-item>
+        <div v-if="newsbanWords">
+          <p style="color:#f00;">审核失败</p>
+          <p style="color:#f00;">文章违禁词有：{{ newsbanWords }}</p>
+        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAudit = false">
+        <el-button @click="handleCancel">
           取消
         </el-button>
         <el-button type="primary" @click="handleAudits()">
@@ -249,7 +249,6 @@
     <el-dialog :title="Looktitle" :visible.sync="dialogLookVisible">
       <p>审核状态：{{ tempLookover.state }}</p>
       <p v-if="tempLookover.state == '未通过'">未通过原因：{{ tempLookover.context }}</p>
-      <p v-else>{{ tempLookover.state }}</p>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogLookVisible = false">取消</el-button>
         <!-- <el-button type="primary" @click="handleDeletes()">确定</el-button> -->
@@ -401,7 +400,8 @@ export default {
       values: false,
       tempflag: false,
       authorName: '',
-      categorylist: []
+      categorylist: [],
+      newsbanWords: ''
     }
   },
   created() {
@@ -462,7 +462,7 @@ export default {
     },
     handleFilter() {
       this.listQuery.page = 1
-      // this.getList()
+      this.getList()
     },
     resetTemp() {
       this.temp = {
@@ -537,6 +537,10 @@ export default {
       }
       this.dialogLookVisible = true
     },
+    handleCancel() {
+      this.dialogAudit = false
+      this.getList()
+    },
     handleAudits() {
       handleAudit(
         { actId: this.temp.actId,
@@ -545,6 +549,17 @@ export default {
           content: this.temp.content }
       ).then(data => {
         if (data.message === '文章审核不通过，含有违禁词！') {
+          if (data.data.banWords) {
+            let str = ''
+            data.data.banWords.forEach((row, i) => {
+              if (data.data.banWords.length - 1 === i) {
+                str += row
+              } else {
+                str += row + '、'
+              }
+            })
+            this.newsbanWords = str
+          }
           this.$notify.error({
             title: '审核失败',
             message: '文章审核不通过，含有违禁词！'
@@ -554,13 +569,14 @@ export default {
             title: '审核成功',
             message: '审核通过！'
           })
+          this.dialogAudit = false
+          this.getList()
         }
-        this.dialogAudit = false
-        this.getList()
       })
     },
     handleAudit(row) {
       auditDetail({ actId: row.actId }).then(data => {
+        this.newsbanWords = ''
         this.temp = Object.assign({}, row) // copy obj
         this.temp.timestamp = new Date(this.temp.timestamp)
         this.dialogAudit = true
