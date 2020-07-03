@@ -177,7 +177,19 @@ export default {
     // this.ruleForm.options = citysList.CITYS_LIST
     // console.log(this.getCoreProvice)
     getCoreProvice({}).then((response) => {
-      this.ruleForm.options = response.data
+      this.ruleForm.options = response.data.map((v) => {
+        if (v.children && v.children.length) {
+          const newChildren = []
+          v.children.map((v2) => {
+            newChildren.push({
+              label: v2.name,
+              value: v2.code
+            })
+          })
+          v.children = newChildren
+        }
+        return v
+      })
     })
   },
   methods: {

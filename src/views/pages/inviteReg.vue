@@ -37,10 +37,11 @@
               <el-checkbox name="checked" label="checked">我已阅读并同意</el-checkbox>
             </el-checkbox-group>
             <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
-            <a href="/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
+            <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
           </el-form-item>
           <el-form-item class="item-btn">
             <el-button type="primary" @click="onSubmit" :disabled="btnDisabled" :loading="btnLoading">注册</el-button>
+            <p><a :href="'invite.html?agentCode=' + agentCode">我已注册过新网账号</a></p>
           </el-form-item>
         </el-form>
       </div>
@@ -54,7 +55,7 @@
           3.与代理商取的联系，完成交易<br />
           4.管理商品<br />
         </p>
-        <p><a href="https://login.xinnet.com/?service=https://console.xinnet.com/agent" rel="noopener noreferrer">去登录</a></p>
+        <p><a href="https://login.xinnet.com/?service=http://console.xinnet.com/agent" rel="noopener noreferrer">去登录</a></p>
       </div>
     </div>
     <div class="slideshow">
@@ -405,6 +406,12 @@ body{
 .main-body .item-btn .el-button{
   width: 100%;
   /* margin-top: 30px; */
+}
+.main-body .item-btn p{
+  text-align: center;
+  margin: 0px;
+  margin-top: 20px;
+  line-height: 20px;
 }
 .main-body .inputVcode{
   width: 100px;
