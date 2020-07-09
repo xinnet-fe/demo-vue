@@ -48,10 +48,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="结束时间">
+      <el-table-column align="center" label="广告形式">
         <template slot-scope="{row}">
-          <!-- endTime -->
-          <span v-if="row.endTime">{{ row.endTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.types }}</span>
         </template>
       </el-table-column>
 
@@ -59,6 +58,13 @@
         <template slot-scope="{row}">
           <!-- publishTime -->
           <span v-if="row.publishTime">{{ row.publishTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="结束时间">
+        <template slot-scope="{row}">
+          <!-- endTime -->
+          <span v-if="row.endTime">{{ row.endTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
 
@@ -72,7 +78,7 @@
 
       <el-table-column class-name="status-col" label="显示/隐藏">
         <template slot-scope="{row}">
-          <el-switch v-if="row.dispaly !== undefined" v-model="row.dispalys" disabled @change="handleUpdateswitch(row)" />
+          <el-switch v-if="row.dispaly !== undefined" v-model="row.displays" disabled @change="handleUpdateswitch(row)" />
           <span v-else>1</span>
           <!-- <el-tag :type="row.status | statusFilter">
             {{ row.status }}
@@ -141,17 +147,17 @@
         </el-form-item>
         <el-form-item label="设置">
           <el-switch v-if="dialogStatus==='create'" v-model="values" />
-          <el-switch v-else v-model="temp.dispaly" />
+          <el-switch v-else v-model="temp.display" />
         </el-form-item>
         <el-form-item label="预设发布：" prop="resource">
           <el-radio v-model="temp.publish" label="0">否</el-radio>
           <el-radio v-model="temp.publish" label="1">是</el-radio>
         </el-form-item>
         <el-form-item v-if="temp.publish === '1'" label="发布时间：" prop="releaseTime">
-          <el-date-picker v-model="temp.publishTime" :picker-options="pickerOptions" value-format="yyyy-MM-dd hh:mm:ss" format="yyyy-MM-dd hh:mm:ss" type="datetime" class="filter-item" placeholder="请选择发布时间" />
+          <el-date-picker v-model="temp.publishTime" :picker-options="pickerOptions" type="datetime" class="filter-item" placeholder="请选择发布时间" />
         </el-form-item>
         <el-form-item v-if="temp.publish === '1'" label="结束时间：" prop="releaseTime">
-          <el-date-picker v-model="temp.endTime" :picker-options="pickerOptions" value-format="yyyy-MM-dd hh:mm:ss" format="yyyy-MM-dd hh:mm:ss" type="datetime" class="filter-item" placeholder="请选择结束时间" />
+          <el-date-picker v-model="temp.endTime" :picker-options="pickerOptions" type="datetime" class="filter-item" placeholder="请选择结束时间" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -248,7 +254,7 @@ export default {
         adTitle: '',
         adType: '1',
         adUrl: '',
-        dispaly: '0',
+        display: '0',
         endTime: undefined,
         file: undefined,
         // operateType: '',
@@ -308,9 +314,14 @@ export default {
         const aa = []
         response.data.forEach(row => {
           if (row.dispaly === 1) {
-            row.dispalys = true
+            row.displays = true
           } else if (row.dispaly === 0) {
-            row.dispalys = false
+            row.displays = false
+          }
+          if (row.type === 0) {
+            row.types = '图片'
+          } else if (row.type === 1) {
+            row.types = '文字'
           }
           if (row.publishState === 0) {
             row.publishState = '未发布'
@@ -374,9 +385,25 @@ export default {
         }
       }
     },
+    formatDate(date) {
+      // time = time * 1000
+      var Y = date.getFullYear() + '-'
+      var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+      var D = date.getDate() + ' '
+      var h = date.getHours() + ':'
+      var m = (date.getMinutes() < 10 ? '0' + (date.getMinutes()) : date.getMinutes()) + ':'
+      var s = (date.getSeconds() < 10 ? '0' + (date.getSeconds()) : date.getSeconds())
+      return Y + M + D + h + m + s
+    },
     onSubmit() {
       const wfForm = new FormData()
-      this.temp.dispaly = this.values ? 1 : 0
+      this.temp.display = this.values ? 1 : 0
+      if (this.temp.publishTime) {
+        this.temp.publishTime = this.formatDate(this.temp.publishTime)
+      }
+      if (this.temp.endTime) {
+        this.temp.endTime = this.formatDate(this.temp.endTime)
+      }
       for (var i in this.temp) {
         if (this.temp[i] !== undefined) {
           wfForm.append(i, this.temp[i])
@@ -489,7 +516,7 @@ export default {
         adTitle: '',
         adType: '1',
         adUrl: '',
-        dispaly: '0',
+        display: '0',
         endTime: undefined,
         file: undefined,
         // operateType: '',
