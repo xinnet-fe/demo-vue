@@ -127,7 +127,7 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
         <el-form-item label="文章标题：" prop="title">
           <!-- <el-input type="textarea" placeholder="请输入内容" v-model="temp.title" maxlength="30" show-word-limit /> -->
-          <el-input v-model="temp.title" type="textarea" rows="3" style="width:360px;" placeholder="请输入内容" minlength="5" maxlength="60" show-word-limit @input="handleRemark" />
+          <el-input v-model="temp.title" type="textarea" rows="3" style="width:360px;" placeholder="请输入内容" minlength="5" maxlength="100" show-word-limit @input="handleRemark" />
         </el-form-item>
         <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span>
         <el-form-item label="所属栏目：" prop="column">
@@ -157,7 +157,7 @@
           </el-select> -->
         </el-form-item>
         <el-form-item label="内容简介：" prop="summary">
-          <el-input v-model="temp.summary" :autosize="{ minRows: 4, maxRows: 6}" type="textarea" placeholder="Please input" />
+          <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="文章正文：">
           <el-input v-model="temp.content" :autosize="{ minRows: 16, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" />
