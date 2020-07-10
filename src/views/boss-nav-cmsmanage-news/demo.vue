@@ -156,7 +156,7 @@
             <el-option v-for="item in authors" :key="item" :label="item" :value="item" />
           </el-select> -->
         </el-form-item>
-        <el-form-item label="内容简介：" prop="briefIntroduction">
+        <el-form-item label="内容简介：" prop="summary">
           <el-input v-model="temp.summary" :autosize="{ minRows: 4, maxRows: 6}" type="textarea" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="文章正文：">
@@ -170,6 +170,9 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleCancel">
           取消
+        </el-button>
+        <el-button type="primary" @click="handlePass()">
+          人工通过
         </el-button>
         <el-button type="primary" @click="handleAudits()">
           审核
@@ -213,9 +216,9 @@
             添加作者
           </el-button>
         </el-form-item>
-        <el-form-item label="内容简介：" prop="briefIntroduction">
+        <!-- <el-form-item label="内容简介：" prop="briefIntroduction">
           <el-input v-model="temp.briefIntroduction" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -260,7 +263,7 @@
 </template>
 
 <script>
-import { newsList, auditDetail, handleAudit, categoryList } from '@/api/demos/knowledges'
+import { newsList, auditDetail, handleAudit, categoryList, articlePass } from '@/api/demos/knowledges'
 import { createArticle, updateArticle } from '@/api/demos/article'
 import waves from '@/directive/demos/waves' // waves directive
 import { parseTime } from '@/utils/demos'
@@ -394,7 +397,7 @@ export default {
         title: [{ required: true, message: '请输入文章标题', trigger: 'blur' }],
         originalValue: [{ required: true, message: '请选择初始值', trigger: 'change' }],
         author: [{ required: true, message: '请选择作者', trigger: 'change' }],
-        briefIntroduction: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
+        summary: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
         authorName: [{ required: true, message: '请输入作者名称', trigger: 'blur' }]
       },
       multipleSelection: [],
@@ -541,6 +544,16 @@ export default {
     handleCancel() {
       this.dialogAudit = false
       this.getList()
+    },
+    handlePass() {
+      articlePass({ actId: this.temp.actId }).then(data => {
+        this.$notify.success({
+          title: '审核成功',
+          message: '审核通过！'
+        })
+        this.dialogAudit = false
+        this.getList()
+      })
     },
     handleAudits() {
       handleAudit(

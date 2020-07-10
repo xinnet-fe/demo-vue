@@ -23,6 +23,14 @@ export function handleAudit(data) {
     data
   })
 }
+// 人工通过含有违禁词文章
+export function articlePass(data) {
+  return request({
+    url: '/article/manualAudit',
+    method: 'post',
+    data
+  })
+}
 // 获取新知广告列表
 export function knowledgeList(param) {
   return request({
