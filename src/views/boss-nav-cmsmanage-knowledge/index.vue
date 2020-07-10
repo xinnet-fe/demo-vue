@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-form style="margin-bottom: 20px;">
-        广告标题：<el-input v-model="listQuery.title" placeholder="请输入广告标题" style="width: 200px;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
+        <span style="width:8%;display:inline-block;">广告标题：</span><el-input v-model="listQuery.title" placeholder="请输入广告标题" style="width: 200px;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
         <span style="width:8%;display:inline-block;">广告状态：</span>
         <el-select v-model="listQuery.publish" placeholder="请选择广告状态" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
           <el-option v-for="item in publish" :key="item.num" :label="item.name" :value="item.num" />
