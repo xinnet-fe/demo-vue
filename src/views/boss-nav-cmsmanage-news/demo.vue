@@ -318,7 +318,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 15,
+        limit: 10,
         // sort: '+id',
         actId: undefined,
         title: undefined,
@@ -446,7 +446,7 @@ export default {
     resetModal() {
       this.listQuery = {
         page: 1,
-        limit: 15,
+        limit: 10,
         // sort: '+id',
         actId: undefined,
         title: undefined,
