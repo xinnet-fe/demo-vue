@@ -114,7 +114,11 @@
 
       <el-table-column label="账号绑定邮箱" align="center" width="100">
         <template>
-          <span style="color:#0069ff;cursor:pointer;">hy1234</span>
+          <router-link :to="'/boss-nav-usermanagedetail/12'" class="link-type">
+            <!-- <router-link :to="'/boss-nav-usermanagedetail/'+row.id" class="link-type"> -->
+            <span style="color:#0069ff;cursor:pointer;">hy123</span>
+          </router-link>
+          <!-- <span style="color:#0069ff;cursor:pointer;">hy1234</span> -->
         </template>
       </el-table-column>
 

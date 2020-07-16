@@ -496,6 +496,17 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/boss-nav-usermanagedetail/:id(\\d+)',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/boss-nav-usermanagedetail/index')
+      }
+    ]
+  },
+  {
     path: '/404',
     component: Layout,
     hidden: true,
