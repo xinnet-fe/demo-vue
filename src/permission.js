@@ -14,8 +14,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
-// let loginin = 'notuse'
-let loginin = false
+let loginin = 'notuse'
+// let loginin = false
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -33,7 +33,7 @@ router.beforeEach(async(to, from, next) => {
     } else {
       let hasMenus = 0
       let hasUser = 0
-      if (loginin==='notuse') {
+      if (loginin === 'notuse') {
         hasMenus = store.getters.menus && store.getters.menus.length > 0
         hasUser = store.getters.user && store.getters.user.id
       }
