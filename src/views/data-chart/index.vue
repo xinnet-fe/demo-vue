@@ -42,10 +42,10 @@
             </el-tooltip>
 
             <p class="hint1">累计注册用户数</p>
-            <p class="hint2">1,234人</p>
+            <p class="hint2">{{ overviewSize.sumRegisterNumber | convertSeparator }}人</p>
             <p class="hint3">
-              <span>环比：12.13%<i class="el-icon-caret-top" /></span>
-              <span>同比：12.13%<i class="el-icon-caret-bottom" /></span>
+              <span>环比：{{ overviewSize.momRegisterNumber | convertPercentage }}<i :class="[getIcon(overviewSize.momRegisterNumber)]" /></span>
+              <span>同比：{{ overviewSize.yoyRegisterNumber | convertPercentage }}<i :class="[getIcon(overviewSize.yoyRegisterNumber)]" /></span>
             </p>
           </div>
         </el-col>
@@ -174,6 +174,10 @@ import Chart5 from './chart5'
 import Chart6 from './chart6'
 import reduce from 'lodash/reduce'
 import isNumber from 'lodash/isNumber'
+import isUndefined from 'lodash/isUndefined'
+import isNaN from 'lodash/isNaN'
+import formatTime from '@/utils/formatTime'
+import { mapState } from 'vuex'
 
 export default {
   name: 'DataMonitor',
@@ -202,23 +206,6 @@ export default {
       pickerMinDate: '',
       pickerMaxDate: '',
       pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick: (picker) => {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - this.oneDay * 6)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近一个月',
-          onClick: (picker) => {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - this.oneDay * 29)
-            picker.$emit('pick', [start, end])
-          }
-        }],
         onPick: ({ maxDate, minDate }) => {
           const oneMonth = (30 - 1) * 24 * 3600 * 1000
           if (minDate === null) {
@@ -244,6 +231,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      overviewSize: state => state.chart.overviewSize
+    })
   },
   mounted() {
     this.getData()
@@ -251,6 +241,13 @@ export default {
   beforeDestroy() {
   },
   methods: {
+    getIcon(number) {
+      const num = parseFloat(number)
+      if (isUndefined(num) || isNaN(num) || !isNumber(num) || num === 0) {
+        return ''
+      }
+      return num > 0 ? 'el-icon-caret-top' : 'el-icon-caret-bottom'
+    },
     pickerChange(time) {
       if (time === null) {
         this.pickerMinDate = ''
@@ -270,9 +267,18 @@ export default {
       const { range } = this.searchForm
       const selectAll = true
       let days
+      let startDate
+      let endDate
       if (range.length) {
         days = (range[1].getTime() - range[0].getTime())
+        startDate = formatTime(range[0].getTime(), 'YYYY-MM-DD')
+        endDate = formatTime(range[1].getTime(), 'YYYY-MM-DD')
       }
+
+      const data = { startDate, endDate }
+      // 获取概览数据
+      this.$store.dispatch('chart/getOverviewSize', data)
+
       const _days = parseInt(days) / parseInt(this.oneDay)
       this.generateChartData(_days, selectAll).then(data => {
         this.chartData = data

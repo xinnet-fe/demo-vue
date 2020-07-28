@@ -67,6 +67,10 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     const status = parseInt(res.status, 10)
+    // console.log('response：')
+    // console.log(response)
+    // console.log('data：')
+    // console.log(res)
     // mock必返回code，请求接口错误才返回code
     const code = res.code
     // console.log(`status: ${status}`)
@@ -119,6 +123,8 @@ service.interceptors.response.use(
   },
   error => {
     const { status } = error.response
+    // console.log('error：')
+    // console.log(error)
     let message = ''
     // console.log(error.response)
     // console.error(`error status: ${status}`)

@@ -9,9 +9,16 @@
       </div>
 
       <app-main v-show="!$route.meta.url" />
+      <!--
       <static-page
         v-for="item in iframeRoutes"
         v-show="showIframe(item)"
+        :key="item.name"
+        :url="item.meta.url"
+      />
+      -->
+      <static-page
+        v-for="item in iframeRoutes"
         :key="item.name"
         :url="item.meta.url"
       />

@@ -1,4 +1,7 @@
 // import parseTime, formatTime and set to filter
+import isNumber from 'lodash/isNumber'
+import isUndefined from 'lodash/isUndefined'
+import isNaN from 'lodash/isNaN'
 export { parseTime, formatTime } from '@/utils/processTime'
 
 /**
@@ -65,4 +68,26 @@ export function toThousandFilter(num) {
  */
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+// 转换为百分比
+export function convertPercentage(num) {
+  if (isUndefined(num) || isNaN(num) || !isNumber(num) || parseFloat(num) === 0) {
+    return '--'
+  }
+  return num * 100 + '%'
+}
+
+// 1025 => 1,025
+export function convertSeparator(num) {
+  const n = '' + num
+  const arr = n.split('')
+  const res = arr.reduceRight((r, v, k) => {
+    r.push(v)
+    if (k !== 0 && k % 3 === 0) {
+      r.push(',')
+    }
+    return r
+  }, [])
+  return res.join('')
 }
