@@ -20,17 +20,6 @@ export function getUser(query) {
   })
 }
 
-<<<<<<< HEAD
-// export function getSidebarMenus(query) {
-//   return request({
-//     url: '/navigation/listNavigation',
-//     // url: 'static/data/menu.json',
-//     method: 'get',
-//     params: query
-//   })
-// }
-
-=======
 export function getSidebarMenus(query) {
   return request({
     url: '/navigation/listNavigation',
@@ -39,7 +28,6 @@ export function getSidebarMenus(query) {
     params: query
   })
 }
->>>>>>> master
 // 修改密码
 export function changePwd(data) {
   return request({
