@@ -14,10 +14,10 @@ import './permission' // permission control
 import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 import Echarts from 'echarts'
-import Highcharts from 'highcharts/highstock'
-import HighchartsDrilldown from 'highcharts/modules/drilldown'
+// import Highcharts from 'highcharts/highstock'
+// import HighchartsDrilldown from 'highcharts/modules/drilldown'
 
-HighchartsDrilldown(Highcharts)
+// HighchartsDrilldown(Highcharts)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -37,7 +37,7 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
-Vue.prototype.highchart = Highcharts
+// Vue.prototype.highchart = Highcharts
 Vue.prototype.echarts = Echarts
 Vue.prototype.echartsColorList = [
   '#4f7acb',
