@@ -15,7 +15,6 @@
         </p>
       </div>
     </custom-chart-head>
-    <el-button v-if="step !== 1" class="fixed-button" size="mini" @click="backView">返 回</el-button>
     <div ref="data-chart" class="data-chart" />
   </div>
 </template>
@@ -29,62 +28,69 @@ import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
 
 export default {
-  name: 'Chart2',
+  name: 'Chart3',
   mixins: [mixin, resize],
   data() {
     return {
-      title: '客户价趋势分布'
+      title: '注册用户数分布'
     }
   },
   methods: {
-    initChart(childData) {
-      this.checkList = []
+    drawChildChart() {},
+    initChart(chartData) {
       const xAxisData = []
-      const riseData = []
-      const declineData = []
-      const averageData = []
-      const warningData = []
-      const legendData = []
-      // 图例初始值
-      const selected = {}
-      // 阈值初始值
-      const dataLen = this.chartData.length
-      const start = dataLen > 7 ? (100 - 7 / dataLen * 100) : 0
-      const end = 100
-      const data = childData ? this.chartData.slice(0, 2) : this.chartData
-      forEach(data, (o, k) => {
-        if (k === 0) {
-          legendData.push(
-            o.rise.name,
-            o.decline.name,
-            o.average.name,
-            o.warning.name
-          )
+      // GMV
+      const mainData = []
+      // 均值
+      const averageValueData = []
+      // 上涨值
+      const risingValueData = []
+      // 下降值
+      const fallingValueData = []
+      // 警告值
+      const warningValueData = []
 
-          forEach(o, item => {
-            if (item.selected) {
-              selected[item.name] = true
-              this.checkList.push(item.value)
-            } else {
-              selected[item.name] = false
-            }
-          })
-        }
-        xAxisData.push(formatTime(o.date, 'YYYY-MM-DD'))
-        riseData.push(o.rise.data)
-        declineData.push(o.decline.data)
-        averageData.push(o.average.data)
-        warningData.push(o.warning.data)
+      // 图例data
+      const legendData = ['注册用户数', '上涨值', '均值', '下降值', '警告值']
+      // 图例初始选中状态
+      const selected = {
+        '上涨值': false,
+        '均值': true,
+        '下降值': false,
+        '警告值': false
+      }
+      // const dataLen = chartData.length
+      // const start = dataLen > 7 ? (100 - 7 / dataLen * 100) : 0
+      const start = 0
+      const end = 100
+
+      forEach(chartData, (o, k) => {
+        xAxisData.push(formatTime(new Date(o.occurDate).getTime(), 'YYYY-MM-DD'))
+        mainData.push(o.registerNumber)
+        averageValueData.push(o.regAverageValue)
+        risingValueData.push(o.regRisingValue)
+        fallingValueData.push(o.regFallingValue)
+        warningValueData.push(o.regWarningValue)
       })
 
-      this.options = map(legendData, (label, value) => ({ label, value }))
+      // 下拉框数据
+      const selectData = ['上涨值', '均值', '下降值', '警告值']
+      // 下拉框初始选中状态取下标
+      this.checkList = [1]
+      this.options = map(selectData, (label, value) => ({ label, value }))
       const option = {
         color: this.echartsColorList,
+        title: {
+          subtext: '用户数（人）',
+          subtextStyle: {
+            color: '#606266'
+          }
+        },
         legend: {
           data: legendData,
-          icon: 'rect',
+          icon: 'roundRect',
           top: 20,
-          left: 20,
+          left: 100,
           selected
         },
         tooltip: {
@@ -105,8 +111,7 @@ export default {
           }
         ],
         xAxis: {
-          data: xAxisData,
-          boundaryGap: false
+          data: xAxisData
         },
         yAxis: {},
         grid: {
@@ -117,23 +122,28 @@ export default {
         series: [
           {
             name: legendData[0],
-            type: 'line',
-            data: riseData
+            type: 'bar',
+            data: mainData
           },
           {
             name: legendData[1],
             type: 'line',
-            data: declineData
+            data: averageValueData
           },
           {
             name: legendData[2],
             type: 'line',
-            data: averageData
+            data: risingValueData
           },
           {
             name: legendData[3],
             type: 'line',
-            data: warningData
+            data: fallingValueData
+          },
+          {
+            name: legendData[4],
+            type: 'line',
+            data: warningValueData
           }
         ]
       }
@@ -143,3 +153,4 @@ export default {
   }
 }
 </script>
+

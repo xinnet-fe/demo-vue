@@ -19,23 +19,38 @@ export default {
       chart: null,
       option: {},
       options: [],
-      checkList: []
+      checkList: [],
+      products: {
+        1: '域名',
+        2: '云计算',
+        3: '云计算(老)',
+        4: '建站',
+        5: '邮局',
+        6: '虚机',
+        7: '轻应用服务器',
+        8: '租用托管',
+        9: '服务市场',
+        10: '其他',
+        11: '小计'
+      }
     }
   },
   mounted() {
     const self = this
     this.chart = echarts.init(this.$refs['data-chart'])
-    this.chart.on('click', this.getChart.bind(self))
 
     this.$watch('chartData', (newVal) => {
       if (newVal.length) {
-        this.initChart()
+        this.initChart(newVal)
+        this.chart.off('legendselectchanged', this.legendSelectChanged.bind(self))
         this.chart.on('legendselectchanged', this.legendSelectChanged.bind(self))
       }
     })
+    this.chart.on('click', this.getChart.bind(self))
 
     if (this.chartData.length) {
-      this.initChart()
+      this.initChart(this.chartData)
+      this.chart.off('legendselectchanged', this.legendSelectChanged.bind(self))
       this.chart.on('legendselectchanged', this.legendSelectChanged.bind(self))
     }
   },
@@ -68,14 +83,11 @@ export default {
         return res
       }, [])
     },
-    backView() {
-      this.initChart()
-      this.step = 1
-    },
     getChart(param) {
       if (param.componentType === 'series') {
-        this.initChart(param.name)
-        this.step = 2
+        this.drawChildChart(param.name).then(() => {
+          this.step = 2
+        })
       }
     }
   }

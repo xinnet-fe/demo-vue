@@ -2,6 +2,7 @@
 import isNumber from 'lodash/isNumber'
 import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
+import isNull from 'lodash/isNull'
 export { parseTime, formatTime } from '@/utils/processTime'
 
 /**
@@ -80,6 +81,9 @@ export function convertPercentage(num) {
 
 // 1025 => 1,025
 export function convertSeparator(num) {
+  if (isUndefined(num) || isNaN(num) || isNull(num)) {
+    return 0
+  }
   const n = '' + num
   const arr = n.split('')
   const res = arr.reduceRight((r, v, k) => {

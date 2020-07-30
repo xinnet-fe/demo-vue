@@ -1,32 +1,46 @@
-import { getOverviewSize, getCurve, getDetailedCurve } from '@/api/chart'
+import { getOverviewSize, getCurve, getDetailedCurve, getNewAndOld } from '@/api/chart'
+
+function dataSort(data) {
+  data.sort((a, b) => {
+    const aTime = new Date(a.occurDate).getTime()
+    const bTime = new Date(b.occurDate).getTime()
+    return aTime - bTime
+  })
+  return data
+}
 
 const state = {
   overviewSize: {},
-  curve: [],
-  detailedCurve: []
+  newAndOldUser: []
 }
 
 const mutations = {
   GET_OVERVIEW_SIZE: (state, res) => {
     state.overviewSize = res.data
   },
-  GET_CURVE: (state, res) => {
-    state.curve = res.data
-  },
-  GET_DETAILED_CURVE: (state, res) => {
-    state.detailedCurve = res.data
+  GET_USER: (state, res) => {
+    state.newAndOldUser = dataSort(res.data)
   }
 }
 
 const actions = {
   getOverviewSize({ commit }, data) {
-    return getOverviewSize(data).then(res => commit('GET_OVERVIEW_SIZE', res))
+    return getOverviewSize(data).then(res => {
+      commit('GET_OVERVIEW_SIZE', res)
+      return res
+    })
   },
   getCurve({ commit }, data) {
-    return getCurve(data).then(res => commit('GET_CURVE', res))
+    return getCurve(data)
   },
   getDetailedCurve({ commit }, data) {
-    return getDetailedCurve(data).then(res => commit('GET_DETAILED_CURVE', res))
+    return getDetailedCurve(data)
+  },
+  getNewAndOld({ commit }, data) {
+    return getNewAndOld(data).then(res => {
+      commit('GET_USER', res)
+      return res
+    })
   }
 }
 

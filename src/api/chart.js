@@ -15,7 +15,7 @@ export function getCurve(data) {
   return request({
     url: '/dapan/getCurve',
     method: 'post',
-    data
+    data: querystring.stringify(data)
   })
 }
 
@@ -24,6 +24,15 @@ export function getDetailedCurve(data) {
   return request({
     url: '/dapan/getDetailedCurve',
     method: 'post',
-    data
+    data: querystring.stringify(data)
+  })
+}
+
+// 大盘新老用户数据
+export function getNewAndOld(data) {
+  return request({
+    url: '/dapan/getNewAndOld',
+    method: 'post',
+    data: querystring.stringify(data)
   })
 }

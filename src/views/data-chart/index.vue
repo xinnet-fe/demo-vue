@@ -64,10 +64,10 @@
             </el-tooltip>
 
             <p class="hint1">累计订单用户数</p>
-            <p class="hint2">800人</p>
+            <p class="hint2">{{ overviewSize.sumOrderUsers | convertSeparator }}人</p>
             <p class="hint3">
-              <span>环比：12.13%<i class="el-icon-caret-top" /></span>
-              <span>同比：12.13%<i class="el-icon-caret-bottom" /></span>
+              <span>环比：{{ overviewSize.momOrderUsers | convertPercentage }}<i :class="[getIcon(overviewSize.momOrderUsers)]" /></span>
+              <span>同比：{{ overviewSize.yoyOrderUsers | convertPercentage }}<i :class="[getIcon(overviewSize.yoyOrderUsers)]" /></span>
             </p>
           </div>
         </el-col>
@@ -86,10 +86,10 @@
             </el-tooltip>
 
             <p class="hint1">累计支付成功的订单数</p>
-            <p class="hint2">780笔</p>
+            <p class="hint2">{{ overviewSize.sumOrderNumber | convertSeparator }}笔</p>
             <p class="hint3">
-              <span>环比：12.13%<i class="el-icon-caret-top" /></span>
-              <span>同比：12.13%<i class="el-icon-caret-bottom" /></span>
+              <span>环比：{{ overviewSize.momOrderNumber | convertPercentage }}<i :class="[getIcon(overviewSize.momOrderNumber)]" /></span>
+              <span>同比：{{ overviewSize.yoyOrderNumber | convertPercentage }}<i :class="[getIcon(overviewSize.yoyOrderNumber)]" /></span>
             </p>
           </div>
         </el-col>
@@ -107,11 +107,11 @@
               <i class="el-icon-warning-outline" />
             </el-tooltip>
 
-            <p class="hint1">累计实时订单金额（GMV）</p>
-            <p class="hint2">800,123,234元</p>
+            <p class="hint1">累计实付订单金额（GMV）</p>
+            <p class="hint2">{{ overviewSize.sumGmv | convertSeparator }}元</p>
             <p class="hint3">
-              <span>环比：12.13%<i class="el-icon-caret-top" /></span>
-              <span>同比：12.13%<i class="el-icon-caret-bottom" /></span>
+              <span>环比：{{ overviewSize.momGmv | convertPercentage }}<i :class="[getIcon(overviewSize.momGmv)]" /></span>
+              <span>同比：{{ overviewSize.yoyGmv | convertPercentage }}<i :class="[getIcon(overviewSize.yoyGmv)]" /></span>
             </p>
           </div>
         </el-col>
@@ -122,27 +122,12 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <div class="grid-content bg-purple">
-            <chart1 :chart-data="chartData" />
+            <register-user ref="registerUser" :chart-data="registerUserData" />
           </div>
         </el-col>
         <el-col :span="12">
           <div class="grid-content bg-purple">
-            <chart2 :chart-data="chartData" />
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-
-    <div class="chart block">
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <div class="grid-content bg-purple">
-            <chart3 :chart-data="chartData" />
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <div class="grid-content bg-purple">
-            <chart4 :chart-data="chartData" />
+            <order-user ref="orderUser" :chart-data="orderUserData" />
           </div>
         </el-col>
       </el-row>
@@ -152,12 +137,12 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <div class="grid-content bg-purple">
-            <chart5 :chart-data="chartData" />
+            <gmv ref="gmv" :chart-data="gmvData" />
           </div>
         </el-col>
         <el-col :span="12">
           <div class="grid-content bg-purple">
-            <chart6 :chart-data="chartData" />
+            <guest-list ref="guestList" :chart-data="guestListData" />
           </div>
         </el-col>
       </el-row>
@@ -166,36 +151,37 @@
 </template>
 
 <script>
-import Chart1 from './chart1'
-import Chart2 from './chart2'
-import Chart3 from './chart3'
-import Chart4 from './chart4'
-import Chart5 from './chart5'
-import Chart6 from './chart6'
-import reduce from 'lodash/reduce'
+import OrderUser from './orderUser'
+import RegisterUser from './registerUser'
+import Gmv from './gmv'
+import GuestList from './guestList'
+import forEach from 'lodash/forEach'
+import values from 'lodash/values'
 import isNumber from 'lodash/isNumber'
 import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
 import formatTime from '@/utils/formatTime'
+import { when } from '@/utils/request'
 import { mapState } from 'vuex'
 
 export default {
   name: 'DataMonitor',
   components: {
-    Chart1,
-    Chart2,
-    Chart3,
-    Chart4,
-    Chart5,
-    Chart6
+    GuestList,
+    RegisterUser,
+    Gmv,
+    OrderUser
   },
   data() {
     return {
-      chartData: [],
+      registerUserData: [],
+      orderUserData: [],
+      gmvData: [],
+      guestListData: [],
       oneDay: 3600 * 1000 * 24,
       searchForm: {
-        duration: '',
-        range: ''
+        duration: 'day',
+        range: []
       },
       duration: {
         day: '按日'
@@ -236,11 +222,18 @@ export default {
     })
   },
   mounted() {
+    this.set7DayTime()
     this.getData()
   },
-  beforeDestroy() {
-  },
   methods: {
+    set7DayTime() {
+      // 最近7日：今天29日取值（22-28）
+      const currentTime = new Date().getTime()
+      const day = 3600 * 1000 * 24
+      const startTime = new Date(currentTime - 8 * day)
+      const endTime = new Date(currentTime - day)
+      this.searchForm.range.push(startTime, endTime)
+    },
     getIcon(number) {
       const num = parseFloat(number)
       if (isUndefined(num) || isNaN(num) || !isNumber(num) || num === 0) {
@@ -261,81 +254,67 @@ export default {
       }
     },
     submitForm() {
+      this.clearStep()
       this.getData()
+    },
+    dataSort(data) {
+      data.sort((a, b) => {
+        const aTime = new Date(a.occurDate).getTime()
+        const bTime = new Date(b.occurDate).getTime()
+        return aTime - bTime
+      })
+      return data
+    },
+    clearStep() {
+      const { guestList, registerUser, gmv, orderUser } = this.$refs
+      guestList.step = 1
+      registerUser.step = 1
+      gmv.step = 1
+      orderUser.step = 1
     },
     getData() {
       const { range } = this.searchForm
-      const selectAll = true
-      let days
+      const { guestList, registerUser, gmv, orderUser } = this.$refs
       let startDate
       let endDate
-      if (range.length) {
-        days = (range[1].getTime() - range[0].getTime())
+      if (range && range.length) {
         startDate = formatTime(range[0].getTime(), 'YYYY-MM-DD')
         endDate = formatTime(range[1].getTime(), 'YYYY-MM-DD')
+      } else {
+        this.$message.error('请选择时间范围！')
+        return
       }
 
       const data = { startDate, endDate }
+      guestList.chart.showLoading()
+      registerUser.chart.showLoading()
+      gmv.chart.showLoading()
+      orderUser.chart.showLoading()
       // 获取概览数据
       this.$store.dispatch('chart/getOverviewSize', data)
-
-      const _days = parseInt(days) / parseInt(this.oneDay)
-      this.generateChartData(_days, selectAll).then(data => {
-        this.chartData = data
-      })
-    },
-    generateChartData(_days = 7, selectAll) {
-      const days = isNumber(_days) && !isNaN(_days) ? _days : 7
-      // 每天生成一条数据
-      return new Promise((resolve) => {
-        const arr = new Array(days)
-        const data = reduce(arr, (res, v, k) => {
-          const rise = (Math.random() * 100).toFixed(2)
-          const decline = (Math.random() * 100).toFixed(2)
-          const average = (Math.random() * 100).toFixed(2)
-          const warning = (Math.random() * 100).toFixed(2)
-          const date = new Date().getTime() - this.oneDay * (days - k)
-          const selected = selectAll
-          res[k] = {
-            // 上升
-            rise: {
-              name: '上涨值',
-              value: 0,
-              data: rise,
-              selected,
-              num: parseInt(Math.random() * 100)
-            },
-            // 下降
-            decline: {
-              name: '均值',
-              value: 1,
-              selected: true,
-              data: decline,
-              num: parseInt(Math.random() * 100)
-            },
-            // 平均
-            average: {
-              name: '转化率',
-              value: 2,
-              selected,
-              data: average,
-              num: parseInt(Math.random() * 100)
-            },
-            // 警告
-            warning: {
-              name: '警告值',
-              value: 3,
-              selected,
-              data: warning,
-              num: parseInt(Math.random() * 100)
-            },
-            // 日期
-            date,
-            num: parseInt(Math.random() * 100)
+      // 1,2,3,4分别对应guestList,registerUser,gmv,orderUser的数据
+      forEach(Array.of(1, 2, 3), v => {
+        this.$store.dispatch('chart/getCurve', { ...data, type: v }).then(res => {
+          const data = this.dataSort(values(res.data))
+          if (v === 1) {
+            guestList.chart.hideLoading()
+            this.guestListData = data
+          } else if (v === 2) {
+            registerUser.chart.hideLoading()
+            this.registerUserData = data
+          } else if (v === 3) {
+            gmv.chart.hideLoading()
+            this.gmvData = data
           }
-          return res
-        }, [])
-        resolve(data)
+        })
+      })
+      when(
+        this.$store.dispatch('chart/getCurve', { ...data, type: '4' }),
+        this.$store.dispatch('chart/getNewAndOld', data)
+      ).then(result => {
+        const data = this.dataSort(values(result[0].data))
+        this.orderUserData = data
+        orderUser.chart.hideLoading()
       })
     }
   }

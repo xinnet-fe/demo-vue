@@ -8,7 +8,7 @@
 import echarts from 'echarts'
 
 export default {
-  name: 'DataChart',
+  name: 'DataChartDemo',
   data() {
     return {
       chart: null,
