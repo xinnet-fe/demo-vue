@@ -3,6 +3,7 @@ import isNumber from 'lodash/isNumber'
 import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
 import isNull from 'lodash/isNull'
+import round from 'lodash/round'
 export { parseTime, formatTime } from '@/utils/processTime'
 
 /**
@@ -76,7 +77,7 @@ export function convertPercentage(num) {
   if (isUndefined(num) || isNaN(num) || !isNumber(num) || parseFloat(num) === 0) {
     return '--'
   }
-  return num * 100 + '%'
+  return round(num * 100, 2) + '%'
 }
 
 // 1025 => 1,025
@@ -85,6 +86,9 @@ export function convertSeparator(num) {
     return 0
   }
   const n = '' + num
+  if (n.length < 4) {
+    return n
+  }
   const arr = n.split('')
   const res = arr.reduceRight((r, v, k) => {
     r.push(v)
@@ -93,5 +97,5 @@ export function convertSeparator(num) {
     }
     return r
   }, [])
-  return res.join('')
+  return res.reverse().join('')
 }

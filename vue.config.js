@@ -154,7 +154,7 @@ function defaultChainWebpack(config) {
 module.exports = {
   ...rootConfig,
   devServer: {
-    host: 'c.xinnet.com',
+    // host: 'c.xinnet.com',
     port: port,
     open: false,
     overlay: {

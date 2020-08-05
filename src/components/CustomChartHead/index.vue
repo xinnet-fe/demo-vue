@@ -4,12 +4,17 @@
       <el-col :span="16">
         <div class="title">
           {{ title }}
-          <el-tooltip class="item" effect="light" placement="top">
-            <div slot="content">
+          <el-popover
+            placement="top"
+            width="320"
+            trigger="hover"
+            class="item"
+          >
+            <div>
               <slot name="content" />
             </div>
-            <i class="el-icon-warning-outline" />
-          </el-tooltip>
+            <i slot="reference" class="el-icon-warning-outline" />
+          </el-popover>
         </div>
       </el-col>
       <el-col :span="8">
@@ -18,7 +23,7 @@
             <span class="el-dropdown-link">
               阈值参考<i class="el-icon-arrow-down el-icon--right" />
             </span>
-            <el-dropdown-menu slot="dropdown">
+            <el-dropdown-menu slot="dropdown" class="dapan-chart">
               <el-checkbox-group v-model="checkList">
                 <el-dropdown-item v-for="item in options" :key="item.value">
                   <el-checkbox
@@ -39,6 +44,7 @@
 
 <script>
 // import find from 'lodash/find'
+import app from '@/main'
 
 export default {
   name: 'CustomChartHead',
@@ -80,10 +86,15 @@ export default {
       // } else {
       //   checkList.push(item.value)
       // }
-      this.chart.dispatchAction({
-        type: 'legendToggleSelect',
-        name: item.label
-      })
+
+      // 图例title和下拉框title不完全相同
+      // 上涨 => 上涨线，均值 => 均值线
+      const name = item.label.slice(0, 2)
+      // this.chart.dispatchAction({
+      //   type: 'legendToggleSelect',
+      //   name
+      // })
+      app.$emit('reloadChart', name, this.$parent)
     }
   }
 }
@@ -97,10 +108,14 @@ export default {
 
   .title {
     padding-left: 20px;
+    font-size: 14px;
   }
   .type {
     text-align: right;
     padding-right: 20px;
+  }
+  .el-dropdown-link {
+    font-size: 12px;
   }
 }
 </style>

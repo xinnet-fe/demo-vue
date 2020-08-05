@@ -22,24 +22,32 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button @click="submitForm">查 询</el-button>
+          <el-button type="primary" @click="submitForm">查 询</el-button>
         </el-form-item>
       </el-form>
 
       <el-row>
         <el-col :span="6">
           <div class="block">
-            <el-tooltip class="item" effect="light" placement="top">
-              <div slot="content">
+            <el-popover
+              placement="top"
+              width="320"
+              trigger="hover"
+              class="item"
+            >
+              <i slot="reference" class="el-icon-warning-outline" />
+              <div>
                 <p>
-                  按所选时间粒度、时间范围，统计所有注册渠道的新用户数的总和、按照账户数去重。
+                  按所选时间粒度、时间范围，统计所有注册渠道的新用户数的总和，按照账户数去重。
                 </p>
                 <p>
-                  环比=（所选时间范围的注册用户数-所选时间范围紧挨的之前时间范围周期的注册用户数）
+                  环比=（所选时间范围的注册用户数-所选时间范围紧挨的之前时间范围周期的注册用户数）/所选时间范围紧挨的之前时间范围周期的注册用户数*100% 保留两位小数，四舍五入。
+                </p>
+                <p>
+                  同比=（所选时间范围的注册用户数-去年同段时间范围的注册用户数）/去年同段时间范围的注册用户数*100% 保留两位小数，四舍五入。
                 </p>
               </div>
-              <i class="el-icon-warning-outline" />
-            </el-tooltip>
+            </el-popover>
 
             <p class="hint1">累计注册用户数</p>
             <p class="hint2">{{ overviewSize.sumRegisterNumber | convertSeparator }}人</p>
@@ -51,17 +59,25 @@
         </el-col>
         <el-col :span="6">
           <div class="block">
-            <el-tooltip class="item" effect="light" placement="top">
-              <div slot="content">
+            <el-popover
+              placement="top"
+              width="320"
+              trigger="hover"
+              class="item"
+            >
+              <div>
                 <p>
-                  按所选时间粒度、时间范围，统计所有注册渠道的新用户数的总和、按照账户数去重。
+                  按所选时间粒度、时间范围，统计所有支付成功的订单用户数总和，用户数按照会员编号去重。
                 </p>
                 <p>
-                  环比=（所选时间范围的注册用户数-所选时间范围紧挨的之前时间范围周期的注册用户数）
+                  环比=（所选时间范围的订单用户数-所选时间范围紧挨的之前时间范围周期的订单用户数）/所选时间范围紧挨的之前时间范围周期的订单用户数*100% 保留两位小数，四舍五入。
+                </p>
+                <p>
+                  同比=（所选时间范围的订单用户数-去年同段时间范围的订单用户数）/去年同段时间范围的订单用户数*100% 保留两位小数，四舍五入
                 </p>
               </div>
-              <i class="el-icon-warning-outline" />
-            </el-tooltip>
+              <i slot="reference" class="el-icon-warning-outline" />
+            </el-popover>
 
             <p class="hint1">累计订单用户数</p>
             <p class="hint2">{{ overviewSize.sumOrderUsers | convertSeparator }}人</p>
@@ -73,17 +89,25 @@
         </el-col>
         <el-col :span="6">
           <div class="block">
-            <el-tooltip class="item" effect="light" placement="top">
-              <div slot="content">
+            <el-popover
+              placement="top"
+              width="320"
+              trigger="hover"
+              class="item"
+            >
+              <div>
                 <p>
-                  按所选时间粒度、时间范围，统计所有注册渠道的新用户数的总和、按照账户数去重。
+                  按所选时间粒度、时间范围，统计所有支付成功的订单数总和（不包含退费）。
                 </p>
                 <p>
-                  环比=（所选时间范围的注册用户数-所选时间范围紧挨的之前时间范围周期的注册用户数）
+                  环比=（所选时间范围的订单数总和-所选时间范围紧挨的之前时间范围周期的订单数总和）/所选时间范围紧挨的之前时间范围周期的订单数总和*100% 保留两位小数，四舍五入。
+                </p>
+                <p>
+                  同比=（所选时间范围的订单数总和-去年同段时间范围的订单数总和）/去年同段时间范围的订单数总和*100% 保留两位小数，四舍五入。
                 </p>
               </div>
-              <i class="el-icon-warning-outline" />
-            </el-tooltip>
+              <i slot="reference" class="el-icon-warning-outline" />
+            </el-popover>
 
             <p class="hint1">累计支付成功的订单数</p>
             <p class="hint2">{{ overviewSize.sumOrderNumber | convertSeparator }}笔</p>
@@ -95,17 +119,25 @@
         </el-col>
         <el-col :span="6">
           <div class="block last">
-            <el-tooltip class="item" effect="light" placement="top">
-              <div slot="content">
+            <el-popover
+              placement="top"
+              width="320"
+              trigger="hover"
+              class="item"
+            >
+              <div>
                 <p>
-                  按所选时间粒度、时间范围，统计所有注册渠道的新用户数的总和、按照账户数去重。
+                  按所选时间粒度、时间范围，统计所有支付成功订单的总金额（不含退费金额）。
                 </p>
                 <p>
-                  环比=（所选时间范围的注册用户数-所选时间范围紧挨的之前时间范围周期的注册用户数）
+                  环比=（所选时间范围的订单数总金额-所选时间范围紧挨的之前时间范围周期的订单总金额）/所选时间范围紧挨的之前时间范围周期的订单总金额*100% 保留两位小数，四舍五入。
+                </p>
+                <p>
+                  同比=（所选时间范围的订单总金额-去年同段时间范围的订单总金额）/去年同段时间范围的订单总金额*100% 保留两位小数，四舍五入。
                 </p>
               </div>
-              <i class="el-icon-warning-outline" />
-            </el-tooltip>
+              <i slot="reference" class="el-icon-warning-outline" />
+            </el-popover>
 
             <p class="hint1">累计实付订单金额（GMV）</p>
             <p class="hint2">{{ overviewSize.sumGmv | convertSeparator }}元</p>
@@ -361,7 +393,7 @@ export default {
       .hint2 {
         font-size: 20px;
         font-weight: bold;
-        color: $hintTextColor;
+        color: $titleTextColor;
       }
       .hint3 {
         font-size: 12px;
@@ -384,7 +416,7 @@ export default {
     margin-top: 20px;
 
     .grid-content {
-      height: 450px;
+      height: 380px;
       background-color: #fff;
     }
   }

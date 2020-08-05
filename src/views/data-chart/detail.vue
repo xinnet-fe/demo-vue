@@ -4,6 +4,7 @@
       :data="chartData"
       border
       class="data-table"
+      header-row-class-name="data-table-header-row"
     >
       <template v-slot="scope">
         <slot :default="scope" />
@@ -36,6 +37,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/variables.scss';
+
 .data-view {
   position: absolute;
   bottom: 0;
@@ -54,9 +57,11 @@ export default {
 .chart-bread {
   color: #333;
   margin: 20px;
+  font-size: 14px;
 
   .clickable {
     cursor: pointer;
+    color: $linkTextColor;
   }
 }
 </style>

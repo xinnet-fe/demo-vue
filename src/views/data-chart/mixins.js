@@ -2,6 +2,7 @@ import echarts from 'echarts'
 import reduce from 'lodash/reduce'
 import forEach from 'lodash/forEach'
 import CustomChartHead from '@/components/CustomChartHead'
+import app from '@/main'
 
 export default {
   components: {
@@ -46,7 +47,12 @@ export default {
         this.chart.on('legendselectchanged', this.legendSelectChanged.bind(self))
       }
     })
+
+    // 点击图事件
     this.chart.on('click', this.getChart.bind(self))
+
+    // 选择阈值重绘
+    app.$on('reloadChart', this.reloadChart.bind(self))
 
     if (this.chartData.length) {
       this.initChart(this.chartData)
@@ -61,6 +67,7 @@ export default {
     }
     this.chart.off('legendselectchanged', this.legendSelectChanged.bind(self))
     this.chart.off('click', this.getChart.bind(self))
+    app.$off('reloadChart', this.reloadChart.bind(self))
     this.chart.dispose()
     this.chart = null
     this.option = {}
@@ -87,6 +94,70 @@ export default {
       if (param.componentType === 'series') {
         this.drawChildChart(param.name).then(() => {
           this.step = 2
+        })
+      }
+    },
+    reloadChart(labelName, currentComp) {
+      const { initChart: chart, $options } = currentComp
+      if (this.$options.name === $options.name) {
+        chart(this.chartData, labelName)
+      }
+    },
+    addSeriesData(legendData, checkList, series, data, restData = {}) {
+      const { risingValueData, averageValueData, fallingValueData, warningValueData } = data
+      const lineStyle = {
+        width: 1
+      }
+      if (legendData.indexOf('上涨') > -1) {
+        checkList.push(0)
+        series.push({
+          name: '上涨',
+          type: 'line',
+          lineStyle,
+          itemStyle: {
+            color: '#ec7387'
+          },
+          data: risingValueData,
+          ...restData
+        })
+      }
+      if (legendData.indexOf('均值') > -1) {
+        checkList.push(1)
+        series.push({
+          name: '均值',
+          type: 'line',
+          lineStyle,
+          itemStyle: {
+            color: '#d5d5d5'
+          },
+          data: averageValueData,
+          ...restData
+        })
+      }
+      if (legendData.indexOf('下降') > -1) {
+        checkList.push(2)
+        series.push({
+          name: '下降',
+          type: 'line',
+          lineStyle,
+          itemStyle: {
+            color: '#65b95f'
+          },
+          data: fallingValueData,
+          ...restData
+        })
+      }
+      if (legendData.indexOf('警告') > -1) {
+        checkList.push(3)
+        series.push({
+          name: '警告',
+          type: 'line',
+          lineStyle,
+          data: warningValueData,
+          itemStyle: {
+            color: '#ff9e40'
+          },
+          ...restData
         })
       }
     }

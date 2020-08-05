@@ -8,10 +8,19 @@
     >
       <div slot="content">
         <p>
-          按所选时间粒度、时间范围，统计所有注册渠道的新用户数的总和、按照账户数去重。
+          按所选时间粒度、时间范围，统计所有支付成功订单的总金额，并根据时间粒度展示实付总金额的分布。
         </p>
         <p>
-          环比=（所选时间范围的注册用户数-所选时间范围紧挨的之前时间范围周期的注册用户数）
+          均值= 从2019年1月1日至前天的所有订单的总金额/从2019年1月1日至前天的天数，保留两位小数。
+        </p>
+        <p>
+          上涨值= 大于均值的天数的订单总金额/大于均值的天数，保留两位小数，四舍五入。
+        </p>
+        <p>
+          下降值=小于均值的天数的订单总金额/小于均值的天数，保留两位小数，四舍五入。
+        </p>
+        <p>
+          警告值=小于下降值的天数的订单总金额/小于下降值的天数，保留两位小数，四舍五入。
         </p>
       </div>
     </custom-chart-head>
@@ -65,6 +74,7 @@
 <script>
 
 import map from 'lodash/map'
+import remove from 'lodash/remove'
 import forEach from 'lodash/forEach'
 import mixin from './mixins'
 import ChartDetail from './detail'
@@ -72,13 +82,14 @@ import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
 
 export default {
-  name: 'Chart4',
+  name: 'Gmv',
   components: { ChartDetail },
   mixins: [mixin, resize],
   data() {
     return {
       title: 'GMV趋势分布',
-      detailedCurve: []
+      detailedCurve: [],
+      selected: ['GMV']
     }
   },
   methods: {
@@ -87,7 +98,18 @@ export default {
         this.detailedCurve = res.data
       })
     },
-    initChart(chartData) {
+    formatter(params) {
+      let res = params[0].axisValue + '<br>'
+      forEach(params, (o, i) => {
+        const { seriesName, value, marker } = o
+        res += `${marker}${seriesName}(元)：${value}`
+        if (i + 1 !== params.length) {
+          res += '<br>'
+        }
+      })
+      return res
+    },
+    initChart(chartData, labelName) {
       const xAxisData = []
       // GMV
       const mainData = []
@@ -100,17 +122,20 @@ export default {
       // 警告值
       const warningValueData = []
 
-      // 图例data
-      const legendData = ['GMV', '上涨值', '均值', '下降值', '警告值']
-      // 图例初始选中状态
-      const selected = {
-        '上涨值': false,
-        '均值': true,
-        '下降值': false,
-        '警告值': false
+      // 图例数据
+      const defaultLegendData = this.selected
+      let legendData = defaultLegendData
+      if (labelName) {
+        if (legendData.indexOf(labelName) > -1) {
+          remove(legendData, v => v === labelName)
+        } else {
+          legendData = defaultLegendData.concat(labelName)
+        }
+      } else {
+        legendData = ['GMV', '均值']
       }
-      // const dataLen = chartData.length
-      // const start = dataLen > 7 ? (100 - 7 / dataLen * 100) : 0
+      // 下拉列表控制图例是否显示
+      this.selected = legendData
       const start = 0
       const end = 100
 
@@ -126,25 +151,56 @@ export default {
       // 下拉框数据
       const selectData = ['上涨值', '均值', '下降值', '警告值']
       // 下拉框初始选中状态取下标
-      this.checkList = [1]
+      this.checkList = labelName ? [] : [1]
       this.options = map(selectData, (label, value) => ({ label, value }))
+      const { formatter } = this
+      const lineStyle = {
+        width: 1
+      }
+      const series = [
+        {
+          name: legendData[0],
+          type: 'line',
+          areaStyle: {},
+          lineStyle,
+          data: mainData
+        }
+      ]
+      // 根据切换下拉框数据判断数据
+      if (labelName) {
+        const data = { risingValueData, averageValueData, fallingValueData, warningValueData }
+        this.addSeriesData(legendData, this.checkList, series, data)
+      // 首次进入数据均值
+      } else {
+        series.push({
+          name: '均值',
+          type: 'line',
+          lineStyle,
+          data: averageValueData
+        })
+      }
+
       const option = {
         color: this.echartsColorList,
         title: {
           subtext: 'GMV（元）',
+          left: 15,
           subtextStyle: {
             color: '#606266'
           }
         },
         legend: {
           data: legendData,
+          selectedMode: false,
           icon: 'roundRect',
-          top: 20,
-          left: 100,
-          selected
+          top: 10,
+          left: 'center',
+          itemWidth: 20,
+          itemHeight: 8
         },
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
+          formatter
         },
         dataZoom: [
           {
@@ -170,37 +226,10 @@ export default {
           bottom: 50,
           containLabel: true
         },
-        series: [
-          {
-            name: legendData[0],
-            type: 'line',
-            areaStyle: {},
-            data: mainData
-          },
-          {
-            name: legendData[1],
-            type: 'line',
-            data: averageValueData
-          },
-          {
-            name: legendData[2],
-            type: 'line',
-            data: risingValueData
-          },
-          {
-            name: legendData[3],
-            type: 'line',
-            data: fallingValueData
-          },
-          {
-            name: legendData[4],
-            type: 'line',
-            data: warningValueData
-          }
-        ]
+        series
       }
       this.option = option
-      this.chart.setOption(option)
+      this.chart.setOption(option, true)
     }
   }
 }
