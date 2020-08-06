@@ -17,8 +17,7 @@ const customWebpackConfig = defaultSettings.webpackConfig
 // merge proxy
 const defaultProxy = {
   '/portal': {
-    target: 'https://boss.xinnet.com',
-    // target: 'http://119.10.116.247:8082',
+    target: 'http://119.10.116.247:8082',
     changeOrigin: true
   },
   '/admin': {
@@ -154,7 +153,6 @@ function defaultChainWebpack(config) {
 module.exports = {
   ...rootConfig,
   devServer: {
-    // host: 'c.xinnet.com',
     port: port,
     open: false,
     overlay: {

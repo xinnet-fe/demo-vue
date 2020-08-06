@@ -8,119 +8,68 @@
     >
       <div slot="content">
         <p>
-          按所选时间粒度、时间范围，统计客单价的总金额，并根据时间粒度展示客单价总金额的分布。
+          按所选时间粒度、时间范围，统计所有注册渠道的注册用户数，并根据时间粒度展示注册用户数分布。
         </p>
         <p>
-          客单价= GMV/订单用户数（去重），保留两位小数，四舍五入。
+          均值= 从2019年1月1日至前天的所有注册用户数/从2019年1月1日至前天的天数，保留两位小数。
         </p>
         <p>
-          均值= 从2019年1月1日至前天的客单价 /从2019年1月1日至前天的天数，保留两位小数。
+          上涨值= 大于均值的天数的注册用户数/大于均值的天数，保留两位小数，四舍五入。
         </p>
         <p>
-          上涨值= 大于均值的天数的客单价/大于均值的天数，保留两位小数，四舍五入。
+          下降值=小于均值的天数的注册用户数/小于均值的天数，保留两位小数，四舍五入。
         </p>
         <p>
-          下降值=小于均值的天数的客单价/小于均值的天数，保留两位小数，四舍五入。
-        </p>
-        <p>
-          警告值=小于下降值的天数的客单价/小于下降值的天数，保留两位小数，四舍五入。
+          警告值=小于下降值的天数的注册用户数/小于下降值的天数，保留两位小数，四舍五入。
         </p>
       </div>
     </custom-chart-head>
     <div ref="data-chart" class="data-chart" />
-    <chart-detail
-      v-if="step == 2 && detailedCurve.length"
-      :chart-data="detailedCurve"
-      :step.sync="step"
-    >
-      <el-table-column
-        label="日期"
-        width="100"
-      >
-        <template v-slot="scope">
-          {{ scope.row.occurDate.slice(0, 10) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="产品类型"
-      >
-        <template v-slot="scope">
-          {{ products[scope.row.productId] }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="客单价"
-        prop="atv"
-      />
-      <el-table-column
-        label="GMV（元）"
-        prop="gmv"
-        width="100"
-      />
-      <el-table-column
-        label="支付成功用户数"
-        prop="orderUsers"
-      />
-      <el-table-column
-        label="上涨值"
-        prop="atvRisingValue"
-      />
-      <el-table-column
-        label="均值"
-        prop="atvAverageValue"
-      />
-      <el-table-column
-        label="下降值"
-        prop="atvFallingValue"
-      />
-      <el-table-column
-        label="警告值"
-        prop="atvWarningValue"
-      />
-    </chart-detail>
   </div>
 </template>
 
 <script>
 
 import map from 'lodash/map'
+import find from 'lodash/find'
 import remove from 'lodash/remove'
 import forEach from 'lodash/forEach'
 import mixin from './mixins'
-import ChartDetail from './detail'
 import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
+import { convertSeparator } from '@/filters'
 
 export default {
-  name: 'Chart2',
-  components: { ChartDetail },
+  name: 'RegisterUser',
   mixins: [mixin, resize],
   data() {
     return {
-      title: '客单价趋势分布',
-      detailedCurve: [],
-      selected: ['客单价']
+      title: '注册用户数分布',
+      selected: [
+        {
+          name: '注册用户数',
+          icon: 'roundRect'
+        }
+      ]
     }
   },
-
   methods: {
-    formatTime: formatTime,
-    drawChildChart(startDate) {
-      return this.$store.dispatch('chart/getDetailedCurve', { startDate, type: '1' }).then(res => {
-        this.detailedCurve = res.data
-      })
-    },
+    drawChildChart() {},
     formatter(params) {
       let res = params[0].axisValue + '<br>'
       forEach(params, (o, i) => {
         const { seriesName, value, marker } = o
-        res += `${marker}${seriesName}(元)：${value}`
+        res += `${marker}${seriesName}(人)：${convertSeparator(value)}`
         if (i + 1 !== params.length) {
           res += '<br>'
         }
       })
       return res
     },
+    /**
+     * chartData绘图数据
+     * labelName修改阈值重绘（可选）
+     */
     initChart(chartData, labelName) {
       const xAxisData = []
       // GMV
@@ -138,41 +87,51 @@ export default {
       const defaultLegendData = this.selected
       let legendData = defaultLegendData
       if (labelName) {
-        if (legendData.indexOf(labelName) > -1) {
-          remove(legendData, v => v === labelName)
+        const exists = find(legendData, o => o.name === labelName)
+        if (exists) {
+          remove(legendData, o => o.name === labelName)
         } else {
-          legendData = defaultLegendData.concat(labelName)
+          legendData = [...defaultLegendData, { name: labelName }]
         }
       } else {
-        legendData = ['注册用户数', '均值']
+        legendData = [
+          {
+            name: '注册用户数',
+            icon: 'roundRect'
+          },
+          {
+            name: '均值'
+          }
+        ]
       }
       // 下拉列表控制图例是否显示
       this.selected = legendData
       const start = 0
       const end = 100
 
+      // 保存数据
       forEach(chartData, (o, k) => {
         xAxisData.push(formatTime(new Date(o.occurDate).getTime(), 'YYYY-MM-DD'))
-        mainData.push(o.atv)
-        averageValueData.push(o.atvAverageValue)
-        risingValueData.push(o.atvRisingValue)
-        fallingValueData.push(o.atvFallingValue)
-        warningValueData.push(o.atvWarningValue)
+        mainData.push(o.registerNumber)
+        averageValueData.push(o.regAverageValue)
+        risingValueData.push(o.regRisingValue)
+        fallingValueData.push(o.regFallingValue)
+        warningValueData.push(o.regWarningValue)
       })
 
       // 下拉框数据
       const selectData = ['上涨值', '均值', '下降值', '警告值']
       // 下拉框初始选中状态取下标
+      // 上涨,均值,下降,警告
       this.checkList = labelName ? [] : [1]
-      this.options = map(selectData, (label, value) => ({ label, value }))
-      const { formatter } = this
       const lineStyle = {
         width: 1
       }
+      // 默认数据注册用户数
       const series = [
         {
-          name: legendData[0],
-          type: 'line',
+          name: '注册用户数',
+          type: 'bar',
           lineStyle,
           data: mainData
         }
@@ -186,27 +145,33 @@ export default {
         series.push({
           name: '均值',
           type: 'line',
+          symbol: 'circle',
           lineStyle,
+          itemStyle: {
+            color: '#d2b5f1'
+          },
           data: averageValueData
         })
       }
 
+      this.options = map(selectData, (label, value) => ({ label, value }))
+      const { formatter } = this
       const option = {
         color: this.echartsColorList,
         title: {
-          subtext: '客单价（元）',
+          subtext: '用户数（人）',
           left: 15,
           subtextStyle: {
             color: '#606266'
           }
         },
         legend: {
-          data: legendData,
           selectedMode: false,
           top: 10,
           left: 'center',
           itemWidth: 20,
-          itemHeight: 8
+          itemHeight: 8,
+          data: legendData
         },
         tooltip: {
           trigger: 'axis',
@@ -227,8 +192,7 @@ export default {
           }
         ],
         xAxis: {
-          data: xAxisData,
-          boundaryGap: false
+          data: xAxisData
         },
         yAxis: {},
         grid: {
@@ -239,7 +203,7 @@ export default {
         series
       }
       this.option = option
-      this.chart.setOption(option)
+      this.chart.setOption(option, true)
     }
   }
 }

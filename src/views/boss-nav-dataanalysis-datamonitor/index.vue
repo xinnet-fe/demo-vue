@@ -2,12 +2,12 @@
   <div class="data-monitor">
     <div class="stat">
       <el-form ref="searchForm" class="form" :model="searchForm" :inline="true">
-        <el-form-item label="时间粒度" prop="duration">
+        <el-form-item label="日期粒度" prop="duration">
           <el-select v-model="searchForm.duration" clearable>
             <el-option v-for="(label, val) in duration" :key="val" :label="label" :value="val" />
           </el-select>
         </el-form-item>
-        <el-form-item label="时间范围" prop="range">
+        <el-form-item label="日期范围" prop="range">
           <el-date-picker
             v-model="searchForm.range"
             type="daterange"
@@ -52,8 +52,8 @@
             <p class="hint1">累计注册用户数</p>
             <p class="hint2">{{ overviewSize.sumRegisterNumber | convertSeparator }}人</p>
             <p class="hint3">
-              <span>环比：{{ overviewSize.momRegisterNumber | convertPercentage }}<i :class="[getIcon(overviewSize.momRegisterNumber)]" /></span>
-              <span>同比：{{ overviewSize.yoyRegisterNumber | convertPercentage }}<i :class="[getIcon(overviewSize.yoyRegisterNumber)]" /></span>
+              <span>环比：<span :class="[getColor(overviewSize.momRegisterNumber)]">{{ overviewSize.momRegisterNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.momRegisterNumber)]" /></span>
+              <span>同比：<span :class="[getColor(overviewSize.yoyRegisterNumber)]">{{ overviewSize.yoyRegisterNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyRegisterNumber)]" /></span>
             </p>
           </div>
         </el-col>
@@ -82,8 +82,8 @@
             <p class="hint1">累计订单用户数</p>
             <p class="hint2">{{ overviewSize.sumOrderUsers | convertSeparator }}人</p>
             <p class="hint3">
-              <span>环比：{{ overviewSize.momOrderUsers | convertPercentage }}<i :class="[getIcon(overviewSize.momOrderUsers)]" /></span>
-              <span>同比：{{ overviewSize.yoyOrderUsers | convertPercentage }}<i :class="[getIcon(overviewSize.yoyOrderUsers)]" /></span>
+              <span>环比：<span :class="[getColor(overviewSize.momOrderUsers)]">{{ overviewSize.momOrderUsers | convertPercentage }}</span><i :class="[getIcon(overviewSize.momOrderUsers)]" /></span>
+              <span>同比：<span :class="[getColor(overviewSize.yoyOrderUsers)]">{{ overviewSize.yoyOrderUsers | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyOrderUsers)]" /></span>
             </p>
           </div>
         </el-col>
@@ -112,8 +112,8 @@
             <p class="hint1">累计支付成功的订单数</p>
             <p class="hint2">{{ overviewSize.sumOrderNumber | convertSeparator }}笔</p>
             <p class="hint3">
-              <span>环比：{{ overviewSize.momOrderNumber | convertPercentage }}<i :class="[getIcon(overviewSize.momOrderNumber)]" /></span>
-              <span>同比：{{ overviewSize.yoyOrderNumber | convertPercentage }}<i :class="[getIcon(overviewSize.yoyOrderNumber)]" /></span>
+              <span>环比：<span :class="[getColor(overviewSize.momOrderNumber)]">{{ overviewSize.momOrderNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.momOrderNumber)]" /></span>
+              <span>同比：<span :class="[getColor(overviewSize.yoyOrderNumber)]">{{ overviewSize.yoyOrderNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyOrderNumber)]" /></span>
             </p>
           </div>
         </el-col>
@@ -142,8 +142,8 @@
             <p class="hint1">累计实付订单金额（GMV）</p>
             <p class="hint2">{{ overviewSize.sumGmv | convertSeparator }}元</p>
             <p class="hint3">
-              <span>环比：{{ overviewSize.momGmv | convertPercentage }}<i :class="[getIcon(overviewSize.momGmv)]" /></span>
-              <span>同比：{{ overviewSize.yoyGmv | convertPercentage }}<i :class="[getIcon(overviewSize.yoyGmv)]" /></span>
+              <span>环比：<span :class="[getColor(overviewSize.momGmv)]">{{ overviewSize.momGmv | convertPercentage }}</span><i :class="[getIcon(overviewSize.momGmv)]" /></span>
+              <span>同比：<span :class="[getColor(overviewSize.yoyGmv)]">{{ overviewSize.yoyGmv | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyGmv)]" /></span>
             </p>
           </div>
         </el-col>
@@ -272,6 +272,13 @@ export default {
         return ''
       }
       return num > 0 ? 'el-icon-caret-top' : 'el-icon-caret-bottom'
+    },
+    getColor(number) {
+      const num = parseFloat(number)
+      if (isUndefined(num) || isNaN(num) || !isNumber(num) || num === 0) {
+        return ''
+      }
+      return num > 0 ? 'danger-text' : 'success-text'
     },
     pickerChange(time) {
       if (time === null) {
@@ -406,8 +413,15 @@ export default {
           color: $hintTextColor;
         }
         .el-icon-caret-bottom {
+          margin-right: 20px;
           color: $--color-success;
         }
+      }
+      .danger-text {
+        color: $hintTextColor;
+      }
+      .success-text {
+        color: $--color-success;
       }
     }
   }

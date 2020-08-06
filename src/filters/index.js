@@ -85,17 +85,35 @@ export function convertSeparator(num) {
   if (isUndefined(num) || isNaN(num) || isNull(num)) {
     return 0
   }
+  // 判断是否是小数
   const n = '' + num
-  if (n.length < 4) {
+  let decimal
+  let isDouble = false
+  let integer
+  const dot = n.indexOf('.')
+  if (dot > -1) {
+    isDouble = true
+    integer = n.slice(0, dot)
+    decimal = n.slice(dot)
+  } else {
+    integer = n
+  }
+  if (integer.length < 4) {
     return n
   }
-  const arr = n.split('')
+  const arr = integer.split('')
   const res = arr.reduceRight((r, v, k) => {
     r.push(v)
-    if (k !== 0 && k % 3 === 0) {
+    const start = 0
+    const end = arr.length
+    if (k !== start && k !== end && (end - k) % 3 === 0) {
       r.push(',')
     }
     return r
   }, [])
-  return res.reverse().join('')
+
+  if (!isDouble) {
+    return res.reverse().join('')
+  }
+  return res.reverse().join('') + decimal
 }

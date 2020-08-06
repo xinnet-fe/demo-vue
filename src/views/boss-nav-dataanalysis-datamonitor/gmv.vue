@@ -54,18 +54,22 @@
       <el-table-column
         label="上涨值"
         prop="gmvRisingValue"
+        width="100"
       />
       <el-table-column
         label="均值"
         prop="gmvAverageValue"
+        width="100"
       />
       <el-table-column
         label="下降值"
         prop="gmvFallingValue"
+        width="100"
       />
       <el-table-column
         label="警告值"
         prop="gmvWarningValue"
+        width="100"
       />
     </chart-detail>
   </div>
@@ -74,12 +78,14 @@
 <script>
 
 import map from 'lodash/map'
+import find from 'lodash/find'
 import remove from 'lodash/remove'
 import forEach from 'lodash/forEach'
 import mixin from './mixins'
 import ChartDetail from './detail'
 import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
+import { convertSeparator } from '@/filters'
 
 export default {
   name: 'Gmv',
@@ -89,20 +95,32 @@ export default {
     return {
       title: 'GMV趋势分布',
       detailedCurve: [],
-      selected: ['GMV']
+      selected: [
+        {
+          name: 'GMV',
+          icon: 'roundRect'
+        }
+      ]
     }
   },
   methods: {
     drawChildChart(startDate) {
       return this.$store.dispatch('chart/getDetailedCurve', { startDate, type: '3' }).then(res => {
-        this.detailedCurve = res.data
+        this.detailedCurve = map(res.data, o => {
+          o.gmv = convertSeparator(o.gmv)
+          o.gmvRisingValue = convertSeparator(o.gmvRisingValue)
+          o.gmvAverageValue = convertSeparator(o.gmvAverageValue)
+          o.gmvFallingValue = convertSeparator(o.gmvFallingValue)
+          o.gmvWarningValue = convertSeparator(o.gmvWarningValue)
+          return o
+        })
       })
     },
     formatter(params) {
       let res = params[0].axisValue + '<br>'
       forEach(params, (o, i) => {
         const { seriesName, value, marker } = o
-        res += `${marker}${seriesName}(元)：${value}`
+        res += `${marker}${seriesName}(元)：${convertSeparator(value)}`
         if (i + 1 !== params.length) {
           res += '<br>'
         }
@@ -126,13 +144,22 @@ export default {
       const defaultLegendData = this.selected
       let legendData = defaultLegendData
       if (labelName) {
-        if (legendData.indexOf(labelName) > -1) {
-          remove(legendData, v => v === labelName)
+        const exists = find(legendData, o => o.name === labelName)
+        if (exists) {
+          remove(legendData, o => o.name === labelName)
         } else {
-          legendData = defaultLegendData.concat(labelName)
+          legendData = [...defaultLegendData, { name: labelName }]
         }
       } else {
-        legendData = ['GMV', '均值']
+        legendData = [
+          {
+            name: 'GMV',
+            icon: 'roundRect'
+          },
+          {
+            name: '均值'
+          }
+        ]
       }
       // 下拉列表控制图例是否显示
       this.selected = legendData
@@ -159,10 +186,12 @@ export default {
       }
       const series = [
         {
-          name: legendData[0],
+          name: 'GMV',
           type: 'line',
           areaStyle: {},
           lineStyle,
+          smooth: true,
+          showSymbol: false,
           data: mainData
         }
       ]
@@ -175,7 +204,11 @@ export default {
         series.push({
           name: '均值',
           type: 'line',
+          symbol: 'circle',
           lineStyle,
+          itemStyle: {
+            color: '#d2b5f1'
+          },
           data: averageValueData
         })
       }
@@ -192,7 +225,6 @@ export default {
         legend: {
           data: legendData,
           selectedMode: false,
-          icon: 'roundRect',
           top: 10,
           left: 'center',
           itemWidth: 20,

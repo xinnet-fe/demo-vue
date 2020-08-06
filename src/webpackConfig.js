@@ -17,7 +17,10 @@ module.exports = {
   // },
   // devServer proxy
   proxy: {
-
+    '/portal': {
+      target: 'https://boss.xinnet.com',
+      changeOrigin: true
+    }
   },
 
   /**

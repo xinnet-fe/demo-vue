@@ -1,4 +1,5 @@
 import echarts from 'echarts'
+import find from 'lodash/find'
 import reduce from 'lodash/reduce'
 import forEach from 'lodash/forEach'
 import CustomChartHead from '@/components/CustomChartHead'
@@ -108,11 +109,16 @@ export default {
       const lineStyle = {
         width: 1
       }
-      if (legendData.indexOf('上涨') > -1) {
+      const rising = find(legendData, o => o.name === '上涨')
+      const average = find(legendData, o => o.name === '均值')
+      const falling = find(legendData, o => o.name === '下降')
+      const warning = find(legendData, o => o.name === '警告')
+      if (rising) {
         checkList.push(0)
         series.push({
           name: '上涨',
           type: 'line',
+          symbol: 'circle',
           lineStyle,
           itemStyle: {
             color: '#ec7387'
@@ -121,24 +127,26 @@ export default {
           ...restData
         })
       }
-      if (legendData.indexOf('均值') > -1) {
+      if (average) {
         checkList.push(1)
         series.push({
           name: '均值',
           type: 'line',
+          symbol: 'circle',
           lineStyle,
           itemStyle: {
-            color: '#d5d5d5'
+            color: '#d2b5f1'
           },
           data: averageValueData,
           ...restData
         })
       }
-      if (legendData.indexOf('下降') > -1) {
+      if (falling) {
         checkList.push(2)
         series.push({
           name: '下降',
           type: 'line',
+          symbol: 'circle',
           lineStyle,
           itemStyle: {
             color: '#65b95f'
@@ -147,11 +155,12 @@ export default {
           ...restData
         })
       }
-      if (legendData.indexOf('警告') > -1) {
+      if (warning) {
         checkList.push(3)
         series.push({
           name: '警告',
           type: 'line',
+          symbol: 'circle',
           lineStyle,
           data: warningValueData,
           itemStyle: {

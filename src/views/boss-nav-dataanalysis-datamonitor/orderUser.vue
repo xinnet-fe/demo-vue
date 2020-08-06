@@ -47,18 +47,32 @@
       <el-table-column
         label="用户类别"
         prop="name"
+        width="100"
       />
       <el-table-column
         label="订单用户数"
         prop="users"
-      />
-      <el-table-column
-        label="均值"
-        prop="averageValue"
+        width="100"
       />
       <el-table-column
         label="上涨值"
         prop="risingValue"
+        width="100"
+      />
+      <el-table-column
+        label="均值"
+        prop="averageValue"
+        width="100"
+      />
+      <el-table-column
+        label="下降值"
+        prop="fallingValue"
+        width="100"
+      />
+      <el-table-column
+        label="警告值"
+        prop="warningValue"
+        width="100"
       />
     </chart-detail>
   </div>
@@ -66,6 +80,7 @@
 
 <script>
 import map from 'lodash/map'
+import find from 'lodash/find'
 import remove from 'lodash/remove'
 import forEach from 'lodash/forEach'
 import mixin from './mixins'
@@ -73,6 +88,7 @@ import ChartDetail from './detail'
 import formatTime from '@/utils/formatTime'
 import resize from '@/components/ResizeChart'
 import { mapState } from 'vuex'
+import { convertSeparator } from '@/filters'
 
 export default {
   name: 'OrderUser',
@@ -82,7 +98,16 @@ export default {
     return {
       title: '订单用户数趋势分布',
       detailedCurve: [],
-      selected: ['新用户', '老用户']
+      selected: [
+        {
+          name: '新用户',
+          icon: 'roundRect'
+        },
+        {
+          name: '老用户',
+          icon: 'roundRect'
+        }
+      ]
     }
   },
   computed: {
@@ -96,7 +121,7 @@ export default {
       let res = params[0].axisValue + '<br>'
       forEach(params, (o, i) => {
         const { seriesName, value, marker } = o
-        res += `${marker}${seriesName}(人)：${value}`
+        res += `${marker}${seriesName}(人)：${convertSeparator(value)}`
         if (i + 1 !== params.length) {
           res += '<br>'
         }
@@ -111,27 +136,35 @@ export default {
             id,
             newUserAverageValue,
             newUserRisingValue,
+            newUserFallingValue,
+            newUserWarningValue,
             newUsers,
             occurDate,
             oldUserAverageValue,
             oldUserRisingValue,
+            oldUserFallingValue,
+            oldUserWarningValue,
             oldUsers
           } = o[0]
           this.detailedCurve = [
             {
               id,
               name: '新用户',
-              averageValue: newUserAverageValue,
-              risingValue: newUserRisingValue,
-              users: newUsers,
+              averageValue: convertSeparator(newUserAverageValue),
+              risingValue: convertSeparator(newUserRisingValue),
+              fallingValue: convertSeparator(newUserFallingValue),
+              warningValue: convertSeparator(newUserWarningValue),
+              users: convertSeparator(newUsers),
               occurDate
             },
             {
               id,
               name: '老用户',
-              averageValue: oldUserAverageValue,
-              risingValue: oldUserRisingValue,
-              users: oldUsers,
+              averageValue: convertSeparator(oldUserAverageValue),
+              risingValue: convertSeparator(oldUserRisingValue),
+              fallingValue: convertSeparator(oldUserFallingValue),
+              warningValue: convertSeparator(oldUserWarningValue),
+              users: convertSeparator(oldUsers),
               occurDate
             }
           ]
@@ -157,13 +190,26 @@ export default {
       const defaultLegendData = this.selected
       let legendData = defaultLegendData
       if (labelName) {
-        if (legendData.indexOf(labelName) > -1) {
-          remove(legendData, v => v === labelName)
+        const exists = find(legendData, o => o.name === labelName)
+        if (exists) {
+          remove(legendData, o => o.name === labelName)
         } else {
-          legendData = defaultLegendData.concat(labelName)
+          legendData = [...defaultLegendData, { name: labelName }]
         }
       } else {
-        legendData = ['新用户', '老用户', '均值']
+        legendData = [
+          {
+            name: '新用户',
+            icon: 'roundRect'
+          },
+          {
+            name: '老用户',
+            icon: 'roundRect'
+          },
+          {
+            name: '均值'
+          }
+        ]
       }
 
       this.selected = legendData
@@ -197,14 +243,14 @@ export default {
       }
       const series = [
         {
-          name: legendData[0],
+          name: '新用户',
           type: 'bar',
           stack: 'one',
           lineStyle,
           data: newUserData
         },
         {
-          name: legendData[1],
+          name: '老用户',
           type: 'bar',
           stack: 'one',
           lineStyle,
@@ -221,7 +267,11 @@ export default {
         series.push({
           name: '均值',
           type: 'line',
+          symbol: 'circle',
           lineStyle,
+          itemStyle: {
+            color: '#d2b5f1'
+          },
           data: averageValueData
         })
       }
@@ -238,7 +288,6 @@ export default {
         legend: {
           data: legendData,
           selectedMode: false,
-          icon: 'roundRect',
           top: 10,
           left: 'center',
           itemWidth: 20,

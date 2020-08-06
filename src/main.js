@@ -41,8 +41,8 @@ Vue.prototype.echartsColorList = [
   '#62daab',
   // 黄
   // '#ffce66'
-  // 灰
-  '#d5d5d5',
+  // 紫
+  '#d2b5f1',
   // 红
   '#ec7387',
   // 青

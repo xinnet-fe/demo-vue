@@ -11,6 +11,17 @@
   border-bottom: 1px solid #ededed;
 }
 
-.el-table .data-table-header-row th.is-leaf {
-  background: #ffffff;
+.el-table .data-table-header-row {
+  th.is-leaf {
+    background: #ffffff;
+  }  
+}
+
+.chart-container {
+  th {
+    background: #f7f7f7 !important;
+  }
+  th, td {
+    padding: 8px 0 !important;
+  }
 }

@@ -2,7 +2,6 @@
   <div class="data-view">
     <el-table
       :data="chartData"
-      border
       class="data-table"
       header-row-class-name="data-table-header-row"
     >
@@ -57,7 +56,8 @@ export default {
 .chart-bread {
   color: #333;
   margin: 20px;
-  font-size: 14px;
+  padding-left: 10px;
+  font-size: 12px;
 
   .clickable {
     cursor: pointer;
