@@ -30,12 +30,12 @@
         <el-button style="margin-right: 20px;" @click="resetModal">
           重置
         </el-button>
+        <el-button type="primary" @click="handleCreate">
+          新增
+        </el-button>
       </el-form>
       <!-- <span style="width:8%;display:inline-block;">关键词：</span>
         <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
-      <!-- <el-button class="filter-item" style="margin-left: 10px;margin-right: 20px;" type="primary" @click="handleCreate">
-        新增
-      </el-button> -->
       <!-- <el-button type="danger" class="filter-item" style="margin-right: 20px;" @click="handleDeletehints">批量删除</el-button> -->
     </div>
 
@@ -113,6 +113,8 @@
         <template slot-scope="{row}">
           <span v-if="row.publishStates !== '已发布'" style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">审核</span>
           <span v-if="row.publishStates === '已发布'" disabled style="color:#aaa;cursor:pointer;">审核</span>
+          <span v-if="row.publishStates === '未发布'" disabled style="color:#0069ff;cursor:pointer;">编辑</span>
+          <span v-if="row.publishStates === '未发布'" disabled style="color:#0069ff;cursor:pointer;">删除</span>
           <!-- <el-button type="primary" class="btnstyle" size="mini" @click="handleAudit(row)">
             审核
           </el-button> -->
@@ -138,9 +140,9 @@
         </el-form-item>
         <el-form-item label="关键词：" prop="keyword">
           <el-input v-model="temp.tag" disabled />
-          <!-- <span
+          <span
             style="position: absolute;display: inline-block;width: 160px;right: -170px;"
-          >(多个关键词用"、"号隔开)</span> -->
+          >(多个关键词用"、"号隔开)</span>
         </el-form-item>
         <el-form-item label="发布时间：">
           <!-- <el-input v-model="temp.publishTime" /> -->
@@ -152,9 +154,9 @@
         <el-form-item label="作者：" prop="author">
           <el-input v-if="temp.writer" v-model="temp.writer" disabled />
           <span v-else>无</span>
-          <!-- <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
+          <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
             <el-option v-for="item in authors" :key="item" :label="item" :value="item" />
-          </el-select> -->
+          </el-select>
         </el-form-item>
         <el-form-item label="内容简介：" prop="summary">
           <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
@@ -181,14 +183,14 @@
     </el-dialog>
     <!-- 新增标签 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
+      <el-form ref="dataForm" :rules="dataRules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
         <el-form-item label="文章标题：" prop="title">
           <el-input v-model="temp.title" type="textarea" placeholder="请输入内容" minlength="5" maxlength="60" show-word-limit @input="handleRemark" />
         </el-form-item>
         <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span>
         <el-form-item label="所属栏目：" prop="column">
           <el-select v-model="temp.column" placeholder="请选择文章所属栏目" clearable style="width: 100%;" class="filter-item">
-            <el-option v-for="item in columns" :key="item" :label="item" :value="item" />
+            <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
           </el-select>
         </el-form-item>
         <el-form-item label="关键词：" prop="keyword">
@@ -208,6 +210,26 @@
             <el-option v-for="item in originalvalue" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
+        <el-form-item label="文章图片：">
+          <!-- <label>
+            <span>点击上传</span>
+            <input type="file" style="display: none;" @input="selectedFile">
+          </label> -->
+          <custom-upload
+            ref="upload"
+            class="upload"
+            action="/admin/article/add"
+            :data="fileData"
+            :on-change="selectedFile"
+            :file-list="fileList"
+            :auto-upload="false"
+            :limit="1"
+            list-type="picture"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </custom-upload>
+        </el-form-item>
         <el-form-item label="作者：" prop="author">
           <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
             <el-option v-for="item in authors" :key="item" :label="item" :value="item" />
@@ -219,13 +241,25 @@
         <!-- <el-form-item label="内容简介：" prop="briefIntroduction">
           <el-input v-model="temp.briefIntroduction" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
         </el-form-item> -->
+        <el-form-item label="内容简介：" prop="summary">
+          <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
+        </el-form-item>
+        <el-form-item label="文章正文：" prop="content">
+          <el-input v-model="temp.content" :autosize="{ minRows: 8, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" />
+        </el-form-item>
+        <div v-if="newsbanWords">
+          <p style="color:#f00;">违禁词：{{ newsbanWords }}</p>
+        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
+        <el-button @click="searchData">
+          违禁词检索
+        </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确定
+          发布
         </el-button>
       </div>
     </el-dialog>
@@ -264,13 +298,14 @@
 
 <script>
 import { newsList, auditDetail, handleAudit, categoryList, articlePass } from '@/api/demos/knowledges'
-import { createArticle, updateArticle } from '@/api/demos/article'
+// import { addArticle, modifyArticle } from '@/api/demos/article'
 import waves from '@/directive/demos/waves' // waves directive
 import { parseTime } from '@/utils/demos'
 import reduce from 'lodash/reduce'
 import remove from 'lodash/remove'
 import forEach from 'lodash/forEach'
-import Pagination from '@/components/demos/Pagination' // secondary package based on el-pagination
+import CustomUpload from '@/components/upload'
+import Pagination from '@/components/demos/Pagination'
 
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
@@ -287,7 +322,10 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  components: {
+    Pagination,
+    CustomUpload
+  },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -366,6 +404,7 @@ export default {
         actId: undefined,
         title: undefined,
         categoryName: undefined,
+        categoryId: undefined,
         auditState: undefined,
         publishState: undefined,
         publishDate: new Date(),
@@ -400,12 +439,27 @@ export default {
         summary: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
         authorName: [{ required: true, message: '请输入作者名称', trigger: 'blur' }]
       },
+      // 添加和修改表单规则
+      dataRules: {
+        column: [{ required: true, message: '请选择文章所属栏目', trigger: 'change' }],
+        releaseTime: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
+        keyword: [{ required: true, message: '请输入关键词', trigger: 'blur' }],
+        title: [{ required: true, message: '请输入文章标题', trigger: 'blur' }],
+        originalValue: [{ required: true, message: '请选择初始值', trigger: 'change' }],
+        author: [{ required: true, message: '请选择作者', trigger: 'change' }],
+        summary: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
+        content: [{ required: true, message: '请输入文章正文', trigger: 'blur' }],
+        authorName: [{ required: true, message: '请输入作者名称', trigger: 'blur' }]
+      },
       multipleSelection: [],
       values: false,
       tempflag: false,
       authorName: '',
       categorylist: [],
-      newsbanWords: ''
+      newsbanWords: '',
+      // 图片列表
+      fileList: [],
+      fileData: {}
     }
   },
   created() {
@@ -471,12 +525,16 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
+        actId: undefined,
+        title: undefined,
+        categoryName: undefined,
+        categoryId: undefined,
+        auditState: undefined,
+        publishState: undefined,
+        publishDate: new Date(),
+        isTop: undefined,
+        originalValue: undefined,
+        value: undefined
       }
     },
     resetTemps() {
@@ -516,21 +574,43 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    searchData() {
+
+    },
+    selectedFile(file) {
+      this.fileList = [file]
+    },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
+          const o = this.temp
+          const isTop = o.value ? 1 : 0
+          const data = {
+            title: o.title,
+            writer: o.author,
+            summary: o.summary,
+            categoryId: o.column,
+            auditState: 0,
+            auditResult: '',
+            publishTime: o.releaseTime,
+            publishState: 0,
+            isTop,
+            content: o.content,
+            visitCount: o.originalValue,
+            keywords: o.keyword
+          }
+          this.fileData = data
+          this.$refs.upload.submit(data)
+          // this.$store.dispatch('article/addArticle', data).then(() => {
+          //   this.list.unshift(this.temp)
+          //   this.dialogFormVisible = false
+          //   this.$notify({
+          //     title: 'Success',
+          //     message: 'Created Successfully',
+          //     type: 'success',
+          //     duration: 2000
+          //   })
+          // })
         }
       })
     },
@@ -613,7 +693,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
+          this.$store.dispatch('article/modifyArticle', tempData).then(() => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false

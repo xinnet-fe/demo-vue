@@ -21,33 +21,37 @@
       fit
       highlight-current-row
       style="width: 100%;"
-      @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-        <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
-        </template>
-      </el-table-column>
-
+      <el-table-column
+        label="序号"
+        prop="sort"
+        align="center"
+        width="80"
+      />
       <el-table-column align="center" label="友链名称">
         <template slot-scope="{row}">
-          <span>{{ row.pageviews }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="URL">
         <template slot-scope="{row}">
-          <span v-if="row.title.length < 20">{{ row.title }}</span>
-          <span v-else>{{ row.title.substr(0, 20) }}...</span>
+          <span v-if="row.url && row.url.length < 20">{{ row.url }}</span>
+          <span v-else>{{ row.url && row.url.substr(0, 20) }}...</span>
         </template>
       </el-table-column>
 
       <el-table-column class-name="status-col" label="状态">
         <template slot-scope="{row}">
-          <el-switch v-if="row.value !== undefined" v-model="row.value" @change="handleUpdateswitch(row)" />
-          <span v-else>1</span>
+          <el-switch
+            v-model="row.state"
+            :active-value="1"
+            :inactive-value="0"
+            @change="handleUpdateswitch(row)"
+          />
+          <!-- <span>{{ state[row.state] }}</span> -->
           <!-- <el-tag :type="row.status | statusFilter">
             {{ row.status }}
           </el-tag> -->
@@ -56,7 +60,7 @@
 
       <el-table-column align="center" label="创建时间">
         <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.createTime }}</span>
         </template>
       </el-table-column>
 
@@ -72,22 +76,28 @@
       </el-table-column>
     </el-table>
 
-    <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" /> -->
+    <pagination
+      :page-sizes="[10]"
+      :total="page.total_count"
+      :page.sync="page.page"
+      :limit.sync="page.limit"
+      @pagination="getList"
+    />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="友链名称" prop="pageviews">
-          <el-input v-model="temp.pageviews" />
+        <el-form-item label="友链名称" prop="name">
+          <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="URL" prop="title">
-          <el-input v-model="temp.title" />
+        <el-form-item label="URL" prop="url">
+          <el-input v-model="temp.url" />
         </el-form-item>
-        <el-form-item label="序号" prop="id">
-          <el-input v-model="temp.id" />
+        <el-form-item label="序号" prop="sort">
+          <el-input v-model="temp.sort" />
         </el-form-item>
         <el-form-item label="状态">
           <el-switch v-if="dialogStatus==='create'" v-model="values" />
-          <el-switch v-else v-model="temp.value" />
+          <el-switch v-else v-model="temp.state" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -113,17 +123,16 @@
 </template>
 
 <script>
-import { fetchList, createArticle, updateArticle } from '@/api/demos/article'
 import waves from '@/directive/demos/waves' // waves directive
 // import { parseTime } from '@/utils/demos'
-// import Pagination from '@/components/demos/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/demos/Pagination' // secondary package based on el-pagination
 import reduce from 'lodash/reduce'
 import remove from 'lodash/remove'
 import forEach from 'lodash/forEach'
 
 export default {
   name: 'ComplexTable',
-  // components: { Pagination },
+  components: { Pagination },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -137,23 +146,28 @@ export default {
   },
   data() {
     return {
-      list: null,
-      total: 0,
+      list: [],
+      page: {
+        total_count: 0,
+        page: 1,
+        limit: 10
+      },
+      state: { 1: '显示', 0: '不显示' },
       listLoading: true,
       listQuery: {
         // page: 1,
         // limit: 20,
-        title: undefined,
+        title: '',
         type: undefined,
         sort: '+id'
       },
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       temp: {
-        id: undefined,
-        importance: 1,
-        timestamp: new Date(),
-        author: '',
-        title: ''
+        id: '',
+        name: '',
+        url: '',
+        state: 1,
+        sort: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -164,39 +178,39 @@ export default {
       dialogPvVisible: false,
       dialogStatusdele: '',
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        pageviews: [{ required: true, message: '请输入友链名称', trigger: 'blur' }],
-        title: [{ required: true, message: '请输入URL', trigger: 'blur' }],
-        id: [{ required: true, message: '请输入序号', trigger: 'blur' }]
+        // type: [{ required: true, message: 'type is required', trigger: 'change' }],
+        createTime: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
+        name: [{ required: true, message: '请输入友链名称', trigger: 'blur' }],
+        url: [{ required: true, message: '请输入URL', trigger: 'blur' }],
+        sort: [{ required: true, message: '请输入序号', trigger: 'blur' }]
       },
       multipleSelection: [],
-      values: false
+      values: true,
+      curRow: {}
     }
   },
   created() {
     this.getList()
   },
   methods: {
-    getList() {
+    getList(page) {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+      const payload = {
+        name: this.listQuery.title,
+        page: page && page.page ? page.page : 1
+      }
+      return this.$store.dispatch('links/links', payload).then(response => {
+        this.list = response.data
+        this.page = response.page
 
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
-        }, 1.5 * 1000)
+        }, 1 * 1000)
       })
     },
     handleUpdateswitch(row) {
-      this.temp = Object.assign({}, row)
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-      this.updateData()
+      const { state, id } = row
+      this.update({ id, state })
     },
     handleDeletehints() {
       if (this.multipleSelection.length) {
@@ -211,33 +225,33 @@ export default {
       }
     },
     handleDeletes() {
-      this.destroyOrder()
+      this.destroyLink()
       this.dialogPvVisible = false
     },
     handleDeletehint(row, index) {
-      row.index = index
-      this.temp = Object.assign({}, row)
-      this.temp.row = row.id
-      this.temp.index = index
       this.dialogStatusdele = 'delete'
       this.dialogPvVisible = true
+      this.curRow = row
     },
-    handleDelete(row, index) {
-      const tempData = Object.assign({}, this.temp)
-      this.dialogPvVisible = false
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
+    handleDelete() {
+      const id = this.curRow.id
+      this.$store.dispatch('links/destroyLink', [id]).then(res => {
+        this.$notify({
+          title: 'Success',
+          message: '删除成功！',
+          type: 'success',
+          duration: 1000
+        })
+        const newList = this.list
+        remove(newList, { id })
+        this.$set(this.list, newList)
+        this.dialogPvVisible = false
       })
-      this.list.splice(tempData.index, 1)
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
     handleFilter() {
-      // this.listQuery.page = 1
       this.getList()
     },
     sortChange(data) {
@@ -256,13 +270,11 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
+        id: '',
+        name: '',
+        url: '',
+        state: 1,
+        sort: ''
       }
     },
     handleCreate() {
@@ -276,10 +288,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          this.temp.value = this.values
-          createArticle(this.temp).then(() => {
+          this.$store.dispatch('links/addLink', this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -293,8 +302,13 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      this.temp = {
+        id: row.id,
+        url: row.url,
+        name: row.name,
+        sort: row.sort,
+        state: row.state === 1
+      }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -304,29 +318,31 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          tempData.value = this.values
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
+          const data = Object.assign({}, this.temp)
+          data.state = data.state ? 1 : 0
+          this.update(data).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
-              message: 'Update Successfully',
+              message: '修改成功！',
               type: 'success',
-              duration: 2000
+              duration: 1000
             })
           })
         }
       })
     },
-    destroyOrder() {
+    update(data) {
+      return this.$store.dispatch('links/modifyLink', data).then(() => {
+        return this.getList({ page: this.page.page, name: this.listQuery.title })
+      })
+    },
+    destroyLink() {
       const ids = reduce(this.multipleSelection, (r, item) => {
         r.push(item.id)
         return r
       }, [])
-      this.$store.dispatch('order/destroyOrder', ids).then(res => {
+      this.$store.dispatch('links/destroyLink', ids).then(res => {
         this.$notify({
           title: 'Success',
           message: '删除成功！',
