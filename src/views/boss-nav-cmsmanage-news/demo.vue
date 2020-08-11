@@ -113,8 +113,8 @@
         <template slot-scope="{row}">
           <span v-if="row.publishStates !== '已发布'" style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">审核</span>
           <span v-if="row.publishStates === '已发布'" disabled style="color:#aaa;cursor:pointer;">审核</span>
-          <span v-if="row.publishStates === '未发布'" disabled style="color:#0069ff;cursor:pointer;">编辑</span>
-          <span v-if="row.publishStates === '未发布'" disabled style="color:#0069ff;cursor:pointer;">删除</span>
+          <span v-if="row.publishStates === '未发布'" style="color:#0069ff;cursor:pointer;" @click="handleModify(row)">编辑</span>
+          <span v-if="row.publishStates === '未发布'" style="color:#0069ff;cursor:pointer;">删除</span>
           <!-- <el-button type="primary" class="btnstyle" size="mini" @click="handleAudit(row)">
             审核
           </el-button> -->
@@ -227,7 +227,7 @@
             list-type="picture"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
           </custom-upload>
         </el-form-item>
         <el-form-item label="作者：" prop="author">
@@ -401,6 +401,7 @@ export default {
       }],
       calendarTypeOptions,
       temp: {
+        id: undefined,
         actId: undefined,
         title: undefined,
         categoryName: undefined,
@@ -574,6 +575,32 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    handleModify(o) {
+      this.resetTemp()
+      this.dialogStatus = 'modify'
+      this.dialogFormVisible = true
+
+      this.$store.dispatch('article/detail', { actId: o.actId }).then(res => {
+        const row = res.data
+        const value = row.top ? 1 : 0
+        const data = {
+          title: row.title,
+          column: row.categoryId,
+          keyword: row.keyword,
+          publishTime: new Date(row.releaseTime),
+          value,
+          originalValue: this.originalvalue[row.visitCount],
+          // img
+          author: row.writer,
+          summary: row.summary,
+          content: row.content
+        }
+        Object.assign(this.temp, data)
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      })
+    },
     searchData() {
 
     },
@@ -601,6 +628,12 @@ export default {
           }
           this.fileData = data
           this.$refs.upload.submit(data)
+
+          this.resetTemp()
+          this.dialogFormVisible = false
+          this.$nextTick(() => {
+            this.$refs['dataForm'].clearValidate()
+          })
           // this.$store.dispatch('article/addArticle', data).then(() => {
           //   this.list.unshift(this.temp)
           //   this.dialogFormVisible = false
