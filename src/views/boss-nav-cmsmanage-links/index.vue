@@ -17,7 +17,6 @@
     <el-table
       v-loading="listLoading"
       :data="list"
-      border
       fit
       highlight-current-row
       style="width: 100%;"
@@ -66,12 +65,12 @@
 
       <el-table-column align="center" width="150px" label="操作">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <span style="color:#0069ff;cursor:pointer;" @click="handleUpdate(row)">
             编辑
-          </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDeletehint(row,$index)">
+          </span>
+          <span v-if="row.status!='deleted'" style="color:#0069ff;cursor:pointer;" @click="handleDeletehint(row,$index)">
             删除
-          </el-button>
+          </span>
         </template>
       </el-table-column>
     </el-table>

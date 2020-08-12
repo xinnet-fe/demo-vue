@@ -1,33 +1,40 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form>
-        <span style="width:8%;display:inline-block;">ID：</span>
-        <el-input v-model="listQuery.actId" placeholder="请输入ID" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
-        <span style="width:8%;display:inline-block;">标题：</span>
-        <el-input v-model="listQuery.title" placeholder="请输入文章标题" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
-        <span style="width:8%;display:inline-block;">所属栏目：</span>
-        <el-select v-model="listQuery.classId" placeholder="请选择文章所属栏目" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
-          <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
-        </el-select>
-        <span style="width:8%;display:inline-block;">审核状态：</span>
-        <el-select v-model="listQuery.auditState" placeholder="请选择审核状态" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
-          <el-option v-for="item in auditState" :key="item.num" :label="item.name" :value="item.num" />
-        </el-select>
-        <span style="width:8%;display:inline-block;">发布状态：</span>
-        <el-select v-model="listQuery.publishState" placeholder="请选择发布状态" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
-          <el-option v-for="item in publishState" :key="item.num" :label="item.name" :value="item.num" />
-        </el-select>
-        <span style="width:8%;display:inline-block;" class="demonstration">发布时间： </span>
-        <el-date-picker v-model="listQuery.publishDate" type="datetime" value-format="yyyy-MM-dd" format="yyyy-MM-dd" class="filter-item" style="width:22%;margin-right: 20px;" placeholder="请选择发布时间" />
-        <span style="width:8%;display:inline-block;">置顶状态： </span>
-        <el-select v-model="listQuery.isTop" placeholder="请选择置顶状态" clearable style="width: 22%;margin-right: 20px;" class="filter-item">
-          <el-option v-for="item in isTop" :key="item.num" :label="item.name" :value="item.num" />
-        </el-select>
-        <el-button v-waves style="margin-right: 20px;" @click="handleFilter">
+      <el-form inline>
+        <el-form-item label="ID:">
+          <el-input v-model="listQuery.actId" placeholder="请输入ID" class="filter-item" @keyup.enter.native="handleFilter" />
+        </el-form-item>
+        <el-form-item label="标题:">
+          <el-input v-model="listQuery.title" placeholder="请输入文章标题" class="filter-item" @keyup.enter.native="handleFilter" />
+        </el-form-item>
+        <el-form-item label="所属栏目:">
+          <el-select v-model="listQuery.classId" placeholder="请选择文章所属栏目" clearable class="filter-item">
+            <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="审核状态:">
+          <el-select v-model="listQuery.auditState" placeholder="请选择审核状态" clearable class="filter-item">
+            <el-option v-for="item in auditState" :key="item.num" :label="item.name" :value="item.num" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发布状态:">
+          <el-select v-model="listQuery.publishState" placeholder="请选择发布状态" clearable class="filter-item">
+            <el-option v-for="item in publishState" :key="item.num" :label="item.name" :value="item.num" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发布时间:">
+          <el-date-picker v-model="listQuery.publishDate" type="datetime" value-format="yyyy-MM-dd" format="yyyy-MM-dd" class="filter-item" placeholder="请选择发布时间" />
+        </el-form-item>
+        <el-form-item label="置顶状态:">
+          <el-select v-model="listQuery.isTop" placeholder="请选择置顶状态" clearable class="filter-item">
+            <el-option v-for="item in isTop" :key="item.num" :label="item.name" :value="item.num" />
+          </el-select>
+        </el-form-item>
+        <el-button v-waves @click="handleFilter">
           搜索
         </el-button>
-        <el-button style="margin-right: 20px;" @click="resetModal">
+        <el-button @click="resetModal">
           重置
         </el-button>
         <el-button type="primary" @click="handleCreate">
@@ -35,7 +42,7 @@
         </el-button>
       </el-form>
       <!-- <span style="width:8%;display:inline-block;">关键词：</span>
-        <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" style="width: 22%;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
+        <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" class="filter-item" @keyup.enter.native="handleFilter" /> -->
       <!-- <el-button type="danger" class="filter-item" style="margin-right: 20px;" @click="handleDeletehints">批量删除</el-button> -->
     </div>
 
@@ -68,8 +75,12 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="设置置顶" width="70">
         <template slot-scope="{row}">
-          <el-switch v-if="row.top !== undefined" v-model="row.top" disabled @change="handleUpdateswitch(row)" />
-          <span v-else>1</span>
+          <el-switch
+            v-model="row.top"
+            :active-value="1"
+            :inactive-value="0"
+            @change="handleUpdateswitch(row)"
+          />
         </template>
       </el-table-column>
       <el-table-column label="关键词标签" align="center" width="175">
@@ -108,13 +119,13 @@
           <span style="color:#0069ff;cursor:pointer;" @click="handleLookover(row)">查看</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="60" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
         <!-- <template slot-scope="{row,$index}"> -->
         <template slot-scope="{row}">
           <span v-if="row.publishStates !== '已发布'" style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">审核</span>
           <span v-if="row.publishStates === '已发布'" disabled style="color:#aaa;cursor:pointer;">审核</span>
           <span v-if="row.publishStates === '未发布'" style="color:#0069ff;cursor:pointer;" @click="handleModify(row)">编辑</span>
-          <span v-if="row.publishStates === '未发布'" style="color:#0069ff;cursor:pointer;">删除</span>
+          <span v-if="row.publishStates === '未发布'" style="color:#0069ff;cursor:pointer;" @click="handleDelete(row)">删除</span>
           <!-- <el-button type="primary" class="btnstyle" size="mini" @click="handleAudit(row)">
             审核
           </el-button> -->
@@ -154,15 +165,17 @@
         <el-form-item label="作者：" prop="author">
           <el-input v-if="temp.writer" v-model="temp.writer" disabled />
           <span v-else>无</span>
-          <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
+          <!-- <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
             <el-option v-for="item in authors" :key="item" :label="item" :value="item" />
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="内容简介：" prop="summary">
           <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="文章正文：">
-          <el-input v-model="temp.content" :autosize="{ minRows: 16, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" />
+          <!-- <el-input v-model="temp.content" :autosize="{ minRows: 16, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" /> -->
+          <!-- <mavon-editor v-model="temp.content" style="width: 520px; height: 420px;" :toolbars="toolbars" /> -->
+          <Tinymce v-model="temp.content" :width="650" :height="420" />
         </el-form-item>
         <div v-if="newsbanWords">
           <p style="color:#f00;">审核失败</p>
@@ -182,8 +195,8 @@
       </div>
     </el-dialog>
     <!-- 新增标签 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="dataRules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
+    <el-dialog width="60%" :before-close="beforeClose" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form ref="addOrEditForm" :rules="dataRules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
         <el-form-item label="文章标题：" prop="title">
           <el-input v-model="temp.title" type="textarea" placeholder="请输入内容" minlength="5" maxlength="60" show-word-limit @input="handleRemark" />
         </el-form-item>
@@ -203,36 +216,41 @@
           <el-date-picker v-model="temp.releaseTime" type="datetime" class="filter-item" placeholder="请选择发布时间" />
         </el-form-item>
         <el-form-item label="置顶设置：" prop="value">
-          <el-switch v-model="temp.value" />
+          <el-switch
+            v-model="temp.value"
+            :active-value="1"
+            :inactive-value="0"
+          />
         </el-form-item>
         <el-form-item label="浏览器初始值：" prop="originalValue">
           <el-select v-model="temp.originalValue" placeholder="请选择浏览器初始值" clearable style="width: 100%;" class="filter-item">
             <el-option v-for="item in originalvalue" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
-        <el-form-item label="文章图片：">
-          <!-- <label>
-            <span>点击上传</span>
-            <input type="file" style="display: none;" @input="selectedFile">
-          </label> -->
-          <custom-upload
+        <el-form-item label="文章图片：" prop="file">
+          <el-upload
             ref="upload"
             class="upload"
-            action="/admin/article/add"
-            :data="fileData"
+            action="/admin/article"
             :on-change="selectedFile"
             :file-list="fileList"
             :auto-upload="false"
             :limit="1"
             list-type="picture"
+            accept="image/*"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
-          </custom-upload>
+            <!-- <div slot="tip" class="el-upload__tip">只能上传图片</div> -->
+          </el-upload>
         </el-form-item>
         <el-form-item label="作者：" prop="author">
           <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
-            <el-option v-for="item in authors" :key="item" :label="item" :value="item" />
+            <el-option
+              v-for="item in authors"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
           <el-button class="filter-item" style="margin-left: 10px;" type="primary" @click="handleauthor">
             添加作者
@@ -245,7 +263,9 @@
           <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="文章正文：" prop="content">
-          <el-input v-model="temp.content" :autosize="{ minRows: 8, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" />
+          <!-- <el-input v-model="temp.content" :autosize="{ minRows: 8, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" /> -->
+          <!-- <mavon-editor v-model="temp.content" style="width: 520px; height: 420px;" :toolbars="toolbars" /> -->
+          <Tinymce v-model="temp.content" :width="650" :height="420" />
         </el-form-item>
         <div v-if="newsbanWords">
           <p style="color:#f00;">违禁词：{{ newsbanWords }}</p>
@@ -255,7 +275,7 @@
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button @click="searchData">
+        <el-button @click="handleAudits">
           违禁词检索
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
@@ -281,7 +301,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogPvVisible = false">取消</el-button>
         <!-- <el-button type="primary" @click="handleDeletes()">确定</el-button> -->
-        <el-button type="primary" @click="dialogStatusdele==='deletes'?handleDeletes():handleDelete()">确定</el-button>
+        <el-button type="primary" @click="toHandleDelete">确定</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="Looktitle" :visible.sync="dialogLookVisible">
@@ -298,13 +318,14 @@
 
 <script>
 import { newsList, auditDetail, handleAudit, categoryList, articlePass } from '@/api/demos/knowledges'
-// import { addArticle, modifyArticle } from '@/api/demos/article'
 import waves from '@/directive/demos/waves' // waves directive
+import Tinymce from '@/components/demos/Tinymce'
 import { parseTime } from '@/utils/demos'
-import reduce from 'lodash/reduce'
-import remove from 'lodash/remove'
-import forEach from 'lodash/forEach'
-import CustomUpload from '@/components/upload'
+import { mapState } from 'vuex'
+import find from 'lodash/find'
+// import reduce from 'lodash/reduce'
+// import remove from 'lodash/remove'
+// import forEach from 'lodash/forEach'
 import Pagination from '@/components/demos/Pagination'
 
 const calendarTypeOptions = [
@@ -324,7 +345,7 @@ export default {
   name: 'ComplexTable',
   components: {
     Pagination,
-    CustomUpload
+    Tinymce
   },
   directives: { waves },
   filters: {
@@ -347,6 +368,18 @@ export default {
     }
   },
   data() {
+    const fileValidator = (rule, value, callback) => {
+      const file = this.fileList[0]
+      const maxSize = 1024 * 100
+      const error = '图片小于100kb'
+      if (file && file.size > maxSize) {
+        this.$notify.error(error)
+        callback(new Error(error))
+      } else {
+        callback()
+      }
+    }
+
     return {
       tableKey: 0,
       list: null,
@@ -368,7 +401,7 @@ export default {
         isTop: undefined
       },
       importanceOptions: [1, 2, 3],
-      authors: ['安妮', '安东', '安东尼', '安东尼奥'],
+      // authors: ['安妮', '安东', '安东尼', '安东尼奥'],
       originalvalue: ['100', '110', '200', '220', '300', '330'],
       columns: ['域名知识', '网站建设知识'],
       auditState: [{
@@ -450,7 +483,8 @@ export default {
         author: [{ required: true, message: '请选择作者', trigger: 'change' }],
         summary: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
         content: [{ required: true, message: '请输入文章正文', trigger: 'blur' }],
-        authorName: [{ required: true, message: '请输入作者名称', trigger: 'blur' }]
+        authorName: [{ required: true, message: '请输入作者名称', trigger: 'blur' }],
+        file: [{ validator: fileValidator }]
       },
       multipleSelection: [],
       values: false,
@@ -460,8 +494,48 @@ export default {
       newsbanWords: '',
       // 图片列表
       fileList: [],
-      fileData: {}
+      // fileData: {}
+      toolbars: {
+        bold: true, // 粗体
+        italic: true, // 斜体
+        header: true, // 标题
+        underline: true, // 下划线
+        strikethrough: true, // 中划线
+        mark: true, // 标记
+        superscript: true, // 上角标
+        subscript: true, // 下角标
+        quote: true, // 引用
+        ol: true, // 有序列表
+        ul: true, // 无序列表
+        link: true, // 链接
+        imagelink: true, // 图片链接
+        code: true, // code
+        table: true, // 表格
+        fullscreen: true, // 全屏编辑
+        readmodel: true, // 沉浸式阅读
+        htmlcode: true, // 展示html源码
+        help: true, // 帮助
+        /* 1.3.5 */
+        undo: true, // 上一步
+        redo: true, // 下一步
+        trash: true, // 清空
+        save: true, // 保存（触发events中的save事件）
+        /* 1.4.2 */
+        navigation: true, // 导航目录
+        /* 2.1.8 */
+        alignleft: true, // 左对齐
+        aligncenter: true, // 居中
+        alignright: true, // 右对齐
+        /* 2.2.1 */
+        subfield: true, // 单双栏模式
+        preview: true // 预览
+      }
     }
+  },
+  computed: {
+    ...mapState({
+      authors: state => state.article.writers
+    })
   },
   created() {
     if (this.msg === 'unreviewed') {
@@ -472,6 +546,10 @@ export default {
     this.getList()
   },
   methods: {
+    beforeClose(done) {
+      this.fileList = []
+      done()
+    },
     getList() {
       this.listLoading = true
       newsList(this.listQuery).then(response => {
@@ -545,7 +623,10 @@ export default {
       }
     },
     addAuthorname() {
-      this.authors.push(this.temp.authorName)
+      const name = this.temp.authorName
+      this.$store.dispatch('article/addWriter', { name }).then(() => {
+        this.getWriter()
+      })
     },
     // 添加作者名称
     handleaddAuthor() {
@@ -553,62 +634,89 @@ export default {
       this.dialogauthor = false
     },
     handleUpdateswitch(row) {
+      console.log(row)
+      const form = new FormData()
+      const data = { actId: row.actId, isTop: row.top ? 1 : 0 }
       this.temp = Object.assign({}, row)
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-      this.updateData()
+      form.append('article', JSON.stringify(data))
+
+      this.$store.dispatch('article/modifyArticle', form)
     },
     handleauthor() {
-      this.resetTemp()
+      // this.resetTemp()
       this.dialogauthor = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    getWriter() {
+      this.$store.dispatch('article/writers')
+    },
+    delEditorPart() {
+      const editorUploadButton = document.querySelector('.editor-custom-btn-container')
+      if (editorUploadButton) {
+        editorUploadButton.innerHTML = ''
+      }
+      // const editorFooter = document.querySelectorAll('.mce-container-body.mce-flow-layout')
+      // if (editorFooter.length) {
+      //   editorFooter[editorFooter.length - 1].innerHTML = ''
+      // }
+    },
     handleCreate() {
+      this.getWriter()
       this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
+        this.$refs['addOrEditForm'].clearValidate()
+        this.delEditorPart()
       })
     },
     handleModify(o) {
-      this.resetTemp()
+      this.getWriter()
       this.dialogStatus = 'modify'
       this.dialogFormVisible = true
-
+      const tempAuthor = find(this.authors, { value: parseInt(o.writer, 10) })
+      const author = tempAuthor ? tempAuthor.label : ''
       this.$store.dispatch('article/detail', { actId: o.actId }).then(res => {
         const row = res.data
         const value = row.top ? 1 : 0
         const data = {
+          actId: row.actId,
           title: row.title,
-          column: row.categoryId,
-          keyword: row.keyword,
-          publishTime: new Date(row.releaseTime),
-          value,
-          originalValue: this.originalvalue[row.visitCount],
-          // img
-          author: row.writer,
+          author,
           summary: row.summary,
+          column: row.categoryId,
+          auditState: row.auditState,
+          auditResult: row.auditResult,
+          releaseTime: new Date(row.publishTime),
+          publishState: row.publishState,
+          value,
+          originalValue: row.visitCount,
           content: row.content
         }
-        Object.assign(this.temp, data)
+        if (row.tags.length) {
+          let tag = ''
+          row.tags.forEach((rows, i) => {
+            tag += i + 1 === row.tags.length ? rows.name : rows.name + '、'
+          })
+          data.keyword = tag
+        }
+        if (row.imageUrl && row.imgContent) {
+          this.fileList = [{ name: row.imageUrl.slice(5), url: row.imgContent }]
+        }
+        this.temp = Object.assign({}, data)
         this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
+          this.$refs['addOrEditForm'].clearValidate()
+          this.delEditorPart()
         })
       })
-    },
-    searchData() {
-
     },
     selectedFile(file) {
       this.fileList = [file]
     },
     createData() {
-      this.$refs['dataForm'].validate((valid) => {
+      this.$refs['addOrEditForm'].validate((valid) => {
         if (valid) {
           const o = this.temp
           const isTop = o.value ? 1 : 0
@@ -626,24 +734,26 @@ export default {
             visitCount: o.originalValue,
             keywords: o.keyword
           }
-          this.fileData = data
-          this.$refs.upload.submit(data)
 
-          this.resetTemp()
-          this.dialogFormVisible = false
-          this.$nextTick(() => {
-            this.$refs['dataForm'].clearValidate()
+          const form = new FormData()
+          const file = this.$refs.upload.fileList[0]
+          if (file && file.raw) {
+            form.append('file', file.raw)
+          }
+          form.append('article', JSON.stringify(data))
+
+          this.$store.dispatch('article/addArticle', form).then(res => {
+            if (res.code === 'success' && res.success) {
+              this.resetTemp()
+              this.dialogFormVisible = false
+              this.getList()
+            } else {
+              this.$notify.error({
+                title: res.code,
+                message: res.message
+              })
+            }
           })
-          // this.$store.dispatch('article/addArticle', data).then(() => {
-          //   this.list.unshift(this.temp)
-          //   this.dialogFormVisible = false
-          //   this.$notify({
-          //     title: 'Success',
-          //     message: 'Created Successfully',
-          //     type: 'success',
-          //     duration: 2000
-          //   })
-          // })
         }
       })
     },
@@ -686,6 +796,7 @@ export default {
               }
             })
             this.newsbanWords = str
+            this.temp.auditResult = str
           }
           this.$notify.error({
             title: '审核失败',
@@ -712,30 +823,63 @@ export default {
         })
       })
     },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
+    // handleUpdate(row) {
+    //   this.temp = Object.assign({}, row) // copy obj
+    //   this.temp.timestamp = new Date(this.temp.timestamp)
+    //   this.dialogStatus = 'update'
+    //   this.dialogFormVisible = true
+    //   this.$nextTick(() => {
+    //     this.$refs['dataForm'].clearValidate()
+    //   })
+    // },
+    // convertBase64UrlToBlob(urlData, type) {
+    //   const bytes = window.atob(urlData.split(',')[1])
+    //   const ab = new ArrayBuffer(bytes.length)
+    //   const ia = new Uint8Array(ab)
+    //   for (let i = 0; i < bytes.length; i++) {
+    //     ia[i] = bytes.charCodeAt(i)
+    //   }
+    //   return new Blob([ab], { type: type === 0 ? 'image/png' : 'image/mp4' })
+    // },
     updateData() {
-      this.$refs['dataForm'].validate((valid) => {
+      this.$refs['addOrEditForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          this.$store.dispatch('article/modifyArticle', tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
+          const o = this.temp
+          const isTop = o.value ? 1 : 0
+          const data = {
+            actId: o.actId,
+            title: o.title,
+            writer: o.author,
+            summary: o.summary,
+            categoryId: o.column,
+            auditState: o.auditState,
+            auditResult: o.auditResult,
+            publishTime: o.releaseTime,
+            publishState: o.publishState,
+            isTop,
+            content: o.content,
+            visitCount: o.originalValue,
+            keywords: o.keyword
+          }
+
+          const form = new FormData()
+          const file = this.$refs.upload.fileList[0]
+          if (file && file.url && file.url.indexOf('blob:') > -1) {
+            form.append('file', file.raw)
+          }
+          form.append('article', JSON.stringify(data))
+
+          this.$store.dispatch('article/modifyArticle', form).then(res => {
+            if (res.code === 'success' && res.success) {
+              this.resetTemp()
+              this.dialogFormVisible = false
+              this.getList()
+            } else {
+              this.$notify.error({
+                title: res.code,
+                message: res.message
+              })
+            }
           })
         }
       })
@@ -752,9 +896,10 @@ export default {
         this.dialogPvVisible = false
       }
     },
-    handleDeletes() {
-      this.destroyOrder()
-      this.dialogPvVisible = false
+    handleDelete(row) {
+      this.temp.actId = row.actId
+      this.dialogStatusdele = 'deletes'
+      this.dialogPvVisible = true
     },
     handleDeletehint(row, index) {
       row.index = index
@@ -764,16 +909,19 @@ export default {
       this.dialogStatusdele = 'delete'
       this.dialogPvVisible = true
     },
-    handleDelete(row, index) {
-      const tempData = Object.assign({}, this.temp)
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
+    toHandleDelete() {
+      const id = this.temp.actId
+      this.$store.dispatch('article/destroyArticle', id).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: '删除成功！',
+          type: 'success',
+          duration: 1000
+        })
+
+        this.dialogPvVisible = false
+        this.getList()
       })
-      this.dialogPvVisible = false
-      this.list.splice(tempData.index, 1)
     },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
@@ -786,23 +934,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-    },
-    destroyOrder() {
-      const ids = reduce(this.multipleSelection, (r, item) => {
-        r.push(item.id)
-        return r
-      }, [])
-      this.$store.dispatch('order/destroyOrder', ids).then(res => {
-        this.$notify({
-          title: 'Success',
-          message: '删除成功！',
-          type: 'success',
-          duration: 1000
-        })
-        const newList = this.list
-        forEach(ids, id => remove(newList, { id }))
-        this.$set(this.list, newList)
-      })
     }
   }
 }
