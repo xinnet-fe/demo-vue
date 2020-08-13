@@ -37,10 +37,12 @@
         <el-button @click="resetModal">
           重置
         </el-button>
-        <el-button type="primary" @click="handleCreate">
+      </el-form>
+      <div class="mult-operation">
+        <el-button type="primary" size="mini" @click="handleCreate">
           新增
         </el-button>
-      </el-form>
+      </div>
       <!-- <span style="width:8%;display:inline-block;">关键词：</span>
         <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" class="filter-item" @keyup.enter.native="handleFilter" /> -->
       <!-- <el-button type="danger" class="filter-item" style="margin-right: 20px;" @click="handleDeletehints">批量删除</el-button> -->
@@ -943,5 +945,9 @@ export default {
     width: auto!important;
     padding: 7px 5px!important;
     margin: 0px!important;
+  }
+  .mult-operation {
+    margin: auto;
+    text-align: right;
   }
 </style>

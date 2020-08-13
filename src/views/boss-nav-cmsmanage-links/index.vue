@@ -1,17 +1,20 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      友链名称：<el-input v-model="listQuery.title" placeholder="请输入栏目名称" style="width: 200px;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      友链名称：<el-input v-model="listQuery.title" placeholder="请输入友链名称" style="width: 200px;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select> -->
-      <el-button v-waves class="filter-item" type="primary" style="margin-right: 20px;" icon="el-icon-search" @click="handleFilter">
+      <el-button v-waves class="filter-item" @click="handleFilter">
         搜索
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;margin-right: 20px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+    </div>
+
+    <div class="mult-operation">
+      <el-button type="primary" class="filter-item" size="mini" @click="handleCreate">
         新增
       </el-button>
-      <el-button type="danger" class="filter-item" style="margin-right: 20px;" @click="handleDeletehints">批量删除</el-button>
+      <el-button type="danger" class="filter-item" size="mini" @click="handleDeletehints">批量删除</el-button>
     </div>
 
     <el-table
@@ -95,8 +98,11 @@
           <el-input v-model="temp.sort" />
         </el-form-item>
         <el-form-item label="状态">
-          <el-switch v-if="dialogStatus==='create'" v-model="values" />
-          <el-switch v-else v-model="temp.state" />
+          <el-switch
+            v-model="temp.state"
+            :active-value="1"
+            :inactive-value="0"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -280,6 +286,7 @@ export default {
       this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
+      this.temp.state = 1
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -288,7 +295,8 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$store.dispatch('links/addLink', this.temp).then(() => {
-            this.list.unshift(this.temp)
+            this.getList()
+            // this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -360,3 +368,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .mult-operation {
+    margin: 10px auto;
+    text-align: right;
+  }
+</style>
