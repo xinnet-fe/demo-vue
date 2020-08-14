@@ -151,7 +151,7 @@
             <el-option v-for="item in columns" :key="item" :label="item" :value="item" />
           </el-select> -->
         </el-form-item>
-        <el-form-item label="关键词：" prop="keyword">
+        <el-form-item label="关键词：">
           <el-input v-model="temp.tag" disabled />
           <span
             style="position: absolute;display: inline-block;width: 160px;right: -170px;"
@@ -210,7 +210,7 @@
             <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
           </el-select>
         </el-form-item>
-        <el-form-item label="关键词：" prop="keyword">
+        <el-form-item label="关键词：">
           <el-input v-model="temp.keyword" />
           <span
             style="position: absolute;display: inline-block;width: 160px;right: -170px;"
@@ -474,7 +474,7 @@ export default {
       rules: {
         column: [{ required: true, message: '请选择文章所属栏目', trigger: 'change' }],
         releaseTime: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
-        keyword: [{ required: true, message: '请输入关键词', trigger: 'blur' }],
+        // keyword: [{ required: true, message: '请输入关键词', trigger: 'blur' }],
         title: [{ required: true, message: '请输入文章标题', trigger: 'blur' }],
         originalValue: [{ required: true, message: '请选择初始值', trigger: 'change' }],
         author: [{ required: true, message: '请选择作者', trigger: 'change' }],
@@ -485,7 +485,7 @@ export default {
       dataRules: {
         column: [{ required: true, message: '请选择文章所属栏目', trigger: 'change' }],
         releaseTime: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
-        keyword: [{ required: true, message: '请输入关键词', trigger: 'blur' }],
+        // keyword: [{ required: true, message: '请输入关键词', trigger: 'blur' }],
         title: [{ required: true, message: '请输入文章标题', trigger: 'blur' }],
         originalValue: [{ required: true, message: '请选择初始值', trigger: 'change' }],
         author: [{ required: true, message: '请选择作者', trigger: 'change' }],
