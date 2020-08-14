@@ -125,7 +125,7 @@
         <!-- <template slot-scope="{row,$index}"> -->
         <template slot-scope="{row}">
           <span v-if="row.publishStates !== '已发布'" style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">审核</span>
-          <span v-if="row.publishStates === '已发布'" disabled style="color:#aaa;cursor:pointer;">审核</span>
+          <span v-if="row.publishStates === '已发布'" style="color:#0069ff;cursor:pointer;" @click="cancelAudit(row)">取消审核</span>
           <span v-if="row.publishStates === '未发布'" style="color:#0069ff;cursor:pointer;" @click="handleModify(row)">编辑</span>
           <span v-if="row.publishStates === '未发布'" style="color:#0069ff;cursor:pointer;" @click="handleDelete(row)">删除</span>
           <!-- <el-button type="primary" class="btnstyle" size="mini" @click="handleAudit(row)">
@@ -138,7 +138,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <!-- 审核标签 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogAudit">
+    <el-dialog width="950px" :title="textMap[dialogStatus]" :visible.sync="dialogAudit">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
         <el-form-item label="文章标题：" prop="title">
           <!-- <el-input type="textarea" placeholder="请输入内容" v-model="temp.title" maxlength="30" show-word-limit /> -->
@@ -167,17 +167,19 @@
         <el-form-item label="作者：" prop="author">
           <el-input v-if="temp.writer" v-model="temp.writer" disabled />
           <span v-else>无</span>
-          <!-- <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
-            <el-option v-for="item in authors" :key="item" :label="item" :value="item" />
-          </el-select> -->
         </el-form-item>
         <el-form-item label="内容简介：" prop="summary">
           <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="文章正文：">
-          <!-- <el-input v-model="temp.content" :autosize="{ minRows: 16, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" /> -->
-          <!-- <mavon-editor v-model="temp.content" style="width: 520px; height: 420px;" :toolbars="toolbars" /> -->
-          <Tinymce v-model="temp.content" :width="650" :height="420" />
+          <editor
+            id="editor_id1"
+            width="700px"
+            height="420px"
+            :content="temp.content"
+            :load-style-mode="false"
+            @on-content-change="onContentChange"
+          />
         </el-form-item>
         <div v-if="newsbanWords">
           <p style="color:#f00;">审核失败</p>
@@ -197,7 +199,7 @@
       </div>
     </el-dialog>
     <!-- 新增标签 -->
-    <el-dialog width="60%" :before-close="beforeClose" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog width="950px" :before-close="beforeClose" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="addOrEditForm" :rules="dataRules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
         <el-form-item label="文章标题：" prop="title">
           <el-input v-model="temp.title" type="textarea" placeholder="请输入内容" minlength="5" maxlength="60" show-word-limit @input="handleRemark" />
@@ -258,16 +260,18 @@
             添加作者
           </el-button>
         </el-form-item>
-        <!-- <el-form-item label="内容简介：" prop="briefIntroduction">
-          <el-input v-model="temp.briefIntroduction" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item> -->
         <el-form-item label="内容简介：" prop="summary">
           <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="文章正文：" prop="content">
-          <!-- <el-input v-model="temp.content" :autosize="{ minRows: 8, maxRows: 16}" style="width:350px;" type="textarea" placeholder="Please input" /> -->
-          <!-- <mavon-editor v-model="temp.content" style="width: 520px; height: 420px;" :toolbars="toolbars" /> -->
-          <Tinymce v-model="temp.content" :width="650" :height="420" />
+          <editor
+            id="editor_id2"
+            width="700px"
+            height="420px"
+            :content="temp.content"
+            :load-style-mode="false"
+            @on-content-change="onContentChange"
+          />
         </el-form-item>
         <div v-if="newsbanWords">
           <p style="color:#f00;">违禁词：{{ newsbanWords }}</p>
@@ -306,6 +310,13 @@
         <el-button type="primary" @click="toHandleDelete">确定</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogAuditVisible">
+      <p>您确定要取消审核吗？</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAuditVisible = false">取消</el-button>
+        <el-button type="primary" @click="updateAudit">确定</el-button>
+      </span>
+    </el-dialog>
     <el-dialog :title="Looktitle" :visible.sync="dialogLookVisible">
       <p>审核状态：{{ tempLookover.state }}</p>
       <p v-if="tempLookover.state == '未通过'">未通过原因：{{ tempLookover.context }}</p>
@@ -320,14 +331,9 @@
 
 <script>
 import { newsList, auditDetail, handleAudit, categoryList, articlePass } from '@/api/demos/knowledges'
-import waves from '@/directive/demos/waves' // waves directive
-import Tinymce from '@/components/demos/Tinymce'
-import { parseTime } from '@/utils/demos'
+import waves from '@/directive/demos/waves'
 import { mapState } from 'vuex'
 import find from 'lodash/find'
-// import reduce from 'lodash/reduce'
-// import remove from 'lodash/remove'
-// import forEach from 'lodash/forEach'
 import Pagination from '@/components/demos/Pagination'
 
 const calendarTypeOptions = [
@@ -346,8 +352,7 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 export default {
   name: 'ComplexTable',
   components: {
-    Pagination,
-    Tinymce
+    Pagination
   },
   directives: { waves },
   filters: {
@@ -458,6 +463,7 @@ export default {
       dialogauthor: false,
       dialogAudit: false,
       dialogLookVisible: false,
+      dialogAuditVisible: false,
       Looktitle: '审核结果',
       textMap: {
         update: '编辑标签',
@@ -495,43 +501,7 @@ export default {
       categorylist: [],
       newsbanWords: '',
       // 图片列表
-      fileList: [],
-      // fileData: {}
-      toolbars: {
-        bold: true, // 粗体
-        italic: true, // 斜体
-        header: true, // 标题
-        underline: true, // 下划线
-        strikethrough: true, // 中划线
-        mark: true, // 标记
-        superscript: true, // 上角标
-        subscript: true, // 下角标
-        quote: true, // 引用
-        ol: true, // 有序列表
-        ul: true, // 无序列表
-        link: true, // 链接
-        imagelink: true, // 图片链接
-        code: true, // code
-        table: true, // 表格
-        fullscreen: true, // 全屏编辑
-        readmodel: true, // 沉浸式阅读
-        htmlcode: true, // 展示html源码
-        help: true, // 帮助
-        /* 1.3.5 */
-        undo: true, // 上一步
-        redo: true, // 下一步
-        trash: true, // 清空
-        save: true, // 保存（触发events中的save事件）
-        /* 1.4.2 */
-        navigation: true, // 导航目录
-        /* 2.1.8 */
-        alignleft: true, // 左对齐
-        aligncenter: true, // 居中
-        alignright: true, // 右对齐
-        /* 2.2.1 */
-        subfield: true, // 单双栏模式
-        preview: true // 预览
-      }
+      fileList: []
     }
   },
   computed: {
@@ -548,6 +518,9 @@ export default {
     this.getList()
   },
   methods: {
+    onContentChange(val) {
+      this.temp.content = val
+    },
     beforeClose(done) {
       this.fileList = []
       done()
@@ -636,7 +609,6 @@ export default {
       this.dialogauthor = false
     },
     handleUpdateswitch(row) {
-      console.log(row)
       const form = new FormData()
       const data = { actId: row.actId, isTop: row.top ? 1 : 0 }
       this.temp = Object.assign({}, row)
@@ -654,16 +626,6 @@ export default {
     getWriter() {
       this.$store.dispatch('article/writers')
     },
-    delEditorPart() {
-      const editorUploadButton = document.querySelector('.editor-custom-btn-container')
-      if (editorUploadButton) {
-        editorUploadButton.innerHTML = ''
-      }
-      // const editorFooter = document.querySelectorAll('.mce-container-body.mce-flow-layout')
-      // if (editorFooter.length) {
-      //   editorFooter[editorFooter.length - 1].innerHTML = ''
-      // }
-    },
     handleCreate() {
       this.getWriter()
       this.resetTemp()
@@ -671,7 +633,6 @@ export default {
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['addOrEditForm'].clearValidate()
-        this.delEditorPart()
       })
     },
     handleModify(o) {
@@ -710,7 +671,6 @@ export default {
         this.temp = Object.assign({}, data)
         this.$nextTick(() => {
           this.$refs['addOrEditForm'].clearValidate()
-          this.delEditorPart()
         })
       })
     },
@@ -742,7 +702,16 @@ export default {
           if (file && file.raw) {
             form.append('file', file.raw)
           }
-          form.append('article', JSON.stringify(data))
+          // form.append('article', JSON.stringify(data))
+          form.append(
+            'article',
+            new Blob(
+              [JSON.stringify(data)],
+              {
+                type: 'application/json'
+              }
+            )
+          )
 
           this.$store.dispatch('article/addArticle', form).then(res => {
             if (res.code === 'success' && res.success) {
@@ -825,24 +794,42 @@ export default {
         })
       })
     },
-    // handleUpdate(row) {
-    //   this.temp = Object.assign({}, row) // copy obj
-    //   this.temp.timestamp = new Date(this.temp.timestamp)
-    //   this.dialogStatus = 'update'
-    //   this.dialogFormVisible = true
-    //   this.$nextTick(() => {
-    //     this.$refs['dataForm'].clearValidate()
-    //   })
-    // },
-    // convertBase64UrlToBlob(urlData, type) {
-    //   const bytes = window.atob(urlData.split(',')[1])
-    //   const ab = new ArrayBuffer(bytes.length)
-    //   const ia = new Uint8Array(ab)
-    //   for (let i = 0; i < bytes.length; i++) {
-    //     ia[i] = bytes.charCodeAt(i)
-    //   }
-    //   return new Blob([ab], { type: type === 0 ? 'image/png' : 'image/mp4' })
-    // },
+    cancelAudit(row) {
+      this.temp.actId = row.actId
+      this.temp.publishState = 0
+      this.temp.auditState = 0
+      this.dialogAuditVisible = true
+    },
+    updateAudit() {
+      const { actId, publishState, auditState } = this.temp
+      const data = { actId, publishState, auditState }
+      const form = new FormData()
+      form.append(
+        'article',
+        new Blob(
+          [JSON.stringify(data)],
+          {
+            type: 'application/json'
+          }
+        )
+      )
+      this.$store.dispatch('article/modifyArticle', form).then(res => {
+        if (res.code === 'success' && res.success) {
+          this.$notify.success({
+            title: '操作成功',
+            message: '操作成功！'
+          })
+          this.resetTemp()
+          this.dialogAuditVisible = false
+          this.getList()
+        } else {
+          this.$notify.error({
+            title: res.code,
+            message: res.message
+          })
+        }
+      })
+    },
     updateData() {
       this.$refs['addOrEditForm'].validate((valid) => {
         if (valid) {
@@ -869,7 +856,15 @@ export default {
           if (file && file.url && file.url.indexOf('blob:') > -1) {
             form.append('file', file.raw)
           }
-          form.append('article', JSON.stringify(data))
+          form.append(
+            'article',
+            new Blob(
+              [JSON.stringify(data)],
+              {
+                type: 'application/json'
+              }
+            )
+          )
 
           this.$store.dispatch('article/modifyArticle', form).then(res => {
             if (res.code === 'success' && res.success) {
@@ -924,15 +919,6 @@ export default {
         this.dialogPvVisible = false
         this.getList()
       })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
