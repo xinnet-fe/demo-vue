@@ -12,6 +12,7 @@ import componentsRouter from './demos/components'
 import chartsRouter from './demos/charts'
 import tableRouter from './demos/table'
 import nestedRouter from './demos/nested'
+import formRouter from './demos/form'
 import orderRouter from './modules/order'
 
 /**
@@ -42,6 +43,21 @@ import orderRouter from './modules/order'
  * all roles can be accessed
  */
 const demosConstantRoutes = hasDevelopment ? [
+  {
+    path: '/buttons',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/buttons/index'),
+        name: 'buttons',
+        meta: { title: 'buttons', icon: 'dashboard', type: 'demo' }
+      }
+    ]
+  },
   {
     path: '/dashboard',
     component: Layout,
@@ -183,7 +199,22 @@ const demosConstantRoutes = hasDevelopment ? [
   chartsRouter,
   nestedRouter,
   tableRouter,
-
+  formRouter,
+  {
+    path: '/pagination',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/pagination/index'),
+        name: 'Pagination',
+        meta: { title: 'Pagination', icon: 'icon', noCache: true, type: 'demo' }
+      }
+    ]
+  },
   {
     path: '/example',
     component: Layout,

@@ -3,11 +3,11 @@ import {
   getToken, setToken, removeToken
 } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import { xbtoken, xbTokenKey } from '@/settings'
+import { xbtoken } from '@/settings'
 
 const state = {
   token: getToken(),
-  xbtoken: getToken(xbTokenKey),
+  xbtoken: getToken('xbtoken') || getToken('xbtoken_id'),
   name: '',
   avatar: '',
   introduction: '',
@@ -47,7 +47,8 @@ const actions = {
         commit('SET_TOKEN', data.token)
         setToken('Admin-Token', data.token)
         commit('SET_XBTOKEN', xbtoken)
-        setToken(xbTokenKey, xbtoken)
+        setToken('xbtoken', xbtoken)
+        setToken('xbtoken_id', xbtoken)
         resolve()
       }).catch(error => {
         reject(error)
@@ -91,7 +92,8 @@ const actions = {
         commit('SET_XBTOKEN', '')
         commit('SET_ROLES', [])
         removeToken('Admin-Token')
-        removeToken(xbTokenKey)
+        removeToken('xbtoken')
+        removeToken('xbtoken_id')
         resetRouter()
 
         // reset visited views and cached views
@@ -114,7 +116,8 @@ const actions = {
       commit('SET_XBTOKEN', '')
       commit('SET_ROLES', [])
       removeToken('Admin-Token')
-      removeToken(xbTokenKey)
+      removeToken('xbtoken')
+      removeToken('xbtoken_id')
       resolve()
     })
   },
@@ -127,7 +130,8 @@ const actions = {
       commit('SET_TOKEN', token)
       commit('SET_XBTOKEN', token)
       setToken('Admin-Token', token)
-      setToken(xbTokenKey, xbtoken)
+      setToken('xbtoken', xbtoken)
+      setToken('xbtoken_id', xbtoken)
 
       const { roles } = await dispatch('getInfo')
 

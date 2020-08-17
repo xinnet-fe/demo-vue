@@ -75,7 +75,8 @@
 git clone https://github.com/xinnet-fe/demo-vue.git
 
 # nodejs版本
-建议使用v10.17.0
+建议使用12.13.x以下版本，8.9.x以上
+12.13.0 10.17.0
 
 # 进入项目目录
 cd demo-vue
