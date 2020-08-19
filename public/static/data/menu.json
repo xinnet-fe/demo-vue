@@ -1,39 +1,53 @@
 [
     {
-        "code": "agent-client-app",
+        "code": "cms-manage",
         "parentCode": null,
-        "children": [{
-            "code": "agent-client",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "专区首页",
-            "url": "",
-            "target": "tab"
-        }, {
-            "code": "agent-client-mgmt",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "客户管理",
-            "url": "",
-            "target": "tab"
-        },{
-            "code": "agent-client-order",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "客户订单",
-            "url": "",
-            "target": "tab"
-        },{
-            "code": "agent-client-prod-open",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "商品开通",
-            "url": "",
-            "target": "tab"
-        }],
-        "icon": "applicationCenter",
-        "text": "代理专区",
+        "text": "CMS管理",
+        "icon": "",
         "url": "",
-        "target": ""
+        "target": "",
+        "children": [
+            {
+                "code": "cms-advert-manage",
+                "parentCode": "cms-manage",
+                "text": "广告管理",
+                "icon": "",
+                "url": "",
+                "target": "",
+                "children": [{
+                    "code": "cms-basis-advert",
+                    "parentCode": "cms-advert-manage",
+                    "text": "基础广告",
+                    "icon": "",
+                    "url": "",
+                    "target": "tab"
+                }]
+            },
+            {
+                "code": "cms-component-manage",
+                "parentCode": "cms-manage",
+                "text": "组件管理",
+                "icon": "",
+                "url": "",
+                "target": "",
+                "children": [{
+                    "code": "cms-carousel-manage",
+                    "parentCode": "cms-component-manage",
+                    "text": "轮播管理",
+                    "icon": "",
+                    "url": "",
+                    "target": "tab"
+                },
+                {
+                    "code": "cms-nav-manage",
+                    "parentCode": "cms-component-manage",
+                    "text": "导航管理",
+                    "icon": "",
+                    "url": "",
+                    "target": "tab"
+                }]
+            }
+        ]
     }
 ]
+
