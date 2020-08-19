@@ -149,9 +149,9 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
 import Pagination from '@/components/Pagination'
-import { carouselList, addCarousel, updateCarousel, destroyCarousel } from '@/api/cms'
 
 export default {
   name: 'CmsNavManage',
@@ -162,7 +162,6 @@ export default {
     return {
       // tabs
       activeName: 'basis',
-      loading: false,
       // 搜索框
       searchForm: {
         name: '',
@@ -191,7 +190,7 @@ export default {
       },
       // 弹框表单规则
       rules: {
-        name: [{ required: true, message: '请输入广告组名称', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
         number: [{ required: true, message: '请输入序号', trigger: 'blur' }]
       },
       // 删除弹框
@@ -214,7 +213,18 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      loading: state => state.loading.global
+    })
+  },
   methods: {
+    ...mapActions({
+      getList: 'cms/navlList',
+      add: 'cms/addNav',
+      update: 'cms/updateNav',
+      destroy: 'cms/destroyNav'
+    }),
     showModal(row = {}) {
       if (row.id) {
         this.form = row
@@ -250,7 +260,7 @@ export default {
       const { name, state } = this.searchForm
       name && (query.name = name)
       state && (query.state = state)
-      return carouselList(query).then(res => {
+      return this.getList(query).then(res => {
         const { data, page } = res.data
         this.list = data
         this.page = page
@@ -269,23 +279,37 @@ export default {
           // 修改
           if (id) {
             data.id = id
-            updateCarousel(data).then(res => {
+            this.update(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
           // 新增
           } else {
-            addCarousel(data).then(res => {
+            this.add(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
+          }
+        } else {
+          if (this.activeName === 'senior') {
+            let message = ''
+            if (!this.form.name) {
+              message = '请输入名称'
+              this.$message.error(message)
+              return
+            }
+            if (!this.form.number) {
+              message = '请输入序号'
+              this.$message.error(message)
+              return
+            }
           }
         }
       })
     },
     destroy() {
       const { id } = this.form
-      destroyCarousel(id).then(res => {
+      this.destroy(id).then(res => {
         this.closeTipsModal()
         this.onSearch()
       })

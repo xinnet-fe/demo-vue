@@ -111,9 +111,10 @@
                   action="/"
                   :limit="1"
                   :auto-upload="false"
+                  :on-change="selectedFile"
                   :file-list="fileList"
                 >
-                  <el-button ref="upload" size="small" type="primary" @click="clickUpload">点击上传</el-button>
+                  <el-button ref="upload" size="small" type="primary">点击上传</el-button>
                 </el-upload>
               </el-form-item>
               <el-form-item label="链接:" prop="linkAddress">
@@ -193,9 +194,9 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
 import Pagination from '@/components/Pagination'
-import { carouselList, addCarousel, updateCarousel, destroyCarousel } from '@/api/cms'
 
 export default {
   name: 'CmsCarouselManage',
@@ -206,7 +207,6 @@ export default {
     return {
       // tabs
       activeName: 'basis',
-      loading: false,
       // 搜索框
       searchForm: {
         name: '',
@@ -239,8 +239,7 @@ export default {
       uploadImageAddress: '',
       // 弹框表单规则
       rules: {
-        name: [{ required: true, message: '请输入广告组名称', trigger: 'blur' }],
-        // linkAddress: [{ required: true, message: '请输入外链地址', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
         number: [{ required: true, message: '请输入序号', trigger: 'blur' }]
       },
       // 广告状态列表
@@ -274,7 +273,18 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      loading: state => state.loading.global
+    })
+  },
   methods: {
+    ...mapActions({
+      getList: 'cms/carouselList',
+      add: 'cms/addCarousel',
+      update: 'cms/updateCarousel',
+      destroy: 'cms/destroyCarousel'
+    }),
     showModal(row = {}) {
       if (row.id) {
         this.form = row
@@ -294,6 +304,8 @@ export default {
           o[k] = ''
         }
       })
+      this.uploadImageAddress = ''
+      this.fileList = []
     },
     showTipsModal(row) {
       this.form = row
@@ -310,7 +322,7 @@ export default {
       const { name, state } = this.searchForm
       name && (query.name = name)
       state && (query.state = state)
-      return carouselList(query).then(res => {
+      return this.getList(query).then(res => {
         const { data, page } = res.data
         this.list = data
         this.page = page
@@ -329,23 +341,37 @@ export default {
           // 修改
           if (id) {
             data.id = id
-            updateCarousel(data).then(res => {
+            this.update(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
           // 新增
           } else {
-            addCarousel(data).then(res => {
+            this.add(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
+          }
+        } else {
+          if (this.activeName === 'senior') {
+            let message = ''
+            if (!this.form.name) {
+              message = '请输入名称'
+              this.$message.error(message)
+              return
+            }
+            if (!this.form.number) {
+              message = '请输入序号'
+              this.$message.error(message)
+              return
+            }
           }
         }
       })
     },
     destroy() {
       const { id } = this.form
-      destroyCarousel(id).then(res => {
+      this.destroy(id).then(res => {
         this.closeTipsModal()
         this.onSearch()
       })
@@ -357,8 +383,8 @@ export default {
       }
     },
     // 点击选择图片
-    clickUpload(e) {
-      console.log(e)
+    selectedFile(file) {
+      this.fileList = [file]
     },
     sortChildren(data, order) {
       if (!(data && data.length > 1)) {

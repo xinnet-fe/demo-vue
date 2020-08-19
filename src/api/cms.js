@@ -95,3 +95,35 @@ export function destroyCarousel(ids) {
     params: { ids }
   })
 }
+
+export function navList(query) {
+  return request({
+    url: '/carousel/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function addNav(data) {
+  return request({
+    url: '/carousel/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateNav(data) {
+  return request({
+    url: '/carousel/update',
+    method: 'post',
+    data
+  })
+}
+
+export function destroyNav(ids) {
+  return request({
+    url: '/carousel/destroy',
+    method: 'post',
+    params: { ids }
+  })
+}

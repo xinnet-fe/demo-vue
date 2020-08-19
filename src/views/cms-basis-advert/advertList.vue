@@ -124,9 +124,10 @@
             action="/"
             :limit="1"
             :auto-upload="false"
+            :on-change="selectedFile"
             :file-list="fileList"
           >
-            <el-button ref="upload" size="small" type="primary" @click="clickUpload">点击上传</el-button>
+            <el-button ref="upload" size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
         <el-form-item label="序号:" prop="number">
@@ -178,8 +179,8 @@
 
 <script>
 import forEach from 'lodash/forEach'
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination'
-import { advertList, addAdvertList, updateAdvertList, destroyAdvertList } from '@/api/cms'
 
 export default {
   name: 'AdvertList',
@@ -188,7 +189,6 @@ export default {
   },
   data() {
     return {
-      loading: false,
       // 搜索框
       searchForm: {
         name: '',
@@ -244,7 +244,18 @@ export default {
       fileList: []
     }
   },
+  computed: {
+    ...mapState({
+      loading: state => state.loading.global
+    })
+  },
   methods: {
+    ...mapActions({
+      getList: 'cms/advertList',
+      add: 'cms/addAdvertList',
+      update: 'cms/updateAdvertList',
+      destroy: 'cms/destroyAdvertList'
+    }),
     showModal(row = {}) {
       if (row.id) {
         this.form = row
@@ -256,6 +267,8 @@ export default {
       forEach(this.form, (val, key, o) => {
         o[key] = ''
       })
+      this.uploadImageAddress = ''
+      this.fileList = []
     },
     showTipsModal(row) {
       this.form = row
@@ -273,7 +286,7 @@ export default {
       name && (query.name = name)
       state && (query.state = state)
       advertGroup && (query.advertGroup = advertGroup)
-      return advertList(query).then(res => {
+      return this.getList(query).then(res => {
         const { data, page } = res.data
         this.list = data
         this.page = page
@@ -292,13 +305,13 @@ export default {
           // 修改
           if (id) {
             data.id = id
-            updateAdvertList(data).then(res => {
+            this.update(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
           // 新增
           } else {
-            addAdvertList(data).then(res => {
+            this.add(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
@@ -308,7 +321,7 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      destroyAdvertList(id).then(res => {
+      this.destroy(id).then(res => {
         this.closeTipsModal()
         this.onSearch()
       })
@@ -320,8 +333,8 @@ export default {
       }
     },
     // 点击选择图片
-    clickUpload(e) {
-      console.log(e)
+    selectedFile(file) {
+      this.fileList = [file]
     }
   }
 }

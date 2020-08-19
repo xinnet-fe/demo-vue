@@ -103,8 +103,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination'
-import { advertGroupList, addAdvertGroup, updateAdvertGroup, destroyAdvertGroup } from '@/api/cms'
 import findParentNodeByName from '@/utils/findParentNodeByName'
 
 export default {
@@ -114,7 +114,6 @@ export default {
   },
   data() {
     return {
-      loading: false,
       // 搜索框
       searchForm: {
         name: '',
@@ -153,7 +152,18 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      loading: state => state.loading.global
+    })
+  },
   methods: {
+    ...mapActions({
+      getList: 'cms/advertGroupList',
+      add: 'cms/addAdvertGroup',
+      update: 'cms/updateAdvertGroup',
+      destroy: 'cms/destroyAdvertGroup'
+    }),
     showModal(row = {}) {
       if (row.id) {
         this.form = row
@@ -184,7 +194,7 @@ export default {
       const { name, website } = this.searchForm
       name && (query.name = name)
       website && (query.website = website)
-      return advertGroupList(query).then(res => {
+      return this.getList(query).then(res => {
         const { data, page } = res.data
         this.list = data
         this.page = page
@@ -203,13 +213,13 @@ export default {
           // 修改
           if (id) {
             data.id = id
-            updateAdvertGroup(data).then(res => {
+            this.update(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
           // 新增
           } else {
-            addAdvertGroup(data).then(res => {
+            this.add(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
@@ -219,7 +229,7 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      destroyAdvertGroup(id).then(res => {
+      this.destroy(id).then(res => {
         this.closeTipsModal()
         this.onSearch()
       })
