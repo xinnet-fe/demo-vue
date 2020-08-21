@@ -13,8 +13,8 @@ import chartsRouter from './demos/charts'
 import tableRouter from './demos/table'
 import nestedRouter from './demos/nested'
 import formRouter from './demos/form'
-import orderRouter from './modules/order'
-
+import orderRouter from './demos/order'
+import dialogRouter from './demos/dialog'
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -44,6 +44,21 @@ import orderRouter from './modules/order'
  */
 const demosConstantRoutes = hasDevelopment ? [
   {
+    path: '/icon',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/icons/index'),
+        name: 'Icons',
+        meta: { title: '图标', icon: 'icon', noCache: true, type: 'demo' }
+      }
+    ]
+  },
+  {
     path: '/buttons',
     component: Layout,
     meta: {
@@ -54,10 +69,44 @@ const demosConstantRoutes = hasDevelopment ? [
         path: 'index',
         component: () => import('@/views/demos/buttons/index'),
         name: 'buttons',
-        meta: { title: 'buttons', icon: 'dashboard', type: 'demo' }
+        meta: { title: '按钮', icon: 'star', type: 'demo' }
       }
     ]
   },
+  formRouter,
+  tableRouter,
+  {
+    path: '/pagination',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/pagination/index'),
+        name: 'Pagination',
+        meta: { title: '分页', icon: 'education', noCache: true, type: 'demo' }
+      }
+    ]
+  },
+  orderRouter,
+  {
+    path: '/tab',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/tab/index'),
+        name: 'Tab',
+        meta: { title: '页签', icon: 'tab', type: 'demo' }
+      }
+    ]
+  },
+  dialogRouter,
   {
     path: '/dashboard',
     component: Layout,
@@ -70,21 +119,6 @@ const demosConstantRoutes = hasDevelopment ? [
         component: () => import('@/views/demos/dashboard/index'),
         name: 'Dashboard',
         meta: { title: 'Dashboard', icon: 'dashboard', type: 'demo' }
-      }
-    ]
-  },
-  {
-    path: '/documentation',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', type: 'demo' }
       }
     ]
   },
@@ -131,7 +165,6 @@ const demosConstantRoutes = hasDevelopment ? [
     component: () => import('@/views/demos/login/auth-redirect'),
     hidden: true
   },
-  orderRouter,
   {
     path: '/permission',
     component: Layout,
@@ -177,93 +210,42 @@ const demosConstantRoutes = hasDevelopment ? [
       }
     ]
   },
-
-  {
-    path: '/icon',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/icons/index'),
-        name: 'Icons',
-        meta: { title: 'Icons', icon: 'icon', noCache: true, type: 'demo' }
-      }
-    ]
-  },
-
   /** when your routing map is too long, you can split it into small modules **/
-  componentsRouter,
-  chartsRouter,
-  nestedRouter,
-  tableRouter,
-  formRouter,
-  {
-    path: '/pagination',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/pagination/index'),
-        name: 'Pagination',
-        meta: { title: 'Pagination', icon: 'icon', noCache: true, type: 'demo' }
-      }
-    ]
-  },
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
-    meta: {
-      title: 'Example',
-      type: 'demo',
-      icon: 'example'
-    },
-    children: [
-      {
-        path: 'create',
-        component: () => import('@/views/demos/example/create'),
-        name: 'CreateArticle',
-        meta: { title: 'Create Article', icon: 'edit', type: 'demo' }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/demos/example/edit'),
-        name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list', type: 'demo' },
-        hidden: true
-      },
-      {
-        path: 'list',
-        component: () => import('@/views/demos/example/list'),
-        name: 'ArticleList',
-        meta: { title: 'Article List', icon: 'list', type: 'demo' }
-      }
-    ]
-  },
-
-  {
-    path: '/tab',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/tab/index'),
-        name: 'Tab',
-        meta: { title: 'Tab', icon: 'tab', type: 'demo' }
-      }
-    ]
-  },
-
+  componentsRouter
+  // chartsRouter,
+  // nestedRouter,
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/list',
+  //   name: 'Example',
+  //   meta: {
+  //     title: 'Example',
+  //     type: 'demo',
+  //     icon: 'example'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'create',
+  //       component: () => import('@/views/demos/example/create'),
+  //       name: 'CreateArticle',
+  //       meta: { title: 'Create Article', icon: 'edit', type: 'demo' }
+  //     },
+  //     {
+  //       path: 'edit/:id(\\d+)',
+  //       component: () => import('@/views/demos/example/edit'),
+  //       name: 'EditArticle',
+  //       meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list', type: 'demo' },
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/views/demos/example/list'),
+  //       name: 'ArticleList',
+  //       meta: { title: 'Article List', icon: 'list', type: 'demo' }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/error',
   //   component: Layout,
@@ -302,146 +284,145 @@ const demosConstantRoutes = hasDevelopment ? [
   //   ]
   // },
 
-  {
-    path: '/error-log',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'log',
-        component: () => import('@/views/demos/error-log/index'),
-        name: 'ErrorLog',
-        meta: { title: 'Error Log', icon: 'bug', type: 'demo' }
-      }
-    ]
-  },
+  // {
+  //   path: '/error-log',
+  //   component: Layout,
+  //   meta: {
+  //     type: 'demo'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'log',
+  //       component: () => import('@/views/demos/error-log/index'),
+  //       name: 'ErrorLog',
+  //       meta: { title: 'Error Log', icon: 'bug', type: 'demo' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/excel',
+  //   component: Layout,
+  //   redirect: '/excel/export-excel',
+  //   name: 'Excel',
+  //   meta: {
+  //     title: 'Excel',
+  //     type: 'demo',
+  //     icon: 'excel'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'export-excel',
+  //       component: () => import('@/views/demos/excel/export-excel'),
+  //       name: 'ExportExcel',
+  //       meta: { title: 'Export Excel', type: 'demo' }
+  //     },
+  //     {
+  //       path: 'export-selected-excel',
+  //       component: () => import('@/views/demos/excel/select-excel'),
+  //       name: 'SelectExcel',
+  //       meta: { title: 'Export Selected', type: 'demo' }
+  //     },
+  //     {
+  //       path: 'export-merge-header',
+  //       component: () => import('@/views/demos/excel/merge-header'),
+  //       name: 'MergeHeader',
+  //       meta: { title: 'Merge Header', type: 'demo' }
+  //     },
+  //     {
+  //       path: 'upload-excel',
+  //       component: () => import('@/views/demos/excel/upload-excel'),
+  //       name: 'UploadExcel',
+  //       meta: { title: 'Upload Excel', type: 'demo' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/excel',
-    component: Layout,
-    redirect: '/excel/export-excel',
-    name: 'Excel',
-    meta: {
-      title: 'Excel',
-      type: 'demo',
-      icon: 'excel'
-    },
-    children: [
-      {
-        path: 'export-excel',
-        component: () => import('@/views/demos/excel/export-excel'),
-        name: 'ExportExcel',
-        meta: { title: 'Export Excel', type: 'demo' }
-      },
-      {
-        path: 'export-selected-excel',
-        component: () => import('@/views/demos/excel/select-excel'),
-        name: 'SelectExcel',
-        meta: { title: 'Export Selected', type: 'demo' }
-      },
-      {
-        path: 'export-merge-header',
-        component: () => import('@/views/demos/excel/merge-header'),
-        name: 'MergeHeader',
-        meta: { title: 'Merge Header', type: 'demo' }
-      },
-      {
-        path: 'upload-excel',
-        component: () => import('@/views/demos/excel/upload-excel'),
-        name: 'UploadExcel',
-        meta: { title: 'Upload Excel', type: 'demo' }
-      }
-    ]
-  },
+  // {
+  //   path: '/zip',
+  //   component: Layout,
+  //   redirect: '/zip/download',
+  //   alwaysShow: true,
+  //   name: 'Zip',
+  //   meta: { title: 'Zip', icon: 'zip', type: 'demo' },
+  //   children: [
+  //     {
+  //       path: 'download',
+  //       component: () => import('@/views/demos/zip/index'),
+  //       name: 'ExportZip',
+  //       meta: { title: 'Export Zip', type: 'demo' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/zip',
-    component: Layout,
-    redirect: '/zip/download',
-    alwaysShow: true,
-    name: 'Zip',
-    meta: { title: 'Zip', icon: 'zip', type: 'demo' },
-    children: [
-      {
-        path: 'download',
-        component: () => import('@/views/demos/zip/index'),
-        name: 'ExportZip',
-        meta: { title: 'Export Zip', type: 'demo' }
-      }
-    ]
-  },
+  // {
+  //   path: '/pdf',
+  //   component: Layout,
+  //   redirect: '/pdf/index',
+  //   meta: {
+  //     type: 'demo'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/demos/pdf/index'),
+  //       name: 'PDF',
+  //       meta: { title: 'PDF', icon: 'pdf', type: 'demo' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/pdf/download',
+  //   component: () => import('@/views/demos/pdf/download'),
+  //   meta: {
+  //     type: 'demo'
+  //   },
+  //   hidden: true
+  // },
 
-  {
-    path: '/pdf',
-    component: Layout,
-    redirect: '/pdf/index',
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/pdf/index'),
-        name: 'PDF',
-        meta: { title: 'PDF', icon: 'pdf', type: 'demo' }
-      }
-    ]
-  },
-  {
-    path: '/pdf/download',
-    component: () => import('@/views/demos/pdf/download'),
-    meta: {
-      type: 'demo'
-    },
-    hidden: true
-  },
+  // {
+  //   path: '/theme',
+  //   component: Layout,
+  //   meta: {
+  //     type: 'demo'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/demos/theme/index'),
+  //       name: 'Theme',
+  //       meta: { title: 'Theme', icon: 'theme', type: 'demo' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/theme',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/theme/index'),
-        name: 'Theme',
-        meta: { title: 'Theme', icon: 'theme', type: 'demo' }
-      }
-    ]
-  },
-
-  {
-    path: '/clipboard',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/clipboard/index'),
-        name: 'ClipboardDemo',
-        meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
-      }
-    ]
-  },
-  {
-    path: 'external-link',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'https://github.com/PanJiaChen/vue-element-admin',
-        meta: { title: 'External Link', icon: 'link', type: 'demo' }
-      }
-    ]
-  }
+  // {
+  //   path: '/clipboard',
+  //   component: Layout,
+  //   meta: {
+  //     type: 'demo'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/demos/clipboard/index'),
+  //       name: 'ClipboardDemo',
+  //       meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: 'external-link',
+  //   component: Layout,
+  //   meta: {
+  //     type: 'demo'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'https://github.com/PanJiaChen/vue-element-admin',
+  //       meta: { title: 'External Link', icon: 'link', type: 'demo' }
+  //     }
+  //   ]
+  // }
 ] : []
 
 export const constantRoutes = [

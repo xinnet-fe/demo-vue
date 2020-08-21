@@ -1,5 +1,5 @@
 <template>
-  <div class="buttons-container">
+  <div class="demo-container">
     <h3>基础状态</h3>
     <el-button>默认按钮</el-button>
     <el-button type="primary">主要按钮</el-button>
@@ -20,10 +20,27 @@
     <h3>加载中</h3>
     <el-button type="primary" :loading="true">加载中</el-button>
     <h3>不同尺寸</h3>
-    <el-button>默认按钮</el-button>
-    <el-button size="medium">中等按钮</el-button>
-    <el-button size="small">小型按钮</el-button>
-    <el-button size="mini">超小按钮</el-button>
+    <table class="demo-table">
+      <tr>
+        <td><el-button type="primary">默认按钮</el-button></td>
+        <td><el-button type="primary" size="medium">中等按钮</el-button></td>
+        <td><el-button type="primary" size="small">小型按钮</el-button></td>
+        <td><el-button type="primary" size="mini">超小按钮</el-button></td>
+      </tr>
+      <tr>
+        <td><el-button>默认按钮</el-button></td>
+        <td><el-button size="medium">中等按钮</el-button></td>
+        <td><el-button size="small">小型按钮</el-button></td>
+        <td><el-button size="mini">超小按钮</el-button></td>
+      </tr>
+      <tr>
+        <td>高：40px</td>
+        <td>高：38px</td>
+        <td>高：32px</td>
+        <td>高：28px</td>
+      </tr>
+    </table>
+
   </div>
 </template>
 
@@ -37,6 +54,10 @@ export default {
 </script>
 
 <style scoped>
-
+.demo-table td{
+  font-size: 12px;
+  text-align: center;
+  color: #aaa;
+}
 </style>
 
