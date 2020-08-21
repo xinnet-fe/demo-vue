@@ -156,8 +156,8 @@ module.exports = {
       errors: true
     },
     proxy,
-    disableHostCheck: true,
-    before: require('./mock/mock-server.js')
+    disableHostCheck: true
+    // before: require('./mock/mock-server.js')
   },
   configureWebpack,
   chainWebpack

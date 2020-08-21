@@ -17,7 +17,18 @@ module.exports = {
   // },
   // devServer proxy
   proxy: {
-
+    '/advgroup': {
+      target: 'http://172.22.132.7:8083',
+      changeOrigin: true
+    },
+    '/normaladv': {
+      target: 'http://172.22.132.7:8083',
+      changeOrigin: true
+    },
+    '/admin': {
+      target: 'http://172.22.132.7:8024',
+      changeOrigin: true
+    }
   },
 
   /**

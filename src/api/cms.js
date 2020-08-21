@@ -1,101 +1,193 @@
 import request from '@/utils/request'
 
-export function advertGroupList(query) {
+// 广告组
+export function advGroupList(query) {
   return request({
-    url: '/advert/group/list',
+    url: '/advgroup/list',
     method: 'get',
     params: query
   })
 }
 
-export function addAdvertGroup(data) {
+export function addAdvGroup(data) {
   return request({
-    url: '/advert/group/add',
+    url: '/advgroup/addGroup',
     method: 'post',
     data
   })
 }
 
-export function updateAdvertGroup(data) {
+export function updateAdvGroup(data) {
   return request({
-    url: '/advert/group/update',
+    url: '/advgroup/editGroup',
     method: 'post',
     data
   })
 }
 
-export function destroyAdvertGroup(ids) {
+export function destroyAdvGroup(groupCode) {
   return request({
-    url: '/advert/group/destroy',
+    url: '/advgroup/delGroup',
     method: 'post',
-    params: { ids }
+    data: { groupCode }
   })
 }
 
-export function advertList(query) {
+// 广告组详情接口
+export function searchGroup(params) {
   return request({
-    url: '/advert/list/list',
+    url: '/advgroup/searchGroup',
+    method: 'get',
+    params
+  })
+}
+
+// 广告组集合接口，无分页
+export function groupCodeList() {
+  return request({
+    url: '/advgroup/getGroupCodeList',
+    method: 'get'
+  })
+}
+
+// 广告组类型select
+export function groupTypeMapping() {
+  return request({
+    url: '/advgroup/getGroupTypeMapping',
+    method: 'get'
+  })
+}
+
+// 广告列表
+export function advList(query) {
+  return request({
+    url: '/normaladv/list',
     method: 'get',
     params: query
   })
 }
 
-export function addAdvertList(data) {
+// 广告状态select
+export function advStatusMapping(query) {
   return request({
-    url: '/advert/list/add',
-    method: 'post',
-    data
-  })
-}
-
-export function updateAdvertList(data) {
-  return request({
-    url: '/advert/list/update',
-    method: 'post',
-    data
-  })
-}
-
-export function destroyAdvertList(ids) {
-  return request({
-    url: '/advert/list/destroy',
-    method: 'post',
-    params: { ids }
-  })
-}
-
-export function carouselList(query) {
-  return request({
-    url: '/carousel/list',
+    url: '/normaladv/getAdvStatusMapping',
     method: 'get',
     params: query
   })
 }
 
-export function addCarousel(data) {
+export function addAdvList(data) {
   return request({
-    url: '/carousel/add',
+    url: '/normaladv/addAdv',
     method: 'post',
     data
   })
 }
 
-export function updateCarousel(data) {
+export function updateAdvList(data) {
   return request({
-    url: '/carousel/update',
+    url: '/normaladv/editAdv',
     method: 'post',
     data
   })
 }
 
-export function destroyCarousel(ids) {
+export function destroyAdvList(advCode) {
   return request({
-    url: '/carousel/destroy',
+    url: '/normaladv/delAdv',
+    method: 'post',
+    data: { advCode }
+  })
+}
+
+// 广告详情
+export function searchAdv(params) {
+  return request({
+    url: '/normaladv/searchAdv',
+    method: 'get',
+    params
+  })
+}
+
+// 轮播
+export function slideshowList(params) {
+  return request({
+    url: '/admin/slideshow/list',
+    method: 'get',
+    params
+  })
+}
+
+export function addSlideshow(data) {
+  return request({
+    url: '/admin/slideshow/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateSlideshow(data) {
+  return request({
+    url: '/admin/slideshow/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function destroySlideshow(ids) {
+  return request({
+    url: '/admin/slideshow/del',
     method: 'post',
     params: { ids }
   })
 }
 
+// 轮播详情
+export function searchSlideshow(params) {
+  return request({
+    url: '/admin/slideshow/search',
+    method: 'get',
+    params
+  })
+}
+
+// 修改轮播状态
+export function updateSlideshowStatus(data) {
+  return request({
+    url: '/admin/slideshow/statusSwitch',
+    method: 'post',
+    data
+  })
+}
+
+// 打开方式集合
+export function targetMapping(params) {
+  return request({
+    url: '/admin/slideshow/targetMapping',
+    method: 'get',
+    params
+  })
+}
+
+// 所属分类集合
+export function parentIdMapping(params) {
+  return request({
+    url: '/admin/slideshow/parentIdMapping',
+    method: 'get',
+    params
+  })
+}
+
+// 轮播状态集合
+export function statusMapping(params) {
+  return request({
+    url: '/admin/slideshow/statusMapping',
+    method: 'get',
+    params
+  })
+}
+
+// 导航
 export function navList(query) {
   return request({
     url: '/carousel/list',

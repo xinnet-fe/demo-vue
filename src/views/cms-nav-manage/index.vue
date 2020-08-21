@@ -220,7 +220,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      getList: 'cms/navlList',
+      getData: 'cms/navList',
       add: 'cms/addNav',
       update: 'cms/updateNav',
       destroy: 'cms/destroyNav'
@@ -260,7 +260,7 @@ export default {
       const { name, state } = this.searchForm
       name && (query.name = name)
       state && (query.state = state)
-      return this.getList(query).then(res => {
+      return this.getData(query).then(res => {
         const { data, page } = res.data
         this.list = data
         this.page = page

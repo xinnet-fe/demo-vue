@@ -167,3 +167,7 @@
 .el-tooltip__popper {
   max-width: 300px;
 }
+
+.el-dialog .CodeMirror-scroll {
+  max-height: 500px;
+}

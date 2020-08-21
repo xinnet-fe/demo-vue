@@ -2,17 +2,17 @@
   <div class="advert-list">
     <!-- search -->
     <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-      <el-form-item label="广告组名称:" prop="name">
-        <el-input v-model="searchForm.name" placeholder="请输入广告名称" clearable />
+      <el-form-item label="广告组名称:" prop="advName">
+        <el-input v-model="searchForm.advName" placeholder="请输入广告名称" clearable />
       </el-form-item>
-      <el-form-item label="广告状态:" prop="state">
-        <el-select v-model="searchForm.state" clearable>
-          <el-option v-for="(label, value) in states" :key="value" :label="label" :value="value" />
+      <el-form-item label="广告状态:" prop="advStatus">
+        <el-select v-model="searchForm.advStatus">
+          <el-option v-for="item in advStatus" :key="item.value" :label="item.key" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属广告组:" prop="advertGroup">
-        <el-select v-model="searchForm.advertGroup" clearable>
-          <el-option v-for="(label, value) in advertGroups" :key="value" :label="label" :value="value" />
+      <el-form-item label="所属广告组:" prop="groupCode">
+        <el-select v-model="searchForm.groupCode" clearable>
+          <el-option v-for="code in groupList" :key="code" :label="code" :value="code" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -37,7 +37,7 @@
         label="ID"
       />
       <el-table-column
-        prop="number"
+        prop="sortNum"
         label="序号"
         sortable
       />
@@ -46,15 +46,18 @@
         label="广告名称"
       />
       <el-table-column
-        prop="advertGroup"
         label="所属广告组"
-      />
+      >
+        <template v-slot="{ row }">
+          {{ row.groupCode }}
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="describe"
+        prop="descr"
         label="广告描述"
       />
       <el-table-column
-        prop="links"
+        prop="linkUrl"
         label="广告链接"
       />
       <el-table-column
@@ -70,7 +73,7 @@
       >
         <template v-slot="{ row }">
           <el-switch
-            v-model="row.state"
+            v-model="row.advStatus"
             active-value="1"
             inactive-value="0"
           />
@@ -84,9 +87,9 @@
       </el-table-column>
     </el-table>
     <pagination
-      :total="page.total"
-      :page.sync="page.page"
-      :limit.sync="page.limit"
+      :total="page.count"
+      :page.sync="page.pageNum"
+      :limit.sync="page.pageSize"
       @pagination="getList"
     />
     <!-- table -->
@@ -94,23 +97,23 @@
     <!-- form -->
     <el-dialog width="600px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="广告组名称:" prop="name">
-          <el-input v-model="form.name" />
+        <el-form-item label="广告组名称:" prop="advName">
+          <el-input v-model="form.advName" />
         </el-form-item>
-        <el-form-item label="所属广告组:" prop="advertGroup">
-          <el-select v-model="form.advertGroup">
-            <el-option v-for="(label, value) in advertGroups" :key="value" :label="label" :value="value" />
+        <el-form-item label="所属广告组:" prop="groupCode">
+          <el-select v-model="form.groupCode">
+            <el-option v-for="code in groupList" :key="code" :label="code" :value="code" />
           </el-select>
         </el-form-item>
-        <el-form-item label="广告描述:" prop="describe">
-          <el-input v-model="form.describe" :rows="3" type="textarea" />
+        <el-form-item label="广告描述:" prop="advDesc">
+          <el-input v-model="form.advDesc" :rows="3" type="textarea" />
         </el-form-item>
-        <el-form-item label="外链地址:" prop="linkAddress">
-          <el-input v-model="form.linkAddress" />
+        <el-form-item label="外链地址:" prop="url">
+          <el-input v-model="form.url" />
         </el-form-item>
-        <el-form-item label="广告图片地址:" prop="imageAddress">
+        <el-form-item label="广告图片地址:" prop="imgUrl">
           <el-col :span="16">
-            <el-input v-model="form.imageAddress" />
+            <el-input v-model="form.imgUrl" />
           </el-col>
           <el-col :span="8">
             <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
@@ -130,8 +133,8 @@
             <el-button ref="upload" size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
-        <el-form-item label="序号:" prop="number">
-          <el-input-number v-model="form.number" />
+        <el-form-item label="序号:" prop="sortNum">
+          <el-input-number v-model="form.sortNum" />
         </el-form-item>
         <el-form-item label="开始时间:" prop="startTime">
           <el-date-picker
@@ -147,15 +150,16 @@
             placeholder="选择结束日期"
           />
         </el-form-item>
-        <el-form-item label="广告状态:" prop="state">
+        <el-form-item label="广告状态:" prop="advStatus">
           <el-switch
-            v-model="form.state"
+            v-model="form.advStatus"
             active-value="1"
             inactive-value="0"
           />
         </el-form-item>
-        <el-form-item label="个性设置:" prop="config">
-          <el-input v-model="form.config" :rows="3" type="textarea" />
+        <el-form-item label="个性设置:" prop="extra">
+          <!-- <el-input v-model="form.extra" :rows="3" type="textarea" /> -->
+          <json-editor ref="jsonEditor" v-model="form.extra" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -180,20 +184,23 @@
 <script>
 import forEach from 'lodash/forEach'
 import { mapState, mapActions } from 'vuex'
+import formatTime from '@/utils/formatTime'
 import Pagination from '@/components/Pagination'
+import JsonEditor from '@/components/JsonEditor'
 
 export default {
   name: 'AdvertList',
   components: {
-    Pagination
+    Pagination,
+    JsonEditor
   },
   data() {
     return {
       // 搜索框
       searchForm: {
-        name: '',
-        state: '',
-        advertGroup: ''
+        advName: '',
+        advStatus: '',
+        groupCode: ''
       },
       // 弹框
       show: false,
@@ -201,44 +208,34 @@ export default {
       // 弹框表单数据
       form: {
         id: '',
-        advertGroup: '',
-        describe: '',
-        linkAddress: '',
-        imageAddress: '',
-        number: '',
+        sortNum: '',
+        advName: '',
+        groupCode: '',
+        advDesc: '',
+        imgUrl: '',
+        url: '',
         startTime: '',
         endTime: '',
-        state: '',
-        config: ''
+        advStatus: '',
+        extra: ''
       },
       // 上传图片下拉框值
       uploadImageAddress: '',
       // 弹框表单规则
       rules: {
-        name: [{ required: true, message: '请输入广告组名称', trigger: 'blur' }],
-        advertGroup: [{ required: true, message: '请选择广告组', trigger: 'change' }],
-        linkAddress: [{ required: true, message: '请输入外链地址', trigger: 'blur' }],
-        number: [{ required: true, message: '请输入序号', trigger: 'blur' }]
-      },
-      // 广告状态列表
-      states: {
-        0: '全部',
-        1: '开启',
-        2: '关闭'
-      },
-      // 广告组
-      advertGroups: {
-        1: '广告组一',
-        2: '广告组二'
+        advName: [{ required: true, message: '请输入广告组名称', trigger: 'blur' }],
+        groupCode: [{ required: true, message: '请选择广告组', trigger: 'change' }],
+        url: [{ required: true, message: '请输入外链地址', trigger: 'blur' }],
+        sortNum: [{ required: true, message: '请输入序号', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
       // 表格的数据
       list: [],
       page: {
-        total: 0,
-        page: 1,
-        limit: 30
+        count: 0,
+        pageNum: 1,
+        pageSize: 30
       },
       // 上传附件列表
       fileList: []
@@ -246,19 +243,50 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.global
+      loading: state => state.loading.global,
+      advStatus: state => state.cms.advStatus,
+      groupList: state => state.cms.groupList
     })
+  },
+  created() {
+    this.getAdvStatus()
+    this.getGroupCodeList()
   },
   methods: {
     ...mapActions({
-      getList: 'cms/advertList',
-      add: 'cms/addAdvertList',
-      update: 'cms/updateAdvertList',
-      destroy: 'cms/destroyAdvertList'
+      getData: 'cms/advList',
+      add: 'cms/addAdvList',
+      update: 'cms/updateAdvList',
+      destroyData: 'cms/destroyAdvList',
+      getAdvStatus: 'cms/advStatusMapping',
+      getGroupCodeList: 'cms/groupCodeList',
+      searchAdv: 'cms/searchAdv'
     }),
     showModal(row = {}) {
-      if (row.id) {
-        this.form = row
+      if (row.advCode) {
+        const query = { advCode: row.advCode }
+        this.searchAdv(query).then(res => {
+          const { normalAdv: adv } = res.data
+          if (adv) {
+            this.form = {
+              advCode: adv.advCode,
+              id: adv.id,
+              sortNum: adv.sortNum,
+              advName: adv.name,
+              groupCode: adv.groupCode,
+              advDesc: adv.descr,
+              imgUrl: adv.imgUrl,
+              url: adv.linkUrl,
+              startTime: adv.startTime,
+              endTime: adv.endTime,
+              advStatus: adv.isActived,
+              extra: adv.extra
+            }
+          }
+        })
+        this.modalTitle = '编辑'
+      } else {
+        this.modalTitle = '新增'
       }
       this.show = true
     },
@@ -282,36 +310,62 @@ export default {
       done()
     },
     getList(query = {}) {
-      const { name, state, advertGroup } = this.searchForm
-      name && (query.name = name)
-      state && (query.state = state)
-      advertGroup && (query.advertGroup = advertGroup)
-      return this.getList(query).then(res => {
-        const { data, page } = res.data
-        this.list = data
+      const { advName, advStatus, groupCode } = this.searchForm
+      query.advName = advName
+      query.advStatus = advStatus
+      query.groupCode = groupCode
+      return this.getData(query).then(res => {
+        const { list, page } = res
+        this.list = list
         this.page = page
       })
     },
     onSearch() {
-      const { page, limit } = this.page
-      const query = { page, limit }
+      const { pageNum, pageSize } = this.page
+      const query = {
+        pageNum: parseInt(pageNum),
+        pageSize: parseInt(pageSize)
+      }
       this.getList(query)
     },
+    getParams(data, id) {
+      const formData = new FormData()
+      const file = this.fileList.length ? this.fileList[0].raw : ''
+      let startTime = ''
+      let endTime = ''
+      if (data.startTime) {
+        startTime = id ? data.startTime : formatTime(data.startTime.getTime())
+      }
+      if (data.endTime) {
+        endTime = id ? data.endTime : formatTime(data.endTime.getTime())
+      }
+      formData.append('advName', data.advName)
+      formData.append('groupCode', data.groupCode)
+      formData.append('advDesc', data.advDesc)
+      formData.append('url', data.url)
+      formData.append('sortNum', data.sortNum)
+      formData.append('startTime', startTime)
+      formData.append('endTime', endTime)
+      formData.append('advStatus', data.advStatus)
+      formData.append('extra', data.extra)
+      formData.append('file', file)
+      return formData
+    },
     submit() {
-      const { id, ...restData } = this.form
-      const data = { ...restData }
+      const { advCode } = this.form
+      const formData = this.getParams(this.form, advCode)
       this.$refs.form.validate((valid) => {
         if (valid) {
           // 修改
-          if (id) {
-            data.id = id
-            this.update(data).then(res => {
+          if (advCode) {
+            formData.append('advCode', advCode)
+            this.update(formData).then(res => {
               this.closeModal()
               this.onSearch()
             })
           // 新增
           } else {
-            this.add(data).then(res => {
+            this.add(formData).then(res => {
               this.closeModal()
               this.onSearch()
             })
@@ -320,8 +374,8 @@ export default {
       })
     },
     destroy() {
-      const { id } = this.form
-      this.destroy(id).then(res => {
+      const { advCode } = this.form
+      this.destroyData(advCode).then(res => {
         this.closeTipsModal()
         this.onSearch()
       })

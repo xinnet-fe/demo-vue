@@ -278,12 +278,27 @@ export default {
       loading: state => state.loading.global
     })
   },
+  created() {
+    this.getOpenMode()
+    this.getSlideshowType()
+    this.getSlideshowStatus()
+  },
   methods: {
     ...mapActions({
-      getList: 'cms/carouselList',
+      getData: 'cms/carouselList',
       add: 'cms/addCarousel',
       update: 'cms/updateCarousel',
-      destroy: 'cms/destroyCarousel'
+      destroy: 'cms/destroyCarousel',
+      // 详情
+      searchSlideshow: 'cms/searchSlideshow',
+      // 修改状态
+      updateStatus: 'cms/updateSlideshowStatus',
+      // 打开方式
+      getOpenMode: 'cms/targetMapping',
+      // 轮播类型
+      getSlideshowType: 'cms/parentIdMapping',
+      // 轮播状态
+      getSlideshowStatus: 'cms/statusMapping'
     }),
     showModal(row = {}) {
       if (row.id) {
@@ -322,7 +337,7 @@ export default {
       const { name, state } = this.searchForm
       name && (query.name = name)
       state && (query.state = state)
-      return this.getList(query).then(res => {
+      return this.getData(query).then(res => {
         const { data, page } = res.data
         this.list = data
         this.page = page

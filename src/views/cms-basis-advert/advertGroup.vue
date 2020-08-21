@@ -5,9 +5,9 @@
       <el-form-item label="广告组名称:" prop="name">
         <el-input v-model="searchForm.name" placeholder="请输入广告名称" clearable />
       </el-form-item>
-      <el-form-item label="广告站点:" prop="website">
-        <el-select v-model="searchForm.website" placeholder="请输入广告站点" clearable>
-          <el-option v-for="(label, value) in websites" :key="value" :label="label" :value="value" />
+      <el-form-item label="广告站点:" prop="groupType">
+        <el-select v-model="searchForm.groupType" placeholder="请输入广告站点">
+          <el-option v-for="item in groupTypes" :key="item.value" :label="item.key" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -35,18 +35,18 @@
         label="广告组code"
       >
         <template v-slot="{ row }">
-          <span class="advert-code" @click="link(row.code)">{{ row.code }}</span>
+          <span class="advert-code" @click="link(row.groupCode)">{{ row.groupCode }}</span>
         </template>
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="groupName"
         label="广告组名称"
       />
       <el-table-column
         label="广告站点"
       >
         <template v-slot="{ row }">
-          {{ websites[row.website] }}
+          {{ groupTypes[row.groupType].key }}
         </template>
       </el-table-column>
       <el-table-column
@@ -61,9 +61,9 @@
       </el-table-column>
     </el-table>
     <pagination
-      :total="page.total"
-      :page.sync="page.page"
-      :limit.sync="page.limit"
+      :total="page.count"
+      :page.sync="page.pageNum"
+      :limit.sync="page.pageSize"
       @pagination="getList"
     />
     <!-- table -->
@@ -71,15 +71,15 @@
     <!-- form -->
     <el-dialog width="500px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="广告组名称:" prop="name">
-          <el-input v-model="form.name" />
+        <el-form-item label="广告组名称:" prop="groupName">
+          <el-input v-model="form.groupName" />
         </el-form-item>
-        <el-form-item label="广告组code:" prop="code">
-          <el-input v-model="form.code" />
+        <el-form-item label="广告组code:" prop="groupCode">
+          <el-input v-model="form.groupCode" />
         </el-form-item>
-        <el-form-item label="广告站点:" prop="website">
-          <el-select v-model="form.website" placeholder="请选择广告站点">
-            <el-option v-for="(label, value) in websites" :key="value" :label="label" :value="value" />
+        <el-form-item label="广告站点:" prop="groupType">
+          <el-select v-model="form.groupType" placeholder="请选择广告站点">
+            <el-option v-for="item in groupTypes" :key="item.value" :label="item.key" :value="item.value" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -117,7 +117,7 @@ export default {
       // 搜索框
       searchForm: {
         name: '',
-        website: ''
+        groupType: '-1'
       },
       // 弹框
       show: false,
@@ -125,48 +125,62 @@ export default {
       // 弹框表单数据
       form: {
         id: '',
-        name: '',
-        code: '',
-        website: ''
+        groupName: '',
+        groupCode: '',
+        groupType: ''
       },
+      // 修改时的参数
+      oldGroupName: '',
+      oldGroupCode: '',
+      oldGroupType: '',
       // 弹框表单规则
       rules: {
-        name: [{ required: true, message: '请输入广告组名称', trigger: 'blur' }],
-        code: [{ required: true, message: '请输入广告组code', trigger: 'blur' }],
-        website: [{ required: true, message: '请选择广告站点', trigger: 'blur' }]
-      },
-      // 网站列表
-      websites: {
-        1: '官网',
-        2: 'M站',
-        3: '控制台'
+        groupName: [{ required: true, message: '请输入广告组名称', trigger: 'blur' }],
+        groupCode: [{ required: true, message: '请输入广告组code', trigger: 'blur' }],
+        groupType: [{ required: true, message: '请选择广告站点', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
       // 表格的数据
       list: [],
       page: {
-        total: 0,
-        page: 1,
-        limit: 30
+        count: 0,
+        pageNum: 1,
+        pageSize: 30
       }
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.global
+      loading: state => state.loading.global,
+      groupTypes: state => state.cms.groupTypes
     })
+  },
+  created() {
+    this.getGroupTypeMapping()
   },
   methods: {
     ...mapActions({
-      getList: 'cms/advertGroupList',
-      add: 'cms/addAdvertGroup',
-      update: 'cms/updateAdvertGroup',
-      destroy: 'cms/destroyAdvertGroup'
+      getData: 'cms/advGroupList',
+      addData: 'cms/addAdvGroup',
+      updateData: 'cms/updateAdvGroup',
+      destroyData: 'cms/destroyAdvGroup',
+      getGroupTypeMapping: 'cms/groupTypeMapping',
+      searchGroup: 'cms/searchGroup'
     }),
+    setOldGroupData(groupName = '', groupCode = '', groupType = '') {
+      this.oldGroupName = groupName
+      this.oldGroupCode = groupCode
+      this.oldGroupType = groupType
+    },
     showModal(row = {}) {
-      if (row.id) {
-        this.form = row
+      if (row.groupCode) {
+        const query = { groupCode: row.groupCode }
+        this.searchGroup(query).then(res => {
+          const { advGroup } = res.data
+          this.form = advGroup
+          this.setOldGroupData(advGroup.groupName, advGroup.groupCode, advGroup.groupType)
+        })
         this.modalTitle = '编辑'
       } else {
         this.modalTitle = '新增'
@@ -175,9 +189,11 @@ export default {
     },
     closeModal() {
       this.show = false
-      this.form.name = ''
-      this.form.code = ''
-      this.form.website = ''
+      this.form.groupName = ''
+      this.form.groupCode = ''
+      this.form.groupType = ''
+      // 清空旧数据
+      this.setOldGroupData()
     },
     showTipsModal(row) {
       this.form = row
@@ -191,35 +207,43 @@ export default {
       done()
     },
     getList(query = {}) {
-      const { name, website } = this.searchForm
-      name && (query.name = name)
-      website && (query.website = website)
-      return this.getList(query).then(res => {
-        const { data, page } = res.data
-        this.list = data
+      const { name, groupType } = this.searchForm
+      query.groupName = name
+      query.groupType = groupType
+      return this.getData(query).then(res => {
+        const { list, page } = res
+        this.list = list
         this.page = page
       })
     },
     onSearch() {
-      const { page, limit } = this.page
-      const query = { page, limit }
+      const { pageSize, pageNum } = this.page
+      const query = {
+        pageNum: parseInt(pageNum),
+        pageSize: parseInt(pageSize)
+      }
       this.getList(query)
     },
     submit() {
-      const { id, name, code, website } = this.form
-      const data = { name, code, website }
+      const { groupName, groupCode, groupType } = this.form
+      const data = { groupName, groupCode, groupType }
       this.$refs.form.validate((valid) => {
         if (valid) {
           // 修改
-          if (id) {
-            data.id = id
-            this.update(data).then(res => {
+          if (groupCode) {
+            if (groupName === this.oldGroupName && groupCode === this.oldGroupCode && groupType === this.oldGroupType) {
               this.closeModal()
-              this.onSearch()
-            })
+            } else {
+              data.groupCode = this.oldGroupCode
+              data.newGroupCode = groupCode
+              this.updateData(data).then(res => {
+                this.closeModal()
+                this.onSearch()
+              })
+            }
           // 新增
           } else {
-            this.add(data).then(res => {
+            this.addData(data).then(res => {
               this.closeModal()
               this.onSearch()
             })
@@ -228,16 +252,19 @@ export default {
       })
     },
     destroy() {
-      const { id } = this.form
-      this.destroy(id).then(res => {
+      const { groupCode } = this.form
+      this.destroyData(groupCode).then(res => {
         this.closeTipsModal()
         this.onSearch()
       })
     },
-    link() {
+    link(groupCode) {
       this.$emit('update:active-name', 'list')
-      const listNode = findParentNodeByName(this, 'CmsBasisAdvert').$refs.list
-      listNode.$data.searchForm.advertGroup = '1'
+      this.$nextTick(() => {
+        const listNode = findParentNodeByName(this, 'CmsBasisAdvert').$refs.list
+        listNode.$data.searchForm.groupCode = groupCode
+        listNode.onSearch()
+      })
     }
   }
 }

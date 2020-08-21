@@ -2,10 +2,10 @@
   <div class="cms-basis-advert">
     <el-tabs v-model="activeName" @tab-click="changeTabs">
       <el-tab-pane label="广告组" name="group">
-        <advert-group ref="group" :active-name.sync="activeName" />
+        <advert-group v-if="activeName === 'group'" ref="group" :active-name.sync="activeName" />
       </el-tab-pane>
       <el-tab-pane label="广告列表" name="list">
-        <advert-list ref="list" />
+        <advert-list v-if="activeName === 'list'" ref="list" />
       </el-tab-pane>
     </el-tabs>
   </div>
