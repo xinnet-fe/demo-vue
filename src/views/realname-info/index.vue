@@ -218,4 +218,7 @@ export default {
 .realname-info .avatar-uploader .el-upload:hover .el-upload-list__item-actions{
   display: block;
 }
+.realname-info .avatar-uploader .el-upload__tip{
+  color: #999;
+}
 </style>
