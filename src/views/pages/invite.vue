@@ -1,55 +1,52 @@
 <template>
   <div id="app" style="height:100%;position:relative">
-    <agent-header></agent-header>
+    <agent-header />
     <div class="main-body">
-      <el-form class="step1" v-show="step === 1" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px">
+      <el-form v-show="step === 1" ref="ruleForm" class="step1" :model="ruleForm" :rules="rules" label-width="0px">
         <h3>接受代理邀请</h3>
         <el-form-item ref="userName" label="" prop="userName">
-          <el-input v-model="ruleForm.userName" placeholder="请输入您的手机号或邮箱" @blur="handleBlur"></el-input>
+          <el-input v-model="ruleForm.userName" placeholder="请输入您的手机号或邮箱" @blur="handleBlur" />
         </el-form-item>
         <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
           <el-form-item ref="password" label="" prop="password">
-            <el-input v-model="ruleForm.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlur" placeholder="请输入密码"></el-input>
+            <el-input :key="passwordType" v-model="ruleForm.password" :type="passwordType" placeholder="请输入密码" @keyup.native="checkCapslock" @blur="handleBlur" />
             <span class="show-pwd" @click="showPwd">
               <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
             </span>
           </el-form-item>
         </el-tooltip>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" :disabled="btnDisabled" :loading="btnLoading">确定</el-button>
+          <el-button type="primary" :disabled="btnDisabled" :loading="btnLoading" @click="onSubmit">确定</el-button>
         </el-form-item>
       </el-form>
-      <div class="result step2" v-show="step === 2">
-        <div class="icon"><i class="el-icon-circle-check"></i></div>
+      <div v-show="step === 2" class="result step2">
+        <div class="icon"><i class="el-icon-circle-check" /></div>
         <h3>操作成功！</h3>
-        <p style="text-align:left;">您的账号已成功与代理商绑定，如需购买商品请按如下步骤操作：<br /><br />
-            1、选购商品<br />
-            2、提交订单<br />
-            3、与代理商取得联系，完成交易<br />
-            4、管理商品
+        <p style="text-align:left;">您的账号已成功与代理商绑定，如需购买商品请按如下步骤操作：<br><br>
+          1、选购商品<br>
+          2、提交订单<br>
+          3、与代理商取得联系，完成交易<br>
+          4、管理商品
         </p>
       </div>
     </div>
     <div class="slideshow">
-      <div class="slideshow-image" style="background-image: url('static/img/bg-01.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('static/img/bg-02.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('static/img/bg-03.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-01.jpg')" />
+      <div class="slideshow-image" style="background-image: url('static/img/bg-02.jpg')" />
+      <div class="slideshow-image" style="background-image: url('static/img/bg-03.jpg')" />
     </div>
-    <agent-footer></agent-footer>
+    <agent-footer />
   </div>
 </template>
 <script>
 // import { mapActions } from 'vuex'
 import isPhoneOrEmail from '@/utils/isPhoneOrEmail'
-import isEmail from '@/utils/isEmail'
 import isPassword from '@/utils/isPassword'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
-import { getCoreProvice } from '@/api/agent/area'
-import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
-import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhone, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+import { inviteCustomerRegistered } from '@/api/agent/users'
 export default {
-  name: 'agentInvite',
+  name: 'AgentInvite',
   desc: '接受代理邀请',
   components: {
     agentFooter,
@@ -59,7 +56,7 @@ export default {
     return {
       ruleForm: {
         userName: '',
-        password: ""
+        password: ''
       },
       rules: {
         userName: [
@@ -78,9 +75,9 @@ export default {
       passwordType: 'password',
       capsTooltip: false,
       agentCode: ''
-    };
+    }
   },
-  beforeMount () {
+  beforeMount() {
     this.agentCode = this.GLOBALS.QUERY_STRING('agentCode')
   },
   methods: {
@@ -95,7 +92,7 @@ export default {
       //   this.$refs.password.focus()
       // })
     },
-    handleBlur (v) {
+    handleBlur(v) {
       setTimeout(() => {
         if (this.checkForm()) {
           this.btnDisabled = false
@@ -104,7 +101,7 @@ export default {
         }
       }, 10)
     },
-    checkForm () {
+    checkForm() {
       let flag = true
       for (let index = 0; index < this.formItems.length; index++) {
         if (this.$refs[this.formItems[index]].validateState !== 'success') {
@@ -118,7 +115,7 @@ export default {
       this.btnLoading = true
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          let params = {
+          const params = {
             agentCode: this.agentCode,
             password: this.ruleForm.password,
             userName: this.ruleForm.userName
@@ -157,7 +154,7 @@ export default {
       })
     }
   }
-};
+}
 </script>
 <style>
 body{
@@ -189,6 +186,9 @@ body{
   color: #333;
   cursor: pointer;
   user-select: none;
+}
+.main-body .el-input{
+  width: 100%!important;
 }
 .main-body .el-button{
   width: 100%;

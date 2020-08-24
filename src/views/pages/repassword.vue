@@ -1,50 +1,50 @@
 <template>
   <div id="app" style="height:100%;position:relative">
-    <agent-header></agent-header>
+    <agent-header />
     <div class="main-body">
-      <div class="step1" v-show="step === 1">
+      <div v-show="step === 1" class="step1">
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px">
           <h3>代理商重置密码</h3>
-          <el-form-item label="" prop="agentCode" ref="agentCode">
-            <el-input v-model="ruleForm.agentCode" placeholder="请输入代理商编号" @blur="handleBlur"></el-input>
+          <el-form-item ref="agentCode" label="" prop="agentCode">
+            <el-input v-model="ruleForm.agentCode" placeholder="请输入代理商编号" @blur="handleBlur" />
           </el-form-item>
-          <el-form-item label="" prop="phone" ref="phone">
-            <el-input v-model="ruleForm.phone" placeholder="请输入您的手机号码，以进行密码重置" maxlength="11" @blur="handleBlur" @keyup.native="restPhone"></el-input>
+          <el-form-item ref="phone" label="" prop="phone">
+            <el-input v-model="ruleForm.phone" placeholder="请输入您的手机号码，以进行密码重置" maxlength="11" @blur="handleBlur" @keyup.native="restPhone" />
           </el-form-item>
-          <el-form-item label="" v-if="showVerifyBar">
+          <el-form-item v-if="showVerifyBar" label="">
             <Vcode :show="isShow" @success="handleSuccess" @close="close" />
-            <span class="btnShowVcode"  @click="handleShowVcode">点击开始验证</span>
+            <span class="btnShowVcode" @click="handleShowVcode">点击开始验证</span>
           </el-form-item>
         </el-form>
         <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px">
-          <el-form-item label="" prop="vcode" v-show="showVcode" ref="vcode">
-            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" @blur="handleBlur" placeholder="短信验证码"></el-input>
-            <el-button class="getVcode" @click="getVerificationCode" v-show="!success" :loading="vcodeLoading">获取验证码</el-button>
-            <span class="tips" v-show="success">重新发送({{downTime}})</span>
+          <el-form-item v-show="showVcode" ref="vcode" label="" prop="vcode">
+            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" placeholder="短信验证码" @blur="handleBlur" />
+            <el-button v-show="!success" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
+            <span v-show="success" class="tips">重新发送({{ downTime }})</span>
           </el-form-item>
           <el-form-item class="item-btn">
-            <el-button type="primary" @click="onNext" :disabled="btnDisabledNext" :loading="btnLoadingNext">下一步</el-button>
+            <el-button type="primary" :disabled="btnDisabledNext" :loading="btnLoadingNext" @click="onNext">下一步</el-button>
           </el-form-item>
         </el-form>
       </div>
 
-      <div class="step2" v-show="step === 2">
+      <div v-show="step === 2" class="step2">
         <el-form ref="ruleForm3" :model="ruleForm3" :rules="rules" label-width="0px">
           <h3>设置新密码</h3>
           <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
             <el-form-item ref="password" label="" prop="password">
-              <el-input v-model="ruleForm3.password" :key="passwordType" :type="passwordType" @keyup.native="checkCapslock" @blur="handleBlurPw('pw')" placeholder="请输入新密码"></el-input>
+              <el-input :key="passwordType" v-model="ruleForm3.password" :type="passwordType" placeholder="请输入新密码" @keyup.native="checkCapslock" @blur="handleBlurPw('pw')" />
               <span class="show-pwd" @click="showPwd">
                 <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
               </span>
             </el-form-item>
           </el-tooltip>
 
-          <el-form-item label="" prop="repassword" ref="repassword">
-            <el-input v-model="ruleForm3.repassword" :type="passwordType" placeholder="请再次输入新密码" @blur="handleBlurPw"></el-input>
+          <el-form-item ref="repassword" label="" prop="repassword">
+            <el-input v-model="ruleForm3.repassword" :type="passwordType" placeholder="请再次输入新密码" @blur="handleBlurPw" />
           </el-form-item>
           <el-form-item class="item-btn">
-            <el-button type="primary" @click="onSubmit" :disabled="btnDisabledSubmit" :loading="btnLoadingUpdate">重置密码</el-button>
+            <el-button type="primary" :disabled="btnDisabledSubmit" :loading="btnLoadingUpdate" @click="onSubmit">重置密码</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -56,28 +56,27 @@
       </div> -->
     </div>
     <div class="slideshow">
-      <div class="slideshow-image" style="background-image: url('static/img/bg-01.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('static/img/bg-02.jpg')"></div>
-      <div class="slideshow-image" style="background-image: url('static/img/bg-03.jpg')"></div>
+      <div class="slideshow-image" style="background-image: url('static/img/bg-01.jpg')" />
+      <div class="slideshow-image" style="background-image: url('static/img/bg-02.jpg')" />
+      <div class="slideshow-image" style="background-image: url('static/img/bg-03.jpg')" />
     </div>
-    <agent-footer></agent-footer>
+    <agent-footer />
   </div>
 </template>
 <script>
 // import { mapActions } from 'vuex'
 // import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
 // import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhoneOrMail, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
-import Vcode from "@/components/vue-puzzle-vcode-master/src/index.js"
-import isNumber from '@/utils/isNumber'
+import Vcode from '@/components/vue-puzzle-vcode-master/src/index.js'
 import isPassword from '@/utils/isPassword'
 import isPhone from '@/utils/isPhone'
 import agentFooter from '@/views/components/footer'
 import agentHeader from '@/views/components/header'
 import { sendCaptchaWithMobile } from '@/api/agent/smsCaptcha'
-import { selectAgentByParam, updateAgentPwd, inviteCustomerRegistered, inviteCustomerRegister, validPhone, nextStep, registDl, genelCaptcha} from '@/api/agent/users'
+import { selectAgentByParam, updateAgentPwd, nextStep, genelCaptcha } from '@/api/agent/users'
 const Base64 = require('js-Base64').Base64
 export default {
-  name: 'agentRepassword',
+  name: 'AgentRepassword',
   desc: '代理商密码重置',
   components: {
     Vcode,
@@ -85,7 +84,7 @@ export default {
     agentHeader
   },
   data() {
-    let validatePass2 = (rule, value, callback) => {
+    const validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
       } else if (value !== this.ruleForm3.password) {
@@ -93,18 +92,18 @@ export default {
       } else {
         callback()
       }
-    };
+    }
     return {
       ruleForm: {
         agentCode: '',
-        phone: ""
+        phone: ''
       },
       ruleForm2: {
-        vcode: ""
+        vcode: ''
       },
       ruleForm3: {
-        password: "",
-        repassword: ""
+        password: '',
+        repassword: ''
       },
       rules: {
         agentCode: [
@@ -158,30 +157,33 @@ export default {
       leftNum: 0
     }
   },
+  mounted() {
+
+  },
   methods: {
     // ...mapActions('users', ['genelCaptcha', 'selectAgentByParam', 'nextStep', 'updateAgentPwd']),
     // ...mapActions('smsCaptcha', ['sendCaptchaWithMobile']),
-    restPhone () {
-      this.ruleForm.phone = this.ruleForm.phone.replace(/[^\d.]/g,'')
+    restPhone() {
+      this.ruleForm.phone = this.ruleForm.phone.replace(/[^\d.]/g, '')
     },
-    hashCode (str) {
+    hashCode(str) {
       let hash = 0
       if (!str.length) {
         return hash
       }
       for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i)
-        hash = ((hash<<5) - hash) + char
-        hash = hash & hash; // Convert to 32bit integer
+        hash = ((hash << 5) - hash) + char
+        hash = hash & hash // Convert to 32bit integer
       }
       return hash
     },
-    encryptionCode (leftNum, captcha) {
-      const move_left = parseInt(leftNum) //偏差值
-      const code = Base64.encode(move_left + "UA" + Base64.encode(Base64.encode(Base64.encode(String(parseInt(move_left + this.hashCode(captcha)))))))
+    encryptionCode(leftNum, captcha) {
+      const move_left = parseInt(leftNum) // 偏差值
+      const code = Base64.encode(move_left + 'UA' + Base64.encode(Base64.encode(Base64.encode(String(parseInt(move_left + this.hashCode(captcha)))))))
       return (code + '-' + this.redisKey)
     },
-    getVerificationCode () {
+    getVerificationCode() {
       this.vcodeLoading = true
       // 获取滑块生成的验证码
       genelCaptcha({}).then((response) => {
@@ -214,6 +216,7 @@ export default {
               this.$refs.vcode.validateMessage = response.msg
             }
           }).catch((error) => {
+            console.log(error)
             this.vcodeLoading = false
           })
         } else {
@@ -231,13 +234,13 @@ export default {
       //   this.$refs.password.focus()
       // })
     },
-    close () {
+    close() {
       this.isShow = false
     },
-    handleShowVcode () {
+    handleShowVcode() {
       this.isShow = true
     },
-    handleBlur (v) {
+    handleBlur(v) {
       if (this.showVcode) {
         setTimeout(() => {
           if (this.checkForm() && this.checkForm2()) {
@@ -248,8 +251,8 @@ export default {
         }, 10)
       }
     },
-    countDown () {
-      let clock = window.setInterval(() => {
+    countDown() {
+      const clock = window.setInterval(() => {
         this.downTime--
         // 当倒计时小于0时清除定时器
         if (this.downTime < 0) {
@@ -259,7 +262,7 @@ export default {
         }
       }, 1000)
     },
-    handleSuccess (num) {
+    handleSuccess(num) {
       this.leftNum = num
       this.isShow = false
       setTimeout(() => {
@@ -292,7 +295,6 @@ export default {
                 }
               }
             })
-
           }
         })
       }, 10)
@@ -304,7 +306,7 @@ export default {
     //     this.btnDisabledNext = true
     //   }
     // },
-    checkForm () {
+    checkForm() {
       let flag = true
       for (let index = 0; index < this.formItems.length; index++) {
         if (this.$refs[this.formItems[index]].validateState !== 'success') {
@@ -319,7 +321,7 @@ export default {
       // })
       // return this.valid
     },
-    checkForm2 () {
+    checkForm2() {
       let flag = true
       for (let index = 0; index < this.formItems2.length; index++) {
         if (this.$refs[this.formItems2[index]].validateState !== 'success') {
@@ -329,7 +331,7 @@ export default {
       }
       return flag
     },
-    checkForm3 () {
+    checkForm3() {
       let flag = true
       for (let index = 0; index < this.formItems3.length; index++) {
         if (this.$refs[this.formItems3[index]].validateState !== 'success') {
@@ -343,7 +345,7 @@ export default {
       // })
       // return this.valid3
     },
-    handleBlurPw (v) {
+    handleBlurPw(v) {
       if (v && v === 'pw') {
         if (this.ruleForm3.repassword.length) {
           this.$refs.ruleForm3.validateField('repassword')
@@ -358,7 +360,7 @@ export default {
         }
       }, 10)
     },
-    onNext () {
+    onNext() {
       this.btnLoadingNext = true
       if (this.checkForm2() && this.checkForm()) {
         const params = {
@@ -394,6 +396,7 @@ export default {
                 }
               }
             }).catch((error) => {
+              console.log(error)
               this.btnLoadingNext = false
               this.btnDisabledNext = true
             })
@@ -414,6 +417,7 @@ export default {
             }
           }
         }).catch((error) => {
+          console.log(error)
           this.btnLoadingNext = false
           this.btnDisabledNext = true
         })
@@ -426,7 +430,7 @@ export default {
       this.btnLoadingUpdate = true
       this.$refs.ruleForm3.validate((valid) => {
         if (valid) {
-          let params = {
+          const params = {
             agentCode: this.ruleForm.agentCode,
             password: this.ruleForm3.password
           }
@@ -455,11 +459,8 @@ export default {
         }
       })
     }
-  },
-  mounted () {
-
   }
-};
+}
 </script>
 <style>
 body{
@@ -476,6 +477,9 @@ body{
   font-size: 26px;
   font-weight: normal;
   text-align: center;
+}
+.main-body .el-input{
+  width: 100%!important;
 }
 .main-body .show-pwd {
   position: absolute;
