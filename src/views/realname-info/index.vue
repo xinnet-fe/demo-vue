@@ -35,7 +35,7 @@
       </el-form>
     </el-tab-pane>
     <el-tab-pane label="企业信息查询" name="second">
-      <el-form ref="formBusiness" :rules="rules2" :model="formBusiness" label-width="120px">
+      <el-form ref="formBusiness" :rules="rules2" :model="formBusiness" label-width="130px">
         <el-form-item label="企业名称" prop="nameCompany">
           <el-input v-model="formBusiness.name" />
         </el-form-item>
