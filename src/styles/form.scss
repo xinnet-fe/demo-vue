@@ -1,0 +1,65 @@
+@import './variables.scss';
+
+.el-form-item{
+  margin-bottom: 25px;
+  line-height: 38px;
+}
+.el-form-item__label{
+  line-height: 38px;
+  font-size: 12px!important;
+}
+.el-form-item__content{
+  line-height: 38px;
+}
+.el-form .el-form-item .el-rate{
+  line-height: 38px;
+  height: auto;
+  vertical-align: top;
+}
+.el-form .el-form-item .el-rate__item{
+  vertical-align: top;
+}
+.el-form .el-form-item .el-rate__icon{
+  font-size: 18px!important;
+  vertical-align: middle;
+}
+.el-form .el-form-item .el-input,
+.el-form .el-form-item .el-select{
+  width: 220px;
+  font-size: 12px;
+}
+.el-form .el-form-item .el-radio__label,
+.el-form .el-form-item .el-checkbox__label,
+.el-form .el-form-item .el-range-input{
+  font-size: 12px;
+}
+.el-form .el-form-item .el-input-number .el-input{
+  width: auto;
+}
+.el-form .el-form-item .el-textarea{
+  width: 350px;
+}
+.el-form .el-textarea__inner{
+  min-height: 100px!important;
+}
+.el-form .el-form-item .el-button{
+  float: left;
+}
+.el-form.el-form--inline .el-form-item{
+  // min-width: 250px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.el-form.el-form--inline .el-form-item__label{
+  text-align: right;
+  width: 80px;
+}
+.el-form.el-form--inline .el-form-item .el-input,
+.el-form.el-form--inline .el-form-item .el-select,
+.el-form.el-form--inline .el-form-item .el-input-number,
+.el-form.el-form--inline .el-form-item .el-switch{
+  width: 160px;
+}
+.el-form.el-form--inline .el-form-item .el-range-editor{
+  width: 415px;
+}

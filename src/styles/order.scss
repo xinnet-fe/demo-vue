@@ -1,0 +1,19 @@
+@import './variables.scss';
+
+.order-form .el-form{
+  padding: 0 0 10px 0;
+}
+.order-form .search-form{
+  border-bottom: 1px solid #ededed;
+}
+.order-form .operate-form{
+  padding: 10px 0;
+  // text-align: right;
+}
+.order-form .operate-form .el-form-item{
+  margin: 0px;
+  line-height: 1;
+}
+.order-form .pagination-container{
+  margin-bottom: -20px;
+}

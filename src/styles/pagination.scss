@@ -1,0 +1,9 @@
+@import './variables.scss';
+
+.el-pagination{
+  text-align: right;
+  font-weight: normal;
+}
+.el-pagination span:not([class*=suffix]), .el-pagination button{
+  font-size: 14px;
+}

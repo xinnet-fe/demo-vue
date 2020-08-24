@@ -1,16 +1,7 @@
-const plugins = [
-  [
-    'component',
-    {
-      'libraryName': 'element-ui',
-      'styleLibraryName': 'theme-chalk'
-    }
-  ]
-]
-if (process.env.NODE_ENV === 'production') {
-  plugins.push('transform-remove-console')
-}
-module.exports = {
+const webpackConfig = require('./src/settings.js').webpackConfig
+const customConfig = webpackConfig.babelConfig
+
+const defaultConfig = {
   presets: [
     '@vue/app',
     [
@@ -18,5 +9,18 @@ module.exports = {
       { modules: false }
     ]
   ],
-  plugins
+  plugins: [
+    [
+      'component',
+      {
+        'libraryName': 'element-ui',
+        'styleLibraryName': 'theme-chalk'
+      }
+    ]
+  ]
+}
+
+module.exports = {
+  ...defaultConfig,
+  ...customConfig
 }

@@ -6,8 +6,7 @@ import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/demos/get-page-title'
 import { when } from './utils/request'
-import { navMenu } from './utils/menu'
-import { xbTokenKey, hasDevelopment, logoutApi } from '@/settings'
+import { hasDevelopment, logoutApi } from '@/settings'
 
 const vm = new Vue()
 
@@ -15,8 +14,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
-let hasLogin = false
-
+let loginin = 'true'
+// let loginin = 'notuse'
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -25,30 +24,42 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
-  const hasXbToken = getToken(xbTokenKey)
+  const hasXbToken = getToken('xbtoken') || getToken('xbtoken_id')
 
   if (hasXbToken) {
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done()
     } else {
-      // const hasMenus = store.getters.menus && store.getters.menus.length > 0
-      // const hasUser = store.getters.user && store.getters.user.id
-      if (hasLogin) {
+      let hasMenus = 0
+      let hasUser = 0
+      if (loginin === 'notuse') {
+        hasMenus = store.getters.menus && store.getters.menus.length > 0
+        hasUser = store.getters.user && store.getters.user.id
+      }
+
+      if (loginin === true || (hasMenus && hasUser)) {
         next()
       } else {
-        hasLogin = true
         try {
-          const [menus] = await when(
-            store.dispatch('userinfo/getSidebarMenus'),
-            // store.dispatch('userinfo/getUser')
-          )
-          const accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
+          let accessRoutes
+          if (loginin === false) {
+            loginin = true
+            accessRoutes = await store.dispatch('permission/generateRoutes')
+          } else {
+            const [menus] = await when(
+              store.dispatch('userinfo/getSidebarMenus'),
+              store.dispatch('userinfo/getUser')
+            )
+            accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
+          }
 
           router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
         } catch (error) {
-          hasLogin = false
+          if (loginin !== 'notuse') {
+            loginin = false
+          }
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
@@ -63,7 +74,9 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
+    if (loginin !== 'notuse') {
+      loginin = false
+    }
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

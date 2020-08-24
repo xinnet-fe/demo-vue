@@ -20,6 +20,8 @@ const errorCode = {
   925090: '不允许的操作'
 }
 
+const demoErrorCode = [60204, 50008]
+
 const vm = new Vue()
 
 // create an axios instance
@@ -66,7 +68,7 @@ service.interceptors.response.use(
     const res = response.data
     const status = parseInt(res.status, 10)
     // mock必返回code，请求接口错误才返回code
-    const code = isUndefined(res.code) ? parseInt(res.code, 10) : res.code
+    const code = res.code
     // console.log(`status: ${status}`)
     // console.log(`code: ${code}`)
     // status：996登录超时
@@ -93,7 +95,7 @@ service.interceptors.response.use(
     }
 
     // demos
-    if (hasDevelopment && isUndefined(code) && code !== 20000) {
+    if (hasDevelopment && !isNull(code) && code !== 20000 && demoErrorCode.indexOf(code) > -1) {
       errorMessage(res.message)
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
@@ -140,8 +142,8 @@ export function initLoading() {
   delay(() => store.commit('loading/INIT_LOADING'), 300)
 }
 
-function isUndefined(code) {
-  return code !== undefined
+function isNull(v) {
+  return v === undefined || v === '' || v === null
 }
 
 // 注销登录到登录页
@@ -182,7 +184,7 @@ export {
   when,
   errorMessage,
   logoutToLogin,
-  isUndefined
+  isNull
 }
 
 export default service
