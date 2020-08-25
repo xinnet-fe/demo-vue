@@ -60,11 +60,21 @@ export default {
 .hasTagsView {
   .app-main {
     /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
+    height: calc(100vh - 91px);
+    min-height: calc(100vh - 91px);
+    overflow: auto;
   }
 
   .fixed-header+.app-main {
-    padding-top: 84px;
+    padding-top: 91px;
+  }
+}
+.hideLayout {
+  .app-main {
+    /* 84 = navbar + tags-view = 50 + 34 */
+    height: calc(100vh);
+    min-height: calc(100vh);
+    overflow: auto;
   }
 }
 </style>

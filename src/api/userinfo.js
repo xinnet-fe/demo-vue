@@ -2,7 +2,8 @@ import request from '@/utils/request'
 
 export function getUser(query) {
   return request({
-    url: '/employee/getEmployeeInfo',
+    // url: '/employee/getEmployeeInfo',
+    url: 'static/data/account.json',
     method: 'get',
     params: query
   })
@@ -10,8 +11,8 @@ export function getUser(query) {
 
 export function getSidebarMenus(query) {
   return request({
-    url: '/navigation/listNavigation',
-    // url: 'static/data/menu.json',
+    // url: '/navigation/listNavigation',
+    url: 'static/data/menu.json',
     method: 'get',
     params: query
   })
