@@ -1,0 +1,8 @@
+{
+	"success": "success/fail",
+	"code": "",
+	"msg": "请求成功",
+	"data": {
+		"isSuccess": "1"
+	}
+}

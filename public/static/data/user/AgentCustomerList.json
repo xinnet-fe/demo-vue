@@ -1,0 +1,26 @@
+{
+	"success": true,
+	"msg": "处理成功",
+	"code": "",
+	"data": {
+		"count": 50,
+		"list": [{
+			"agentCode": "hy155555",
+			"customerCode": "hy39598877",
+			"bindStatus": "1",
+			"createTime": "2020-06-03 14:52:56",
+			"updateTime": "2020-06-03 14:52:56",
+			"registerTime": "2020-06-03 14:52:25",
+			"realName": "北京蓝海洋文化传播有限公司"
+		}, {
+			"agentCode": "hy155555",
+			"customerCode": "hy39598881",
+			"bindStatus": "0",
+			"createTime": "2020-06-03 15:24:33",
+			"updateTime": "2020-06-03 15:24:33",
+			"registerTime": "2020-06-03 15:24:20",
+			"realName": "北京蓝海洋文化传播有限公司"
+		}]
+
+	}
+}

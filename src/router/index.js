@@ -13,7 +13,7 @@ import componentsRouter from './demos/components'
 import tableRouter from './demos/table'
 // import nestedRouter from './demos/nested'
 import formRouter from './demos/form'
-// import orderRouter from './demos/order'
+import orderRouter from './demos/order'
 import dialogRouter from './demos/dialog'
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -90,7 +90,7 @@ const demosConstantRoutes = hasDevelopment ? [
       }
     ]
   },
-  // orderRouter,
+  orderRouter,
   {
     path: '/tab',
     component: Layout,
@@ -211,7 +211,7 @@ const demosConstantRoutes = hasDevelopment ? [
     ]
   },
   /** when your routing map is too long, you can split it into small modules **/
-  componentsRouter
+  componentsRouter,
   // chartsRouter,
   // nestedRouter,
   // {
@@ -395,21 +395,21 @@ const demosConstantRoutes = hasDevelopment ? [
   //   ]
   // },
 
-  // {
-  //   path: '/clipboard',
-  //   component: Layout,
-  //   meta: {
-  //     type: 'demo'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/demos/clipboard/index'),
-  //       name: 'ClipboardDemo',
-  //       meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/clipboard',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/clipboard/index'),
+        name: 'ClipboardDemo',
+        meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
+      }
+    ]
+  }
   // {
   //   path: 'external-link',
   //   component: Layout,
