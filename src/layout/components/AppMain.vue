@@ -39,16 +39,18 @@ export default {
 
 .app-main {
   /* 50= navbar  50  */
-  min-height: calc(100vh - 110px);
+  min-height: calc(100vh - 50px);
   width: 100%;
   position: relative;
   overflow: hidden;
   background-color: $appMainBg;
 }
 .app-content {
-  // min-height: calc(100vh - 110px);
+  min-height: calc(100vh - 50px);
   position: relative;
   overflow: hidden;
+  // margin: 20px 20px 0;
+  background-color: #ffffff;
 }
 
 .fixed-header+.app-main {
@@ -58,11 +60,21 @@ export default {
 .hasTagsView {
   .app-main {
     /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 110px);
+    height: calc(100vh - 91px);
+    min-height: calc(100vh - 91px);
+    overflow: auto;
   }
 
   .fixed-header+.app-main {
-    padding-top: 84px;
+    padding-top: 91px;
+  }
+}
+.hideLayout {
+  .app-main {
+    /* 84 = navbar + tags-view = 50 + 34 */
+    height: calc(100vh);
+    min-height: calc(100vh);
+    overflow: auto;
   }
 }
 </style>

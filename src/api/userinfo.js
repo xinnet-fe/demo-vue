@@ -11,6 +11,7 @@ export function getUser(query) {
 
 export function getSidebarMenus(query) {
   return request({
+    // url: '/navigation/listNavigation',
     url: 'static/data/menu.json',
     method: 'get',
     params: query

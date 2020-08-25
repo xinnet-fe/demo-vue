@@ -15,6 +15,8 @@ import tableRouter from './demos/table'
 import formRouter from './demos/form'
 import orderRouter from './demos/order'
 import dialogRouter from './demos/dialog'
+import boxRouter from './demos/box'
+
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -106,6 +108,7 @@ const demosConstantRoutes = hasDevelopment ? [
       }
     ]
   },
+  boxRouter,
   dialogRouter,
   {
     path: '/dashboard',
@@ -212,6 +215,21 @@ const demosConstantRoutes = hasDevelopment ? [
   },
   /** when your routing map is too long, you can split it into small modules **/
   componentsRouter,
+  {
+    path: '/clipboard',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/clipboard/index'),
+        name: 'ClipboardDemo',
+        meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
+      }
+    ]
+  }
   // chartsRouter,
   // nestedRouter,
   // {
@@ -394,22 +412,6 @@ const demosConstantRoutes = hasDevelopment ? [
   //     }
   //   ]
   // },
-
-  {
-    path: '/clipboard',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/clipboard/index'),
-        name: 'ClipboardDemo',
-        meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
-      }
-    ]
-  }
   // {
   //   path: 'external-link',
   //   component: Layout,
@@ -428,18 +430,18 @@ const demosConstantRoutes = hasDevelopment ? [
 export const constantRoutes = [
   {
     path: '/',
-    // component: Layout,
-    redirect: '/agent-client-app/agent-client'
-    // hidden: true,
-    // children: [
-    //   {
-    //     path: 'home',
-    //     component: () => import('@/views/index'),
-    //     name: 'Home',
-    //     hidden: true,
-    //     meta: { title: 'Home', icon: 'home', affix: true }
-    //   }
-    // ]
+    component: Layout,
+    redirect: '/home',
+    hidden: true,
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/index'),
+        name: 'Home',
+        hidden: true,
+        meta: { title: 'Home', icon: 'home', affix: true }
+      }
+    ]
   },
   ...demosConstantRoutes,
   {
