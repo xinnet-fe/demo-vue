@@ -37,6 +37,7 @@ export default {
 }
 .box-container .box-tit-right{
   float: right;
+  font-size: 12px;
 }
 .box-container .box-tit{
   height: 50px;
