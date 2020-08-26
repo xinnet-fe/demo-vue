@@ -12,7 +12,7 @@
     <!-- search -->
 
     <div class="mult-operation">
-      <el-button type="primary" size="mini" @click="showModal">新增导航</el-button>
+      <el-button type="primary" size="mini" @click="showModal()">新增导航</el-button>
     </div>
 
     <!-- table -->
@@ -25,8 +25,8 @@
       style="width: 100%"
     >
       <el-table-column
-        ref="number"
-        prop="number"
+        ref="sortIndex"
+        prop="sortIndex"
         label="序号"
         sortable
         :sort-method="sortByNumber"
@@ -44,9 +44,10 @@
       >
         <template v-slot="{ row }">
           <el-switch
-            v-model="row.state"
+            v-model="row.status"
             active-value="1"
             inactive-value="0"
+            @change="switchChange(row)"
           />
         </template>
       </el-table-column>
@@ -57,12 +58,12 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination
-      :total="page.total"
-      :page.sync="page.page"
-      :limit.sync="page.limit"
+    <!-- <pagination
+      :total="page.count"
+      :page.sync="page.pageNum"
+      :limit.sync="page.pageSize"
       @pagination="getList"
-    />
+    /> -->
     <!-- table -->
 
     <!-- form -->
@@ -75,31 +76,34 @@
                 <el-input v-model="form.name" />
               </el-form-item>
               <el-form-item label="所属分类:">
-                <el-select v-model="form.category" placeholder="请选择">
-                  <el-option label="一级" value="1" />
-                  <el-option label="二级" value="2" />
-                </el-select>
+                <el-cascader
+                  placeholder="作为顶级分类"
+                  :value="form.parentId"
+                  :options="navType"
+                  filterable
+                  change-on-select
+                />
               </el-form-item>
               <el-form-item label="code:">
                 <el-input v-model="form.code" />
               </el-form-item>
-              <el-form-item label="描述:" prop="describe">
-                <el-input v-model="form.describe" :rows="3" type="textarea" />
+              <el-form-item label="描述:" prop="desc">
+                <el-input v-model="form.desc" :rows="3" type="textarea" />
               </el-form-item>
-              <el-form-item label="链接:" prop="linkAddress">
-                <el-input v-model="form.linkAddress" />
+              <el-form-item label="链接:" prop="url">
+                <el-input v-model="form.url" />
               </el-form-item>
               <el-form-item label="打开方式">
-                <el-select v-model="form.openMode">
-                  <el-option v-for="(label, value) in openModes" :key="value" :label="label" :value="value" />
+                <el-select v-model="form.target">
+                  <el-option v-for="item in openMode" :key="item.value" :label="item.key" :value="item.value" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="序号:" prop="number">
-                <el-input-number v-model="form.number" />
+              <el-form-item label="序号:" prop="sortIndex">
+                <el-input-number v-model="form.sortIndex" />
               </el-form-item>
-              <el-form-item label="显示状态:" prop="state">
+              <el-form-item label="显示状态:" prop="status">
                 <el-switch
-                  v-model="form.state"
+                  v-model="form.status"
                   active-value="1"
                   inactive-value="0"
                 />
@@ -111,16 +115,19 @@
           <template v-slot:default>
             <el-form ref="seniorForm" class="el-form" :model="form" label-width="100px">
               <el-form-item label="点击事件:">
-                <el-input v-model="form.clickEvent" />
+                <el-input v-model="form.click" />
               </el-form-item>
               <el-form-item label="css样式:">
                 <el-input v-model="form.cssStyle" :rows="3" type="textarea" />
               </el-form-item>
+              <el-form-item label="class:">
+                <el-input v-model="form.cssClass" :rows="3" type="textarea" />
+              </el-form-item>
               <el-form-item label="提示:">
-                <el-input v-model="form.tips" :rows="3" type="textarea" />
+                <el-input v-model="form.alt" :rows="3" type="textarea" />
               </el-form-item>
               <el-form-item label="扩展:">
-                <el-input v-model="form.extend" :rows="3" type="textarea" />
+                <el-input v-model="form.extra" :rows="3" type="textarea" />
               </el-form-item>
               <el-form-item label="内容:">
                 <el-input v-model="form.content" :rows="3" type="textarea" />
@@ -151,71 +158,78 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
-import Pagination from '@/components/Pagination'
+// import Pagination from '@/components/Pagination'
 
 export default {
   name: 'CmsNavManage',
-  components: {
-    Pagination
-  },
+  // components: {
+  //   Pagination
+  // },
   data() {
     return {
       // tabs
       activeName: 'basis',
       // 搜索框
       searchForm: {
-        name: '',
-        state: '0'
+        name: ''
       },
       // 弹框
       show: false,
       modalTitle: '新增',
       // 弹框表单数据
       form: {
-        id: '',
         name: '',
-        category: '',
+        parentId: '0',
         code: '',
-        describe: '',
-        linkAddress: '',
-        openMode: '0',
-        number: '',
-        state: '',
+        desc: '',
+        url: '',
+        target: '',
+        sortIndex: '',
+        status: '',
         // 高级属性
-        clickEvent: '',
+        click: '',
         cssStyle: '',
-        tips: '',
-        extend: '',
+        cssClass: '',
+        alt: '',
+        extra: '',
         content: ''
       },
+      // 修改时传递的旧code
+      oldCode: '',
+      // 默认打开方式
+      formTarget: '',
       // 弹框表单规则
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        number: [{ required: true, message: '请输入序号', trigger: 'blur' }]
+        sortIndex: [{ required: true, message: '请输入序号', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
       // 表格的数据
       list: [],
-      page: {
-        total: 0,
-        page: 1,
-        limit: 30
-      },
+      // page: {
+      //   count: 0,
+      //   pageNum: 1,
+      //   pageSize: 30
+      // },
       // 上传附件列表
-      fileList: [],
-      // 打开方式列表
-      openModes: {
-        0: '新窗口',
-        1: '当前窗口',
-        2: '父窗口',
-        3: '顶级窗口'
-      }
+      fileList: []
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.global
+      loading: state => state.loading.global,
+      openMode: state => state.cms.navOpenMode,
+      navType: state => state.cms.navType
+    })
+  },
+  created() {
+    this.getTargetMapping().then(res => {
+      const { list } = res.data
+      if (list && list.length) {
+        const { value } = list[0]
+        this.formTarget = value
+      }
     })
   },
   methods: {
@@ -223,27 +237,44 @@ export default {
       getData: 'cms/navList',
       add: 'cms/addNav',
       update: 'cms/updateNav',
-      destroy: 'cms/destroyNav'
+      destroyData: 'cms/destroyNav',
+      searchNav: 'cms/searchNav',
+      getTargetMapping: 'cms/navTargetMapping',
+      getParentIdMapping: 'cms/navParentIdMapping',
+      updateStatus: 'cms/navStatusSwitch'
     }),
     showModal(row = {}) {
-      if (row.id) {
-        this.form = row
-        forEach(this.form, (v, k, o) => (o[k] = row[k]))
-        this.modalTitle = '编辑'
-      } else {
-        this.modalTitle = '新增'
-      }
+      this.getParentIdMapping().then(() => {
+        if (row.id) {
+          const query = { id: row.id }
+          this.searchNav(query).then(res => {
+            const { navigation: nav } = res.data
+            forEach(this.form, (v, k, o) => {
+              this.form[k] = nav[k]
+            })
+            this.form.id = nav.id
+            this.oldCode = nav.code
+          })
+          this.modalTitle = '编辑'
+        } else {
+          delete this.form.id
+          this.modalTitle = '新增'
+        }
+      })
+      this.form.target = this.formTarget
       this.show = true
     },
     closeModal() {
       this.show = false
       forEach(this.form, (v, k, o) => {
-        if (k === 'openMode') {
+        if (k === 'parentId') {
           o[k] = '0'
         } else {
           o[k] = ''
         }
       })
+      this.oldCode = ''
+      delete this.form.id
     },
     showTipsModal(row) {
       this.form = row
@@ -257,23 +288,34 @@ export default {
       done()
     },
     getList(query = {}) {
-      const { name, state } = this.searchForm
-      name && (query.name = name)
-      state && (query.state = state)
-      return this.getData(query).then(res => {
-        const { data, page } = res.data
-        this.list = data
-        this.page = page
+      const { name } = this.searchForm
+      query.name = name
+      return this.getData(query).then(list => {
+        this.list = list
+        // this.page = page
       })
     },
     onSearch() {
-      const { page, limit } = this.page
-      const query = { page, limit }
-      this.getList(query)
+      // const { pageNum, pageSize } = this.page
+      // const query = { pageNum, pageSize }
+      this.getList()
+    },
+    getParams(id) {
+      const data = {}
+      forEach(this.form, (v, k) => {
+        data[k] = v
+      })
+      if (id) {
+        data.code = this.oldCode
+        data.newCode = this.form.code
+      } else {
+        data.code = this.form.code
+      }
+      return data
     },
     submit() {
-      const { id, ...restData } = this.form
-      const data = { ...restData }
+      const { id } = this.form
+      const data = this.getParams(id)
       this.$refs.form.validate((valid) => {
         if (valid) {
           // 修改
@@ -298,7 +340,7 @@ export default {
               this.$message.error(message)
               return
             }
-            if (!this.form.number) {
+            if (!this.form.sortIndex) {
               message = '请输入序号'
               this.$message.error(message)
               return
@@ -309,10 +351,13 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      this.destroy(id).then(res => {
+      this.destroyData({ id }).then(res => {
         this.closeTipsModal()
         this.onSearch()
       })
+    },
+    switchChange(row) {
+      this.updateStatus({ id: row.id }).then(this.onSearch)
     },
     sortChildren(data, order) {
       if (!(data && data.length > 1)) {
@@ -327,16 +372,16 @@ export default {
         if (data2 && data2.length > 1) {
           b.children = this.sortChildren(data2, order)
         }
-        return order === 'descending' ? b.number - a.number : a.number - b.number
+        return order === 'descending' ? b.sortIndex - a.sortIndex : a.sortIndex - b.sortIndex
       })
     },
     sortByNumber(a, b) {
-      const { order } = this.$refs.number.columnConfig
+      const { order } = this.$refs.sortIndex.columnConfig
       let res
       if (order === 'descending') {
-        res = a.number > b.number ? 1 : -1
+        res = a.sortIndex > b.sortIndex ? 1 : -1
       } else {
-        res = b.number > a.number ? -1 : 1
+        res = b.sortIndex > a.sortIndex ? -1 : 1
       }
       a.children = this.sortChildren(a.children, order)
       b.children = this.sortChildren(b.children, order)

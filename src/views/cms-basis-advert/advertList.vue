@@ -22,7 +22,7 @@
     <!-- search -->
 
     <div class="mult-operation">
-      <el-button type="primary" size="mini" @click="showModal">新增广告</el-button>
+      <el-button type="primary" size="mini" @click="showModal()">新增广告</el-button>
     </div>
 
     <!-- table -->
@@ -73,9 +73,10 @@
       >
         <template v-slot="{ row }">
           <el-switch
-            v-model="row.advStatus"
+            v-model="row.isActived"
             active-value="1"
             inactive-value="0"
+            @change="switchChange($event, row)"
           />
         </template>
       </el-table-column>
@@ -113,7 +114,7 @@
         </el-form-item>
         <el-form-item label="广告图片地址:" prop="imgUrl">
           <el-col :span="16">
-            <el-input v-model="form.imgUrl" />
+            <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
           </el-col>
           <el-col :span="8">
             <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
@@ -187,6 +188,7 @@ import { mapState, mapActions } from 'vuex'
 import formatTime from '@/utils/formatTime'
 import Pagination from '@/components/Pagination'
 import JsonEditor from '@/components/JsonEditor'
+import isDate from '@/utils/isDate'
 
 export default {
   name: 'AdvertList',
@@ -260,7 +262,8 @@ export default {
       destroyData: 'cms/destroyAdvList',
       getAdvStatus: 'cms/advStatusMapping',
       getGroupCodeList: 'cms/groupCodeList',
-      searchAdv: 'cms/searchAdv'
+      searchAdv: 'cms/searchAdv',
+      advStatusSwitch: 'cms/advStatusSwitch'
     }),
     showModal(row = {}) {
       if (row.advCode) {
@@ -334,15 +337,16 @@ export default {
       let startTime = ''
       let endTime = ''
       if (data.startTime) {
-        startTime = id ? data.startTime : formatTime(data.startTime.getTime())
+        startTime = isDate(data.startTime) ? data.startTime : formatTime(data.startTime.getTime())
       }
       if (data.endTime) {
-        endTime = id ? data.endTime : formatTime(data.endTime.getTime())
+        endTime = isDate(data.endTime) ? data.endTime : formatTime(data.endTime.getTime())
       }
       formData.append('advName', data.advName)
       formData.append('groupCode', data.groupCode)
       formData.append('advDesc', data.advDesc)
       formData.append('url', data.url)
+      formData.append('imgUrl', data.imgUrl)
       formData.append('sortNum', data.sortNum)
       formData.append('startTime', startTime)
       formData.append('endTime', endTime)
@@ -380,6 +384,10 @@ export default {
         this.onSearch()
       })
     },
+    switchChange(state, row) {
+      const data = { advCode: row.advCode }
+      this.advStatusSwitch(data).then(this.onSearch)
+    },
     // 下拉框选择本地上传
     localUpload() {
       if (this.uploadImageAddress === '1') {
@@ -388,6 +396,10 @@ export default {
     },
     // 点击选择图片
     selectedFile(file) {
+      // 修改时imgUrl有值使用新上传文件替换
+      if (this.form.imgUrl) {
+        this.form.imgUrl = ''
+      }
       this.fileList = [file]
     }
   }

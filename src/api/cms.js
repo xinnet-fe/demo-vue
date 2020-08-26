@@ -67,6 +67,15 @@ export function advList(query) {
   })
 }
 
+// 修改广告状态
+export function advStatusSwitch(data) {
+  return request({
+    url: '/normaladv/statusSwitch',
+    method: 'post',
+    data
+  })
+}
+
 // 广告状态select
 export function advStatusMapping(query) {
   return request({
@@ -134,11 +143,11 @@ export function updateSlideshow(data) {
   })
 }
 
-export function destroySlideshow(ids) {
+export function destroySlideshow(data) {
   return request({
     url: '/admin/slideshow/del',
     method: 'post',
-    params: { ids }
+    data
   })
 }
 
@@ -190,7 +199,7 @@ export function statusMapping(params) {
 // 导航
 export function navList(query) {
   return request({
-    url: '/carousel/list',
+    url: '/admin/navigation/list',
     method: 'get',
     params: query
   })
@@ -198,7 +207,7 @@ export function navList(query) {
 
 export function addNav(data) {
   return request({
-    url: '/carousel/add',
+    url: '/admin/navigation/add',
     method: 'post',
     data
   })
@@ -206,16 +215,52 @@ export function addNav(data) {
 
 export function updateNav(data) {
   return request({
-    url: '/carousel/update',
+    url: '/admin/navigation/edit',
     method: 'post',
     data
   })
 }
 
-export function destroyNav(ids) {
+export function destroyNav(data) {
   return request({
-    url: '/carousel/destroy',
+    url: '/admin/navigation/del',
     method: 'post',
-    params: { ids }
+    data
+  })
+}
+
+// 详情
+export function searchNav(params) {
+  return request({
+    url: '/admin/navigation/search',
+    method: 'get',
+    params
+  })
+}
+
+// 打开方式集合
+export function navTargetMapping(params) {
+  return request({
+    url: '/admin/navigation/targetMapping',
+    method: 'get',
+    params
+  })
+}
+
+// 所属分类集合
+export function navParentIdMapping(params) {
+  return request({
+    url: '/admin/navigation/parentIdMapping',
+    method: 'get',
+    params
+  })
+}
+
+// 更改状态
+export function navStatusSwitch(data) {
+  return request({
+    url: '/admin/navigation/statusSwitch',
+    method: 'post',
+    data
   })
 }

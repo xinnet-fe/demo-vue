@@ -6,8 +6,8 @@
         <el-input v-model="searchForm.name" placeholder="请输入名称" clearable />
       </el-form-item>
       <el-form-item label="状态:" prop="website">
-        <el-select v-model="searchForm.state">
-          <el-option v-for="(label, value) in states" :key="value" :label="label" :value="value" />
+        <el-select v-model="searchForm.status">
+          <el-option v-for="({ value, key }) in states" :key="value" :label="key" :value="value" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -17,7 +17,7 @@
     <!-- search -->
 
     <div class="mult-operation">
-      <el-button type="primary" size="mini" @click="showModal">新增轮播</el-button>
+      <el-button type="primary" size="mini" @click="showModal()">新增轮播</el-button>
     </div>
 
     <!-- table -->
@@ -30,8 +30,8 @@
       style="width: 100%"
     >
       <el-table-column
-        ref="number"
-        prop="number"
+        ref="sortIndex"
+        prop="sortIndex"
         label="序号"
         sortable
         :sort-method="sortByNumber"
@@ -53,9 +53,10 @@
       >
         <template v-slot="{ row }">
           <el-switch
-            v-model="row.state"
+            v-model="row.status"
             active-value="1"
             inactive-value="0"
+            @change="switchChange(row)"
           />
         </template>
       </el-table-column>
@@ -66,12 +67,12 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination
-      :total="page.total"
-      :page.sync="page.page"
-      :limit.sync="page.limit"
+    <!-- <pagination
+      :total="page.count"
+      :page.sync="page.pageNum"
+      :limit.sync="page.pageSize"
       @pagination="getList"
-    />
+    /> -->
     <!-- table -->
 
     <!-- form -->
@@ -86,18 +87,21 @@
               <el-form-item label="轮播code:" prop="code">
                 <el-input v-model="form.code" />
               </el-form-item>
-              <el-form-item label="轮播树级:" prop="parentCode">
-                <el-select v-model="form.parentCode" placeholder="请选择">
-                  <el-option label="一级" value="1" />
-                  <el-option label="二级" value="2" />
-                </el-select>
+              <el-form-item label="轮播树级:" prop="parentId">
+                <el-cascader
+                  placeholder="默认为一级"
+                  :value="form.parentId"
+                  :options="types"
+                  filterable
+                  change-on-select
+                />
               </el-form-item>
-              <el-form-item label="描述:" prop="describe">
-                <el-input v-model="form.describe" :rows="3" type="textarea" />
+              <el-form-item label="描述:" prop="desc">
+                <el-input v-model="form.desc" :rows="3" type="textarea" />
               </el-form-item>
-              <el-form-item label="图片地址:" prop="imageAddress">
+              <el-form-item label="图片地址:" prop="imgUrl">
                 <el-col :span="16">
-                  <el-input v-model="form.imageAddress" />
+                  <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
                 </el-col>
                 <el-col :span="8">
                   <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
@@ -117,27 +121,27 @@
                   <el-button ref="upload" size="small" type="primary">点击上传</el-button>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="链接:" prop="linkAddress">
-                <el-input v-model="form.linkAddress" />
+              <el-form-item label="链接:" prop="url">
+                <el-input v-model="form.url" />
               </el-form-item>
-              <el-form-item label="打开方式">
-                <el-select v-model="form.openMode">
-                  <el-option v-for="(label, value) in openModes" :key="value" :label="label" :value="value" />
+              <el-form-item label="打开方式:">
+                <el-select v-model="form.target">
+                  <el-option v-for="({ value, key }) in openMode" :key="value" :label="key" :value="value" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="序号:" prop="number">
-                <el-input-number v-model="form.number" />
+              <el-form-item label="序号:" prop="sortIndex">
+                <el-input-number v-model="form.sortIndex" />
               </el-form-item>
-              <el-form-item label="状态:" prop="state">
+              <el-form-item label="状态:" prop="status">
                 <el-switch
-                  v-model="form.state"
+                  v-model="form.status"
                   active-value="1"
                   inactive-value="0"
                 />
               </el-form-item>
-              <el-form-item label="发布时间:" prop="publishTime">
+              <el-form-item label="发布时间:" prop="startTime">
                 <el-date-picker
-                  v-model="form.publishTime"
+                  v-model="form.startTime"
                   type="datetime"
                   placeholder="选择开始日期"
                 />
@@ -156,16 +160,19 @@
           <template v-slot:default>
             <el-form ref="seniorForm" class="el-form" :model="form" label-width="100px">
               <el-form-item label="点击事件:">
-                <el-input v-model="form.clickEvent" />
+                <el-input v-model="form.click" />
               </el-form-item>
               <el-form-item label="css样式:">
                 <el-input v-model="form.cssStyle" :rows="3" type="textarea" />
               </el-form-item>
+              <el-form-item label="class:">
+                <el-input v-model="form.cssClass" :rows="3" type="textarea" />
+              </el-form-item>
               <el-form-item label="提示:">
-                <el-input v-model="form.tips" :rows="3" type="textarea" />
+                <el-input v-model="form.alt" :rows="3" type="textarea" />
               </el-form-item>
               <el-form-item label="扩展:">
-                <el-input v-model="form.extend" :rows="3" type="textarea" />
+                <el-input v-model="form.extra" :rows="3" type="textarea" />
               </el-form-item>
               <el-form-item label="内容:">
                 <el-input v-model="form.content" :rows="3" type="textarea" />
@@ -196,13 +203,15 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
-import Pagination from '@/components/Pagination'
+// import Pagination from '@/components/Pagination'
+import formatTime from '@/utils/formatTime'
+import isDate from '@/utils/isDate'
 
 export default {
   name: 'CmsCarouselManage',
-  components: {
-    Pagination
-  },
+  // components: {
+  //   Pagination
+  // },
   data() {
     return {
       // tabs
@@ -210,7 +219,7 @@ export default {
       // 搜索框
       searchForm: {
         name: '',
-        state: '0'
+        status: ''
       },
       // 弹框
       show: false,
@@ -218,107 +227,114 @@ export default {
       // 弹框表单数据
       form: {
         id: '',
+        name: '',
         code: '',
-        parentCode: '',
-        describe: '',
-        linkAddress: '',
-        imageAddress: '',
-        number: '',
-        publishTime: '',
+        parentId: '0',
+        desc: '',
+        url: '',
+        sortIndex: '',
+        startTime: '',
         endTime: '',
-        state: '',
-        openMode: '0',
+        status: '',
+        target: '',
+        imgUrl: '',
         // 高级属性
-        clickEvent: '',
+        click: '',
         cssStyle: '',
-        tips: '',
-        extend: '',
+        cssClass: '',
+        alt: '',
+        extra: '',
         content: ''
       },
+      // 修改时传递的旧code
+      oldCode: '',
+      // 默认打开方式
+      formTarget: '',
       // 上传图片下拉框值
       uploadImageAddress: '',
       // 弹框表单规则
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        number: [{ required: true, message: '请输入序号', trigger: 'blur' }]
-      },
-      // 广告状态列表
-      states: {
-        0: '全部',
-        1: '开启',
-        2: '关闭'
-      },
-      // 广告组
-      advertGroups: {
-        0: '广告组一',
-        1: '广告组二'
+        sortIndex: [{ required: true, message: '请输入序号', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
       // 表格的数据
       list: [],
-      page: {
-        total: 0,
-        page: 1,
-        limit: 30
-      },
+      // page: {
+      //   count: 0,
+      //   pageNum: 1,
+      //   pageSize: 30
+      // },
       // 上传附件列表
-      fileList: [],
-      // 打开方式列表
-      openModes: {
-        0: '新窗口',
-        1: '当前窗口',
-        2: '父窗口',
-        3: '顶级窗口'
-      }
+      fileList: []
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.global
+      loading: state => state.loading.global,
+      openMode: state => state.cms.openMode,
+      types: state => state.cms.slideshowType,
+      states: state => state.cms.slideshowStatus
     })
   },
   created() {
-    this.getOpenMode()
-    this.getSlideshowType()
+    this.getTargetMapping().then(res => {
+      const { list } = res.data
+      if (list && list.length) {
+        const { value } = list[0]
+        this.formTarget = value
+      }
+    })
     this.getSlideshowStatus()
   },
   methods: {
     ...mapActions({
-      getData: 'cms/carouselList',
-      add: 'cms/addCarousel',
-      update: 'cms/updateCarousel',
-      destroy: 'cms/destroyCarousel',
+      getData: 'cms/slideshowList',
+      add: 'cms/addSlideshow',
+      update: 'cms/updateSlideshow',
+      destroyData: 'cms/destroySlideshow',
       // 详情
       searchSlideshow: 'cms/searchSlideshow',
       // 修改状态
       updateStatus: 'cms/updateSlideshowStatus',
       // 打开方式
-      getOpenMode: 'cms/targetMapping',
+      getTargetMapping: 'cms/targetMapping',
       // 轮播类型
       getSlideshowType: 'cms/parentIdMapping',
       // 轮播状态
       getSlideshowStatus: 'cms/statusMapping'
     }),
     showModal(row = {}) {
-      if (row.id) {
-        this.form = row
-        forEach(this.form, (v, k, o) => (o[k] = row[k]))
-        this.modalTitle = '编辑'
-      } else {
-        this.modalTitle = '新增'
-      }
+      this.getSlideshowType().then(() => {
+        if (row.id) {
+          const query = { id: row.id }
+          this.searchSlideshow(query).then(res => {
+            const { slideshow: r } = res.data
+            this.fileList = r.file ? [r.file] : []
+            forEach(this.form, (v, k) => {
+              this.form[k] = r[k]
+            })
+            this.oldCode = r.code
+          })
+          this.modalTitle = '编辑'
+        } else {
+          this.modalTitle = '新增'
+        }
+      })
+      this.form.target = this.formTarget
       this.show = true
     },
     closeModal() {
       this.show = false
       forEach(this.form, (v, k, o) => {
-        if (k === 'openMode') {
+        if (k === 'parentId') {
           o[k] = '0'
         } else {
           o[k] = ''
         }
       })
+      this.oldCode = ''
       this.uploadImageAddress = ''
       this.fileList = []
     },
@@ -334,35 +350,73 @@ export default {
       done()
     },
     getList(query = {}) {
-      const { name, state } = this.searchForm
-      name && (query.name = name)
-      state && (query.state = state)
-      return this.getData(query).then(res => {
-        const { data, page } = res.data
-        this.list = data
-        this.page = page
+      const { name, status } = this.searchForm
+      query.name = name
+      query.status = status
+      return this.getData(query).then(list => {
+        this.list = list
+        // this.page = page
       })
     },
     onSearch() {
-      const { page, limit } = this.page
-      const query = { page, limit }
-      this.getList(query)
+      // const { pageSize, pageNum } = this.page
+      // const query = {
+      //   pageNum: parseInt(pageNum),
+      //   pageSize: parseInt(pageSize)
+      // }
+      this.getList()
+    },
+    getParams(data, id) {
+      const formData = new FormData()
+      const file = this.fileList.length ? this.fileList[0].raw : ''
+      let startTime = ''
+      let endTime = ''
+      if (data.startTime) {
+        startTime = isDate(data.startTime) ? data.startTime : formatTime(data.startTime.getTime())
+      }
+      if (data.endTime) {
+        endTime = isDate(data.endTime) ? data.endTime : formatTime(data.endTime.getTime())
+      }
+      if (id) {
+        formData.append('code', this.oldCode)
+        formData.append('newCode', data.code)
+      } else {
+        formData.append('code', data.code)
+      }
+      formData.append('name', data.name)
+      formData.append('parentId', data.parentId)
+      formData.append('desc', data.desc)
+      formData.append('url', data.url)
+      formData.append('imgUrl', data.imgUrl)
+      formData.append('target', data.target)
+      formData.append('sortIndex', data.sortIndex)
+      formData.append('status', data.status)
+      formData.append('startTime', startTime)
+      formData.append('endTime', endTime)
+      formData.append('click', data.click)
+      formData.append('cssStyle', data.cssStyle)
+      formData.append('cssClass', data.cssClass)
+      formData.append('alt', data.alt)
+      formData.append('extra', data.extra)
+      formData.append('content', data.content)
+      formData.append('file', file)
+      return formData
     },
     submit() {
-      const { id, ...restData } = this.form
-      const data = { ...restData }
+      const { id } = this.form
+      const formData = this.getParams(this.form, id)
       this.$refs.form.validate((valid) => {
         if (valid) {
           // 修改
           if (id) {
-            data.id = id
-            this.update(data).then(res => {
+            formData.append('id', id)
+            this.update(formData).then(res => {
               this.closeModal()
               this.onSearch()
             })
           // 新增
           } else {
-            this.add(data).then(res => {
+            this.add(formData).then(res => {
               this.closeModal()
               this.onSearch()
             })
@@ -375,7 +429,7 @@ export default {
               this.$message.error(message)
               return
             }
-            if (!this.form.number) {
+            if (!this.form.sortIndex) {
               message = '请输入序号'
               this.$message.error(message)
               return
@@ -386,10 +440,13 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      this.destroy(id).then(res => {
+      this.destroyData({ id }).then(res => {
         this.closeTipsModal()
         this.onSearch()
       })
+    },
+    switchChange(row) {
+      this.updateStatus({ id: row.id }).then(this.onSearch)
     },
     // 下拉框选择本地上传
     localUpload() {
@@ -399,6 +456,10 @@ export default {
     },
     // 点击选择图片
     selectedFile(file) {
+      // 修改时imgUrl有值使用新上传文件替换
+      if (this.form.imgUrl) {
+        this.form.imgUrl = ''
+      }
       this.fileList = [file]
     },
     sortChildren(data, order) {
@@ -414,16 +475,16 @@ export default {
         if (data2 && data2.length > 1) {
           b.children = this.sortChildren(data2, order)
         }
-        return order === 'descending' ? b.number - a.number : a.number - b.number
+        return order === 'descending' ? b.sortIndex - a.sortIndex : a.sortIndex - b.sortIndex
       })
     },
     sortByNumber(a, b) {
-      const { order } = this.$refs.number.columnConfig
+      const { order } = this.$refs.sortIndex.columnConfig
       let res
       if (order === 'descending') {
-        res = a.number > b.number ? 1 : -1
+        res = a.sortIndex > b.sortIndex ? 1 : -1
       } else {
-        res = b.number > a.number ? -1 : 1
+        res = b.sortIndex > a.sortIndex ? -1 : 1
       }
       a.children = this.sortChildren(a.children, order)
       b.children = this.sortChildren(b.children, order)

@@ -17,7 +17,7 @@
     <!-- search -->
 
     <div class="mult-operation">
-      <el-button type="primary" size="mini" @click="showModal">新增广告组</el-button>
+      <el-button type="primary" size="mini" @click="showModal()">新增广告组</el-button>
     </div>
 
     <!-- table -->

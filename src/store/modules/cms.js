@@ -5,6 +5,7 @@ import {
   destroyAdvGroup,
   advList,
   addAdvList,
+  advStatusSwitch,
   updateAdvList,
   destroyAdvList,
   slideshowList,
@@ -24,8 +25,13 @@ import {
   groupCodeList,
   searchGroup,
   searchAdv,
-  statusMapping
+  statusMapping,
+  searchNav,
+  navTargetMapping,
+  navParentIdMapping,
+  navStatusSwitch
 } from '@/api/cms'
+import map from 'lodash/map'
 
 const emptyData = {
   list: [],
@@ -39,12 +45,16 @@ const state = {
   groupList: [],
   // 广告-广告状态
   advStatus: [],
-  // 轮播-开发方式
+  // 轮播-打开方式
   openMode: [],
   // 轮播-轮播分类
   slideshowType: [],
   // 轮播-轮播状态
-  slideshowStatus: []
+  slideshowStatus: [],
+  // 导航-打开方式
+  navOpenMode: [],
+  // 导航-分类
+  navType: []
 }
 
 const mutations = {
@@ -62,22 +72,30 @@ const mutations = {
   },
   TARGET_MAPPING: (state, res) => {
     const { list } = res.data
-    console.log(list)
     state.openMode = list
   },
   PARENT_ID_MAPPING: (state, res) => {
     const { list } = res.data
-    console.log(list)
-    state.slideshowType = list
+    const result = deepProcessCollectionData(list)
+    state.slideshowType = result
   },
   STATUS_MAPPING: (state, res) => {
     const { list } = res.data
-    console.log(list)
     state.slideshowStatus = list
+  },
+  NAV_TARGET_MAPPING: (state, res) => {
+    const { list } = res.data
+    state.navOpenMode = list
+  },
+  NAV_PARENT_ID_MAPPING: (state, res) => {
+    const { list } = res.data
+    const result = deepProcessCollectionData(list)
+    state.navType = result
   }
 }
 
-function processData(res) {
+// 处理列表page数据结构
+function processListData(res) {
   const { data } = res
   if (data && data.page) {
     const { list, ...restPage } = data.page
@@ -93,10 +111,32 @@ function processData(res) {
   return emptyData
 }
 
+// 递归处理列表数据
+function deepProcessListData(data) {
+  return map(data, o => {
+    if (o.childList) {
+      o.children = deepProcessListData(o.childList)
+    }
+    return o
+  })
+}
+
+// 递归处理集合数据
+function deepProcessCollectionData(data) {
+  return map(data, o => {
+    o.label = o.name
+    o.value = o.id
+    if (o.childList) {
+      o.children = deepProcessCollectionData(o.childList)
+    }
+    return o
+  })
+}
+
 const actions = {
   // 广告组
   advGroupList(_, query) {
-    return advGroupList(query).then(processData)
+    return advGroupList(query).then(processListData)
   },
   addAdvGroup(_, query) {
     return addAdvGroup(query)
@@ -121,7 +161,11 @@ const actions = {
   },
   // 广告列表
   advList(_, query) {
-    return advList(query).then(processData)
+    return advList(query).then(processListData)
+  },
+  // 修改广告状态
+  advStatusSwitch(_, data) {
+    return advStatusSwitch(data)
   },
   // 广告状告状态select
   advStatusMapping({ commit }, query) {
@@ -142,7 +186,13 @@ const actions = {
   },
   // 轮播
   slideshowList(_, query) {
-    return slideshowList(query)
+    return slideshowList(query).then(res => {
+      const { data } = res
+      if (data && data.listTree) {
+        return deepProcessListData(data.listTree)
+      }
+      return []
+    })
   },
   addSlideshow(_, query) {
     return addSlideshow(query)
@@ -163,7 +213,10 @@ const actions = {
   },
   // 打开方式集合
   targetMapping({ commit }, query) {
-    return targetMapping(query).then(res => commit('TARGET_MAPPING', res))
+    return targetMapping(query).then(res => {
+      commit('TARGET_MAPPING', res)
+      return res
+    })
   },
   // 所属分类集合
   parentIdMapping({ commit }, query) {
@@ -174,7 +227,13 @@ const actions = {
   },
   // 导航
   navList(_, query) {
-    return navList(query)
+    return navList(query).then(res => {
+      const { data } = res
+      if (data && data.listTree) {
+        return deepProcessListData(data.listTree)
+      }
+      return []
+    })
   },
   addNav(_, query) {
     return addNav(query)
@@ -184,6 +243,21 @@ const actions = {
   },
   destroyNav(_, query) {
     return destroyNav(query)
+  },
+  searchNav(_, query) {
+    return searchNav(query)
+  },
+  navTargetMapping({ commit }, query) {
+    return navTargetMapping(query).then(res => {
+      commit('NAV_TARGET_MAPPING', res)
+      return res
+    })
+  },
+  navParentIdMapping({ commit }, query) {
+    return navParentIdMapping(query).then(res => commit('NAV_PARENT_ID_MAPPING', res))
+  },
+  navStatusSwitch(_, query) {
+    return navStatusSwitch(query)
   }
 }
 
@@ -193,15 +267,3 @@ export default {
   mutations,
   actions
 }
-
-// function generateActions() {
-//   return reduce(apis, (res, api) => {
-//     console.log(api)
-//     const funcName = api.name
-//     res[funcName] = (_, payload) => {
-//       return api(payload)
-//     }
-//     return res
-//   }, {})
-// }
-// const actions = generateActions()
