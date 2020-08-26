@@ -344,7 +344,8 @@ export default {
     }
   },
   methods: {
-
+    handleChange() {},
+    onSubmit() {}
   }
 }
 </script>

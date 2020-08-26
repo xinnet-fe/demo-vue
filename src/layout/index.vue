@@ -3,7 +3,7 @@
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar v-if="showLayout" class="sidebar-container" />
     <div :class="{hasTagsView:needTagsView, hideLayout:!showLayout}" class="main-container" :style="[!showLayout ? leftSidebar : '']">
-      <div :class="{'fixed-header':fixedHeader}">
+      <div :class="{'fixed-header':fixedHeader}" class="main-breadcrumb">
         <navbar v-if="showLayout" />
         <tags-view v-if="showLayout && needTagsView" />
       </div>

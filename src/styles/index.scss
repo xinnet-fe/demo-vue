@@ -201,3 +201,11 @@ input::-moz-input-placeholder {
 input::-ms-input-placeholder {
   color: #999!important;
 }
+// 主体容器高度调整
+.xcs_main .app-main {
+  height: calc(100vh - 50px)!important;
+  min-height: calc(100vh - 50px)!important;
+}
+.xcs_main .main-breadcrumb {
+  display: none!important;
+}

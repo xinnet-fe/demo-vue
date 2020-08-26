@@ -1,4 +1,4 @@
-import { getUser, getSidebarMenus, changePwd } from '@/api/userinfo'
+import { getUser, getSidebarMenus, changePwd, queryAgentCustomerList, sendEmail } from '@/api/userinfo'
 import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
@@ -103,6 +103,24 @@ const actions = {
 
   clearPwdForm({ commit }) {
     commit('CLEAR_PWD_FORM')
+  },
+  queryAgentCustomerList({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      queryAgentCustomerList().then(user => {
+        resolve(user)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  sendEmail({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      sendEmail().then(user => {
+        resolve(user)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 

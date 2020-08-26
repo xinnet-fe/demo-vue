@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['user/sendEmail']
+      loading: state => state.loading.effects['userinfo/sendEmail']
     })
   },
   created() {
@@ -57,7 +57,7 @@ export default {
             userEmail: this.form2.email,
             invitedUrl: this.links
           }
-          this.$store.dispatch('user/sendEmail', query).then((response) => {
+          this.$store.dispatch('userinfo/sendEmail', query).then((response) => {
             if (response.data.isSuccess === '1') {
               this.$message({
                 message: '发送成功',

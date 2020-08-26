@@ -137,7 +137,7 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['user/queryAgentCustomerList']
+      loading: state => state.loading.effects['userinfo/queryAgentCustomerList']
       // page: state => state.order.page
     })
   },
@@ -163,7 +163,7 @@ export default {
         this.page.page = 1
       }
       console.error(query)
-      this.$store.dispatch('user/queryAgentCustomerList', query).then((response) => {
+      this.$store.dispatch('userinfo/queryAgentCustomerList', query).then((response) => {
         this.list = response.data.list
         this.page.total = response.data.count
       }).catch((error) => {
