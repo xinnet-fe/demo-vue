@@ -290,7 +290,7 @@ export default {
         zip: 200333
       }],
       form: {
-        value: [],
+        value: 0,
         value1: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
         value2: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
         value3: '',
@@ -344,7 +344,8 @@ export default {
     }
   },
   methods: {
-
+    onSubmit() {},
+    handleChange() {}
   }
 }
 </script>
