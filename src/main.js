@@ -4,7 +4,7 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import './setElement'
 import '@/styles/index.scss' // global css
-
+import '@/styles/console.scss'
 import App from './App'
 import store from './store'
 import router from './router'
