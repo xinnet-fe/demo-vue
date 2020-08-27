@@ -37,7 +37,36 @@
             <Box type="1">
               <div slot="tit-left">资源管理</div>
               <div slot="cont">
-                <div class="adv" />
+                <el-tabs type="card" class="domain-query">
+                  <el-tab-pane label="域名">
+                    <div class="queryDomain">
+                      <el-input v-model="queryDomain" placeholder="输入域名，如：xinnet.com">
+                        <el-button slot="append">查域名</el-button>
+                      </el-input>
+                      <div class="links">
+                        <a href="">批量域名注册</a>
+                        <a href="">批量域名注册</a>
+                        <a href="">批量域名注册</a>
+                        <a href="">批量域名注册</a>
+                        <a href="">批量域名注册</a>
+                      </div>
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="商标">
+                    <div class="queryDomain">
+                      <el-input v-model="queryBrand" placeholder="输入您想检索的商标名称、申请号、申请人名称">
+                        <el-button slot="append">查商标</el-button>
+                      </el-input>
+                      <div class="links">
+                        <a href="">商标注册</a>
+                        <a href="">商标注册</a>
+                        <a href="">商标注册</a>
+                        <a href="">商标注册</a>
+                        <a href="">商标注册</a>
+                      </div>
+                    </div>
+                  </el-tab-pane>
+                </el-tabs>
                 <el-row :gutter="20" class="prod-list">
                   <el-col :span="6">
                     <div class="grid-content grid-content-prod-1 clearfix">
@@ -148,6 +177,11 @@
                 <a href="http://" target="_blank" rel="noopener noreferrer">更多</a>
               </div>
               <div slot="cont">
+                <ul class="el-list el-list-style3 clearfix">
+                  <li v-for="(item, i) in list" :key="i" class="el-list-item clearfix" style="width: 50%;float: left;">
+                    <strong class="tit"><a href="">{{ item.tit }}</a></strong>
+                  </li>
+                </ul>
                 <el-row :gutter="20" class="help-list-2">
                   <el-col :span="8">
                     <div class="grid-content grid-content-list-1">
@@ -216,7 +250,14 @@
               <div slot="tit-right">
                 <a href="http://" target="_blank" rel="noopener noreferrer">查看公告</a>
               </div>
-              <div slot="cont">该插槽跟模板的其它地方一样可以访问相同的实例 property (也就是相同的“作用域”)，而不能访问 的作用域。例如 url 是访问不到的：</div>
+              <div slot="cont">
+                <ul class="el-list">
+                  <li v-for="(item, i) in list" :key="i" class="el-list-item">
+                    <strong class="tit"><a href="">{{ item.tit }}</a></strong>
+                    <p class="desc">{{ item.time }}</p>
+                  </li>
+                </ul>
+              </div>
             </Box>
           </div>
           <div class="login-list">
@@ -225,7 +266,14 @@
               <div slot="tit-right">
                 <a href="http://" target="_blank" rel="noopener noreferrer">安全设置</a>
               </div>
-              <div slot="cont">该插槽跟模板的其它地方一样可以访问相同的实例 property (也就是相同的“作用域”)，而不能访问 的作用域。例如 url 是访问不到的：</div>
+              <div slot="cont">
+                <ul class="el-list el-list-style2">
+                  <li v-for="(item, i) in list" :key="i" class="el-list-item clearfix">
+                    <strong class="tit"><a href="">{{ item.tit }}<br>{{ item.tit }}</a></strong>
+                    <p class="desc">{{ item.time }}</p>
+                  </li>
+                </ul>
+              </div>
             </Box>
           </div>
         </div>
@@ -243,6 +291,30 @@ export default {
   },
   data() {
     return {
+      queryDomain: '',
+      queryBrand: '',
+      list: [
+        {
+          tit: 'vue v-for循环的用法',
+          time: '2018年12月6日'
+        },
+        {
+          tit: 'vue v-for循环的用法',
+          time: '2018年12月6日'
+        },
+        {
+          tit: 'vue v-for循环的用法',
+          time: '2018年12月6日'
+        },
+        {
+          tit: 'vue v-for循环的用法',
+          time: '2018年12月6日'
+        },
+        {
+          tit: 'vue v-for循环的用法',
+          time: '2018年12月6日'
+        }
+      ]
     }
   }
 }
@@ -332,6 +404,67 @@ export default {
     }
     .resource-list{
       margin-bottom: 20px;
+      .domain-query{
+        .el-tabs__nav{
+          border-radius: 0px!important;
+          border: none;
+          .el-tabs__item{
+            height: 40px;
+            line-height: 40px;
+            background: #f3f3f3;
+            color: #666;
+            border: 1px solid #f3f3f3;
+            border-bottom-color: #e6e6e6;
+          }
+          .el-tabs__item.is-active{
+            position: relative;
+            color: #333;
+            background: #fff;
+            border-color: #e6e6e6;
+          }
+          .el-tabs__item.is-active::after{
+            content: "";
+            width: calc(100% + 2px);
+            height: 2px;
+            background: #f34648;
+            top: -1px;
+            left: -1px;
+            position: absolute;
+          }
+        }
+        .el-tabs__header{
+          margin-bottom: 0px;
+        }
+        .el-tabs__content{
+          padding-top: 0px;
+          margin-top: -1px;
+        }
+        .el-input{
+          height: 50px;
+        }
+        .el-input__inner{
+          height: 50px;
+          border-radius: 0px;
+          border-color: #e6e6e6;
+        }
+        .el-input-group__append{
+          border-radius: 0px;
+          background: #f34648;
+        }
+        .el-button span{
+          color: #fff;
+          font-size: 16px;
+        }
+        .links{
+          padding: 10px 0;
+          a{
+            display: inline-block;
+            margin-right: 20px;
+            font-size: 12px;
+          }
+        }
+      }
+
       .prod-list{
         border-top: 1px solid #f5f5f5;
         margin-left: -20px!important;
@@ -417,6 +550,14 @@ export default {
         }
       }
     }
+    .help-list{
+      .box-cont{
+        padding-top: 20px;
+      }
+      .el-list{
+        margin-bottom: 20px;
+      }
+    }
     .help-list-2{
       .grid-content{
         height: 96px;
@@ -478,12 +619,21 @@ export default {
     }
     .notice-list{
       margin-bottom: 20px;
+      .box-cont{
+        padding-top: 0px;
+        padding-bottom: 0px;
+      }
     }
-    // .notice-list .box-tit-right a,
-    // .login-list .box-tit-right a{
-    //   font-size: 12px;
-    //   color: #666666;
-    // }
+    .login-list{
+      .box-cont{
+        padding-top: 0px;
+        padding-bottom: 0px;
+      }
+    }
+    .notice-list .box-tit-right a,
+    .login-list .box-tit-right a{
+      color: #666666;
+    }
   }
 }
 </style>
