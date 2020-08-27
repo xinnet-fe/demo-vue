@@ -2,22 +2,22 @@
   <div class="advert-group">
     <!-- search -->
     <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-      <el-form-item label="广告组名称:" prop="name">
+      <el-form-item label="广告组名称" prop="name">
         <el-input v-model="searchForm.name" placeholder="请输入广告名称" clearable />
       </el-form-item>
-      <el-form-item label="广告站点:" prop="groupType">
+      <el-form-item label="广告站点" prop="groupType">
         <el-select v-model="searchForm.groupType" placeholder="请输入广告站点">
           <el-option v-for="item in groupTypes" :key="item.value" :label="item.key" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="primary" @click="onSearch">搜索</el-button>
+        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
 
-    <div class="mult-operation">
-      <el-button type="primary" size="mini" @click="showModal()">新增广告组</el-button>
+    <div class="operate-form">
+      <el-button size="mini" @click="showModal()">新增广告组</el-button>
     </div>
 
     <!-- table -->
@@ -55,8 +55,8 @@
       />
       <el-table-column label="操作" fixed="right">
         <template v-slot="{ row }">
-          <el-button type="text" @click="showModal(row)">编辑</el-button>
-          <el-button type="text" @click="showTipsModal(row)">删除</el-button>
+          <el-button size="medium" type="text" @click="showModal(row)">编辑</el-button>
+          <el-button size="medium" type="text" @click="showTipsModal(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -69,7 +69,7 @@
     <!-- table -->
 
     <!-- form -->
-    <el-dialog width="500px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
+    <el-dialog width="600px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="广告组名称:" prop="groupName">
           <el-input v-model="form.groupName" />
@@ -84,18 +84,18 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeModal">取消</el-button>
-        <el-button type="primary" @click="submit">保存</el-button>
+        <el-button size="medium" @click="closeModal">取消</el-button>
+        <el-button size="medium" type="primary" @click="submit">保存</el-button>
       </div>
     </el-dialog>
     <!-- form -->
 
     <!-- 删除提示 -->
-    <el-dialog width="350px" title="提示" :visible.sync="showTips">
+    <el-dialog width="400px" title="提示" :visible.sync="showTips">
       <p>删除后前台展示页面也会删除，是否确认删除所选广告？</p>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeTipsModal">取消</el-button>
-        <el-button type="primary" @click="destroy">确认</el-button>
+        <el-button size="medium" @click="closeTipsModal">取消</el-button>
+        <el-button size="medium" type="primary" @click="destroy">确认</el-button>
       </div>
     </el-dialog>
     <!-- 删除提示 -->
@@ -274,13 +274,6 @@ export default {
 @import "~@/styles/variables.scss";
 
 .advert-group {
-  .search-form {
-    margin-top: 10px;
-  }
-  .mult-operation {
-    margin-bottom: 10px;
-    text-align: right;
-  }
   .advert-code {
     &:hover {
       color: $hintTextColor;

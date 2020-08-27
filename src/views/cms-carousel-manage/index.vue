@@ -1,23 +1,23 @@
 <template>
-  <div class="cms-carousel-manage">
+  <div class="order-form">
     <!-- search -->
     <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-      <el-form-item label="名称:" prop="name">
+      <el-form-item label="名称" prop="name">
         <el-input v-model="searchForm.name" placeholder="请输入名称" clearable />
       </el-form-item>
-      <el-form-item label="状态:" prop="website">
+      <el-form-item label="状态" prop="website">
         <el-select v-model="searchForm.status">
           <el-option v-for="({ value, key }) in states" :key="value" :label="key" :value="value" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="primary" @click="onSearch">搜索</el-button>
+        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
 
-    <div class="mult-operation">
-      <el-button type="primary" size="mini" @click="showModal()">新增轮播</el-button>
+    <div class="operate-form">
+      <el-button size="mini" @click="showModal()">新增轮播</el-button>
     </div>
 
     <!-- table -->
@@ -62,8 +62,8 @@
       </el-table-column>
       <el-table-column label="操作" fixed="right">
         <template v-slot="{ row }">
-          <el-button type="text" @click="showModal(row)">编辑</el-button>
-          <el-button type="text" @click="showTipsModal(row)">删除</el-button>
+          <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
+          <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -76,11 +76,11 @@
     <!-- table -->
 
     <!-- form -->
-    <el-dialog width="500px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
+    <el-dialog width="800px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本属性" name="basis">
           <template v-slot:default>
-            <el-form ref="form" class="el-form" :model="form" label-width="100px" :rules="rules">
+            <el-form ref="form" :model="form" label-width="100px" :rules="rules">
               <el-form-item label="名称:" prop="name">
                 <el-input v-model="form.name" />
               </el-form-item>
@@ -100,10 +100,10 @@
                 <el-input v-model="form.desc" :rows="3" type="textarea" />
               </el-form-item>
               <el-form-item label="图片地址:" prop="imgUrl">
-                <el-col :span="16">
+                <el-col :span="24">
                   <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="24">
                   <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
                     <el-option label="本地上传" value="1" />
                     <el-option label="文件服务器" value="2" />
@@ -158,7 +158,7 @@
         </el-tab-pane>
         <el-tab-pane label="高级属性" name="senior">
           <template v-slot:default>
-            <el-form ref="seniorForm" class="el-form" :model="form" label-width="100px">
+            <el-form ref="seniorForm" :model="form" label-width="100px">
               <el-form-item label="点击事件:">
                 <el-input v-model="form.click" />
               </el-form-item>
@@ -182,18 +182,18 @@
         </el-tab-pane>
       </el-tabs>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeModal">取消</el-button>
-        <el-button type="primary" @click="submit">保存</el-button>
+        <el-button size="medium" @click="closeModal">取消</el-button>
+        <el-button size="medium" type="primary" @click="submit">保存</el-button>
       </div>
     </el-dialog>
     <!-- form -->
 
     <!-- 删除提示 -->
-    <el-dialog width="350px" title="提示" :visible.sync="showTips">
+    <el-dialog width="400px" title="提示" :visible.sync="showTips">
       <p>删除后前台展示页面也会删除，是否确认删除所选条目？</p>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeTipsModal">取消</el-button>
-        <el-button type="primary" @click="destroy">确认</el-button>
+        <el-button size="medium" @click="closeTipsModal">取消</el-button>
+        <el-button size="medium" type="primary" @click="destroy">确认</el-button>
       </div>
     </el-dialog>
     <!-- 删除提示 -->
@@ -493,22 +493,4 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import "~@/styles/variables.scss";
-
-.cms-carousel-manage {
-  padding: 20px;
-  .search-form {
-    margin-top: 10px;
-  }
-  .mult-operation {
-    margin-bottom: 10px;
-    text-align: right;
-  }
-  .el-form {
-    margin-top: 20px;
-  }
-}
-</style>
 

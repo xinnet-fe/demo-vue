@@ -1,5 +1,5 @@
 <template>
-  <div class="cms-basis-advert">
+  <div class="order-form">
     <el-tabs v-model="activeName" @tab-click="changeTabs">
       <el-tab-pane label="广告组" name="group">
         <advert-group v-if="activeName === 'group'" ref="group" :active-name.sync="activeName" />
@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'group'
+      activeName: 'list'
     }
   },
   methods: {
@@ -31,9 +31,4 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-.cms-basis-advert {
-  padding: 20px;
-}
-</style>
 

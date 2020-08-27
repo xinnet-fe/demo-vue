@@ -2,27 +2,27 @@
   <div class="advert-list">
     <!-- search -->
     <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-      <el-form-item label="广告组名称:" prop="advName">
+      <el-form-item label="广告组名称" prop="advName">
         <el-input v-model="searchForm.advName" placeholder="请输入广告名称" clearable />
       </el-form-item>
-      <el-form-item label="广告状态:" prop="advStatus">
+      <el-form-item label="广告状态" prop="advStatus">
         <el-select v-model="searchForm.advStatus">
           <el-option v-for="item in advStatus" :key="item.value" :label="item.key" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属广告组:" prop="groupCode">
+      <el-form-item label="所属广告组" prop="groupCode">
         <el-select v-model="searchForm.groupCode" clearable>
           <el-option v-for="code in groupList" :key="code" :label="code" :value="code" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="primary" @click="onSearch">搜索</el-button>
+        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
 
-    <div class="mult-operation">
-      <el-button type="primary" size="mini" @click="showModal()">新增广告</el-button>
+    <div class="operate-form">
+      <el-button size="mini" @click="showModal()">新增广告</el-button>
     </div>
 
     <!-- table -->
@@ -82,8 +82,8 @@
       </el-table-column>
       <el-table-column label="操作" fixed="right">
         <template v-slot="{ row }">
-          <el-button type="text" @click="showModal(row)">编辑</el-button>
-          <el-button type="text" @click="showTipsModal(row)">删除</el-button>
+          <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
+          <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,7 +96,7 @@
     <!-- table -->
 
     <!-- form -->
-    <el-dialog width="600px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
+    <el-dialog width="800px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="广告组名称:" prop="advName">
           <el-input v-model="form.advName" />
@@ -113,10 +113,10 @@
           <el-input v-model="form.url" />
         </el-form-item>
         <el-form-item label="广告图片地址:" prop="imgUrl">
-          <el-col :span="16">
+          <el-col :span="24">
             <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
           </el-col>
-          <el-col :span="8">
+          <el-col :span="24">
             <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
               <el-option label="本地上传" value="1" />
               <el-option label="文件服务器" value="2" />
@@ -133,6 +133,7 @@
           >
             <el-button ref="upload" size="small" type="primary">点击上传</el-button>
           </el-upload>
+          <div id="resourceManager" />
         </el-form-item>
         <el-form-item label="序号:" prop="sortNum">
           <el-input-number v-model="form.sortNum" />
@@ -159,23 +160,22 @@
           />
         </el-form-item>
         <el-form-item label="个性设置:" prop="extra">
-          <!-- <el-input v-model="form.extra" :rows="3" type="textarea" /> -->
-          <json-editor ref="jsonEditor" v-model="form.extra" />
+          <json-editor ref="jsonEditor" v-model="form.extra" width="600" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeModal">取消</el-button>
-        <el-button type="primary" @click="submit">保存</el-button>
+        <el-button size="medium" @click="closeModal">取消</el-button>
+        <el-button size="medium" type="primary" @click="submit">保存</el-button>
       </div>
     </el-dialog>
     <!-- form -->
 
     <!-- 删除提示 -->
-    <el-dialog width="350px" title="提示" :visible.sync="showTips">
+    <el-dialog width="400px" title="提示" :visible.sync="showTips">
       <p>删除后前台展示页面也会删除，是否确认删除所选广告？</p>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeTipsModal">取消</el-button>
-        <el-button type="primary" @click="destroy">确认</el-button>
+        <el-button size="medium" @click="closeTipsModal">取消</el-button>
+        <el-button size="medium" type="primary" @click="destroy">确认</el-button>
       </div>
     </el-dialog>
     <!-- 删除提示 -->
@@ -251,10 +251,74 @@ export default {
     })
   },
   created() {
-    this.getAdvStatus()
-    this.getGroupCodeList()
+    // this.getAdvStatus()
+    // this.getGroupCodeList()
+    const links = [
+      {
+        id: 'theme-css',
+        src: '/static/elfinder/css/theme.css'
+      },
+      {
+        id: 'jquery-css',
+        src: '/static/elfinder/jquery-ui-1.12.1.custom/jquery-ui.css'
+      }
+    ]
+    // this.createLink(links)
+    const elems = [
+      {
+        id: 'jquery',
+        src: '/static/elfinder/js/jquery-1.11.1.js'
+      },
+      {
+        id: 'elfinder',
+        src: '/static/elfinder/js/elfinder.full.js'
+      },
+      // {
+      //   id: 'elfinder-lang',
+      //   src: '/static/elfinder/js/elfinder.zh_CN.js'
+      // },
+      // {
+      //   id: 'quicklook',
+      //   src: '/static/elfinder/js/quicklook.googledocs.js'
+      // },
+      {
+        id: 'ace',
+        src: '/static/elfinder/ace/ace.js'
+      },
+      {
+        id: 'modelist',
+        src: '/static/elfinder/ace/ext-modelist.js'
+      },
+      // {
+      //   id: 'menu',
+      //   src: '/static/elfinder/ace/ext-settings_menu.js'
+      // },
+      {
+        id: 'jquery-ui',
+        src: '/static/elfinder/jquery-ui-1.12.1.custom/jquery-ui.js'
+      }
+    ]
+    // this.createScript(elems)
   },
   methods: {
+    createLink(elems) {
+      elems.forEach(({ href, id }) => {
+        const link = global.document.createElement('link')
+        link.rel = 'stylesheet'
+        link.type = 'text/css'
+        link.id = id
+        link.href = href
+        global.document.body.appendChild(link)
+      })
+    },
+    createScript(elems) {
+      elems.forEach(({ src, id }) => {
+        const script = global.document.createElement('script')
+        script.src = src
+        script.id = id
+        global.document.body.appendChild(script)
+      })
+    },
     ...mapActions({
       getData: 'cms/advList',
       add: 'cms/addAdvList',
@@ -405,18 +469,4 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import "~@/styles/variables.scss";
-
-.advert-list {
-  .search-form {
-    margin-top: 10px;
-  }
-  .mult-operation {
-    margin-bottom: 10px;
-    text-align: right;
-  }
-}
-</style>
 
