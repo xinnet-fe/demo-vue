@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="order-form">
     <el-tabs v-model="activeName">
       <el-tab-pane label="全部" name="directly">
         <content-component msg="both" />

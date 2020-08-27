@@ -1,51 +1,55 @@
 <template>
-  <div class="app-container">
-    <div class="filter-container">
-      <el-form inline>
-        <el-form-item label="ID:">
-          <el-input v-model="listQuery.actId" placeholder="请输入ID" class="filter-item" @keyup.enter.native="handleFilter" />
+  <div>
+    <div>
+      <el-form inline class="search-form">
+        <el-form-item label="ID">
+          <el-input v-model="listQuery.actId" placeholder="请输入ID" @keyup.enter.native="handleFilter" />
         </el-form-item>
-        <el-form-item label="标题:">
-          <el-input v-model="listQuery.title" placeholder="请输入文章标题" class="filter-item" @keyup.enter.native="handleFilter" />
+        <el-form-item label="标题">
+          <el-input v-model="listQuery.title" placeholder="请输入文章标题" @keyup.enter.native="handleFilter" />
         </el-form-item>
-        <el-form-item label="所属栏目:">
-          <el-select v-model="listQuery.classId" placeholder="请选择文章所属栏目" clearable class="filter-item">
+        <el-form-item label="所属栏目">
+          <el-select v-model="listQuery.classId" placeholder="请选择文章所属栏目" clearable>
             <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
           </el-select>
         </el-form-item>
-        <el-form-item label="审核状态:">
-          <el-select v-model="listQuery.auditState" placeholder="请选择审核状态" clearable class="filter-item">
+        <el-form-item label="审核状态">
+          <el-select v-model="listQuery.auditState" placeholder="请选择审核状态" clearable>
             <el-option v-for="item in auditState" :key="item.num" :label="item.name" :value="item.num" />
           </el-select>
         </el-form-item>
-        <el-form-item label="发布状态:">
-          <el-select v-model="listQuery.publishState" placeholder="请选择发布状态" clearable class="filter-item">
+        <el-form-item label="发布状态">
+          <el-select v-model="listQuery.publishState" placeholder="请选择发布状态" clearable>
             <el-option v-for="item in publishState" :key="item.num" :label="item.name" :value="item.num" />
           </el-select>
         </el-form-item>
-        <el-form-item label="发布时间:">
-          <el-date-picker v-model="listQuery.publishDate" type="datetime" value-format="yyyy-MM-dd" format="yyyy-MM-dd" class="filter-item" placeholder="请选择发布时间" />
+        <el-form-item label="发布时间">
+          <el-date-picker v-model="listQuery.publishDate" type="datetime" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="请选择发布时间" />
         </el-form-item>
-        <el-form-item label="置顶状态:">
-          <el-select v-model="listQuery.isTop" placeholder="请选择置顶状态" clearable class="filter-item">
+        <el-form-item label="置顶状态">
+          <el-select v-model="listQuery.isTop" placeholder="请选择置顶状态" clearable>
             <el-option v-for="item in isTop" :key="item.num" :label="item.name" :value="item.num" />
           </el-select>
         </el-form-item>
-        <el-button v-waves @click="handleFilter">
-          搜索
-        </el-button>
-        <el-button @click="resetModal">
-          重置
-        </el-button>
+
+        <el-form-item>
+          <el-button v-waves type="primary" size="medium" @click="handleFilter">
+            搜索
+          </el-button>
+          <el-button size="medium" @click="resetModal">
+            重置
+          </el-button>
+        </el-form-item>
       </el-form>
-      <div class="mult-operation">
-        <el-button type="primary" size="mini" @click="handleCreate">
+
+      <div class="operate-form">
+        <el-button size="mini" @click="handleCreate">
           新增
         </el-button>
       </div>
       <!-- <span style="width:8%;display:inline-block;">关键词：</span>
-        <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" class="filter-item" @keyup.enter.native="handleFilter" /> -->
-      <!-- <el-button type="danger" class="filter-item" style="margin-right: 20px;" @click="handleDeletehints">批量删除</el-button> -->
+        <el-input v-model="listQuery.keyword" placeholder="请输入文章关键词标签" @keyup.enter.native="handleFilter" /> -->
+      <!-- <el-button type="danger" style="margin-right: 20px;" @click="handleDeletehints">批量删除</el-button> -->
     </div>
 
     <el-table
@@ -140,38 +144,36 @@
     <!-- 审核标签 -->
     <el-dialog width="950px" :title="textMap[dialogStatus]" :visible.sync="dialogAudit">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="文章标题：" prop="title">
+        <el-form-item label="文章标题" prop="title">
           <!-- <el-input type="textarea" placeholder="请输入内容" v-model="temp.title" maxlength="30" show-word-limit /> -->
           <el-input v-model="temp.title" type="textarea" rows="3" style="width:360px;" placeholder="请输入内容" minlength="5" maxlength="100" show-word-limit @input="handleRemark" />
         </el-form-item>
         <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span>
-        <el-form-item label="所属栏目：" prop="column">
+        <el-form-item label="所属栏目" prop="column">
           <el-input v-model="temp.categoryName" disabled />
-          <!-- <el-select v-model="temp.categoryName" placeholder="请选择文章所属栏目" clearable style="width: 100%;" class="filter-item">
+          <!-- <el-select v-model="temp.categoryName" placeholder="请选择文章所属栏目" clearable style="width: 100%;">
             <el-option v-for="item in columns" :key="item" :label="item" :value="item" />
           </el-select> -->
         </el-form-item>
-        <el-form-item label="关键词：">
+        <el-form-item label="关键词">
           <el-input v-model="temp.tag" disabled />
-          <span
-            style="position: absolute;display: inline-block;width: 160px;right: -170px;"
-          >(多个关键词用"、"号隔开)</span>
+          <span>(多个关键词用"、"号隔开)</span>
         </el-form-item>
-        <el-form-item label="发布时间：">
+        <el-form-item label="发布时间">
           <!-- <el-input v-model="temp.publishTime" /> -->
-          <el-date-picker v-model="temp.publishTime" disabled type="datetime" class="filter-item" placeholder="请选择发布时间" />
+          <el-date-picker v-model="temp.publishTime" disabled type="datetime" placeholder="请选择发布时间" />
         </el-form-item>
-        <el-form-item label="文章图片：">
-          <img :src="temp.imgContent" style="width:280px;height:140px;">
+        <el-form-item label="文章图片">
+          <img :src="temp.imgContent" style="width:280px; height:140px;">
         </el-form-item>
-        <el-form-item label="作者：" prop="author">
+        <el-form-item label="作者" prop="author">
           <el-input v-if="temp.writer" v-model="temp.writer" disabled />
           <span v-else>无</span>
         </el-form-item>
-        <el-form-item label="内容简介：" prop="summary">
+        <el-form-item label="内容简介" prop="summary">
           <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
         </el-form-item>
-        <el-form-item label="文章正文：">
+        <el-form-item label="文章正文">
           <editor
             id="editor_id1"
             width="700px"
@@ -187,51 +189,49 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleCancel">
+        <el-button size="medium" @click="handleCancel">
           取消
         </el-button>
-        <el-button type="primary" @click="handlePass()">
+        <el-button size="medium" type="primary" @click="handlePass()">
           人工通过
         </el-button>
-        <el-button type="primary" @click="handleAudits()">
+        <el-button size="medium" type="primary" @click="handleAudits()">
           审核
         </el-button>
       </div>
     </el-dialog>
     <!-- 新增标签 -->
-    <el-dialog width="950px" :before-close="beforeClose" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="addOrEditForm" :rules="dataRules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="文章标题：" prop="title">
+    <el-dialog width="900px" :before-close="beforeClose" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form ref="addOrEditForm" :rules="dataRules" :model="temp" label-width="120px">
+        <el-form-item label="文章标题" prop="title">
           <el-input v-model="temp.title" type="textarea" placeholder="请输入内容" minlength="5" maxlength="60" show-word-limit @input="handleRemark" />
         </el-form-item>
         <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span>
-        <el-form-item label="所属栏目：" prop="column">
-          <el-select v-model="temp.column" placeholder="请选择文章所属栏目" clearable style="width: 100%;" class="filter-item">
+        <el-form-item label="所属栏目" prop="column">
+          <el-select v-model="temp.column" placeholder="请选择文章所属栏目" clearable style="width: 100%;">
             <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
           </el-select>
         </el-form-item>
-        <el-form-item label="关键词：">
+        <el-form-item label="关键词">
           <el-input v-model="temp.keyword" />
-          <span
-            style="position: absolute;display: inline-block;width: 160px;right: -170px;"
-          >(多个关键词用"、"号隔开)</span>
+          <span>(多个关键词用"、"号隔开)</span>
         </el-form-item>
-        <el-form-item label="发布时间：">
-          <el-date-picker v-model="temp.releaseTime" type="datetime" class="filter-item" placeholder="请选择发布时间" />
+        <el-form-item label="发布时间">
+          <el-date-picker v-model="temp.releaseTime" type="datetime" placeholder="请选择发布时间" />
         </el-form-item>
-        <el-form-item label="置顶设置：" prop="value">
+        <el-form-item label="置顶设置" prop="value">
           <el-switch
             v-model="temp.value"
             :active-value="1"
             :inactive-value="0"
           />
         </el-form-item>
-        <el-form-item label="浏览器初始值：" prop="originalValue">
-          <el-select v-model="temp.originalValue" placeholder="请选择浏览器初始值" clearable style="width: 100%;" class="filter-item">
+        <el-form-item label="浏览器初始值" prop="originalValue">
+          <el-select v-model="temp.originalValue" placeholder="请选择浏览器初始值" clearable style="width: 100%;">
             <el-option v-for="item in originalvalue" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
-        <el-form-item label="文章图片：" prop="file">
+        <el-form-item label="文章图片" prop="file">
           <el-upload
             ref="upload"
             class="upload"
@@ -247,8 +247,8 @@
             <!-- <div slot="tip" class="el-upload__tip">只能上传图片</div> -->
           </el-upload>
         </el-form-item>
-        <el-form-item label="作者：" prop="author">
-          <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;" class="filter-item">
+        <el-form-item label="作者" prop="author">
+          <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;">
             <el-option
               v-for="item in authors"
               :key="item.value"
@@ -256,14 +256,14 @@
               :value="item.value"
             />
           </el-select>
-          <el-button class="filter-item" style="margin-left: 10px;" type="primary" @click="handleauthor">
+          <el-button size="medium" @click="handleauthor">
             添加作者
           </el-button>
         </el-form-item>
-        <el-form-item label="内容简介：" prop="summary">
+        <el-form-item label="内容简介" prop="summary">
           <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
         </el-form-item>
-        <el-form-item label="文章正文：" prop="content">
+        <el-form-item label="文章正文" prop="content">
           <editor
             id="editor_id2"
             width="700px"
@@ -278,52 +278,52 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
+        <el-button size="medium" @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button @click="handleAudits">
+        <el-button size="medium" @click="handleAudits">
           违禁词检索
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button size="medium" type="primary" @click="dialogStatus==='create'?createData():updateData()">
           发布
         </el-button>
       </div>
     </el-dialog>
     <el-dialog :visible.sync="dialogauthor" title=" ">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="作者名称：" prop="authorName">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left">
+        <el-form-item label="作者名称" prop="authorName">
           <el-input v-model="temp.authorName" placeholder="请输入作者名称" />
           <!-- <el-input v-model="authorName" type="textarea" placeholder="请输入内容" minlength="5" maxlength="60" show-word-limit @input="handleRemark" /> -->
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogauthor = false">取消</el-button>
-        <el-button type="primary" @click="handleaddAuthor()">确定</el-button>
+        <el-button size="medium" @click="dialogauthor = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="handleaddAuthor()">确定</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="textMap[dialogStatusdele]" :visible.sync="dialogPvVisible">
       <p v-if="dialogStatusdele==='deletes'">您确定要删除选中的数据吗？</p>
       <p v-else>您确定要删除此数据吗？</p>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogPvVisible = false">取消</el-button>
+        <el-button size="medium" @click="dialogPvVisible = false">取消</el-button>
         <!-- <el-button type="primary" @click="handleDeletes()">确定</el-button> -->
-        <el-button type="primary" @click="toHandleDelete">确定</el-button>
+        <el-button size="medium" type="primary" @click="toHandleDelete">确定</el-button>
       </span>
     </el-dialog>
     <el-dialog :visible.sync="dialogAuditVisible">
       <p>您确定要取消审核吗？</p>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogAuditVisible = false">取消</el-button>
-        <el-button type="primary" @click="updateAudit">确定</el-button>
+        <el-button size="medium" @click="dialogAuditVisible = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="updateAudit">确定</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="Looktitle" :visible.sync="dialogLookVisible">
       <p>审核状态：{{ tempLookover.state }}</p>
       <p v-if="tempLookover.state == '未通过'">未通过原因：{{ tempLookover.context }}</p>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogLookVisible = false">取消</el-button>
+        <el-button size="medium" @click="dialogLookVisible = false">取消</el-button>
         <!-- <el-button type="primary" @click="handleDeletes()">确定</el-button> -->
-        <el-button type="primary" @click="dialogLookVisible = false">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogLookVisible = false">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -926,14 +926,13 @@ export default {
   }
 }
 </script>
-<style>
-  .btnstyle {
-    width: auto!important;
-    padding: 7px 5px!important;
-    margin: 0px!important;
-  }
-  .mult-operation {
-    margin: auto;
-    text-align: right;
-  }
+<style lang="scss" scoped>
+.upload {
+  max-width: 500px;
+}
+.btnstyle {
+  width: auto!important;
+  padding: 7px 5px!important;
+  margin: 0px!important;
+}
 </style>

@@ -7,6 +7,8 @@
 @import './table.scss';
 @import './pagination.scss';
 @import './form.scss';
+@import './tabs.scss';
+@import './order.scss';
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -125,14 +127,12 @@ aside {
 .app-container {
   padding: 20px;
 }
-
+.app-content{
+  padding: 0px;
+}
 .components-container {
   margin: 30px 50px;
   position: relative;
-}
-
-.pagination-container {
-  margin-top: 30px;
 }
 
 .text-center {
@@ -190,4 +190,14 @@ aside {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+// input placeholder color
+input::-webkit-input-placeholder {
+  color: #999!important;
+}
+input::-moz-input-placeholder {
+  color: #999!important;
+}
+input::-ms-input-placeholder {
+  color: #999!important;
 }

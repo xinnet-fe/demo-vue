@@ -1,20 +1,21 @@
 <template>
-  <div class="app-container">
-    <div class="filter-container">
-      友链名称：<el-input v-model="listQuery.title" placeholder="请输入友链名称" style="width: 200px;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <!-- <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select> -->
-      <el-button v-waves class="filter-item" @click="handleFilter">
-        搜索
-      </el-button>
-    </div>
+  <div class="order-form">
+    <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
+      <el-form-item label="友链名称">
+        <el-input v-model="listQuery.title" placeholder="请输入友链名称" class="filter-item" @keyup.enter.native="handleFilter" />
+      </el-form-item>
+      <el-form-item>
+        <el-button v-waves class="filter-item" type="primary" size="medium" @click="handleFilter">
+          搜索
+        </el-button>
+      </el-form-item>
+    </el-form>
 
-    <div class="mult-operation">
-      <el-button type="primary" class="filter-item" size="mini" @click="handleCreate">
+    <div class="operate-form">
+      <el-button class="filter-item" size="mini" @click="handleCreate">
         新增
       </el-button>
-      <el-button type="danger" class="filter-item" size="mini" @click="handleDeletehints">批量删除</el-button>
+      <el-button class="filter-item" size="mini" @click="handleDeletehints">批量删除</el-button>
     </div>
 
     <el-table
@@ -87,7 +88,7 @@
     />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px" style="width: 400px; margin-left:50px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-width="120px">
         <el-form-item label="友链名称" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
@@ -106,10 +107,10 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
+        <el-button size="medium" @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button size="medium" type="primary" @click="dialogStatus==='create'?createData():updateData()">
           确定
         </el-button>
       </div>
@@ -119,9 +120,9 @@
       <p v-if="dialogStatusdele==='deletes'">您确定要删除选中的数据吗？</p>
       <p v-else>您确定要删除此数据吗？</p>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogPvVisible = false">取消</el-button>
+        <el-button size="medium" @click="dialogPvVisible = false">取消</el-button>
         <!-- <el-button type="primary" @click="handleDeletes()">确定</el-button> -->
-        <el-button type="primary" @click="dialogStatusdele==='deletes'?handleDeletes():handleDelete()">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogStatusdele==='deletes'?handleDeletes():handleDelete()">确定</el-button>
       </span>
     </el-dialog>
   </div>
