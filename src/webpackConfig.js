@@ -5,7 +5,7 @@ module.exports = {
 
   // vue.config根级
   rootConfig: {
-
+    publicPath: process.env.NODE_ENV === 'development' ? '/' : '/admin/'
   },
   // configureWebpack
   configureWebpack: {

@@ -179,6 +179,23 @@
       </div>
     </el-dialog>
     <!-- 删除提示 -->
+
+    <iframe
+      v-show="showIframeModal"
+      ref="elfinder"
+      class="elfinder"
+      frameborder="0"
+      src="/elfinder.html"
+      :style="{ width: '100%', height }"
+    />
+    <div
+      v-show="showIframeModal"
+      ref="close"
+      class="elfinder-close"
+      @click="closeIframe"
+    >
+      X
+    </div>
   </div>
 </template>
 
@@ -240,7 +257,9 @@ export default {
         pageSize: 30
       },
       // 上传附件列表
-      fileList: []
+      fileList: [],
+      // 文件管理器页面显示
+      showIframeModal: false
     }
   },
   computed: {
@@ -253,72 +272,9 @@ export default {
   created() {
     // this.getAdvStatus()
     // this.getGroupCodeList()
-    const links = [
-      {
-        id: 'theme-css',
-        src: '/static/elfinder/css/theme.css'
-      },
-      {
-        id: 'jquery-css',
-        src: '/static/elfinder/jquery-ui-1.12.1.custom/jquery-ui.css'
-      }
-    ]
-    // this.createLink(links)
-    const elems = [
-      {
-        id: 'jquery',
-        src: '/static/elfinder/js/jquery-1.11.1.js'
-      },
-      {
-        id: 'elfinder',
-        src: '/static/elfinder/js/elfinder.full.js'
-      },
-      // {
-      //   id: 'elfinder-lang',
-      //   src: '/static/elfinder/js/elfinder.zh_CN.js'
-      // },
-      // {
-      //   id: 'quicklook',
-      //   src: '/static/elfinder/js/quicklook.googledocs.js'
-      // },
-      {
-        id: 'ace',
-        src: '/static/elfinder/ace/ace.js'
-      },
-      {
-        id: 'modelist',
-        src: '/static/elfinder/ace/ext-modelist.js'
-      },
-      // {
-      //   id: 'menu',
-      //   src: '/static/elfinder/ace/ext-settings_menu.js'
-      // },
-      {
-        id: 'jquery-ui',
-        src: '/static/elfinder/jquery-ui-1.12.1.custom/jquery-ui.js'
-      }
-    ]
-    // this.createScript(elems)
+    this.height = global.innerHeight + 'px'
   },
   methods: {
-    createLink(elems) {
-      elems.forEach(({ href, id }) => {
-        const link = global.document.createElement('link')
-        link.rel = 'stylesheet'
-        link.type = 'text/css'
-        link.id = id
-        link.href = href
-        global.document.body.appendChild(link)
-      })
-    },
-    createScript(elems) {
-      elems.forEach(({ src, id }) => {
-        const script = global.document.createElement('script')
-        script.src = src
-        script.id = id
-        global.document.body.appendChild(script)
-      })
-    },
     ...mapActions({
       getData: 'cms/advList',
       add: 'cms/addAdvList',
@@ -456,6 +412,9 @@ export default {
     localUpload() {
       if (this.uploadImageAddress === '1') {
         this.$refs.upload.$el.click()
+      } else {
+        // this.$refs.elfinder.contentWindow.showIframeModal = true
+        this.showIframeModal = true
       }
     },
     // 点击选择图片
@@ -465,8 +424,27 @@ export default {
         this.form.imgUrl = ''
       }
       this.fileList = [file]
+    },
+    closeIframe() {
+      this.showIframeModal = false
     }
   }
 }
 </script>
 
+<style scoped>
+.elfinder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999991;
+  background: #ccc;
+}
+.elfinder-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 999992;
+  cursor: pointer;
+}
+</style>
