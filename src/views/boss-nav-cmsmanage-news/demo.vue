@@ -157,7 +157,7 @@
         </el-form-item>
         <el-form-item label="关键词">
           <el-input v-model="temp.tag" disabled />
-          <span>(多个关键词用"、"号隔开)</span>
+          <span>(多个关键词用","号隔开)</span>
         </el-form-item>
         <el-form-item label="发布时间">
           <!-- <el-input v-model="temp.publishTime" /> -->
@@ -214,7 +214,7 @@
         </el-form-item>
         <el-form-item label="关键词">
           <el-input v-model="temp.keyword" />
-          <span>(多个关键词用"、"号隔开)</span>
+          <span>(多个关键词用","号隔开)</span>
         </el-form-item>
         <el-form-item label="发布时间">
           <el-date-picker v-model="temp.releaseTime" type="datetime" placeholder="请选择发布时间" />
@@ -535,7 +535,7 @@ export default {
           if (row.tags.length) {
             let tag = ''
             row.tags.forEach((rows, i) => {
-              tag += i + 1 === row.tags.length ? rows.name : rows.name + '、'
+              tag += i + 1 === row.tags.length ? rows.name : rows.name + ','
             })
             row.tag = tag
           }
@@ -612,7 +612,16 @@ export default {
       const form = new FormData()
       const data = { actId: row.actId, isTop: row.top ? 1 : 0 }
       this.temp = Object.assign({}, row)
-      form.append('article', JSON.stringify(data))
+      // form.append('article', JSON.stringify(data))
+      form.append(
+        'article',
+        new Blob(
+          [JSON.stringify(data)],
+          {
+            type: 'application/json'
+          }
+        )
+      )
 
       this.$store.dispatch('article/modifyArticle', form)
     },
@@ -661,7 +670,7 @@ export default {
         if (row.tags.length) {
           let tag = ''
           row.tags.forEach((rows, i) => {
-            tag += i + 1 === row.tags.length ? rows.name : rows.name + '、'
+            tag += i + 1 === row.tags.length ? rows.name : rows.name + ','
           })
           data.keyword = tag
         }
@@ -763,7 +772,7 @@ export default {
               if (data.data.banWords.length - 1 === i) {
                 str += row
               } else {
-                str += row + '、'
+                str += row + ','
               }
             })
             this.newsbanWords = str
