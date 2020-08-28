@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="活动公告" :visible.sync="formVisible" width="800px">
+  <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="活动公告" :visible.sync="formVisible" width="800px" custom-class="dialog-notice">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="标题" prop="title">
         <el-input v-model="form.title" />
@@ -34,46 +34,26 @@
       <el-form-item label="开关">
         <el-switch v-model="form.top" />
       </el-form-item>
-      <el-form-item label="上传">
+      <el-form-item label="置顶图片上传" prop="imageUrl">
         <el-upload
+          class="avatar-uploader"
           action="#"
-          list-type="picture-card"
-          :auto-upload="false"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
         >
-          <i slot="default" class="el-icon-plus" />
-          <div slot="file" slot-scope="{file}">
-            <img
-              class="el-upload-list__item-thumbnail"
-              :src="file.url"
-              alt=""
-            >
-            <span class="el-upload-list__item-actions">
-              <span
-                class="el-upload-list__item-preview"
-                @click="handlePictureCardPreview(file)"
-              >
-                <i class="el-icon-zoom-in" />
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleDownload(file)"
-              >
-                <i class="el-icon-download" />
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleRemove(file)"
-              >
-                <i class="el-icon-delete" />
-              </span>
+          <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon" />
+          <span v-if="form.imageUrl" class="el-upload-list__item-actions">
+            <span>
+              <i class="el-icon-upload2" /><br>重新上传
             </span>
-          </div>
+          </span>
+          <div slot="tip" class="el-upload__tip">仅支持JPG格式图片，1200*800px，小于500K</div>
         </el-upload>
-        <el-dialog :visible.sync="dialogViewImgVisible">
+        <!-- <el-dialog :visible.sync="dialogVisible">
           <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
+        </el-dialog> -->
       </el-form-item>
       <el-form-item label="内容">
         <el-input v-model="form.content" type="textarea" />
@@ -111,7 +91,7 @@ export default {
         author: '',
         date: '',
         top: false,
-        file: '',
+        imageUrl: '',
         content: ''
       },
       rules: {
@@ -129,36 +109,16 @@ export default {
         ],
         date: [
           { required: true, message: '请选择！', trigger: 'change' }
+        ],
+        imageUrl: [
+          { required: true, message: '请上传照片', trigger: 'change' }
         ]
       }
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['userManager/openAgentUser'],
-      // queryOrganSaleList (state) {
-      //   // console.log(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value'))
-      //   // return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
-      //   return state.userManager.queryOrganSaleList.map((v) => {
-      //     const item = {
-      //       label: v.name,
-      //       value: v.orgCode
-      //     }
-      //     if (v.salemans && v.salemans.length) {
-      //       item.children = []
-      //       item.children = v.salemans.map((v2) => {
-      //         return {
-      //           label: v2.name,
-      //           value: v2.ptid
-      //         }
-      //       })
-      //     }
-      //     return item
-      //   })
-      // },
-      allGrade(state) {
-        return state.userManager.allGrade
-      }
+      loading: state => state.loading.effects['userManager/openAgentUser']
     }),
     formVisible: {
       get() {
@@ -216,7 +176,76 @@ export default {
     },
     handleChange() {
 
+    },
+    handleAvatarSuccess(res, file) {
+      this.form.imageUrl = URL.createObjectURL(file.raw)
+    },
+    beforeAvatarUpload(file) {
+      const type = 'image/jpeg,image/jpg'
+      const isImg = type.indexOf(file.type)
+      const isLt1M = file.size < 5000
+
+      if (isImg < 0) {
+        this.$message.error('上传头像格式错误!')
+      }
+      if (!isLt1M) {
+        this.$message.error('上传头像图片大小不能超过 500k!')
+      }
+      return isImg && isLt1M
     }
   }
 }
 </script>
+<style lang="scss">
+.dialog-notice .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.dialog-notice .avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.dialog-notice .avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.dialog-notice .avatar-uploader .el-upload-list__item-actions{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  line-height: 178px;
+  left: 0px;
+  top: 0px;
+  background: rgba(0, 0, 0, .5);
+  text-align: center;
+  vertical-align: middle;
+  display: none;
+  font-size: 12px;
+  color: #fff;
+}
+.dialog-notice .avatar-uploader .el-upload-list__item-actions span{
+  display: inline-block;
+  line-height: 20px;
+}
+.dialog-notice .avatar-uploader .el-upload-list__item-actions span i{
+  font-size: 21px;
+}
+.dialog-notice .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+.dialog-notice .avatar-uploader .el-upload:hover .el-upload-list__item-actions{
+  display: block;
+}
+.dialog-notice .avatar-uploader .el-upload__tip{
+  color: #999;
+}
+</style>
+

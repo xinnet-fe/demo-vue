@@ -253,9 +253,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.agent-manage-apply {
-  // margin: 20px;
-}
-</style>
