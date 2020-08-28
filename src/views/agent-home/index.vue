@@ -370,6 +370,10 @@ export default {
 }
 </script>
 <style lang="scss">
+// 如果有外层xcs_mian容器
+.xcs_main .main-cont{
+  padding: 20px 20px 20px 20px!important;
+}
 .home-container {
   background: #f5f5f5;
   .el-dialog-adv{
@@ -417,11 +421,6 @@ export default {
   .main-cont{
     padding-top: 20px;
   }
-  // 如果有外层xcs_mian容器
-  .xcs_main .main-cont{
-    padding: 20px 20px 20px 20px;
-  }
-
   .grid-content-1{
     width: calc(100% - 320px);
     .grid-content{
