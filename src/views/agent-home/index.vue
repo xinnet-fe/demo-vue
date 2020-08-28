@@ -10,14 +10,36 @@
             <table>
               <tr>
                 <td class="col1">
-                  <span class="img" />
+                  <span class="img">
+                    <img src="/static/img/home/img_01.png" alt="" srcset="">
+                  </span>
                   <div class="info">
-                    <div style="font-weight:bold">agent1231232</div>
+                    <div style="font-weight:bold">agent1231232
+                      <span class="safe">
+                        <i class="icon">
+                          <img src="/static/img/home/img_09.png" alt="" srcset="">
+                        </i>
+                        <i class="icon">
+                          <img src="/static/img/home/img_10.png" alt="" srcset="">
+                        </i>
+                        <i class="icon">
+                          <img src="/static/img/home/img_11.png" alt="" srcset="">
+                        </i>
+                        <i class="icon">
+                          <img src="/static/img/home/img_12.png" alt="" srcset="">
+                        </i>
+                        <i class="icon">
+                          <img src="/static/img/home/img_13.png" alt="" srcset="">
+                        </i>
+                      </span>
+                    </div>
                     <p>白金会员代理商</p>
                   </div>
                 </td>
                 <td class="col2">
-                  <span class="img" />
+                  <span class="img">
+                    <img src="/static/img/home/img_02.png" alt="" srcset="">
+                  </span>
                   <div class="info">
                     <div>我的余额：<em>￥ 64545.23</em></div>
                     <p>
@@ -140,7 +162,9 @@
                 <el-row class="order-num">
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-1 clearfix">
-                      <span class="img" />
+                      <span class="img">
+                        <img src="/static/img/home/img_03.png" alt="" srcset="">
+                      </span>
                       <div class="info">
                         <span>客户</span>
                         <em>1024</em>
@@ -149,7 +173,9 @@
                   </el-col>
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-2 clearfix">
-                      <span class="img" />
+                      <span class="img">
+                        <img src="/static/img/home/img_04.png" alt="" srcset="">
+                      </span>
                       <div class="info">
                         <span>待支付订单</span>
                         <em>1024</em>
@@ -158,7 +184,9 @@
                   </el-col>
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-3 clearfix">
-                      <span class="img" />
+                      <span class="img">
+                        <img src="/static/img/home/img_05.png" alt="" srcset="">
+                      </span>
                       <div class="info">
                         <span>待支付客户订单</span>
                         <em>1024</em>
@@ -187,7 +215,9 @@
                     <div class="grid-content grid-content-list-1">
                       <a href="http://" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">资料下载</span>
-                        <i class="img" />
+                        <span class="img">
+                          <img src="/static/img/home/img_06.png" alt="" srcset="">
+                        </span>
                       </a>
                     </div>
                   </el-col>
@@ -195,7 +225,9 @@
                     <div class="grid-content grid-content-list-2">
                       <a href="http://" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">新手指南</span>
-                        <i class="img" />
+                        <span class="img">
+                          <img src="/static/img/home/img_07.png" alt="" srcset="">
+                        </span>
                       </a>
                     </div>
                   </el-col>
@@ -203,7 +235,9 @@
                     <div class="grid-content grid-content-list-3">
                       <a href="http://" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">常见问题</span>
-                        <i class="img" />
+                        <span class="img">
+                          <img src="/static/img/home/img_08.png" alt="" srcset="">
+                        </span>
                       </a>
                     </div>
                   </el-col>
@@ -279,6 +313,16 @@
         </div>
       </el-col>
     </el-row>
+    <!-- 广告弹窗 -->
+    <el-dialog class="el-dialog-adv" :visible.sync="dialogVisible" width="600px" :before-close="handleClose">
+      <div class="carousel">
+        <el-carousel trigger="click" height="460px">
+          <el-carousel-item v-for="item in 4" :key="item">
+            <h3 class="small">{{ item }}</h3>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -293,6 +337,7 @@ export default {
     return {
       queryDomain: '',
       queryBrand: '',
+      dialogVisible: true,
       list: [
         {
           tit: 'vue v-for循环的用法',
@@ -316,12 +361,48 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    handleClose() {
+      this.dialogVisible = false
+    }
   }
 }
 </script>
 <style lang="scss">
 .home-container {
   background: #f5f5f5;
+  .el-dialog-adv{
+    .el-dialog__header{
+      height: 0px;
+      padding: 0px;
+    }
+    .el-dialog__body{
+      padding: 0px;
+    }
+    .el-dialog__headerbtn{
+      width: 29px;
+      height: 29px;
+      z-index: 999;
+      border-radius: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      .el-icon-close:before{
+        color: #fff;
+        font-size: 20px;
+      }
+    }
+    .el-carousel__item:nth-child(2n) {
+      background-color: #99a9bf;
+    }
+    .el-carousel__item:nth-child(2n+1) {
+      background-color: #d3dce6;
+    }
+    .el-carousel__button{
+      width: 9px;
+      height: 9px;
+      border-radius: 100%;
+    }
+  }
   .el-alert-top{
     background: #fff7da!important;
     .el-alert__icon{
@@ -334,8 +415,13 @@ export default {
     }
   }
   .main-cont{
+    padding-top: 20px;
+  }
+  // 如果有外层xcs_mian容器
+  .xcs_main .main-cont{
     padding: 20px 20px 20px 20px;
   }
+
   .grid-content-1{
     width: calc(100% - 320px);
     .grid-content{
@@ -359,11 +445,13 @@ export default {
       .col3{
         width: 20%;
         text-align: right;
+        .el-button{
+          border-radius: 14px;
+        }
       }
       td .img{
         width: 51px;
         height: 51px;
-        background: #eaeaea;
         float: left;
         margin-right: 20px;
       }
@@ -380,6 +468,15 @@ export default {
             color: #fe6c00;
             font-weight: 600;
             font-style: normal;
+          }
+          .safe{
+            line-height: 0px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 3px;
+            i{
+              display: inline-block;
+            }
           }
         }
         p{
@@ -474,9 +571,20 @@ export default {
       .prod-list .img{
         width: 51px;
         height: 51px;
-        background: #eaeaea;
+        line-height: 51px;
+        vertical-align: middle;
+        text-align: center;
+        background: #fff;
         float: left;
         margin-right: 20px;
+        border-radius: 100%;
+        -moz-box-shadow:0px 5px 6px rgba(0,0,0,0.3);
+        -webkit-box-shadow:0px 5px 6px rgba(0,0,0,0.3);
+        box-shadow:0px 5px 6px rgba(0,0,0,0.3);
+        img{
+          display: inline-block;
+          vertical-align: middle;
+        }
       }
       .prod-list .info{
         overflow: hidden;
@@ -518,6 +626,9 @@ export default {
     }
     .order-list{
       margin-bottom: 20px;
+      .box-tit-right a{
+        color: #666666;
+      }
       .adv{
         height: 170px;
         background: #6a98ed;
@@ -526,9 +637,20 @@ export default {
       .order-num .img{
         width: 51px;
         height: 51px;
-        background: #eaeaea;
+        line-height: 51px;
+        vertical-align: middle;
+        text-align: center;
+        background: #fff;
         float: left;
         margin-right: 20px;
+        border-radius: 100%;
+        -moz-box-shadow:0px 5px 6px rgba(0,0,0,0.3);
+        -webkit-box-shadow:0px 5px 6px rgba(0,0,0,0.3);
+        box-shadow:0px 5px 6px rgba(0,0,0,0.3);
+        img{
+          display: inline-block;
+          vertical-align: middle;
+        }
       }
       .order-num .info{
         overflow: hidden;
@@ -551,6 +673,9 @@ export default {
       }
     }
     .help-list{
+      .box-tit-right a{
+        color: #666666;
+      }
       .box-cont{
         padding-top: 20px;
       }
@@ -571,9 +696,16 @@ export default {
         .img{
           width: 51px;
           height: 51px;
-          background: #eaeaea;
+          line-height: 51px;
+          text-align: center;
+          vertical-align: middle;
+          background: #f8f8f8;
           float: right;
           margin-top: 20px;
+          border-radius: 100%;
+          img{
+            vertical-align: middle;
+          }
         }
       }
     }

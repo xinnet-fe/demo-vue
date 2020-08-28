@@ -84,7 +84,8 @@ import {
   Message,
   Notification,
   Scrollbar,
-  InfiniteScroll
+  InfiniteScroll,
+  Drawer
 } from 'element-ui'
 import './styles/element-variables.scss'
 
@@ -174,6 +175,7 @@ Vue.use(CascaderPanel, options)
 Vue.use(loadingDirective, options)
 Vue.use(Scrollbar, options)
 Vue.use(InfiniteScroll, options)
+Vue.use(Drawer, options)
 
 Vue.prototype.$loading = loadingService
 Vue.prototype.$messageBox = msgbox

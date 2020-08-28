@@ -6,14 +6,14 @@
         <h1 v-else class="sidebar-title">{{ title }} </h1> -->
 
         <!-- <i class="el-icon-menu sidebar-logo" /> -->
-        <svg-icon icon-class="logo" />
+        <!-- <svg-icon icon-class="logo" /> -->
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link center" to="/">
         <!-- <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1> -->
 
         <!-- <i class="el-icon-menu sidebar-logo" /> -->
-        <svg-icon icon-class="logo" />
+        <!-- <svg-icon icon-class="logo" /> -->
         <h1 class="sidebar-title">{{ title }} </h1>
 
       </router-link>

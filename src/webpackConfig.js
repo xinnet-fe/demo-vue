@@ -1,5 +1,14 @@
 const path = require('path')
-
+const pages = ['index', 'register', 'repassword', 'inviteReg', 'invite']
+const pagesObj = {}
+pages.map((v) => {
+  pagesObj[v] = {
+    entry: (v === 'index' ? 'src/main.js' : `src/${v}.js`),
+    template: `public/${v}.html`,
+    filename: `${v}.html`,
+    chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', v]
+  }
+})
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -10,63 +19,7 @@ module.exports = {
 
   // vue.config根级
   rootConfig: {
-    pages: {
-      index: {
-        // page的入口
-        entry: 'src/main.js',
-        // 模板来源
-        template: 'public/index.html',
-        // 在dist/index.html的输出
-        filename: 'index.html',
-        // 当使用title选项时，
-        // template中的title标签需要是<title><%=htmlWebpackPlugin.options.title%></title>
-        chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'index']
-      },
-      register: {
-        // page的入口
-        entry: 'src/register.js',
-        // 模板来源
-        template: 'public/register.html',
-        // 在dist/index.html的输出
-        filename: 'register.html',
-        // 当使用title选项时，
-        // template中的title标签需要是<title><%=htmlWebpackPlugin.options.title%></title>
-        chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'register']
-      },
-      repassword: {
-        // page的入口
-        entry: 'src/repassword.js',
-        // 模板来源
-        template: 'public/repassword.html',
-        // 在dist/index.html的输出
-        filename: 'repassword.html',
-        // 当使用title选项时，
-        // template中的title标签需要是<title><%=htmlWebpackPlugin.options.title%></title>
-        chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'repassword']
-      },
-      inviteReg: {
-        // page的入口
-        entry: 'src/inviteReg.js',
-        // 模板来源
-        template: 'public/inviteReg.html',
-        // 在dist/index.html的输出
-        filename: 'inviteReg.html',
-        // 当使用title选项时，
-        // template中的title标签需要是<title><%=htmlWebpackPlugin.options.title%></title>
-        chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'inviteReg']
-      },
-      invite: {
-        // page的入口
-        entry: 'src/invite.js',
-        // 模板来源
-        template: 'public/invite.html',
-        // 在dist/index.html的输出
-        filename: 'invite.html',
-        // 当使用title选项时，
-        // template中的title标签需要是<title><%=htmlWebpackPlugin.options.title%></title>
-        chunks: ['chunk-libs', 'chunk-commons', 'chunk-elementUI', 'invite']
-      }
-    }
+    pages: pagesObj
   },
   // configureWebpack
   configureWebpack: {
@@ -74,8 +27,10 @@ module.exports = {
   },
   // chainWebpack
   chainWebpack(config) {
-    config.plugins.delete('preload')
-    config.plugins.delete('prefetch')
+    pages.map((v) => {
+      config.plugins.delete(`preload-${v}`)
+      config.plugins.delete(`prefetch-${v}`)
+    })
 
     // set svg-sprite-loader
     config.module

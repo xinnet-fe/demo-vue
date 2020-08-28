@@ -1,0 +1,81 @@
+.el-button--primary{
+    background: #f34649;
+    border-color: #f34649;
+}
+.el-button--primary:hover{
+    background: #f3686a;
+    border-color: #f3686a;
+}
+.box-container.type1 .box-tit-left::after,
+.box-container.type2 .box-tit-left::after{
+    background: #f34649!important;
+}
+.el-tabs__active-bar,
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+    background: #f34649!important;
+}
+.el-tabs__item:hover,
+.el-tabs__item.is-active{
+    color: #f34649!important;
+}
+
+// 左侧导航样式 重置
+.sidebar-logo-container{
+    background: #fff!important;
+    border-bottom: 1px solid #f2f2f2;
+    margin-top: 50px;
+    padding-left: 20px;
+}
+.sidebar-logo-container .sidebar-logo-link .sidebar-title{
+    color: #666!important;
+    font-size: 17px!important;
+    font-weight: normal!important;
+}
+#app .sidebar-container{
+    background: #fff;
+    width: 150px!important;
+}
+#app .sidebar-container .el-menu-item,
+#app .sidebar-container .nest-menu .el-submenu > .el-submenu__title span,
+#app .sidebar-container .el-submenu .nest-menu .el-menu-item span,
+#app .el-menu .el-menu-item .svg-icon + span,
+#app .el-menu .el-submenu__title .svg-icon + span{
+    color: #333!important;
+}
+#app .sidebar-container .el-menu-item.is-active > span{
+    color: #f34649!important;
+}
+#app .sidebar-container .el-menu,
+#app .sidebar-container .nest-menu .el-submenu > .el-submenu__title, 
+#app .sidebar-container .el-submenu .nest-menu .el-menu-item,
+#app .sidebar-container .el-menu .el-submenu__title,
+#app .el-menu .el-menu-item, .el-menu .el-submenu__title,
+#app .sidebar-container .el-menu-item.is-active{
+    background: #fff!important;
+}
+#app .sidebar-container .nest-menu .el-submenu > .el-submenu__title:hover,
+#app .sidebar-container .el-submenu .nest-menu .el-menu-item:hover,
+#app .sidebar-container .submenu-title-noDropdown:hover,
+#app .sidebar-container .el-submenu__title:hover{
+    background: #fff!important;
+}
+#app .sidebar-container .nest-menu .el-submenu > .el-submenu__title:hover *,
+#app .sidebar-container .el-submenu .nest-menu .el-menu-item:hover *,
+#app .sidebar-container .submenu-title-noDropdown:hover *,
+#app .sidebar-container .el-submenu__title:hover *{
+    color: #f34649!important;
+}
+#app .sidebar-container .el-submenu.is-active > .el-submenu__title{
+    background: #f34649!important;
+}
+#app .sidebar-container .el-submenu.is-active > .el-submenu__title *{
+    color: #fff!important;
+}
+#app .sidebar-container .el-submenu.is-active > .el-submenu__title > span{
+    color: #fff!important;
+}
+
+// 右侧主体内容
+#app .main-container{
+    margin-left: 150px;
+}

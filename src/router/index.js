@@ -433,7 +433,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/home',
+    redirect: '/agent/agent-home?showLayout=false',
     hidden: true,
     children: [
       {
