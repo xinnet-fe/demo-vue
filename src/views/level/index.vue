@@ -1,23 +1,28 @@
 <template>
-  <div class="agent-manage-apply">
+  <div class="order-form agent-manage-apply">
     <!-- search -->
-    <el-form ref="form" :model="form" :inline="true">
+    <el-form ref="form" :model="form" :inline="true" class="search-form">
       <el-form-item label="级别名称" prop="level">
         <el-select v-model="form.type" @change="handleSelectChange">
           <el-option v-for="item in levelOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item prop="keywords">
+      <el-form-item label="关键词" prop="keywords">
         <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="default" @click="onSearch">查 询</el-button>
+        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">查 询</el-button>
         <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
-        <el-button type="primary" @click="add">添加级别</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
-
+    <!-- operate -->
+    <el-form ref="operateForm" class="operate-form" :inline="true">
+      <el-form-item>
+        <el-button size="mini" @click="add">添加级别</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- operate -->
     <div class="table-section">
       <el-table
         ref="table"
@@ -61,7 +66,7 @@
               title="确定删除吗？"
               @onConfirm="destroy(scope.row)"
             >
-              <el-button style="margin-left: 10px" slot="reference" size="mini" type="text">
+              <el-button slot="reference" style="margin-left: 10px" size="mini" type="text">
                 删除
               </el-button>
             </el-popconfirm>
@@ -82,8 +87,8 @@
 import { mapActions, mapState } from 'vuex'
 import DialogApplyForm from './form'
 import Pagination from '@/components/Pagination'
-import map from 'lodash/map'
-import find from 'lodash/find'
+// import map from 'lodash/map'
+// import find from 'lodash/find'
 
 export default {
   name: 'AgentManageLevel',
@@ -114,10 +119,13 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.loading.effects['userManager/queryGradleInfoList'],
-      allGrade (state) {
+      allGrade(state) {
         return state.userManager.allGrade
       }
     })
+  },
+  mounted() {
+    this.onSearch(1)
   },
   methods: {
     ...mapActions('userManager', ['queryGradleInfoList', 'delGradeById']),
@@ -142,10 +150,10 @@ export default {
         if (!res.code) {
           this.list = res.data.list
           this.page.total = res.data.count
-        } else {
-
         }
-      }).catch(error => {})
+      }).catch(error => {
+        console.log(error)
+      })
     },
     resetForm() {
       const { form } = this.$refs
@@ -183,15 +191,12 @@ export default {
         this.$message.error(error)
       })
     }
-  },
-  mounted() {
-    this.onSearch(1)
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .agent-manage-apply {
-  margin: 20px;
+  // margin: 20px;
 }
 </style>

@@ -34,6 +34,14 @@
             "text": "代理商绑定客户管理",
             "url": "",
             "target": "tab"
+        },
+        {
+            "code": "notice",
+            "parentCode": "agent-manage",
+            "icon": "",
+            "text": "活动公告管理",
+            "url": "",
+            "target": "tab"
         }]
     }
 ]

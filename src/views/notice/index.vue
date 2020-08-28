@@ -1,16 +1,31 @@
 <template>
-  <div class="order-form agent-manage-apply">
+  <div class="order-form">
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true" class="search-form">
-      <el-form-item label="" prop="memberId">
-        <el-select v-model="form.type" @change="handleSelectChange">
+      <el-form-item label="标题">
+        <el-input v-model="form.title" placeholder="" :clearable="true" />
+      </el-form-item>
+      <el-form-item label="类型">
+        <el-select v-model="form.type">
           <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item prop="keywords">
-        <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
+      <el-form-item label="是否置顶">
+        <el-select v-model="form.top">
+          <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
       </el-form-item>
-      <el-form-item label="申请时间" prop="date">
+      <el-form-item label="标签">
+        <el-select v-model="form.tag">
+          <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="发布者">
+        <el-select v-model="form.author">
+          <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="发布时间">
         <el-date-picker
           v-model="form.date"
           type="daterange"
@@ -20,18 +35,19 @@
           value-format="yyyy-MM-dd"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="state">
-        <el-select v-model="form.state">
-          <el-option v-for="item in stateType" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch">查 询</el-button>
         <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
       </el-form-item>
     </el-form>
     <!-- search -->
-
+    <!-- operate -->
+    <el-form ref="operateForm" class="operate-form" :inline="true">
+      <el-form-item>
+        <el-button size="mini" @click="handleEdit({})">添加</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- operate -->
     <div class="table-section">
       <el-table
         ref="table"
@@ -41,57 +57,56 @@
         :data="list"
       >
         <el-table-column
-          prop="agentCode"
-          label="代理编号"
+          prop="title"
+          label="标题"
           width="150"
         />
         <el-table-column
-          prop="telenumber"
-          label="手机号"
-          width="120"
+          prop="type"
+          label="类型"
         />
         <el-table-column
-          prop="userNameEmail"
-          label="邮箱"
+          prop="top"
+          label="是否置顶"
         />
         <el-table-column
-          prop="organizeNameCn"
-          label="联系人"
+          prop="tag"
+          label="标签"
+        />
+        <el-table-column
+          prop="date"
+          label="发布时间"
+        />
+        <el-table-column
+          prop="author"
+          label="发布者"
           show-overflow-tooltip
         />
         <el-table-column
-          prop="publicProvinceCn"
-          label="省份"
-          show-overflow-tooltip
+          prop="dateUpate"
+          label="更新时间"
         />
         <el-table-column
-          prop="publicCityCn"
-          label="城市"
-          show-overflow-tooltip
+          prop="updatePeople"
+          label="更新人"
         />
-        <el-table-column
-          prop="applyDate"
-          label="申请时间"
-          show-overflow-tooltip
-        />
-        <el-table-column label="状态" width="100">
-          <template v-slot="scope">
-            <span v-if="scope.row.state === '01'">未开通</span>
-            <span v-if="scope.row.state === '02'">已开通</span>
-            <span v-if="scope.row.state === '03'">已冻结</span>
-            <span v-if="scope.row.state === '04'">已关闭</span>
-          </template>
-        </el-table-column>
         <el-table-column label="操作" fixed="right" width="150">
           <template v-slot="scope">
             <el-button
-              v-if="scope.row.state === '01'"
               size="mini"
               type="text"
-              @click="handleOpen(scope.row)"
+              @click="handleEdit(scope.row)"
             >
-              开通
+              编辑
             </el-button>
+            <el-popconfirm
+              title="确定删除吗？"
+              @onConfirm="destroy(scope.row)"
+            >
+              <el-button slot="reference" style="margin-left: 10px" size="mini" type="text">
+                删除
+              </el-button>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
@@ -102,17 +117,17 @@
         @pagination="onSearch"
       />
     </div>
-    <dialog-apply-form v-if="formVisible" :visible.sync="formVisible" :row.sync="row" />
+    <dialog-notice-form v-if="formVisible" :visible.sync="formVisible" :row.sync="row" />
   </div>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
-import DialogApplyForm from './form'
+import DialogNoticeForm from './form'
 import Pagination from '@/components/Pagination'
 export default {
   name: 'AgentManageApply',
   components: {
-    DialogApplyForm,
+    DialogNoticeForm,
     Pagination
   },
   data() {
@@ -121,12 +136,25 @@ export default {
       row: {},
       placeholder: '请输入关键字',
       form: {
-        type: 'agentCode',
-        date: '',
-        keywords: '',
-        state: '01'
+        title: '',
+        type: '',
+        top: '',
+        tag: '',
+        author: '',
+        date: ''
       },
-      list: [],
+      list: [
+        {
+          title: '标题',
+          type: '类型',
+          top: 'true',
+          tag: '标签',
+          date: '2020-8-8',
+          author: '小新',
+          dateUpate: '2020-9-9',
+          updatePeople: '小新小新'
+        }
+      ],
       page: {
         total: 0,
         page: 0,
@@ -192,9 +220,30 @@ export default {
         console.log(error)
       })
     },
-    handleOpen(row) {
+    handleEdit(row) {
       this.formVisible = true
       this.row = row
+    },
+    destroy(row) {
+      console.log(row)
+      this.delGradeById({ id: row.id }).then(res => {
+        if (!res.code) {
+          if (res.data.isSuccess === '1') {
+            this.$message.success('操作成功！')
+            this.onSearch()
+          } else {
+            this.$message.error('操作失败！')
+          }
+        } else {
+          if (res.code === '665030') {
+            this.$message.error(res.msg)
+          } else {
+            this.$message.error(res.msg)
+          }
+        }
+      }).catch(error => {
+        this.$message.error(error)
+      })
     },
     resetForm() {
       const { form } = this.$refs

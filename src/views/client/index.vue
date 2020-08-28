@@ -1,13 +1,13 @@
 <template>
-  <div class="agent-manage-apply">
+  <div class="order-form agent-manage-apply">
     <!-- search -->
-    <el-form ref="form" :model="form" :inline="true">
+    <el-form ref="form" :model="form" :inline="true" class="search-form">
       <el-form-item label="会员编号" prop="type">
         <el-select v-model="form.type" @change="handleSelectChange">
           <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item prop="keywords">
+      <el-form-item label="关键词" prop="keywords">
         <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
       <el-form-item label="申请时间" prop="registerDate">
@@ -36,7 +36,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="default" @click="onSearch">查 询</el-button>
+        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">查 询</el-button>
         <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
       </el-form-item>
     </el-form>
@@ -85,8 +85,8 @@
         <el-table-column label="操作" fixed="right" width="150">
           <template v-slot="scope">
             <el-popconfirm
-              title="确定解绑吗？"
               v-if="scope.row.bindStatus === '1'"
+              title="确定解绑吗？"
               @onConfirm="unbind(scope.row)"
             >
               <el-button slot="reference" size="mini" type="text">
@@ -157,7 +157,7 @@ export default {
       // console.log(v)
     },
     handleSizeChange() {
-      alert("v")
+      alert('v')
     },
     onSearch(page) {
       const query = {
@@ -185,7 +185,9 @@ export default {
           this.list = res.data.list
           this.page.total = res.data.count
         }
-      }).catch(error => {})
+      }).catch(error => {
+        console.log(error)
+      })
     },
     resetForm() {
       const { form } = this.$refs
@@ -204,7 +206,9 @@ export default {
         } else {
           this.$message.error(res.msg)
         }
-      }).catch(error => {})
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }
@@ -212,6 +216,6 @@ export default {
 
 <style lang="scss" scoped>
 .agent-manage-apply {
-  margin: 20px;
+  // margin: 20px;
 }
 </style>

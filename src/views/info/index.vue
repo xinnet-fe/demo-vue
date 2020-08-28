@@ -1,13 +1,13 @@
 <template>
-  <div class="agent-manage-apply">
+  <div class="order-form agent-manage-apply">
     <!-- search -->
-    <el-form ref="searchForm" :model="searchForm" :inline="true">
+    <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-form">
       <el-form-item label="" prop="type">
         <el-select v-model="searchForm.type">
           <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item prop="keywords">
+      <el-form-item label="关键词" prop="keywords">
         <el-input v-model="searchForm.keywords" placeholder="请输入关键词" :clearable="true" />
       </el-form-item>
       <el-form-item label="开通时间" prop="date">
@@ -27,12 +27,11 @@
       </el-form-item>
       <el-form-item label="所属分公司" prop="organCode">
         <el-cascader
+          v-model="searchForm.selectedOptions"
           :clearable="true"
           :change-on-select="true"
           :options="queryOrganSaleList"
-          v-model="searchForm.selectedOptions"
-        >
-        </el-cascader>
+        />
       </el-form-item>
       <el-form-item label="财务归属" prop="financeCode">
         <el-select v-model="searchForm.financeCode">
@@ -45,18 +44,20 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="default" @click="onSearch">查 询</el-button>
+        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">查 询</el-button>
         <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
       </el-form-item>
     </el-form>
     <!-- search -->
-
-    <div class="mult-operation">
-      <el-button type="default" size="mini" @click="showModal('businessModalVisible')">业务归属</el-button>
-      <el-button type="default" size="mini" @click="showModal('financeModalVisible')">财务归属</el-button>
-      <el-button type="default" size="mini" @click="showModal('levelModalVisible')">修改级别</el-button>
-    </div>
-
+    <!-- operate -->
+    <el-form ref="operateForm" class="operate-form" :inline="true">
+      <el-form-item>
+        <el-button type="default" size="mini" @click="showModal('businessModalVisible')">业务归属</el-button>
+        <el-button type="default" size="mini" @click="showModal('financeModalVisible')">财务归属</el-button>
+        <el-button type="default" size="mini" @click="showModal('levelModalVisible')">修改级别</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- operate -->
     <div class="table-section">
       <el-table
         ref="table"
@@ -114,11 +115,11 @@
             </el-button>
             <el-button size="mini" type="text" @click="showAccountModal(scope.row)">修改账号</el-button>
             <el-popconfirm
-              title="确定终止吗？"
               v-if="scope.row.state !== '04'"
+              title="确定终止吗？"
               @onConfirm="stop(scope.row)"
             >
-              <el-button style="margin-left:10px" slot="reference" size="mini" type="text">
+              <el-button slot="reference" style="margin-left:10px" size="mini" type="text">
                 终止
               </el-button>
             </el-popconfirm>
@@ -136,12 +137,12 @@
     <dialog-business-form v-if="businessModalVisible" :visible.sync="businessModalVisible" :selected="multipleSelection" />
     <dialog-finance-form :visible.sync="financeModalVisible" :selected="multipleSelection" />
     <dialog-level-form :visible.sync="levelModalVisible" :selected="multipleSelection" />
-    <dialog-account-form v-if="accountModalVisible" :visible.sync="accountModalVisible" :row.sync="row" @onSearch = "onSearch" />
+    <dialog-account-form v-if="accountModalVisible" :visible.sync="accountModalVisible" :row.sync="row" @onSearch="onSearch" />
   </div>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
-import assign from 'lodash/assign'
+// import assign from 'lodash/assign'
 import DialogDetail from './detail'
 import DialogBusinessForm from './businessForm'
 import DialogFinanceForm from './financeForm'
@@ -200,13 +201,13 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.loading.effects['userManager/findDlInfo'],
-      allGrade (state) {
+      allGrade(state) {
         return [{ gradeName: '全部', id: '' }, ...state.userManager.allGrade]
       },
-      queryFinanclAttrList (state) {
+      queryFinanclAttrList(state) {
         return [{ financeName: '全部', financeCode: '' }, ...state.userManager.queryFinanclAttrList]
       },
-      queryOrganSaleList (state) {
+      queryOrganSaleList(state) {
         // console.log(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value'))
         // return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
         return state.userManager.queryOrganSaleList.map((v) => {
@@ -227,6 +228,10 @@ export default {
         })
       }
     })
+  },
+  mounted() {
+    this.onSearch()
+    // 获取级别数据
   },
   methods: {
     ...mapActions('userManager', ['findDlInfo', 'breakInfomation']),
@@ -256,7 +261,9 @@ export default {
           this.list = res.data.list
           this.page.total = res.data.count
         }
-      }).catch(error => {})
+      }).catch(error => {
+        console.log(error)
+      })
     },
     resetForm() {
       const { searchForm } = this.$refs
@@ -293,7 +300,9 @@ export default {
         } else {
           this.$message.error(res.msg)
         }
-      }).catch(error => {})
+      }).catch(error => {
+        console.log(error)
+      })
     },
     showModal(modalVisible) {
       const selected = this.multipleSelection
@@ -304,10 +313,6 @@ export default {
         this.$message.warning('请选择代理商！')
       }
     }
-  },
-  mounted() {
-    this.onSearch()
-    // 获取级别数据
   }
 }
 </script>
