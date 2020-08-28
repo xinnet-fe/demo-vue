@@ -6,7 +6,7 @@ const tableRouter = {
   redirect: '/table/complex-table',
   name: 'Table',
   meta: {
-    title: 'Table',
+    title: '表格',
     type: 'demo',
     icon: 'table'
   },
@@ -15,7 +15,13 @@ const tableRouter = {
       path: 'base-table',
       component: () => import('@/views/demos/table/base-table'),
       name: 'baseTable',
-      meta: { title: 'Base Table', type: 'demo' }
+      meta: { title: '基础表格', type: 'demo' }
+    },
+    {
+      path: 'tree-table',
+      component: () => import('@/views/demos/table/tree-table'),
+      name: 'treeTable',
+      meta: { title: '树形表格', type: 'demo' }
     },
     {
       path: 'dynamic-table',

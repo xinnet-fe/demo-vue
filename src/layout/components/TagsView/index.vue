@@ -140,7 +140,8 @@ export default {
           const url = view.meta.url
           if (url) {
             if (url.indexOf('?') > -1) {
-              view.meta.url = view.meta.url.slice(0, url.indexOf('?')) + '?' + new Date().getTime()
+              // view.meta.url = view.meta.url.slice(0, url.indexOf('?')) + '?' + new Date().getTime()
+              view.meta.url = view.meta.url + '&' + new Date().getTime()
             } else {
               view.meta.url = view.meta.url + '?' + new Date().getTime()
             }

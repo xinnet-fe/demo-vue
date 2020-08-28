@@ -8,22 +8,22 @@ const formRouter = {
   redirect: 'noRedirect',
   name: 'Charts',
   meta: {
-    title: 'Form',
+    title: '表单',
     type: 'demo',
-    icon: 'chart'
+    icon: 'form'
   },
   children: [
     {
       path: 'index',
       component: () => import('@/views/demos/form/index'),
       name: 'base',
-      meta: { title: 'base', noCache: true, type: 'demo' }
+      meta: { title: '竖向排列', noCache: true, type: 'demo' }
     },
     {
       path: 'inline',
       component: () => import('@/views/demos/form/inline'),
       name: 'inline',
-      meta: { title: 'inline', noCache: true, type: 'demo' }
+      meta: { title: '横向排列', noCache: true, type: 'demo' }
     }
   ]
 }

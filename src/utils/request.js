@@ -95,7 +95,7 @@ service.interceptors.response.use(
     }
 
     // demos
-    if (hasDevelopment && !isNull(code) && code !== 20000 && code.indexOf(demoErrorCode) > -1) {
+    if (hasDevelopment && !isNull(code) && code !== 20000 && demoErrorCode.indexOf(code) > -1) {
       errorMessage(res.message)
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
