@@ -33,7 +33,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button v-waves type="primary" size="medium" @click="handleFilter">
+          <el-button v-waves type="primary" size="medium" :loading="loading" @click="handleFilter">
             搜索
           </el-button>
           <el-button size="medium" @click="resetModal">
@@ -54,7 +54,7 @@
 
     <el-table
       :key="tableKey"
-      v-loading="listLoading"
+      v-loading="loading"
       :data="list"
       fit
       highlight-current-row
@@ -103,7 +103,7 @@
       </el-table-column>
       <el-table-column label="发布时间" align="center" width="152">
         <template slot-scope="{row}">
-          <span>{{ row.publishTime | parseTime('{y}-{m}-{d} {h}:{m}:{s}') }}</span>
+          <span>{{ row.publishTime ? (row.publishTime | parseTime('{y}-{m}-{d} {h}:{m}:{s}')) : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="审核状态" align="center" width="80">
@@ -166,9 +166,17 @@
         <el-form-item label="文章图片">
           <img :src="temp.imgContent" style="width:280px; height:140px;">
         </el-form-item>
-        <el-form-item label="作者" prop="author">
-          <el-input v-if="temp.writer" v-model="temp.writer" disabled />
-          <span v-else>无</span>
+        <el-form-item label="作者" prop="writer">
+          <el-select v-model="temp.writer" placeholder="请选择作者" disabled>
+            <el-option
+              v-for="item in writers"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <!-- <el-input v-if="temp.writer" v-model="temp.writer" disabled />
+          <span v-else>无</span> -->
         </el-form-item>
         <el-form-item label="内容简介" prop="summary">
           <el-input v-model="temp.summary" :autosize="{ minRows: 6, maxRows: 8}" rows="3" minlength="5" style="width:350px;" maxlength="300" show-word-limit type="textarea" placeholder="Please input" />
@@ -195,7 +203,7 @@
         <el-button size="medium" type="primary" @click="handlePass()">
           人工通过
         </el-button>
-        <el-button size="medium" type="primary" @click="handleAudits()">
+        <el-button size="medium" type="primary" :loading="loading" @click="handleAudits()">
           审核
         </el-button>
       </div>
@@ -248,10 +256,10 @@
             <!-- <div slot="tip" class="el-upload__tip">只能上传图片</div> -->
           </el-upload>
         </el-form-item>
-        <el-form-item label="作者" prop="author">
-          <el-select v-model="temp.author" placeholder="请选择作者" clearable style="width: 160px;">
+        <el-form-item label="作者" prop="writer">
+          <el-select v-model="temp.writer" placeholder="请选择作者" clearable style="width: 160px;">
             <el-option
-              v-for="item in authors"
+              v-for="item in writers"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -285,7 +293,7 @@
         <el-button size="medium" @click="handleAudits">
           违禁词检索
         </el-button>
-        <el-button size="medium" type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button size="medium" type="primary" :loading="loading" @click="dialogStatus === 'create' ? createData() : updateData()">
           保存
         </el-button>
       </div>
@@ -334,7 +342,7 @@
 import { newsList, auditDetail, handleAudit, categoryList, articlePass } from '@/api/demos/knowledges'
 import waves from '@/directive/demos/waves'
 import { mapState } from 'vuex'
-import find from 'lodash/find'
+// import find from 'lodash/find'
 import Pagination from '@/components/demos/Pagination'
 
 const calendarTypeOptions = [
@@ -419,7 +427,6 @@ export default {
         isTop: undefined
       },
       importanceOptions: [1, 2, 3],
-      // authors: ['安妮', '安东', '安东尼', '安东尼奥'],
       originalvalue: ['100', '110', '200', '220', '300', '330'],
       columns: ['域名知识', '网站建设知识'],
       auditState: [{
@@ -462,7 +469,8 @@ export default {
         publishDate: new Date(),
         isTop: undefined,
         originalValue: undefined,
-        value: undefined
+        value: undefined,
+        writer: undefined
       },
       tempLookover: {
         state: '',
@@ -491,7 +499,7 @@ export default {
           { min: 5, max: 60, required: true, message: '文章标题不能少于5位', trigger: 'blur' }
         ],
         originalValue: [{ required: true, message: '请选择初始值', trigger: 'change' }],
-        author: [{ required: true, message: '请选择作者', trigger: 'change' }],
+        writer: [{ required: true, message: '请选择作者', trigger: 'change' }],
         summary: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
         authorName: [{ required: true, message: '请输入作者名称', trigger: 'blur' }]
       },
@@ -505,7 +513,7 @@ export default {
           { min: 5, max: 60, required: true, message: '文章标题不能少于5位', trigger: 'blur' }
         ],
         originalValue: [{ required: true, message: '请选择初始值', trigger: 'change' }],
-        author: [{ required: true, message: '请选择作者', trigger: 'change' }],
+        writer: [{ required: true, message: '请选择作者', trigger: 'change' }],
         summary: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
         content: [{ required: true, message: '请输入文章正文', trigger: 'blur' }],
         authorName: [{ required: true, message: '请输入作者名称', trigger: 'blur' }],
@@ -526,7 +534,8 @@ export default {
   },
   computed: {
     ...mapState({
-      authors: state => state.article.writers
+      writers: state => state.article.writers,
+      loading: state => state.loading.global
     })
   },
   created() {
@@ -668,15 +677,14 @@ export default {
       this.getWriter()
       this.dialogStatus = 'modify'
       this.dialogFormVisible = true
-      const tempAuthor = find(this.authors, { value: parseInt(o.writer, 10) })
-      const author = tempAuthor ? tempAuthor.label : ''
       this.$store.dispatch('article/detail', { actId: o.actId }).then(res => {
         const row = res.data
         const value = row.top ? 1 : 0
+        const writer = isNaN(parseInt(o.writer)) ? '' : parseInt(o.writer)
         const data = {
           actId: row.actId,
           title: row.title,
-          author,
+          writer,
           summary: row.summary,
           column: row.categoryId,
           auditState: row.auditState,
@@ -713,7 +721,7 @@ export default {
           const isTop = o.value ? 1 : 0
           const data = {
             title: o.title,
-            writer: o.author,
+            writer: o.writer,
             summary: o.summary,
             categoryId: o.column,
             auditState: 0,
@@ -867,7 +875,7 @@ export default {
           const data = {
             actId: o.actId,
             title: o.title,
-            writer: o.author,
+            writer: o.writer,
             summary: o.summary,
             categoryId: o.column,
             auditState: o.auditState,
