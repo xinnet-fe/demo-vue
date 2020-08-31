@@ -286,7 +286,7 @@
           违禁词检索
         </el-button>
         <el-button size="medium" type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          发布
+          保存
         </el-button>
       </div>
     </el-dialog>
