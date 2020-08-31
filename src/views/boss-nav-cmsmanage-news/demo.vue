@@ -142,13 +142,13 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <!-- 审核标签 -->
-    <el-dialog width="950px" :title="textMap[dialogStatus]" :visible.sync="dialogAudit">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="125px" style="width: 400px; margin-left:50px;">
+    <el-dialog width="900px" :title="textMap[dialogStatus]" :visible.sync="dialogAudit">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-width="120px">
         <el-form-item label="文章标题" prop="title">
           <!-- <el-input type="textarea" placeholder="请输入内容" v-model="temp.title" maxlength="30" show-word-limit /> -->
-          <el-input v-model="temp.title" type="textarea" rows="3" style="width:360px;" placeholder="请输入内容" minlength="5" maxlength="100" show-word-limit @input="handleRemark" />
+          <el-input v-model="temp.title" type="textarea" rows="3" style="width:360px;" placeholder="请输入内容" minlength="5" maxlength="60" show-word-limit @input="handleRemark" />
         </el-form-item>
-        <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span>
+        <!-- <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span> -->
         <el-form-item label="所属栏目" prop="column">
           <el-input v-model="temp.categoryName" disabled />
           <!-- <el-select v-model="temp.categoryName" placeholder="请选择文章所属栏目" clearable style="width: 100%;">
@@ -206,7 +206,7 @@
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="temp.title" type="textarea" placeholder="请输入内容" minlength="5" maxlength="60" show-word-limit @input="handleRemark" />
         </el-form-item>
-        <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span>
+        <!-- <span v-if="tempflag" style="color:#f00;">文章标题不能少于5位</span> -->
         <el-form-item label="所属栏目" prop="column">
           <el-select v-model="temp.column" placeholder="请选择文章所属栏目" clearable style="width: 100%;">
             <el-option v-for="item in categorylist" :key="item.name" :label="item.name" :value="item.categoryId" />
@@ -240,6 +240,7 @@
             :file-list="fileList"
             :auto-upload="false"
             :limit="1"
+            :on-remove="removeFile"
             list-type="picture"
             accept="image/*"
           >
@@ -375,12 +376,22 @@ export default {
     }
   },
   data() {
+    const requiredFile = (rule, value, callback) => {
+      const file = this.fileList[0]
+      const error = '请选择文章图片'
+      if (this.dialogStatus === 'create' && !file) {
+        // this.$notify.error(error)
+        callback(new Error(error))
+      } else {
+        callback()
+      }
+    }
     const fileValidator = (rule, value, callback) => {
       const file = this.fileList[0]
-      const maxSize = 1024 * 100
-      const error = '图片小于100kb'
+      const maxSize = 1024 * 1000
+      const error = '图片小于1MB'
       if (file && file.size > maxSize) {
-        this.$notify.error(error)
+        // this.$notify.error(error)
         callback(new Error(error))
       } else {
         callback()
@@ -475,7 +486,10 @@ export default {
         column: [{ required: true, message: '请选择文章所属栏目', trigger: 'change' }],
         releaseTime: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
         // keyword: [{ required: true, message: '请输入关键词', trigger: 'blur' }],
-        title: [{ required: true, message: '请输入文章标题', trigger: 'blur' }],
+        title: [
+          { required: true, message: '请输入文章标题', trigger: 'blur' },
+          { min: 5, max: 60, required: true, message: '文章标题不能少于5位', trigger: 'blur' }
+        ],
         originalValue: [{ required: true, message: '请选择初始值', trigger: 'change' }],
         author: [{ required: true, message: '请选择作者', trigger: 'change' }],
         summary: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
@@ -486,13 +500,19 @@ export default {
         column: [{ required: true, message: '请选择文章所属栏目', trigger: 'change' }],
         releaseTime: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
         // keyword: [{ required: true, message: '请输入关键词', trigger: 'blur' }],
-        title: [{ required: true, message: '请输入文章标题', trigger: 'blur' }],
+        title: [
+          { required: true, message: '请输入文章标题', trigger: 'blur' },
+          { min: 5, max: 60, required: true, message: '文章标题不能少于5位', trigger: 'blur' }
+        ],
         originalValue: [{ required: true, message: '请选择初始值', trigger: 'change' }],
         author: [{ required: true, message: '请选择作者', trigger: 'change' }],
         summary: [{ required: true, message: '请输入内容简介', trigger: 'blur' }],
         content: [{ required: true, message: '请输入文章正文', trigger: 'blur' }],
         authorName: [{ required: true, message: '请输入作者名称', trigger: 'blur' }],
-        file: [{ validator: fileValidator }]
+        file: [
+          { required: true, validator: requiredFile },
+          { validator: fileValidator }
+        ]
       },
       multipleSelection: [],
       values: false,
@@ -687,7 +707,7 @@ export default {
       this.fileList = [file]
     },
     createData() {
-      this.$refs['addOrEditForm'].validate((valid) => {
+      this.$refs['addOrEditForm'].validate((valid, o) => {
         if (valid) {
           const o = this.temp
           const isTop = o.value ? 1 : 0
@@ -722,18 +742,18 @@ export default {
             )
           )
 
-          this.$store.dispatch('article/addArticle', form).then(res => {
-            if (res.code === 'success' && res.success) {
-              this.resetTemp()
-              this.dialogFormVisible = false
-              this.getList()
-            } else {
-              this.$notify.error({
-                title: res.code,
-                message: res.message
-              })
-            }
-          })
+          // this.$store.dispatch('article/addArticle', form).then(res => {
+          //   if (res.code === 'success' && res.success) {
+          //     this.resetTemp()
+          //     this.dialogFormVisible = false
+          //     this.getList()
+          //   } else {
+          //     this.$notify.error({
+          //       title: res.code,
+          //       message: res.message
+          //     })
+          //   }
+          // })
         }
       })
     },
@@ -889,6 +909,9 @@ export default {
           })
         }
       })
+    },
+    removeFile() {
+      this.fileList = []
     },
     handleDeletehints() {
       if (this.multipleSelection.length) {
