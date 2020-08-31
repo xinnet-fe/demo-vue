@@ -8,22 +8,6 @@
         "target": "",
         "children": [
             {
-                "code": "cms-advert-manage",
-                "parentCode": "cms-manage",
-                "text": "广告管理",
-                "icon": "",
-                "url": "",
-                "target": "",
-                "children": [{
-                    "code": "cms-basis-advert",
-                    "parentCode": "cms-advert-manage",
-                    "text": "基础广告",
-                    "icon": "",
-                    "url": "",
-                    "target": "tab"
-                }]
-            },
-            {
                 "code": "cms-component-manage",
                 "parentCode": "cms-manage",
                 "text": "组件管理",

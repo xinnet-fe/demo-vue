@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getUser(query) {
   return request({
-    url: '/portal/employee/getEmployeeInfo',
+    url: '/admin/employee/getEmployeeInfo',
     method: 'get',
     params: query
   })

@@ -25,21 +25,18 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasXbToken = getToken('xbtoken') || getToken('xbtoken_id')
-  // console.log(hasXbToken)
   if (hasXbToken) {
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done()
     } else {
       let hasMenus = 0
-      // let hasUser = 0
+      let hasUser = 0
       if (loginin === 'notuse') {
         hasMenus = store.getters.menus && store.getters.menus.length > 0
-        // hasUser = store.getters.user && store.getters.user.id
+        hasUser = store.getters.user && store.getters.user.id
       }
-      // console.log(hasMenus)
-      // console.log(hasUser)
-      if (loginin === true || (hasMenus)) {
+      if (loginin === true || (hasMenus && hasUser)) {
         next()
       } else {
         try {
@@ -49,8 +46,8 @@ router.beforeEach(async(to, from, next) => {
             accessRoutes = await store.dispatch('permission/generateRoutes')
           } else {
             const [menus] = await when(
-              store.dispatch('userinfo/getSidebarMenus')
-              // store.dispatch('userinfo/getUser')
+              store.dispatch('userinfo/getSidebarMenus'),
+              store.dispatch('userinfo/getUser')
             )
             accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
           }
@@ -65,8 +62,7 @@ router.beforeEach(async(to, from, next) => {
           await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
           if (hasDevelopment) {
-            // next(`/login?redirect=${to.path}`)
-            console.log('有token catch')
+            next(`/login?redirect=${to.path}`)
           } else {
             global.location = logoutApi
           }
@@ -85,8 +81,7 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // other pages that do not have permission to access are redirected to the login page.
       if (hasDevelopment) {
-        console.log('无token')
-        // next(`/login?redirect=${to.path}`)
+        next(`/login?redirect=${to.path}`)
       } else {
         global.location = logoutApi
       }
