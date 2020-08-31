@@ -98,12 +98,12 @@
       </el-table-column>
       <el-table-column label="创建时间" align="center" width="152">
         <template slot-scope="{row}">
-          <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{m}:{s}') }}</span>
+          <span>{{ row.createTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="发布时间" align="center" width="152">
         <template slot-scope="{row}">
-          <span>{{ row.publishTime ? (row.publishTime | parseTime('{y}-{m}-{d} {h}:{m}:{s}')) : '' }}</span>
+          <span>{{ row.publishTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="审核状态" align="center" width="80">
@@ -821,11 +821,13 @@ export default {
       })
     },
     handleAudit(row) {
+      this.getWriter()
       auditDetail({ actId: row.actId }).then(data => {
         this.newsbanWords = ''
         this.temp = Object.assign({}, row) // copy obj
         this.temp.timestamp = new Date(this.temp.timestamp)
         this.dialogAudit = true
+        this.temp.writer = isNaN(parseInt(data.data.writer)) ? '' : parseInt(data.data.writer)
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
