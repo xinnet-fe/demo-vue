@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import axios from 'axios'
 
 export function getUser(query) {
   return request({
@@ -9,7 +10,7 @@ export function getUser(query) {
 }
 
 export function getSidebarMenus(query) {
-  return request({
+  return axios({
     // url: '/portal/navigation/listNavigation',
     url: '/static/data/menu.json',
     method: 'get',
