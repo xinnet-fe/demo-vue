@@ -64,7 +64,7 @@ router.beforeEach(async(to, from, next) => {
           if (hasDevelopment) {
             next(`/login?redirect=${to.path}`)
           } else {
-            // global.location = logoutApi
+            global.location = logoutApi
           }
           NProgress.done()
         }
@@ -83,7 +83,7 @@ router.beforeEach(async(to, from, next) => {
       if (hasDevelopment) {
         next(`/login?redirect=${to.path}`)
       } else {
-        // global.location = logoutApi
+        global.location = logoutApi
       }
       NProgress.done()
     }

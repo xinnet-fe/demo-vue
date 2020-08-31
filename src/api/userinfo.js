@@ -15,7 +15,7 @@ export function getSidebarMenus(query) {
     url: '/static/data/menu.json',
     method: 'get',
     params: query
-  })
+  }).then(res => res.data)
 }
 // 修改密码
 export function changePwd(data) {
