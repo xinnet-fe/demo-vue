@@ -742,18 +742,18 @@ export default {
             )
           )
 
-          // this.$store.dispatch('article/addArticle', form).then(res => {
-          //   if (res.code === 'success' && res.success) {
-          //     this.resetTemp()
-          //     this.dialogFormVisible = false
-          //     this.getList()
-          //   } else {
-          //     this.$notify.error({
-          //       title: res.code,
-          //       message: res.message
-          //     })
-          //   }
-          // })
+          this.$store.dispatch('article/addArticle', form).then(res => {
+            if (res.code === 'success' && res.success) {
+              this.resetTemp()
+              this.dialogFormVisible = false
+              this.getList()
+            } else {
+              this.$notify.error({
+                title: res.code,
+                message: res.message
+              })
+            }
+          })
         }
       })
     },
