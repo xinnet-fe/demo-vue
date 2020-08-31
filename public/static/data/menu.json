@@ -42,6 +42,22 @@
             "text": "活动公告管理",
             "url": "",
             "target": "tab"
+        },
+        {
+            "code": "billflow",
+            "parentCode": "agent-manage",
+            "icon": "",
+            "text": "账单流水查询",
+            "url": "",
+            "target": "tab"
+        },
+        {
+            "code": "consume",
+            "parentCode": "agent-manage",
+            "icon": "",
+            "text": "代理消耗查询",
+            "url": "",
+            "target": "tab"
         }]
     }
 ]
