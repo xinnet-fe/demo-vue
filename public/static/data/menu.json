@@ -22,30 +22,6 @@
                     "url": "",
                     "target": "tab"
                 }]
-            },
-            {
-                "code": "cms-component-manage",
-                "parentCode": "cms-manage",
-                "text": "组件管理",
-                "icon": "",
-                "url": "",
-                "target": "",
-                "children": [{
-                    "code": "cms-carousel-manage",
-                    "parentCode": "cms-component-manage",
-                    "text": "轮播管理",
-                    "icon": "",
-                    "url": "",
-                    "target": "tab"
-                },
-                {
-                    "code": "cms-nav-manage",
-                    "parentCode": "cms-component-manage",
-                    "text": "导航管理",
-                    "icon": "",
-                    "url": "",
-                    "target": "tab"
-                }]
             }
         ]
     }

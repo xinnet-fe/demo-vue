@@ -5,7 +5,7 @@ module.exports = {
 
   // vue.config根级
   rootConfig: {
-    publicPath: process.env.NODE_ENV === 'development' ? '/' : '/admin/'
+    publicPath: '/'
   },
   // configureWebpack
   configureWebpack: {
@@ -17,6 +17,10 @@ module.exports = {
   // },
   // devServer proxy
   proxy: {
+    '/employee': {
+      target: 'http://172.22.132.7:8083',
+      changeOrigin: true
+    },
     '/advgroup': {
       target: 'http://172.22.132.7:8083',
       changeOrigin: true
