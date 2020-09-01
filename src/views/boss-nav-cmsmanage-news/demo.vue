@@ -342,7 +342,7 @@
 import { newsList, auditDetail, handleAudit, categoryList, articlePass } from '@/api/demos/knowledges'
 import waves from '@/directive/demos/waves'
 import { mapState } from 'vuex'
-// import find from 'lodash/find'
+import find from 'lodash/find'
 import Pagination from '@/components/demos/Pagination'
 
 const calendarTypeOptions = [
@@ -662,7 +662,7 @@ export default {
       })
     },
     getWriter() {
-      this.$store.dispatch('article/writers')
+      return this.$store.dispatch('article/writers')
     },
     handleCreate() {
       this.getWriter()
@@ -674,45 +674,61 @@ export default {
       })
     },
     handleModify(o) {
-      this.getWriter()
       this.dialogStatus = 'modify'
       this.dialogFormVisible = true
-      this.$store.dispatch('article/detail', { actId: o.actId }).then(res => {
-        const row = res.data
-        const value = row.top ? 1 : 0
-        const writer = isNaN(parseInt(o.writer)) ? '' : parseInt(o.writer)
-        const data = {
-          actId: row.actId,
-          title: row.title,
-          writer,
-          summary: row.summary,
-          column: row.categoryId,
-          auditState: row.auditState,
-          auditResult: row.auditResult,
-          releaseTime: new Date(row.publishTime),
-          publishState: row.publishState,
-          value,
-          originalValue: row.visitCount,
-          content: row.content
-        }
-        if (row.tags.length) {
-          let tag = ''
-          row.tags.forEach((rows, i) => {
-            tag += i + 1 === row.tags.length ? rows.name : rows.name + ','
+      this.getWriter().then(() => {
+        this.$store.dispatch('article/detail', { actId: o.actId }).then(res => {
+          const row = res.data
+          const value = row.top ? 1 : 0
+          // const writer = isNaN(parseInt(row.writer)) ? '' : parseInt(row.writer)
+          const writer = this.getWriterValueByName(row.writer)
+          const data = {
+            actId: row.actId,
+            title: row.title,
+            writer,
+            summary: row.summary,
+            column: row.categoryId,
+            auditState: row.auditState,
+            auditResult: row.auditResult,
+            releaseTime: new Date(row.publishTime),
+            publishState: row.publishState,
+            value,
+            originalValue: row.visitCount,
+            content: row.content
+          }
+          if (row.tags.length) {
+            let tag = ''
+            row.tags.forEach((rows, i) => {
+              tag += i + 1 === row.tags.length ? rows.name : rows.name + ','
+            })
+            data.keyword = tag
+          }
+          if (row.imageUrl && row.imgContent) {
+            this.fileList = [{ name: row.imageUrl.slice(5), url: row.imgContent }]
+          }
+          this.temp = Object.assign({}, data)
+          this.$nextTick(() => {
+            this.$refs['addOrEditForm'].clearValidate()
           })
-          data.keyword = tag
-        }
-        if (row.imageUrl && row.imgContent) {
-          this.fileList = [{ name: row.imageUrl.slice(5), url: row.imgContent }]
-        }
-        this.temp = Object.assign({}, data)
-        this.$nextTick(() => {
-          this.$refs['addOrEditForm'].clearValidate()
         })
       })
     },
     selectedFile(file) {
       this.fileList = [file]
+    },
+    getWriterNameByValue(v) {
+      const writer = find(this.writers, { value: parseInt(v) })
+      if (writer) {
+        return writer.label
+      }
+      return ''
+    },
+    getWriterValueByName(label) {
+      const writer = find(this.writers, { label })
+      if (writer) {
+        return parseInt(writer.value)
+      }
+      return ''
     },
     createData() {
       this.$refs['addOrEditForm'].validate((valid, o) => {
@@ -721,7 +737,7 @@ export default {
           const isTop = o.value ? 1 : 0
           const data = {
             title: o.title,
-            writer: o.writer,
+            writer: this.getWriterNameByValue(o.writer),
             summary: o.summary,
             categoryId: o.column,
             auditState: 0,
@@ -763,6 +779,7 @@ export default {
             }
           })
         }
+        this.fileList = []
       })
     },
     handleLookover(row) {
@@ -877,7 +894,7 @@ export default {
           const data = {
             actId: o.actId,
             title: o.title,
-            writer: o.writer,
+            writer: this.getWriterNameByValue(o.writer),
             summary: o.summary,
             categoryId: o.column,
             auditState: o.auditState,

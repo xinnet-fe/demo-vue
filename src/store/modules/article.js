@@ -37,7 +37,10 @@ const actions = {
     return addWriter(data)
   },
   writers({ commit }, data) {
-    return writers(data).then(res => commit('GET_WRITER', res))
+    return writers(data).then(res => {
+      commit('GET_WRITER', res)
+      return res
+    })
   }
 }
 
