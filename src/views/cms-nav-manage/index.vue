@@ -77,9 +77,9 @@
               </el-form-item>
               <el-form-item label="所属分类:">
                 <el-cascader
-                  placeholder="作为顶级分类"
-                  :value="form.parentId"
+                  v-model="form.parentId"
                   :options="navType"
+                  placeholder="作为顶级分类"
                   filterable
                   change-on-select
                 />
@@ -303,7 +303,11 @@ export default {
     getParams(id) {
       const data = {}
       forEach(this.form, (v, k) => {
-        data[k] = v
+        if (k === 'parentId') {
+          data[k] = v && v.length ? String(v[v.length - 1]) : '0'
+        } else {
+          data[k] = v
+        }
       })
       if (id) {
         data.code = this.oldCode

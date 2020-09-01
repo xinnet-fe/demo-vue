@@ -89,9 +89,9 @@
               </el-form-item>
               <el-form-item label="轮播树级:" prop="parentId">
                 <el-cascader
-                  placeholder="默认为一级"
-                  :value="form.parentId"
+                  v-model="form.parentId"
                   :options="types"
+                  placeholder="默认为一级"
                   filterable
                   change-on-select
                 />
@@ -383,8 +383,9 @@ export default {
       } else {
         formData.append('code', data.code)
       }
+      const parentId = data.parentId && data.parentId.length ? String(data.parentId[data.parentId.length - 1]) : '0'
       formData.append('name', data.name)
-      formData.append('parentId', data.parentId)
+      formData.append('parentId', parentId)
       formData.append('desc', data.desc)
       formData.append('url', data.url)
       formData.append('imgUrl', data.imgUrl)
