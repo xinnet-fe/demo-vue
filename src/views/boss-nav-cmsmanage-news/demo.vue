@@ -934,6 +934,7 @@ export default {
               })
             }
           })
+          this.fileList = []
         }
       })
     },
