@@ -17,6 +17,7 @@ import orderRouter from './demos/order'
 import dialogRouter from './demos/dialog'
 import boxRouter from './demos/box'
 import listRouter from './demos/list'
+import detailRouter from './demos/detail'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -112,6 +113,7 @@ const demosConstantRoutes = hasDevelopment ? [
   boxRouter,
   listRouter,
   dialogRouter,
+  detailRouter,
   {
     path: '/dashboard',
     component: Layout,
