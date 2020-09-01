@@ -5,8 +5,10 @@
 </template>
 
 <script>
+import elDescriptions from '@/components/Descriptions'
 export default {
   components: {
+    elDescriptions
   },
   data() {
     return {
@@ -59,7 +61,5 @@ export default {
 }
 </script>
 <style scoped>
-.box-container{
-  border-bottom: 20px solid #f3f7fa;
-}
+
 </style>

@@ -11,9 +11,9 @@ const detailRouter = {
   },
   children: [
     {
-      path: 'table',
+      path: 'detail_table',
       component: () => import('@/views/demos/detail/table'),
-      name: 'table',
+      name: 'detail_table',
       meta: { title: '表格详情', type: 'demo' }
     }
   ]
