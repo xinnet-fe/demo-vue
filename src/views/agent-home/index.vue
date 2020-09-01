@@ -92,7 +92,9 @@
                 <el-row :gutter="20" class="prod-list">
                   <el-col :span="6">
                     <div class="grid-content grid-content-prod-1 clearfix">
-                      <span class="img" />
+                      <span class="img">
+                        <i class="iconfont icon-font01" />
+                      </span>
                       <div class="info">
                         <span>客户</span>
                         <em>1024</em>
@@ -106,7 +108,9 @@
                   </el-col>
                   <el-col :span="6">
                     <div class="grid-content grid-content-prod-2 clearfix">
-                      <span class="img" />
+                      <span class="img">
+                        <i class="iconfont icon-font02" />
+                      </span>
                       <div class="info">
                         <span>待支付订单</span>
                         <em>1024</em>
@@ -120,7 +124,9 @@
                   </el-col>
                   <el-col :span="6">
                     <div class="grid-content grid-content-prod-3 clearfix">
-                      <span class="img" />
+                      <span class="img">
+                        <i class="iconfont icon-font03" />
+                      </span>
                       <div class="info">
                         <span>待支付客户订单</span>
                         <em>1024</em>
@@ -134,7 +140,9 @@
                   </el-col>
                   <el-col :span="6">
                     <div class="grid-content grid-content-prod-4 clearfix">
-                      <span class="img" />
+                      <span class="img">
+                        <i class="iconfont icon-font04" />
+                      </span>
                       <div class="info">
                         <span>待支付客户订单</span>
                         <em>1024</em>
@@ -580,9 +588,11 @@ export default {
         -moz-box-shadow:0px 5px 6px rgba(0,0,0,0.3);
         -webkit-box-shadow:0px 5px 6px rgba(0,0,0,0.3);
         box-shadow:0px 5px 6px rgba(0,0,0,0.3);
-        img{
+        i{
           display: inline-block;
           vertical-align: middle;
+          color: #bbb;
+          font-size: 19px;
         }
       }
       .prod-list .info{
