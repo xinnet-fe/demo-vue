@@ -270,8 +270,8 @@ export default {
     })
   },
   created() {
-    // this.getAdvStatus()
-    // this.getGroupCodeList()
+    this.getAdvStatus()
+    this.getGroupCodeList()
     this.height = global.innerHeight + 'px'
   },
   methods: {

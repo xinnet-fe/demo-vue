@@ -225,12 +225,12 @@ export default {
       this.getList(query)
     },
     submit() {
-      const { groupName, groupCode, groupType } = this.form
+      const { groupName, groupCode, groupType, id } = this.form
       const data = { groupName, groupCode, groupType }
       this.$refs.form.validate((valid) => {
         if (valid) {
           // 修改
-          if (groupCode) {
+          if (id) {
             if (groupName === this.oldGroupName && groupCode === this.oldGroupCode && groupType === this.oldGroupType) {
               this.closeModal()
             } else {
