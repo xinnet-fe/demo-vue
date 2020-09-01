@@ -16,8 +16,8 @@ const customWebpackConfig = defaultSettings.webpackConfig
 
 // merge proxy
 const defaultProxy = {
-  '/portal': {
-    target: 'http://119.10.116.247:8082',
+  '/console': {
+    target: 'https://console.xinnet.com',
     changeOrigin: true
   }
 }

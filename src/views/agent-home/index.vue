@@ -336,6 +336,7 @@
 
 <script>
 import Box from '@/components/Box'
+import Cookies from 'js-cookie'
 export default {
   name: 'Home',
   components: {
@@ -345,7 +346,7 @@ export default {
     return {
       queryDomain: '',
       queryBrand: '',
-      dialogVisible: true,
+      dialogVisible: false,
       list: [
         {
           tit: 'vue v-for循环的用法',
@@ -368,6 +369,13 @@ export default {
           time: '2018年12月6日'
         }
       ]
+    }
+  },
+  mounted() {
+    const adv = Cookies.get('agent-adv')
+    if (!adv) {
+      Cookies.set('agent-adv', 'true', { expires: 1 })
+      this.dialogVisible = true
     }
   },
   methods: {
