@@ -90,6 +90,28 @@
               <el-form-item label="描述:" prop="desc">
                 <el-input v-model="form.desc" :rows="3" type="textarea" />
               </el-form-item>
+              <el-form-item label="图片地址:" prop="imgUrl">
+                <el-col :span="24">
+                  <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
+                </el-col>
+                <el-col :span="24">
+                  <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
+                    <el-option label="本地上传" value="1" />
+                    <el-option label="文件服务器" value="2" />
+                  </el-select>
+                </el-col>
+                <el-upload
+                  style="display: none;"
+                  class="local-upload"
+                  action="/"
+                  :limit="1"
+                  :auto-upload="false"
+                  :on-change="selectedFile"
+                  :file-list="fileList"
+                >
+                  <el-button ref="upload" size="small" type="primary">点击上传</el-button>
+                </el-upload>
+              </el-form-item>
               <el-form-item label="链接:" prop="url">
                 <el-input v-model="form.url" />
               </el-form-item>
@@ -186,6 +208,7 @@ export default {
         target: '',
         sortIndex: '',
         status: '',
+        imgUrl: '',
         // 高级属性
         click: '',
         cssStyle: '',
@@ -198,6 +221,8 @@ export default {
       oldCode: '',
       // 默认打开方式
       formTarget: '',
+      // 上传图片下拉框值
+      uploadImageAddress: '',
       // 弹框表单规则
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
@@ -243,12 +268,27 @@ export default {
       getParentIdMapping: 'cms/navParentIdMapping',
       updateStatus: 'cms/navStatusSwitch'
     }),
+    // 下拉框选择本地上传
+    localUpload() {
+      if (this.uploadImageAddress === '1') {
+        this.$refs.upload.$el.click()
+      }
+    },
+    // 点击选择图片
+    selectedFile(file) {
+      // 修改时imgUrl有值使用新上传文件替换
+      if (this.form.imgUrl) {
+        this.form.imgUrl = ''
+      }
+      this.fileList = [file]
+    },
     showModal(row = {}) {
       this.getParentIdMapping().then(() => {
         if (row.id) {
           const query = { id: row.id }
           this.searchNav(query).then(res => {
             const { navigation: nav } = res.data
+            this.fileList = nav.file ? [nav.file] : []
             forEach(this.form, (v, k, o) => {
               this.form[k] = nav[k]
             })
@@ -274,6 +314,8 @@ export default {
         }
       })
       this.oldCode = ''
+      this.uploadImageAddress = ''
+      this.fileList = []
       delete this.form.id
     },
     showTipsModal(row) {
@@ -301,37 +343,49 @@ export default {
       this.getList()
     },
     getParams(id) {
-      const data = {}
-      forEach(this.form, (v, k) => {
-        if (k === 'parentId') {
-          data[k] = v && v.length ? String(v[v.length - 1]) : '0'
-        } else {
-          data[k] = v
-        }
-      })
+      const formData = new FormData()
+      const data = this.form
+      const file = this.fileList.length ? this.fileList[0].raw : ''
+      const parentId = data.parentId && data.parentId.length ? String(data.parentId[data.parentId.length - 1]) : '0'
+
       if (id) {
-        data.code = this.oldCode
-        data.newCode = this.form.code
+        formData.append('code', this.oldCode)
+        formData.append('newCode', data.code)
       } else {
-        data.code = this.form.code
+        formData.append('code', data.code)
       }
-      return data
+      formData.append('name', data.name)
+      formData.append('parentId', parentId)
+      formData.append('desc', data.desc)
+      formData.append('url', data.url)
+      formData.append('imgUrl', data.imgUrl)
+      formData.append('target', data.target)
+      formData.append('sortIndex', data.sortIndex)
+      formData.append('status', data.status)
+      formData.append('click', data.click)
+      formData.append('cssStyle', data.cssStyle)
+      formData.append('cssClass', data.cssClass)
+      formData.append('alt', data.alt)
+      formData.append('extra', data.extra)
+      formData.append('content', data.content)
+      formData.append('file', file)
+      return formData
     },
     submit() {
       const { id } = this.form
-      const data = this.getParams(id)
+      const formData = this.getParams(id)
       this.$refs.form.validate((valid) => {
         if (valid) {
           // 修改
           if (id) {
-            data.id = id
-            this.update(data).then(res => {
+            formData.append('id', id)
+            this.update(formData).then(res => {
               this.closeModal()
               this.onSearch()
             })
           // 新增
           } else {
-            this.add(data).then(res => {
+            this.add(formData).then(res => {
               this.closeModal()
               this.onSearch()
             })
