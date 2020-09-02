@@ -14,7 +14,10 @@ import './permission' // permission control
 import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 import Echarts from 'echarts'
-
+import VueKindEditor from 'vue-kindeditor'
+import 'kindeditor/kindeditor-all-min.js'
+import 'kindeditor/themes/default/default.css'
+Vue.use(VueKindEditor)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

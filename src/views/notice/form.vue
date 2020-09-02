@@ -1,25 +1,22 @@
 <template>
-  <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="活动公告" :visible.sync="formVisible" width="800px" custom-class="dialog-notice">
+  <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="活动公告" :visible.sync="formVisible" width="850px" custom-class="dialog-notice">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="标题" prop="title">
-        <el-input v-model="form.title" />
+        <el-input v-model="form.title" :maxlength="50" />
       </el-form-item>
-      <el-form-item label="类型" prop="type">
-        <el-select v-model="form.type" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
+      <el-form-item label="类型" prop="preType">
+        <el-select v-model="form.preType" placeholder="请选择活动区域">
+          <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="标签" prop="tag">
-        <el-select v-model="form.tag" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
+      <el-form-item label="标签" prop="label">
+        <el-select v-model="form.label" placeholder="请选择活动区域">
+          <el-option v-for="item in tagList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="发布者" prop="author">
-        <el-select v-model="form.author" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
+      <el-form-item label="发布者" prop="publisher">
+        <el-select v-model="form.publisher" placeholder="请选择活动区域">
+          <el-option v-for="item in authorList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="置顶有效期" prop="date">
@@ -29,22 +26,23 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
         />
       </el-form-item>
       <el-form-item label="开关">
-        <el-switch v-model="form.top" />
+        <el-switch v-model="form.placedTop" active-value="1" inactive-value="0" />
       </el-form-item>
-      <el-form-item label="置顶图片上传" prop="imageUrl">
+      <el-form-item label="置顶图片上传">
         <el-upload
           class="avatar-uploader"
-          action="#"
+          action="/userManager/upload"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
+          <img v-if="form.topTitlePath" :src="form.topTitlePathForView" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon" />
-          <span v-if="form.imageUrl" class="el-upload-list__item-actions">
+          <span v-if="form.topTitlePath" class="el-upload-list__item-actions">
             <span>
               <i class="el-icon-upload2" /><br>重新上传
             </span>
@@ -56,12 +54,21 @@
         </el-dialog> -->
       </el-form-item>
       <el-form-item label="内容">
-        <el-input v-model="form.content" type="textarea" />
+        <editor
+          id="editor_id"
+          height="400px"
+          width="680px"
+          :content.sync="form.content"
+          :after-change="afterChange()"
+          plugins-path="/static/kindeditor/plugins/"
+          :load-style-mode="false"
+          @on-content-change="onContentChange"
+        />
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button size="medium" @click="closeModal">取 消</el-button>
-      <el-button size="medium" type="primary" @click="onSubmit">确定</el-button>
+      <el-button size="medium" type="primary" :loading="(loading || loading2)" @click="onSubmit">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -86,39 +93,55 @@ export default {
     return {
       form: {
         title: '',
-        type: '',
-        tag: '',
-        author: '',
+        preType: '',
+        label: '',
+        publisher: '',
         date: '',
-        top: false,
-        imageUrl: '',
+        placedTop: 0,
+        topTitlePath: '',
+        topTitlePathForView: '',
         content: ''
       },
+      typeList: [
+        { label: '公告', value: '1' },
+        { label: '活动', value: '2' }
+      ],
+      tagList: [
+        { label: '域名', value: '域名' },
+        { label: '代理商', value: '代理商' },
+        { label: '企业邮件', value: '企业邮件' },
+        { label: '企业建站', value: '企业建站' },
+        { label: '云产品', value: '云产品' },
+        { label: '虚拟主机', value: '虚拟主机' }
+      ],
+      authorList: [
+        { label: '新网小新', value: '新网小新' },
+        { label: '新网', value: '新网' },
+        { label: '新网代理', value: '新网代理' }
+      ],
       rules: {
         title: [
           { required: true, message: '请填写！', trigger: 'blur' }
         ],
-        type: [
+        preType: [
           { required: true, message: '请选择！', trigger: 'change' }
         ],
-        tag: [
+        label: [
           { required: true, message: '请选择！', trigger: 'change' }
         ],
-        author: [
+        publisher: [
           { required: true, message: '请选择！', trigger: 'change' }
         ],
         date: [
           { required: true, message: '请选择！', trigger: 'change' }
-        ],
-        imageUrl: [
-          { required: true, message: '请上传照片', trigger: 'change' }
         ]
       }
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['userManager/openAgentUser']
+      loading: state => state.loading.effects['userManager/addActivityAnnounce'],
+      loading2: state => state.loading.effects['userManager/updateActivityAnnounce']
     }),
     formVisible: {
       get() {
@@ -129,35 +152,65 @@ export default {
       }
     }
   },
+  mounted() {
+    console.log(this.row)
+    if (this.row.id) {
+      this.form.title = this.row.title
+      this.form.preType = this.row.preType
+      this.form.label = this.row.label
+      this.form.publisher = this.row.publisher
+      this.form.date = [this.row.topStartDate, this.row.topEndDate]
+      this.form.placedTop = this.row.placedTop
+      this.form.topTitlePath = this.row.topTitlePath
+      this.form.topTitlePathForView = '/userManager/echoImage?imgUrl=' + this.row.topTitlePath
+      this.form.content = this.row.content
+    }
+  },
   methods: {
-    ...mapActions('userManager', ['openAgentUser']),
+    ...mapActions('userManager', ['addActivityAnnounce', 'updateActivityAnnounce']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
         if (valid) {
           console.log(this.form)
-          const params = {
-            agentCode: this.row.agentCode,
-            organCode: this.form.selectedOptions[0],
-            gradeCode: this.form.level,
-            saleCode: this.form.selectedOptions[1]
-          }
+          const params = this.form
+          params.topStartDate = this.form.date && this.form.date[0] ? `${this.form.date[0]} 00:00:00` : ''
+          params.topEndDate = this.form.date && this.form.date[1] ? `${this.form.date[1]} 23:59:59` : ''
           // submit
-          this.openAgentUser(params).then(res => {
-            if (!res.code) {
-              if (res.data.isSuccess === '1') {
-                this.$message.success('处理成功!')
-                this.closeModal()
-                this.$parent.onSearch()
+          if (!this.row.id) {
+            this.addActivityAnnounce(params).then(res => {
+              if (!res.code) {
+                if (res.data.isSuccess === '1') {
+                  this.$message.success('处理成功!')
+                  this.closeModal()
+                  this.$parent.onSearch()
+                } else {
+                  this.$message.error('处理失败!')
+                }
               } else {
-                this.$message.error('处理失败!')
+                this.$message.error(res.msg)
               }
-            } else {
-              this.$message.error(res.msg)
-            }
-          }).catch(error => {
-            this.$message.error(error)
-          })
+            }).catch(error => {
+              this.$message.error(error)
+            })
+          } else {
+            params.id = this.row.id
+            this.updateActivityAnnounce(params).then(res => {
+              if (!res.code) {
+                if (res.data.isSuccess === '1') {
+                  this.$message.success('处理成功!')
+                  this.closeModal()
+                  this.$parent.onSearch()
+                } else {
+                  this.$message.error('处理失败!')
+                }
+              } else {
+                this.$message.error(res.msg)
+              }
+            }).catch(error => {
+              this.$message.error(error)
+            })
+          }
         } else {
           return false
         }
@@ -178,12 +231,14 @@ export default {
 
     },
     handleAvatarSuccess(res, file) {
-      this.form.imageUrl = URL.createObjectURL(file.raw)
+      console.log(res)
+      this.form.topTitlePath = res.data.ftpPath
+      this.form.topTitlePathForView = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload(file) {
       const type = 'image/jpeg,image/jpg'
       const isImg = type.indexOf(file.type)
-      const isLt1M = file.size < 5000
+      const isLt1M = file.size < 50000
 
       if (isImg < 0) {
         this.$message.error('上传头像格式错误!')
@@ -192,6 +247,12 @@ export default {
         this.$message.error('上传头像图片大小不能超过 500k!')
       }
       return isImg && isLt1M
+    },
+    onContentChange(val) {
+      console.log(val)
+      this.form.content = val
+    },
+    afterChange() {
     }
   }
 }

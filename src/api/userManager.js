@@ -143,3 +143,35 @@ export function echoImage(query) {
     params: query
   })
 }
+// 查询活动公告信息
+export function findActivityAnnounce(query) {
+  return request({
+    url: '/userManager/findActivityAnnounce',
+    method: 'post',
+    params: query
+  })
+}
+// 删除公告活动
+export function deleteActivityAnnounce(query) {
+  return request({
+    url: '/userManager/deleteActivityAnnounce',
+    method: 'get',
+    params: query
+  })
+}
+// 添加公告活动
+export function addActivityAnnounce(query) {
+  return request({
+    url: '/userManager/addActivityAnnounce',
+    method: 'post',
+    params: query
+  })
+}
+// 修改公告活动
+export function updateActivityAnnounce(query) {
+  return request({
+    url: '/userManager/updateActivityAnnounce',
+    method: 'post',
+    params: query
+  })
+}

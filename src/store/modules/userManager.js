@@ -150,6 +150,34 @@ const actions = {
     }).catch(error => {
       return error
     })
+  },
+  findActivityAnnounce({ commit }, query) {
+    return api.findActivityAnnounce(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  deleteActivityAnnounce({ commit }, query) {
+    return api.deleteActivityAnnounce(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  addActivityAnnounce({ commit }, query) {
+    return api.addActivityAnnounce(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  updateActivityAnnounce({ commit }, query) {
+    return api.updateActivityAnnounce(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
   }
 }
 

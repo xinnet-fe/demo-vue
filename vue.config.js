@@ -16,9 +16,12 @@ const customWebpackConfig = defaultSettings.webpackConfig
 
 // merge proxy
 const defaultProxy = {
-  '/portal': {
-    target: 'http://119.10.116.247:8082',
-    changeOrigin: true
+  '/api': {
+    target: 'https://agentmanagement.xinnet.com',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/api': ''
+    }
   }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
