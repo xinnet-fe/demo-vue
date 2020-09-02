@@ -25,7 +25,7 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasXbToken = getToken('xbtoken') || getToken('xbtoken_id')
-
+  console.log(hasXbToken)
   if (hasXbToken) {
     if (to.path === '/login') {
       next({ path: '/' })
@@ -35,9 +35,10 @@ router.beforeEach(async(to, from, next) => {
       let hasUser = 0
       if (loginin === 'notuse') {
         hasMenus = store.getters.menus && store.getters.menus.length > 0
-        hasUser = store.getters.user && store.getters.user.id
+        hasUser = store.getters.user && store.getters.user.agentCode
       }
-
+      // alert(JSON.stringify(store.getters.user))
+      // console.log(store.getters.user)
       if (loginin === true || (hasMenus && hasUser)) {
         next()
       } else {
@@ -49,7 +50,9 @@ router.beforeEach(async(to, from, next) => {
           } else {
             const [menus] = await when(
               store.dispatch('userinfo/getSidebarMenus'),
-              store.dispatch('userinfo/getUser')
+              store.dispatch('userinfo/getUser'),
+              store.dispatch('userinfo/findGradeByAgent'),
+              store.dispatch('usersafe/findSafeGrade')
             )
             accessRoutes = await store.dispatch('permission/generateMainRoutes', menus)
           }

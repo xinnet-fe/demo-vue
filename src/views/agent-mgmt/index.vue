@@ -52,7 +52,6 @@
       <el-table-column
         prop="realName"
         label="实名信息"
-        width="120"
       />
       <el-table-column
         prop="telenumber"
@@ -68,7 +67,7 @@
         label="注册时间"
         show-overflow-tooltip
       />
-      <el-table-column label="状态" fixed="right" width="180">
+      <el-table-column label="状态" fixed="right" width="150">
         <template v-slot="scope">
           <el-button
             v-if="scope.row.bindStatus !== '1'"
@@ -122,7 +121,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
-import dialogBindClient from '@/components/dialogBindClient'
+import dialogBindClient from './dialogBindClient'
 // import assign from 'lodash/assign'
 // import forEach from 'lodash/forEach'
 import { mapState } from 'vuex'
@@ -154,13 +153,12 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['userinfo/queryAgentCustomerList']
-      // page: state => state.order.page
+      loading: state => state.loading.effects['userinfo/queryAgentCustomerList'],
+      usersafe: state => state.usersafe.usersafe
     })
   },
   created() {
-    const shiming = false
-    if (!shiming) {
+    if (this.usersafe && this.usersafe.userInfoAuth === 'N') {
       this.dialogVisible2 = true
     } else {
       this.getList()

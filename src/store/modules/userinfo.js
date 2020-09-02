@@ -1,9 +1,11 @@
-import { getUser, getSidebarMenus, changePwd, queryAgentCustomerList, sendEmail } from '@/api/userinfo'
+import { getUser, getSidebarMenus, changePwd } from '@/api/userinfo'
+import { queryAgentCustomerList, sendEmail, findGradeByAgent } from '@/api/agent/users'
 import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
   user: {},
   menus: [],
+  gradeByAgent: {},
   form: {
     oldpassword: '',
     password: '',
@@ -15,6 +17,9 @@ const state = {
 const mutations = {
   SET_USER: (state, user) => {
     state.user = user
+  },
+  SET_GRADE_BY_AGENT: (state, res) => {
+    state.gradeByAgent = res
   },
   SET_MENUS: (state, menus) => {
     state.menus = menus
@@ -46,9 +51,8 @@ const actions = {
         if (!user) {
           reject('please Login again.')
         }
-
-        commit('SET_USER', user)
-        setStore('user', user)
+        commit('SET_USER', user.data)
+        setStore('user', user.data)
         resolve(user)
       }).catch(error => {
         reject(error)
@@ -104,19 +108,29 @@ const actions = {
   clearPwdForm({ commit }) {
     commit('CLEAR_PWD_FORM')
   },
-  queryAgentCustomerList({ commit, state }) {
+  queryAgentCustomerList({ commit, state }, payload) {
     return new Promise((resolve, reject) => {
-      queryAgentCustomerList().then(user => {
+      queryAgentCustomerList(payload).then(user => {
         resolve(user)
       }).catch(error => {
         reject(error)
       })
     })
   },
-  sendEmail({ commit, state }) {
+  sendEmail({ commit, state }, payload) {
     return new Promise((resolve, reject) => {
-      sendEmail().then(user => {
+      sendEmail(payload).then(user => {
         resolve(user)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  findGradeByAgent({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      findGradeByAgent(payload).then(res => {
+        commit('SET_GRADE_BY_AGENT', res.data)
+        resolve(res)
       }).catch(error => {
         reject(error)
       })

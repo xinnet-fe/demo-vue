@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2020-06-03 14:37:36
- * @LastEditTime: 2020-06-12 17:16:11
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\api\agent\users.js
- */ 
 import request from '@/utils/http'
 
 export function selectAgentByParam(query) {
@@ -61,6 +53,30 @@ export function genelCaptcha(query) {
   return request({
     url: '/agent/api/user/genelCaptcha',
     method: 'POST',
+    params: query
+  })
+}
+export function queryAgentCustomerList(query) {
+  return request({
+    url: '/agent/api/user/queryAgentCustomerList',
+    // url: 'static/data/user/AgentCustomerList.json',
+    method: 'get',
+    params: query
+  })
+}
+
+export function sendEmail(query) {
+  return request({
+    url: '/agent/api/user/sendEmail',
+    // url: 'static/data/user/sendEmail.json',
+    method: 'GET',
+    params: query
+  })
+}
+export function findGradeByAgent(query) {
+  return request({
+    url: '/agent/api/user/findGradeByAgent',
+    method: 'GET',
     params: query
   })
 }

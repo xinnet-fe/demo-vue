@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
-    <el-alert class="el-alert-top" type="warning" show-icon>
-      <p slot="title">辅助性文字。也可通过默认 slot 传入</p>
+    <el-alert v-if="usersafe.userInfoAuth === 'N'" class="el-alert-top" type="warning" show-icon>
+      <p slot="title">依据《中华人民共和国网络安全法》规定，您的账号未进行认证，请尽快完成认证，避免影响您后期业务正常使用，感谢您的支持与合作。<a href="http://console.xinnet.com/jump.html?p=realuser" class="a-blue">去实名&gt;&gt;</a></p>
     </el-alert>
     <el-row :gutter="20" class="main-cont">
       <el-col :span="16" class="grid-content-1">
@@ -14,26 +14,26 @@
                     <img src="/static/img/home/img_01.png" alt="" srcset="">
                   </span>
                   <div class="info">
-                    <div style="font-weight:bold">agent1231232
+                    <div style="font-weight:bold">{{ user.agentCode }}
                       <span class="safe">
-                        <i class="icon">
+                        <i v-if="user.loginProtect === 'N'" class="icon">
                           <img src="/static/img/home/img_09.png" alt="" srcset="">
                         </i>
-                        <i class="icon">
+                        <i v-if="user.loginProtect === 'Y'" class="icon">
                           <img src="/static/img/home/img_10.png" alt="" srcset="">
                         </i>
-                        <i class="icon">
+                        <!-- <i v-if="user.agentType === 'N'" class="icon">
                           <img src="/static/img/home/img_11.png" alt="" srcset="">
-                        </i>
-                        <i class="icon">
+                        </i> -->
+                        <i v-if="user.agentType === 'P'" class="icon">
                           <img src="/static/img/home/img_12.png" alt="" srcset="">
                         </i>
-                        <i class="icon">
+                        <i v-if="user.agentType === 'C'" class="icon">
                           <img src="/static/img/home/img_13.png" alt="" srcset="">
                         </i>
                       </span>
                     </div>
-                    <p>白金会员代理商</p>
+                    <p>{{ gradeByAgent.gradeName }}</p>
                   </div>
                 </td>
                 <td class="col2">
@@ -163,7 +163,7 @@
             <Box type="1">
               <div slot="tit-left">客户订单</div>
               <div slot="tit-right">
-                <a href="http://" target="_blank" rel="noopener noreferrer">客户管理</a>
+                <router-link to="/agent-mgmt/index">客户管理</router-link>
               </div>
               <div slot="cont">
                 <div class="adv" />
@@ -259,7 +259,7 @@
         <div class="grid-content">
           <div class="carousel">
             <el-carousel trigger="click" height="230px">
-              <el-carousel-item v-for="item in 4" :key="item">
+              <el-carousel-item v-for="item in 0" :key="item">
                 <h3 class="small">{{ item }}</h3>
               </el-carousel-item>
             </el-carousel>
@@ -290,7 +290,7 @@
             <Box type="2">
               <div slot="tit-left">重要公告</div>
               <div slot="tit-right">
-                <a href="http://" target="_blank" rel="noopener noreferrer">查看公告</a>
+                <router-link to="/agent-notice/index">查看公告</router-link>
               </div>
               <div slot="cont">
                 <ul class="el-list">
@@ -337,6 +337,7 @@
 <script>
 import Box from '@/components/Box'
 import Cookies from 'js-cookie'
+import { mapState } from 'vuex'
 export default {
   name: 'Home',
   components: {
@@ -370,6 +371,13 @@ export default {
         }
       ]
     }
+  },
+  computed: {
+    ...mapState({
+      user: state => state.userinfo.user,
+      usersafe: state => state.usersafe.usersafe,
+      gradeByAgent: state => state.userinfo.gradeByAgent
+    })
   },
   mounted() {
     const adv = Cookies.get('agent-adv')
@@ -432,6 +440,9 @@ export default {
       color: #f46a68!important;
       margin: 0px;
       font-size: 12px;
+      a{
+        color: #7295d9;
+      }
     }
   }
   .main-cont{
@@ -731,6 +742,9 @@ export default {
     width: 320px;
     float: right;
     .grid-content{
+    }
+    .carousel{
+      background: url('/static/img/home/img_14.png') no-repeat;
     }
     .el-carousel__item:nth-child(2n) {
       background-color: #99a9bf;

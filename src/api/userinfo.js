@@ -2,9 +2,9 @@ import request from '@/utils/request'
 
 export function getUser(query) {
   return request({
-    // url: '/employee/getEmployeeInfo',
-    url: 'static/data/account.json',
-    method: 'get',
+    url: '/userinfo/getAgentUser',
+    // url: 'static/data/account.json',
+    method: 'post',
     params: query
   })
 }
@@ -23,24 +23,6 @@ export function changePwd(data) {
     url: '/employee/changePwd',
     method: 'post',
     data
-  })
-}
-
-export function queryAgentCustomerList(query) {
-  return request({
-    // url: '/agent/api/user/queryAgentCustomerList',
-    url: 'static/data/user/AgentCustomerList.json',
-    method: 'get',
-    params: query
-  })
-}
-
-export function sendEmail(query) {
-  return request({
-    // url: '/agent/api/user/sendEmail',
-    url: 'static/data/user/sendEmail.json',
-    method: 'GET',
-    params: query
   })
 }
 

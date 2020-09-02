@@ -30,7 +30,7 @@ export default {
   props: {},
   data() {
     return {
-      links: 'asdfsadfsadfsd',
+      links: '',
       form2: {
         email: ''
       },
@@ -44,10 +44,12 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['userinfo/sendEmail']
+      loading: state => state.loading.effects['userinfo/sendEmail'],
+      user: state => state.userinfo.user
     })
   },
   created() {
+    this.links = `http://console.xinnet.com/agent/inviteReg.html?agentCode=${this.user.agentCode}`
   },
   methods: {
     sendEmail() {
