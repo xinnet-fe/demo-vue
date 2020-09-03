@@ -16,7 +16,7 @@ const customWebpackConfig = defaultSettings.webpackConfig
 
 // merge proxy
 const defaultProxy = {
-  '/api': {
+  '/userManager': {
     target: 'https://agentmanagement.xinnet.com',
     changeOrigin: true,
     pathRewrite: {

@@ -178,6 +178,13 @@ const actions = {
     }).catch(error => {
       return error
     })
+  },
+  upload({ commit }, query) {
+    return api.upload(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
   }
 }
 

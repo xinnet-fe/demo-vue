@@ -175,3 +175,11 @@ export function updateActivityAnnounce(query) {
     params: query
   })
 }
+// 活动公告管理--活动公告图片上传
+export function upload(query) {
+  return request({
+    url: '/userManager/upload',
+    method: 'post',
+    data: query
+  })
+}

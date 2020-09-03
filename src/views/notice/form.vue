@@ -54,16 +54,19 @@
         </el-dialog> -->
       </el-form-item>
       <el-form-item label="内容">
-        <editor
+        <vue-editor v-model="form.content" use-custom-image-handler @image-added="handleImageAdded" />
+        <!-- <editor
           id="editor_id"
           height="400px"
           width="680px"
           :content.sync="form.content"
           :after-change="afterChange()"
           plugins-path="/static/kindeditor/plugins/"
+          upload-json="/userManager/upload"
+          file-post-name="file"
           :load-style-mode="false"
           @on-content-change="onContentChange"
-        />
+        /> -->
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -74,9 +77,13 @@
 </template>
 
 <script>
+import { VueEditor } from 'vue2-editor'
 import { mapActions, mapState } from 'vuex'
 export default {
   name: 'AgentNoticeForm',
+  components: {
+    VueEditor
+  },
   props: {
     visible: {
       type: Boolean,
@@ -154,20 +161,22 @@ export default {
   },
   mounted() {
     console.log(this.row)
-    if (this.row.id) {
-      this.form.title = this.row.title
-      this.form.preType = this.row.preType
-      this.form.label = this.row.label
-      this.form.publisher = this.row.publisher
-      this.form.date = [this.row.topStartDate, this.row.topEndDate]
-      this.form.placedTop = this.row.placedTop
-      this.form.topTitlePath = this.row.topTitlePath
-      this.form.topTitlePathForView = '/userManager/echoImage?imgUrl=' + this.row.topTitlePath
-      this.form.content = this.row.content
-    }
+    this.$nextTick(function() {
+      if (this.row.id) {
+        this.form.title = this.row.title
+        this.form.preType = this.row.preType
+        this.form.label = this.row.label
+        this.form.publisher = this.row.publisher
+        this.form.date = [this.row.topStartDate, this.row.topEndDate]
+        this.form.placedTop = this.row.placedTop
+        this.form.topTitlePath = this.row.topTitlePath
+        this.form.topTitlePathForView = '/userManager/echoImage?imgUrl=' + this.row.topTitlePath
+        this.form.content = this.row.content
+      }
+    })
   },
   methods: {
-    ...mapActions('userManager', ['addActivityAnnounce', 'updateActivityAnnounce']),
+    ...mapActions('userManager', ['addActivityAnnounce', 'updateActivityAnnounce', 'upload']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
@@ -232,13 +241,17 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       console.log(res)
-      this.form.topTitlePath = res.data.ftpPath
-      this.form.topTitlePathForView = URL.createObjectURL(file.raw)
+      if (res.success) {
+        this.form.topTitlePath = res.data.ftpPath
+        this.form.topTitlePathForView = URL.createObjectURL(file.raw)
+      } else {
+        this.$message.error(res.msg)
+      }
     },
     beforeAvatarUpload(file) {
       const type = 'image/jpeg,image/jpg'
       const isImg = type.indexOf(file.type)
-      const isLt1M = file.size < 50000
+      const isLt1M = file.size < 500000
 
       if (isImg < 0) {
         this.$message.error('上传头像格式错误!')
@@ -253,6 +266,19 @@ export default {
       this.form.content = val
     },
     afterChange() {
+    },
+    handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+      const formData = new FormData()
+      console.log(file)
+      formData.append('file', file) // 这里的image是请求参数
+      this.upload(formData).then(res => {
+        const url = '/userManager/echoImage?imgUrl=' + res.data.ftpPath // Get url from response
+        // 往编辑器中添加刚刚上传成功的图片，第一个参数是编辑器获得焦点的地方，第三个是图片路径（需加上基准路径$axios.defaults.baseURL）
+        Editor.insertEmbed(cursorLocation, 'image', url)
+        resetUploader()
+      }).catch(error => {
+        this.$message.error(error)
+      })
     }
   }
 }
@@ -307,6 +333,9 @@ export default {
 }
 .dialog-notice .avatar-uploader .el-upload__tip{
   color: #999;
+}
+.dialog-notice .ql-picker-label{
+  line-height: 20px;
 }
 </style>
 
