@@ -290,7 +290,7 @@ export default {
             const { navigation: nav } = res.data
             this.fileList = nav.file ? [nav.file] : []
             forEach(this.form, (v, k, o) => {
-              this.form[k] = nav[k]
+              this.form[k] = nav[k] || ''
             })
             this.form.id = nav.id
             this.oldCode = nav.code

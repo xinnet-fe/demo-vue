@@ -313,7 +313,7 @@ export default {
             const { slideshow: r } = res.data
             this.fileList = r.file ? [r.file] : []
             forEach(this.form, (v, k) => {
-              this.form[k] = r[k]
+              this.form[k] = r[k] || ''
             })
             this.oldCode = r.code
           })
