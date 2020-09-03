@@ -61,13 +61,14 @@ router.beforeEach(async(to, from, next) => {
             loginin = false
           }
           // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
+          // await store.dispatch('user/resetToken')
           vm.$message.error(error || 'Has Error')
-          if (hasDevelopment) {
-            next(`/login?redirect=${to.path}`)
-          } else {
-            global.location = logoutApi
-          }
+          console.error(error)
+          // if (hasDevelopment) {
+          //   next(`/login?redirect=${to.path}`)
+          // } else {
+          //   global.location = logoutApi
+          // }
           NProgress.done()
         }
       }
