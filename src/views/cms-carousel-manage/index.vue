@@ -30,15 +30,15 @@
       style="width: 100%"
     >
       <el-table-column
+        prop="name"
+        label="名称"
+      />
+      <el-table-column
         ref="sortIndex"
         prop="sortIndex"
         label="序号"
         sortable
         :sort-method="sortByNumber"
-      />
-      <el-table-column
-        prop="name"
-        label="名称"
       />
       <el-table-column
         prop="code"
