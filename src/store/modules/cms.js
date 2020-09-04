@@ -182,7 +182,15 @@ const actions = {
   },
   // 广告详情
   searchAdv(_, query) {
-    return searchAdv(query)
+    return searchAdv(query).then(res => {
+      if (res && res.data) {
+        const { normalAdv } = res.data
+        if (normalAdv && normalAdv.extra) {
+          normalAdv.extra = JSON.parse(normalAdv.extra)
+        }
+      }
+      return res
+    })
   },
   // 轮播
   slideshowList(_, query) {
