@@ -205,7 +205,15 @@ const actions = {
   },
   // 轮播详情
   searchSlideshow(_, query) {
-    return searchSlideshow(query)
+    return searchSlideshow(query).then(res => {
+      if (res && res.data) {
+        const { slideshow } = res.data
+        if (slideshow && slideshow.extra) {
+          slideshow.extra = JSON.parse(slideshow.extra)
+        }
+      }
+      return res
+    })
   },
   // 修改轮播状态
   updateSlideshowStatus(_, query) {
@@ -245,7 +253,15 @@ const actions = {
     return destroyNav(query)
   },
   searchNav(_, query) {
-    return searchNav(query)
+    return searchNav(query).then(res => {
+      if (res && res.data) {
+        const { navigation } = res.data
+        if (navigation && navigation.extra) {
+          navigation.extra = JSON.parse(navigation.extra)
+        }
+      }
+      return res
+    })
   },
   navTargetMapping({ commit }, query) {
     return navTargetMapping(query).then(res => {

@@ -171,8 +171,8 @@
               <el-form-item label="提示:">
                 <el-input v-model="form.alt" :rows="3" type="textarea" />
               </el-form-item>
-              <el-form-item label="扩展:">
-                <el-input v-model="form.extra" :rows="3" type="textarea" />
+              <el-form-item label="扩展:" prop="extra">
+                <json-editor v-if="activeName === 'senior'" ref="jsonEditor" v-model="form.extra" width="600" />
               </el-form-item>
               <el-form-item label="内容:">
                 <el-input v-model="form.content" :rows="3" type="textarea" />
@@ -203,15 +203,16 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
+import JsonEditor from '@/components/JsonEditor'
 // import Pagination from '@/components/Pagination'
 import formatTime from '@/utils/formatTime'
 import isDate from '@/utils/isDate'
 
 export default {
   name: 'CmsCarouselManage',
-  // components: {
-  //   Pagination
-  // },
+  components: {
+    JsonEditor
+  },
   data() {
     return {
       // tabs
