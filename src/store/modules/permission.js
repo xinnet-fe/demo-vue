@@ -97,9 +97,9 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       name: upperFirst(camelCase(name)),
       meta: {
         title: o.text
-      }
+      },
+      redirect: o.redirect ? o.redirect : 'noRedirect'
     }
-
     // 非外链且无子路由
     if (!isParent && !isUrl && !o.children) {
       route.component = lazyLoadView(viewPath)
@@ -117,13 +117,14 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
 
     // 根路由
     if (isParent) {
-      route.redirect = 'noRedirect'
+      // route.redirect = 'noRedirect'
       route.meta.icon = icon
       route.component = Layout
     // 根路由或非根路由并且有子路由的非站外url
-    } else if ((o.children && !isUrl) || (o.children && isUrl && isTarget)) {
-      route.redirect = 'noRedirect'
     }
+    // else if ((o.children && !isUrl) || (o.children && isUrl && isTarget)) {
+    //   route.redirect = 'noRedirect'
+    // }
 
     // 根路由无子节点
     if (isParent && !o.children && !isUrl) {
@@ -143,7 +144,6 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       route.alwaysShow = true
       route.children = getAsyncRoutesByMenus(o.children, viewPath)
     }
-
     routes.push(route)
   })
   return routes

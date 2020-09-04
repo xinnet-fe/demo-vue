@@ -382,6 +382,9 @@ export default {
       account: state => state.userinfo.account
     })
   },
+  beforeCreate() {
+    this.$router.push({ path: '/agent-home/index?showLayout=false' })
+  },
   mounted() {
     const adv = Cookies.get('agent-adv')
     if (!adv) {
