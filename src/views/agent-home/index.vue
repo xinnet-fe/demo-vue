@@ -259,8 +259,8 @@
         <div class="grid-content">
           <div class="carousel">
             <el-carousel trigger="click" height="230px">
-              <el-carousel-item v-for="item in 0" :key="item">
-                <h3 class="small">{{ item }}</h3>
+              <el-carousel-item v-for="item in listAdvRight" :key="item">
+                <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="">
               </el-carousel-item>
             </el-carousel>
           </div>
@@ -295,8 +295,8 @@
               <div slot="cont">
                 <ul class="el-list">
                   <li v-for="(item, i) in list" :key="i" class="el-list-item">
-                    <strong class="tit"><a href="">{{ item.tit }}</a></strong>
-                    <p class="desc">{{ item.time }}</p>
+                    <strong class="tit"><a @click="handleShow(item)">{{ item.title }}</a></strong>
+                    <p class="desc">{{ item.updateTime }}</p>
                   </li>
                 </ul>
               </div>
@@ -325,12 +325,26 @@
     <el-dialog class="el-dialog-adv" :visible.sync="dialogVisible" width="600px" :before-close="handleClose">
       <div class="carousel">
         <el-carousel trigger="click" height="460px">
-          <el-carousel-item v-for="item in 4" :key="item">
-            <h3 class="small">{{ item }}</h3>
+          <el-carousel-item v-for="item in listAdvPop" :key="item">
+            <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="">
           </el-carousel-item>
         </el-carousel>
       </div>
     </el-dialog>
+    <!-- 公告详情 -->
+    <el-drawer
+      :title="title"
+      size="50%"
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="handleCloseDrawer"
+    >
+      <div slot="title">
+        <h3>{{ title }}</h3>
+        <p><span>发布时间：{{ time }}</span><span>发布者：{{ author }}</span></p>
+      </div>
+      <div class="article" v-html="content" />
+    </el-drawer>
   </div>
 </template>
 
@@ -348,28 +362,15 @@ export default {
       queryDomain: '',
       queryBrand: '',
       dialogVisible: false,
-      list: [
-        {
-          tit: 'vue v-for循环的用法',
-          time: '2018年12月6日'
-        },
-        {
-          tit: 'vue v-for循环的用法',
-          time: '2018年12月6日'
-        },
-        {
-          tit: 'vue v-for循环的用法',
-          time: '2018年12月6日'
-        },
-        {
-          tit: 'vue v-for循环的用法',
-          time: '2018年12月6日'
-        },
-        {
-          tit: 'vue v-for循环的用法',
-          time: '2018年12月6日'
-        }
-      ]
+      list: [],
+      listAdvPop: [],
+      listAdvRight: [],
+      drawer: false,
+      direction: 'rtl',
+      title: '',
+      time: '2020-05-05',
+      author: '新网',
+      content: ''
     }
   },
   computed: {
@@ -380,15 +381,87 @@ export default {
     })
   },
   mounted() {
+    this.getNoticeCarousel({
+      type: 'pop',
+      preType: '',
+      pageNum: 1,
+      pageSize: 3
+    })
+    this.dialogVisible = true
     const adv = Cookies.get('agent-adv')
     if (!adv) {
       Cookies.set('agent-adv', 'true', { expires: 1 })
+      this.getNoticeCarousel({
+        type: 'pop',
+        preType: '',
+        pageNum: 1,
+        pageSize: 3
+      })
       this.dialogVisible = true
     }
+    this.getNotice()
+    this.getNoticeCarousel({
+      type: 'right',
+      preType: '2',
+      pageNum: 1,
+      pageSize: 5
+    })
   },
   methods: {
     handleClose() {
       this.dialogVisible = false
+    },
+    getNotice() {
+      const query = {
+        preType: '1',
+        pageNum: 1,
+        pageSize: 5
+      }
+      this.$store.dispatch('announce/queryDlActivityOrAnnounce', query).then(res => {
+        console.log(res.success)
+        if (!res.code && res.success) {
+          this.list = res.data.list
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getNoticeCarousel(params) {
+      const query = {
+        preType: params.preType,
+        pageNum: params.pageSize
+      }
+      this.$store.dispatch('announce/findDlActivityAnnounce', query).then(res => {
+        console.log(res.success)
+        if (!res.code && res.success) {
+          if (params.type === 'pop') {
+            this.listAdvPop = res.data
+          } else {
+            this.listAdvRight = res.data
+          }
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleShow(param) {
+      this.drawer = true
+      this.$store.dispatch('announce/queryContentById', { id: param.id }).then(res => {
+        console.log(res.success)
+        if (!res.code && res.success) {
+          this.title = res.data.title
+          this.content = res.data.content
+          this.time = res.data.updateTime
+          this.author = res.data.publisher
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleCloseDrawer() {
+      this.drawer = false
     }
   }
 }
@@ -429,6 +502,15 @@ export default {
       width: 9px;
       height: 9px;
       border-radius: 100%;
+    }
+    .el-carousel__item{
+      text-align: center;
+      line-height: 460px;
+      vertical-align: middle;
+      img{
+        max-width: 100%;
+        max-height: 100%;
+      }
     }
   }
   .el-alert-top{
@@ -757,6 +839,15 @@ export default {
       height: 9px;
       border-radius: 100%;
     }
+    .el-carousel__item{
+      text-align: center;
+      line-height: 230px;
+      vertical-align: middle;
+      img{
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
     .msgs{
       background: #fff;
       text-align: center;
@@ -798,6 +889,42 @@ export default {
       color: #666666;
     }
   }
+  .el-drawer{
+    .el-drawer__header {
+      margin-bottom: 0px;
+      border-bottom: 1px solid #e5e5e5;
+      padding-top: 27px;
+      padding-bottom: 27px;
+      *{
+        outline: none;
+      }
+      h3{
+        margin-top: 0px;
+        font-size: 16px;
+        line-height: 24px;
+        color: #333;
+        font-weight: normal;
+      }
+      p{
+        margin: 0px;
+      }
+      p span{
+        font-size: 12px;
+        display: inline-block;
+        margin-right: 20px;
+      }
+    }
+    .el-drawer__body {
+      overflow: auto;
+      /* overflow-x: auto; */
+    }
+    .article {
+      font-size: 12px;
+      line-height: 24px;
+      padding: 0 20px;
+    }
+  }
 }
+
 </style>
 
