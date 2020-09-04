@@ -51,6 +51,7 @@ router.beforeEach(async(to, from, next) => {
             const [menus] = await when(
               store.dispatch('userinfo/getSidebarMenus'),
               store.dispatch('userinfo/getUser'),
+              store.dispatch('userinfo/getAgentAccount'),
               store.dispatch('userinfo/findGradeByAgent'),
               store.dispatch('usersafe/findSafeGrade')
             )

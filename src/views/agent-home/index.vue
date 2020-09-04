@@ -41,7 +41,7 @@
                     <img src="/static/img/home/img_02.png" alt="" srcset="">
                   </span>
                   <div class="info">
-                    <div>我的余额：<em>￥ 64545.23</em></div>
+                    <div>我的余额：<em>￥ {{ account.totalBalance }}</em></div>
                     <p>
                       <a href="http://" target="_blank" rel="noopener noreferrer">消费明细</a>
                       <span class="line">|</span>
@@ -175,7 +175,7 @@
                       </span>
                       <div class="info">
                         <span>客户</span>
-                        <em>1024</em>
+                        <em>{{ dlCustomerNum }}</em>
                       </div>
                     </div>
                   </el-col>
@@ -259,8 +259,8 @@
         <div class="grid-content">
           <div class="carousel">
             <el-carousel trigger="click" height="230px">
-              <el-carousel-item v-for="item in listAdvRight" :key="item">
-                <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="">
+              <el-carousel-item v-for="item in listAdvRight" :key="item.id">
+                <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="" @click="handleShow(item)">
               </el-carousel-item>
             </el-carousel>
           </div>
@@ -325,8 +325,8 @@
     <el-dialog class="el-dialog-adv" :visible.sync="dialogVisible" width="600px" :before-close="handleClose">
       <div class="carousel">
         <el-carousel trigger="click" height="460px">
-          <el-carousel-item v-for="item in listAdvPop" :key="item">
-            <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="">
+          <el-carousel-item v-for="item in listAdvPop" :key="item.id">
+            <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="" @click="handleShow(item)">
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -370,24 +370,19 @@ export default {
       title: '',
       time: '2020-05-05',
       author: '新网',
-      content: ''
+      content: '',
+      dlCustomerNum: 0
     }
   },
   computed: {
     ...mapState({
       user: state => state.userinfo.user,
       usersafe: state => state.usersafe.usersafe,
-      gradeByAgent: state => state.userinfo.gradeByAgent
+      gradeByAgent: state => state.userinfo.gradeByAgent,
+      account: state => state.userinfo.account
     })
   },
   mounted() {
-    this.getNoticeCarousel({
-      type: 'pop',
-      preType: '',
-      pageNum: 1,
-      pageSize: 3
-    })
-    this.dialogVisible = true
     const adv = Cookies.get('agent-adv')
     if (!adv) {
       Cookies.set('agent-adv', 'true', { expires: 1 })
@@ -397,7 +392,6 @@ export default {
         pageNum: 1,
         pageSize: 3
       })
-      this.dialogVisible = true
     }
     this.getNotice()
     this.getNoticeCarousel({
@@ -406,6 +400,7 @@ export default {
       pageNum: 1,
       pageSize: 5
     })
+    this.getDlCustomer()
   },
   methods: {
     handleClose() {
@@ -436,9 +431,24 @@ export default {
         if (!res.code && res.success) {
           if (params.type === 'pop') {
             this.listAdvPop = res.data
+            if (res.data.length) {
+              this.dialogVisible = true
+            }
           } else {
             this.listAdvRight = res.data
           }
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getDlCustomer() {
+      this.$store.dispatch('userinfo/findDlCustomer', {}).then(res => {
+        console.log(res.success)
+        if (!res.code && res.success) {
+          this.dlCustomerNum = res.data.count
+        } else {
+          this.$message.error(res.msg)
         }
       }).catch(error => {
         console.log(error)

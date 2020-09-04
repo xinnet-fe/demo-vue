@@ -80,3 +80,10 @@ export function findGradeByAgent(query) {
     params: query
   })
 }
+export function findDlCustomer(query) {
+  return request({
+    url: '/agent/api/user/findDlCustomer',
+    method: 'POST',
+    params: query
+  })
+}

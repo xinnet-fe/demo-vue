@@ -1,9 +1,10 @@
-import { getUser, getSidebarMenus, changePwd } from '@/api/userinfo'
-import { queryAgentCustomerList, sendEmail, findGradeByAgent } from '@/api/agent/users'
+import { getUser, getSidebarMenus, changePwd, getAgentAccount } from '@/api/userinfo'
+import { queryAgentCustomerList, sendEmail, findGradeByAgent, findDlCustomer } from '@/api/agent/users'
 import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
   user: {},
+  account: {},
   menus: [],
   gradeByAgent: {},
   form: {
@@ -29,6 +30,9 @@ const mutations = {
     state.form.password = payload.newPwd
     state.form.confirmPassword = payload.confirmPwd
     state.form.verifcode = payload.mobileyzm
+  },
+  SET_ACCOUNT: (state, payload) => {
+    state.account = payload
   },
   CLEAR_PWD_FORM(state) {
     state.form.oldpassword = ''
@@ -130,6 +134,25 @@ const actions = {
     return new Promise((resolve, reject) => {
       findGradeByAgent(payload).then(res => {
         commit('SET_GRADE_BY_AGENT', res.data)
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  findDlCustomer({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      findDlCustomer(payload).then(res => {
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  getAgentAccount({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      getAgentAccount(payload).then(res => {
+        commit('SET_ACCOUNT', res.data)
         resolve(res)
       }).catch(error => {
         reject(error)

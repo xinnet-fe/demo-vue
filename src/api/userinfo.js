@@ -8,7 +8,13 @@ export function getUser(query) {
     params: query
   })
 }
-
+export function getAgentAccount(query) {
+  return request({
+    url: '/userinfo/getAgentAccount',
+    method: 'post',
+    params: query
+  })
+}
 export function getSidebarMenus(query) {
   return request({
     // url: '/navigation/listNavigation',
@@ -25,4 +31,3 @@ export function changePwd(data) {
     data
   })
 }
-
