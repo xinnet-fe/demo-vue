@@ -98,21 +98,21 @@
     <!-- form -->
     <el-dialog width="800px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="广告组名称:" prop="advName">
+        <el-form-item label="广告组名称" prop="advName">
           <el-input v-model="form.advName" />
         </el-form-item>
-        <el-form-item label="所属广告组:" prop="groupCode">
+        <el-form-item label="所属广告组" prop="groupCode">
           <el-select v-model="form.groupCode">
             <el-option v-for="code in groupList" :key="code" :label="code" :value="code" />
           </el-select>
         </el-form-item>
-        <el-form-item label="广告描述:" prop="advDesc">
+        <el-form-item label="广告描述" prop="advDesc">
           <el-input v-model="form.advDesc" :rows="3" type="textarea" />
         </el-form-item>
-        <el-form-item label="外链地址:" prop="url">
+        <el-form-item label="外链地址" prop="url">
           <el-input v-model="form.url" />
         </el-form-item>
-        <el-form-item label="广告图片地址:" prop="imgUrl">
+        <el-form-item label="广告图片地址" prop="imgUrl">
           <el-col :span="24">
             <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
           </el-col>
@@ -135,31 +135,45 @@
           </el-upload>
           <div id="resourceManager" />
         </el-form-item>
-        <el-form-item label="序号:" prop="sortNum">
+        <el-form-item label="序号" prop="sortNum">
           <el-input-number v-model="form.sortNum" />
         </el-form-item>
-        <el-form-item label="开始时间:" prop="startTime">
+        <el-form-item label="开始时间" prop="startTime">
           <el-date-picker
             v-model="form.startTime"
             type="datetime"
             placeholder="选择开始日期"
           />
         </el-form-item>
-        <el-form-item label="结束日期:" prop="endTime">
+        <el-form-item label="结束日期" prop="endTime">
           <el-date-picker
             v-model="form.endTime"
             type="datetime"
             placeholder="选择结束日期"
           />
         </el-form-item>
-        <el-form-item label="广告状态:" prop="advStatus">
+        <el-form-item label="广告状态" prop="advStatus">
           <el-switch
             v-model="form.advStatus"
             active-value="1"
             inactive-value="0"
           />
         </el-form-item>
-        <el-form-item label="个性设置:" prop="extra">
+        <el-form-item label="NEW" prop="newStatus">
+          <el-switch
+            v-model="form.newStatus"
+            active-value="1"
+            inactive-value="0"
+          />
+        </el-form-item>
+        <el-form-item label="HOT" prop="hotStatus">
+          <el-switch
+            v-model="form.hotStatus"
+            active-value="1"
+            inactive-value="0"
+          />
+        </el-form-item>
+        <el-form-item label="个性设置" prop="extra">
           <json-editor ref="jsonEditor" v-model="form.extra" width="600" />
         </el-form-item>
       </el-form>
@@ -236,6 +250,8 @@ export default {
         startTime: '',
         endTime: '',
         advStatus: '',
+        newStatus: '',
+        hotStatus: '',
         extra: ''
       },
       // 上传图片下拉框值
@@ -303,6 +319,8 @@ export default {
               startTime: adv.startTime,
               endTime: adv.endTime,
               advStatus: adv.isActived,
+              newStatus: adv.newStatus,
+              hotStatus: adv.hotStatus,
               extra: adv.extra
             }
           }
@@ -371,6 +389,8 @@ export default {
       formData.append('startTime', startTime)
       formData.append('endTime', endTime)
       formData.append('advStatus', data.advStatus)
+      formData.append('newStatus', data.newStatus)
+      formData.append('hotStatus', data.hotStatus)
       formData.append('extra', data.extra)
       formData.append('file', file)
       return formData

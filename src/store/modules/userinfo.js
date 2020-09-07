@@ -43,7 +43,6 @@ const actions = {
       //   resolve(storeUser)
       // } else {
       getUser().then(user => {
-        console.log(user)
         if (!user) {
           reject('please Login again.')
         }

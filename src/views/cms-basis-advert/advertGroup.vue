@@ -71,13 +71,13 @@
     <!-- form -->
     <el-dialog width="600px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="广告组名称:" prop="groupName">
+        <el-form-item label="广告组名称" prop="groupName">
           <el-input v-model="form.groupName" />
         </el-form-item>
-        <el-form-item label="广告组code:" prop="groupCode">
+        <el-form-item label="广告组code" prop="groupCode">
           <el-input v-model="form.groupCode" />
         </el-form-item>
-        <el-form-item label="广告站点:" prop="groupType">
+        <el-form-item label="广告站点" prop="groupType">
           <el-select v-model="form.groupType" placeholder="请选择广告站点">
             <el-option v-for="item in groupTypes" :key="item.value" :label="item.key" :value="item.value" />
           </el-select>
