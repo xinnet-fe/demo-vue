@@ -72,10 +72,10 @@
         <el-tab-pane label="基本属性" name="basis">
           <template v-slot:default>
             <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-              <el-form-item label="名称:" prop="name">
+              <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" />
               </el-form-item>
-              <el-form-item label="所属分类:">
+              <el-form-item label="所属分类">
                 <el-cascader
                   v-model="form.parentId"
                   :options="navType"
@@ -84,13 +84,13 @@
                   change-on-select
                 />
               </el-form-item>
-              <el-form-item label="code:">
+              <el-form-item label="code">
                 <el-input v-model="form.code" />
               </el-form-item>
-              <el-form-item label="描述:" prop="desc">
+              <el-form-item label="描述" prop="desc">
                 <el-input v-model="form.desc" :rows="3" type="textarea" />
               </el-form-item>
-              <el-form-item label="图片地址:" prop="imgUrl">
+              <el-form-item label="图片地址" prop="imgUrl">
                 <el-col :span="24">
                   <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
                 </el-col>
@@ -112,7 +112,7 @@
                   <el-button ref="upload" size="small" type="primary">点击上传</el-button>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="链接:" prop="url">
+              <el-form-item label="链接" prop="url">
                 <el-input v-model="form.url" />
               </el-form-item>
               <el-form-item label="打开方式">
@@ -120,24 +120,24 @@
                   <el-option v-for="item in openMode" :key="item.value" :label="item.key" :value="item.value" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="序号:" prop="sortIndex">
+              <el-form-item label="序号" prop="sortIndex">
                 <el-input-number v-model="form.sortIndex" />
               </el-form-item>
-              <el-form-item label="显示状态:" prop="status">
+              <el-form-item label="显示状态" prop="status">
                 <el-switch
                   v-model="form.status"
                   active-value="1"
                   inactive-value="0"
                 />
               </el-form-item>
-              <el-form-item label="NEW:" prop="newStatus">
+              <el-form-item label="NEW" prop="newStatus">
                 <el-switch
                   v-model="form.newStatus"
                   active-value="1"
                   inactive-value="0"
                 />
               </el-form-item>
-              <el-form-item label="HOT:" prop="hotStatus">
+              <el-form-item label="HOT" prop="hotStatus">
                 <el-switch
                   v-model="form.hotStatus"
                   active-value="1"
@@ -150,22 +150,22 @@
         <el-tab-pane label="高级属性" name="senior">
           <template v-slot:default>
             <el-form ref="seniorForm" class="el-form" :model="form" label-width="100px">
-              <el-form-item label="点击事件:">
+              <el-form-item label="点击事件">
                 <el-input v-model="form.click" />
               </el-form-item>
-              <el-form-item label="css样式:">
+              <el-form-item label="css样式">
                 <el-input v-model="form.cssStyle" :rows="3" type="textarea" />
               </el-form-item>
-              <el-form-item label="class:">
+              <el-form-item label="class">
                 <el-input v-model="form.cssClass" :rows="3" type="textarea" />
               </el-form-item>
-              <el-form-item label="提示:">
+              <el-form-item label="提示">
                 <el-input v-model="form.alt" :rows="3" type="textarea" />
               </el-form-item>
-              <el-form-item label="扩展:" prop="extra">
+              <el-form-item label="扩展" prop="extra">
                 <json-editor v-if="activeName === 'senior'" ref="jsonEditor" v-model="form.extra" width="600" />
               </el-form-item>
-              <el-form-item label="内容:">
+              <el-form-item label="内容">
                 <el-input v-model="form.content" :rows="3" type="textarea" />
               </el-form-item>
             </el-form>
