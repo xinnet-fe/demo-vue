@@ -1,4 +1,4 @@
-import { getUser, getSidebarMenus, changePwd, getAgentAccount } from '@/api/userinfo'
+import { getUser, getSidebarMenus, changePwd, getAgentAccount, queryIpAddress } from '@/api/userinfo'
 import { queryAgentCustomerList, sendEmail, findGradeByAgent, findDlCustomer } from '@/api/agent/users'
 import { setStore, removeStore } from '@/utils/auth'
 
@@ -153,6 +153,15 @@ const actions = {
     return new Promise((resolve, reject) => {
       getAgentAccount(payload).then(res => {
         commit('SET_ACCOUNT', res.data)
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  queryIpAddress({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      queryIpAddress(payload).then(res => {
         resolve(res)
       }).catch(error => {
         reject(error)

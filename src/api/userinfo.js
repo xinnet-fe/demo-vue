@@ -31,3 +31,12 @@ export function changePwd(data) {
     data
   })
 }
+// 控制台—查询ip地址数据
+export function queryIpAddress(data) {
+  return request({
+    url: '/userinfo/queryIpAddress',
+    method: 'post',
+    data
+  })
+}
+

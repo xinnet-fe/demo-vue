@@ -214,14 +214,14 @@
               </div>
               <div slot="cont">
                 <ul class="el-list el-list-style3 clearfix">
-                  <li v-for="(item, i) in list" :key="i" class="el-list-item clearfix" style="width: 50%;float: left;">
-                    <strong class="tit"><a href="">{{ item.tit }}</a></strong>
+                  <li v-for="(item, i) in listHelp" :key="i" class="el-list-item clearfix" style="width: 50%;float: left;">
+                    <strong class="tit"><a :href="item.url" target="_blank">{{ item.title }}</a></strong>
                   </li>
                 </ul>
                 <el-row :gutter="20" class="help-list-2">
                   <el-col :span="8">
                     <div class="grid-content grid-content-list-1">
-                      <a href="http://" target="_blank" rel="noopener noreferrer" class="clearfix">
+                      <a href="http://www.xinnet.com/service/zlxz/index.html" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">资料下载</span>
                         <span class="img">
                           <img src="/static/img/home/img_06.png" alt="" srcset="">
@@ -231,7 +231,7 @@
                   </el-col>
                   <el-col :span="8">
                     <div class="grid-content grid-content-list-2">
-                      <a href="http://" target="_blank" rel="noopener noreferrer" class="clearfix">
+                      <a href="http://www.xinnet.com/service/xssl/index.html" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">新手指南</span>
                         <span class="img">
                           <img src="/static/img/home/img_07.png" alt="" srcset="">
@@ -241,7 +241,7 @@
                   </el-col>
                   <el-col :span="8">
                     <div class="grid-content grid-content-list-3">
-                      <a href="http://" target="_blank" rel="noopener noreferrer" class="clearfix">
+                      <a href="http://www.xinnet.com/service/cjwt/index.html" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">常见问题</span>
                         <span class="img">
                           <img src="/static/img/home/img_08.png" alt="" srcset="">
@@ -310,9 +310,9 @@
               </div>
               <div slot="cont">
                 <ul class="el-list el-list-style2">
-                  <li v-for="(item, i) in list" :key="i" class="el-list-item clearfix">
-                    <strong class="tit"><a href="">{{ item.tit }}<br>{{ item.tit }}</a></strong>
-                    <p class="desc">{{ item.time }}</p>
+                  <li v-for="(item, i) in ipAddress" :key="i" class="el-list-item clearfix">
+                    <strong class="tit"><a>{{ item.ipAddress }}<br>{{ item.area }}</a></strong>
+                    <p class="desc">{{ item.updateTime }}</p>
                   </li>
                 </ul>
               </div>
@@ -365,13 +365,40 @@ export default {
       list: [],
       listAdvPop: [],
       listAdvRight: [],
+      listHelp: [
+        {
+          title: '新网新版代理合同下载',
+          url: 'http://www.xinnet.com/service/zlxz/richang/671.html'
+        },
+        {
+          title: '如何变更实名认证信息?',
+          url: 'http://www.xinnet.com/service/cjwt/hy/shiming/1544.html'
+        },
+        {
+          title: '代理商如何修改账户信息',
+          url: 'http://www.xinnet.com/service/cjwt/hy/xiugai/1869.html'
+        },
+        {
+          title: '备案流程',
+          url: 'http://www.xinnet.com/service/cjwt/qita/icp/1469.html'
+        },
+        {
+          title: '售后问题在线提问',
+          url: 'http://www.xinnet.com/service/xssl/hyczsc/1149.html'
+        },
+        {
+          title: '代理申请发票流程',
+          url: 'http://www.xinnet.com/service/cjwt/caiwu/fapiao/1340.html'
+        }
+      ],
       drawer: false,
       direction: 'rtl',
       title: '',
       time: '2020-05-05',
       author: '新网',
       content: '',
-      dlCustomerNum: 0
+      dlCustomerNum: 0,
+      ipAddress: []
     }
   },
   computed: {
@@ -404,6 +431,7 @@ export default {
       pageSize: 5
     })
     this.getDlCustomer()
+    this.queryIpAddress()
   },
   methods: {
     handleClose() {
@@ -457,6 +485,18 @@ export default {
         console.log(error)
       })
     },
+    queryIpAddress() {
+      this.$store.dispatch('userinfo/queryIpAddress', {}).then(res => {
+        console.log(res.success)
+        if (!res.code && res.success) {
+          this.ipAddress = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     handleShow(param) {
       this.drawer = true
       this.$store.dispatch('announce/queryContentById', { id: param.id }).then(res => {
@@ -480,10 +520,6 @@ export default {
 }
 </script>
 <style lang="scss">
-// 如果有外层xcs_mian容器
-.xcs_main .main-cont{
-  padding: 20px 20px 20px 20px!important;
-}
 .home-container {
   background: #f5f5f5;
   .el-dialog-adv{
@@ -830,6 +866,9 @@ export default {
             vertical-align: middle;
           }
         }
+        .text{
+          color: #333;
+        }
       }
     }
   }
@@ -866,6 +905,7 @@ export default {
       text-align: center;
       padding: 23px 0;
       margin-bottom: 20px;
+      color: #333;
       em{
         display: block;
         font-weight: 600;
