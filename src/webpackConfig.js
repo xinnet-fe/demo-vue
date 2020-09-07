@@ -5,7 +5,7 @@ module.exports = {
 
   // vue.config根级
   rootConfig: {
-    publicPath: '/'
+    publicPath: '/adv/'
   },
   // configureWebpack
   configureWebpack: {
