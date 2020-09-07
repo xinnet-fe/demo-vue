@@ -17,6 +17,9 @@ export default {
         router.addRoutes(routes)
       })
     })
+    dispatch('userinfo/getAgentAccount')
+    dispatch('userinfo/findGradeByAgent')
+    dispatch('usersafe/findSafeGrade')
   }
 }
 </script>
