@@ -34,10 +34,12 @@ export default {
 }
 .box-container .box-tit-left{
   float: left;
+  color: #333;
 }
 .box-container .box-tit-right{
   float: right;
   font-size: 12px;
+  color: #333;
 }
 .box-container .box-tit{
   height: 50px;
