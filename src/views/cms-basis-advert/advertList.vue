@@ -308,20 +308,20 @@ export default {
           const { normalAdv: adv } = res.data
           if (adv) {
             this.form = {
-              advCode: adv.advCode,
-              id: adv.id,
-              sortNum: adv.sortNum,
-              advName: adv.name,
-              groupCode: adv.groupCode,
-              advDesc: adv.descr,
-              imgUrl: adv.imgUrl,
-              url: adv.linkUrl,
-              startTime: adv.startTime,
-              endTime: adv.endTime,
-              advStatus: adv.isActived,
-              newStatus: adv.newStatus,
-              hotStatus: adv.hotStatus,
-              extra: adv.extra
+              advCode: adv.advCode || '',
+              id: adv.id || '',
+              sortNum: adv.sortNum || '',
+              advName: adv.name || '',
+              groupCode: adv.groupCode || '',
+              advDesc: adv.descr || '',
+              imgUrl: adv.imgUrl || '',
+              url: adv.linkUrl || '',
+              startTime: adv.startTime || '',
+              endTime: adv.endTime || '',
+              advStatus: adv.isActived || '',
+              newStatus: adv.newStatus || '',
+              hotStatus: adv.hotStatus || '',
+              extra: adv.extra || ''
             }
           }
         })
