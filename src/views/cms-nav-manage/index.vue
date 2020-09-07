@@ -130,6 +130,20 @@
                   inactive-value="0"
                 />
               </el-form-item>
+              <el-form-item label="NEW:" prop="newStatus">
+                <el-switch
+                  v-model="form.newStatus"
+                  active-value="1"
+                  inactive-value="0"
+                />
+              </el-form-item>
+              <el-form-item label="HOT:" prop="hotStatus">
+                <el-switch
+                  v-model="form.hotStatus"
+                  active-value="1"
+                  inactive-value="0"
+                />
+              </el-form-item>
             </el-form>
           </template>
         </el-tab-pane>
@@ -209,6 +223,8 @@ export default {
         target: '',
         sortIndex: '',
         status: '',
+        newStatus: '',
+        hotStatus: '',
         imgUrl: '',
         // 高级属性
         click: '',
@@ -363,6 +379,8 @@ export default {
       formData.append('target', data.target)
       formData.append('sortIndex', data.sortIndex)
       formData.append('status', data.status)
+      formData.append('newStatus', data.newStatus)
+      formData.append('hotStatus', data.hotStatus)
       formData.append('click', data.click)
       formData.append('cssStyle', data.cssStyle)
       formData.append('cssClass', data.cssClass)

@@ -139,6 +139,20 @@
                   inactive-value="0"
                 />
               </el-form-item>
+              <el-form-item label="NEW:" prop="newStatus">
+                <el-switch
+                  v-model="form.newStatus"
+                  active-value="1"
+                  inactive-value="0"
+                />
+              </el-form-item>
+              <el-form-item label="HOT:" prop="hotStatus">
+                <el-switch
+                  v-model="form.hotStatus"
+                  active-value="1"
+                  inactive-value="0"
+                />
+              </el-form-item>
               <el-form-item label="发布时间:" prop="startTime">
                 <el-date-picker
                   v-model="form.startTime"
@@ -237,6 +251,8 @@ export default {
         startTime: '',
         endTime: '',
         status: '',
+        newStatus: '',
+        hotStatus: '',
         target: '',
         imgUrl: '',
         // 高级属性
@@ -393,6 +409,8 @@ export default {
       formData.append('target', data.target)
       formData.append('sortIndex', data.sortIndex)
       formData.append('status', data.status)
+      formData.append('newStatus', data.newStatus)
+      formData.append('hotStatus', data.hotStatus)
       formData.append('startTime', startTime)
       formData.append('endTime', endTime)
       formData.append('click', data.click)
