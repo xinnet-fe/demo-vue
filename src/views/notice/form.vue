@@ -277,7 +277,8 @@ export default {
         Editor.insertEmbed(cursorLocation, 'image', url)
         resetUploader()
       }).catch(error => {
-        this.$message.error(error)
+        console.log(error)
+        this.$message.error('文件大小超出范围')
       })
     }
   }

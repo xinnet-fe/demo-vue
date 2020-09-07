@@ -17,6 +17,9 @@ export default {
         router.addRoutes(routes)
       })
     })
+    dispatch('userManager/findAllGrade')
+    dispatch('userManager/queryFinanclAttrList')
+    dispatch('userManager/queryOrganSaleList')
   }
 }
 </script>
