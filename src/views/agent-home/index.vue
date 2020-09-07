@@ -33,7 +33,7 @@
                         </i>
                       </span>
                     </div>
-                    <p>{{ gradeByAgent.gradeName }}</p>
+                    <p>{{ gradeByAgent && gradeByAgent.gradeName }}</p>
                   </div>
                 </td>
                 <td class="col2">
@@ -503,7 +503,7 @@ export default {
         console.log(res.success)
         if (!res.code && res.success) {
           this.title = res.data.title
-          this.content = res.data.content
+          this.content = res.data.content.replace(/\/userManager\//, '/agent/api/announce/')
           this.time = res.data.updateTime
           this.author = res.data.publisher
         } else {
@@ -970,11 +970,15 @@ export default {
     .el-drawer__body {
       overflow: auto;
       /* overflow-x: auto; */
+      color: #333;
     }
     .article {
       font-size: 12px;
       line-height: 24px;
       padding: 0 20px;
+    }
+    img{
+      max-width: 100%;
     }
   }
 }
