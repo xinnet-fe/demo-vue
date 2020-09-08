@@ -183,8 +183,8 @@ export default {
         if (valid) {
           console.log(this.form)
           const params = this.form
-          params.topStartDate = this.form.date && this.form.date[0] ? `${this.form.date[0]} 00:00:00` : ''
-          params.topEndDate = this.form.date && this.form.date[1] ? `${this.form.date[1]} 23:59:59` : ''
+          params.topStartDate = this.form.date && this.form.date[0] ? new Date(`${this.form.date[0]} 00:00:00`) : ''
+          params.topEndDate = this.form.date && this.form.date[1] ? new Date(`${this.form.date[1]} 23:59:59`) : ''
           // submit
           if (!this.row.id) {
             this.addActivityAnnounce(params).then(res => {

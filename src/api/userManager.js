@@ -164,7 +164,7 @@ export function addActivityAnnounce(query) {
   return request({
     url: '/userManager/addActivityAnnounce',
     method: 'post',
-    params: query
+    data: query
   })
 }
 // 修改公告活动
@@ -172,7 +172,7 @@ export function updateActivityAnnounce(query) {
   return request({
     url: '/userManager/updateActivityAnnounce',
     method: 'post',
-    params: query
+    data: query
   })
 }
 // 活动公告管理--活动公告图片上传
