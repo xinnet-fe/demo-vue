@@ -157,7 +157,7 @@ export default {
     })
   },
   created() {
-    this.getGroupTypeMapping()
+    this.getGroupTypeMapping().then(this.onSearch)
   },
   methods: {
     ...mapActions({

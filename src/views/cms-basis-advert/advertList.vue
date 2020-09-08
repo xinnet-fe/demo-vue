@@ -212,6 +212,7 @@ import formatTime from '@/utils/formatTime'
 import Pagination from '@/components/Pagination'
 import JsonEditor from '@/components/JsonEditor'
 import isDate from '@/utils/isDate'
+import { when } from '@/utils/request'
 
 export default {
   name: 'AdvertList',
@@ -277,8 +278,11 @@ export default {
     })
   },
   created() {
-    this.getAdvStatus()
-    this.getGroupCodeList()
+    when(
+      this.getAdvStatus(),
+      this.getGroupCodeList()
+    ).then(this.onSearch)
+
     this.height = global.innerHeight + 'px'
   },
   methods: {
@@ -337,7 +341,7 @@ export default {
       this.fileList = []
     },
     showTipsModal(row) {
-      this.form = row
+      this.form.advCode = row.advCode
       this.showTips = true
     },
     closeTipsModal() {
@@ -422,6 +426,7 @@ export default {
       this.destroyData(advCode).then(res => {
         this.closeTipsModal()
         this.onSearch()
+        delete this.form.advCode
       })
     },
     switchChange(state, row) {
