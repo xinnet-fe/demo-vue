@@ -294,7 +294,7 @@ export default {
         this.formTarget = value
       }
     })
-    this.getSlideshowStatus()
+    this.getSlideshowStatus().then(this.onSearch)
   },
   methods: {
     ...mapActions({

@@ -264,6 +264,7 @@ export default {
         this.formTarget = value
       }
     })
+    this.onSearch()
   },
   methods: {
     ...mapActions({
