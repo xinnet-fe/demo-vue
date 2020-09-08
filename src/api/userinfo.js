@@ -12,7 +12,7 @@ export function getUser(query) {
 export function getSidebarMenus(query) {
   return axios({
     // url: '/portal/navigation/listNavigation',
-    url: '/adv/static/data/menu.json',
+    url: '/static/data/menu.json',
     method: 'get',
     params: query
   }).then(res => res.data)

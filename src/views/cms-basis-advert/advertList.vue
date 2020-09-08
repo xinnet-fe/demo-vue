@@ -159,19 +159,11 @@
             inactive-value="0"
           />
         </el-form-item>
-        <el-form-item label="NEW" prop="newStatus">
-          <el-switch
-            v-model="form.newStatus"
-            active-value="1"
-            inactive-value="0"
-          />
-        </el-form-item>
-        <el-form-item label="HOT" prop="hotStatus">
-          <el-switch
-            v-model="form.hotStatus"
-            active-value="1"
-            inactive-value="0"
-          />
+        <el-form-item label="tag">
+          <el-radio-group v-model="form.tag">
+            <el-radio label="1">hot</el-radio>
+            <el-radio label="2">new</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="个性设置" prop="extra">
           <json-editor ref="jsonEditor" v-model="form.extra" width="600" />
@@ -250,8 +242,7 @@ export default {
         startTime: '',
         endTime: '',
         advStatus: '',
-        newStatus: '',
-        hotStatus: '',
+        tag: '',
         extra: ''
       },
       // 上传图片下拉框值
@@ -307,6 +298,13 @@ export default {
         this.searchAdv(query).then(res => {
           const { normalAdv: adv } = res.data
           if (adv) {
+            let tag = ''
+            if (adv.hotStatus === '1') {
+              tag = '1'
+            }
+            if (adv.newStatus === '1') {
+              tag = '2'
+            }
             this.form = {
               advCode: adv.advCode || '',
               id: adv.id || '',
@@ -319,8 +317,7 @@ export default {
               startTime: adv.startTime || '',
               endTime: adv.endTime || '',
               advStatus: adv.isActived || '',
-              newStatus: adv.newStatus || '',
-              hotStatus: adv.hotStatus || '',
+              tag,
               extra: adv.extra || ''
             }
           }
@@ -380,6 +377,9 @@ export default {
       if (data.endTime) {
         endTime = isDate(data.endTime) ? data.endTime : formatTime(data.endTime.getTime())
       }
+
+      const hotStatus = data.tag === '1' ? '1' : ''
+      const newStatus = data.tag === '2' ? '1' : ''
       formData.append('advName', data.advName)
       formData.append('groupCode', data.groupCode)
       formData.append('advDesc', data.advDesc)
@@ -389,8 +389,8 @@ export default {
       formData.append('startTime', startTime)
       formData.append('endTime', endTime)
       formData.append('advStatus', data.advStatus)
-      formData.append('newStatus', data.newStatus)
-      formData.append('hotStatus', data.hotStatus)
+      formData.append('newStatus', newStatus)
+      formData.append('hotStatus', hotStatus)
       formData.append('extra', data.extra)
       formData.append('file', file)
       return formData

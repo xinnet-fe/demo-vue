@@ -5,7 +5,7 @@ module.exports = {
 
   // vue.config根级
   rootConfig: {
-    publicPath: '/adv/'
+    publicPath: '/'
   },
   // configureWebpack
   configureWebpack: {
@@ -21,7 +21,7 @@ module.exports = {
       target: 'https://adv.xinnet.com',
       secure: false,
       changeOrigin: true
-    }
+    },
     // '/employee': {
     //   target: 'http://172.22.132.7:8083',
     //   changeOrigin: true
@@ -34,10 +34,10 @@ module.exports = {
     //   target: 'http://172.22.132.7:8083',
     //   changeOrigin: true
     // },
-    // '/admin': {
-    //   target: 'http://172.22.132.7:8024',
-    //   changeOrigin: true
-    // }
+    '/admin': {
+      target: 'http://172.22.132.7:8024',
+      changeOrigin: true
+    }
   },
 
   /**
