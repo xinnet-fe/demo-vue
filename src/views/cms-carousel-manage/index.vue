@@ -139,19 +139,11 @@
                   inactive-value="0"
                 />
               </el-form-item>
-              <el-form-item label="NEW" prop="newStatus">
-                <el-switch
-                  v-model="form.newStatus"
-                  active-value="1"
-                  inactive-value="0"
-                />
-              </el-form-item>
-              <el-form-item label="HOT" prop="hotStatus">
-                <el-switch
-                  v-model="form.hotStatus"
-                  active-value="1"
-                  inactive-value="0"
-                />
+              <el-form-item label="tag">
+                <el-radio-group v-model="form.tag">
+                  <el-radio label="1">hot</el-radio>
+                  <el-radio label="2">new</el-radio>
+                </el-radio-group>
               </el-form-item>
               <el-form-item label="发布时间" prop="startTime">
                 <el-date-picker
@@ -251,8 +243,7 @@ export default {
         startTime: '',
         endTime: '',
         status: '',
-        newStatus: '',
-        hotStatus: '',
+        tag: '',
         target: '',
         imgUrl: '',
         // 高级属性
@@ -333,6 +324,14 @@ export default {
               this.form[k] = r[k] || ''
             })
             this.oldCode = r.code
+            let tag = ''
+            if (r.hotStatus === '1') {
+              tag = '1'
+            }
+            if (r.newStatus === '1') {
+              tag = '2'
+            }
+            this.form.tag = tag
           })
           this.modalTitle = '编辑'
         } else {
@@ -356,7 +355,7 @@ export default {
       this.fileList = []
     },
     showTipsModal(row) {
-      this.form = row
+      this.form.id = row.id
       this.showTips = true
     },
     closeTipsModal() {
@@ -400,7 +399,10 @@ export default {
       } else {
         formData.append('code', data.code)
       }
+
       const parentId = data.parentId && data.parentId.length ? String(data.parentId[data.parentId.length - 1]) : '0'
+      const hotStatus = data.tag === '1' ? '1' : ''
+      const newStatus = data.tag === '2' ? '1' : ''
       formData.append('name', data.name)
       formData.append('parentId', parentId)
       formData.append('desc', data.desc)
@@ -409,8 +411,8 @@ export default {
       formData.append('target', data.target)
       formData.append('sortIndex', data.sortIndex)
       formData.append('status', data.status)
-      formData.append('newStatus', data.newStatus)
-      formData.append('hotStatus', data.hotStatus)
+      formData.append('newStatus', newStatus)
+      formData.append('hotStatus', hotStatus)
       formData.append('startTime', startTime)
       formData.append('endTime', endTime)
       formData.append('click', data.click)
@@ -463,6 +465,7 @@ export default {
       this.destroyData({ id }).then(res => {
         this.closeTipsModal()
         this.onSearch()
+        delete this.form.id
       })
     },
     switchChange(row) {
