@@ -180,6 +180,24 @@
       </div>
     </el-dialog>
     <!-- 删除提示 -->
+
+    <div v-if="showIframeModal" class="child-page">
+      <iframe
+        ref="elfinder"
+        class="elfinder"
+        frameborder="0"
+        src="/elfinder.html"
+        :style="{ width: '100%', height }"
+      />
+      <div
+        ref="close"
+        class="elfinder-close"
+        @click="closeIframe"
+      >
+        X
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -246,7 +264,11 @@ export default {
       //   pageSize: 30
       // },
       // 上传附件列表
-      fileList: []
+      fileList: [],
+      // 文件管理器页面显示
+      showIframeModal: false,
+      // 文件资源管理器高度
+      height: '800px'
     }
   },
   computed: {
@@ -265,6 +287,8 @@ export default {
       }
     })
     this.onSearch()
+
+    this.height = global.outerHeight + 'px'
   },
   methods: {
     ...mapActions({
@@ -281,6 +305,9 @@ export default {
     localUpload() {
       if (this.uploadImageAddress === '1') {
         this.$refs.upload.$el.click()
+      } else {
+        // this.$refs.elfinder.contentWindow.showIframeModal = true
+        this.showIframeModal = true
       }
     },
     // 点击选择图片
@@ -466,8 +493,27 @@ export default {
       a.children = this.sortChildren(a.children, order)
       b.children = this.sortChildren(b.children, order)
       return res
+    },
+    closeIframe() {
+      this.showIframeModal = false
     }
   }
 }
 </script>
 
+<style lang="scss" scoped>
+.elfinder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9991;
+  background: #ccc;
+}
+.elfinder-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 9992;
+  cursor: pointer;
+}
+</style>
