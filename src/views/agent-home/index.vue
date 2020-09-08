@@ -90,62 +90,14 @@
                   </el-tab-pane>
                 </el-tabs>
                 <el-row :gutter="20" class="prod-list">
-                  <el-col :span="6">
+                  <el-col v-for="(item, i) in busList" :key="i" :span="6">
                     <div class="grid-content grid-content-prod-1 clearfix">
                       <span class="img">
                         <i class="iconfont icon-font01" />
                       </span>
                       <div class="info">
-                        <span>客户</span>
-                        <em>1024</em>
-                        <div class="btns">
-                          <a href="" class="buy">购买</a>
-                          <span class="line">|</span>
-                          <a href="" class="mgmt">管理</a>
-                        </div>
-                      </div>
-                    </div>
-                  </el-col>
-                  <el-col :span="6">
-                    <div class="grid-content grid-content-prod-2 clearfix">
-                      <span class="img">
-                        <i class="iconfont icon-font02" />
-                      </span>
-                      <div class="info">
-                        <span>待支付订单</span>
-                        <em>1024</em>
-                        <div class="btns">
-                          <a href="" class="buy">购买</a>
-                          <span class="line">|</span>
-                          <a href="" class="mgmt">管理</a>
-                        </div>
-                      </div>
-                    </div>
-                  </el-col>
-                  <el-col :span="6">
-                    <div class="grid-content grid-content-prod-3 clearfix">
-                      <span class="img">
-                        <i class="iconfont icon-font03" />
-                      </span>
-                      <div class="info">
-                        <span>待支付客户订单</span>
-                        <em>1024</em>
-                        <div class="btns">
-                          <a href="" class="buy">购买</a>
-                          <span class="line">|</span>
-                          <a href="" class="mgmt">管理</a>
-                        </div>
-                      </div>
-                    </div>
-                  </el-col>
-                  <el-col :span="6">
-                    <div class="grid-content grid-content-prod-4 clearfix">
-                      <span class="img">
-                        <i class="iconfont icon-font04" />
-                      </span>
-                      <div class="info">
-                        <span>待支付客户订单</span>
-                        <em>1024</em>
+                        <span>{{ item.productName }}</span>
+                        <em>{{ item.productNum }}</em>
                         <div class="btns">
                           <a href="" class="buy">购买</a>
                           <span class="line">|</span>
@@ -263,18 +215,35 @@
                 <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="" @click="handleShow(item)">
               </el-carousel-item>
             </el-carousel>
+            <el-drawer
+              title="未读消息"
+              :modal="false"
+              :show-close="true"
+              :visible.sync="drawerMsg"
+              custom-class="drawerMsg"
+              size="100%"
+              direction="btt"
+              :before-close="handleCloseMsg"
+            >
+              <ul class="el-list el-list-style2">
+                <li v-for="(item, i) in list" :key="i" class="el-list-item clearfix">
+                  <strong class="tit"><a>{{ item.title }}</a></strong>
+                  <p class="desc">{{ item.updateTime }}</p>
+                </li>
+              </ul>
+            </el-drawer>
           </div>
           <div class="msgs">
             <el-row>
-              <el-col :span="8">
-                <div class="grid-content grid-content-msg-1">
-                  <em>13</em>
+              <el-col :span="8" style="cursor: pointer">
+                <div class="grid-content grid-content-msg-1" @click="handleShowMsg()">
+                  <em>{{ msgWorkorder.list && msgWorkorder.list.result.length }}</em>
                   <p>未读消息</p>
                 </div>
               </el-col>
               <el-col :span="8">
                 <div class="grid-content grid-content-msg-2">
-                  <em>13</em>
+                  <em>{{ msgWorkorder.num }}</em>
                   <p>我的工单</p>
                 </div>
               </el-col>
@@ -392,13 +361,17 @@ export default {
         }
       ],
       drawer: false,
+      drawerMsg: false,
       direction: 'rtl',
       title: '',
       time: '2020-05-05',
       author: '新网',
       content: '',
       dlCustomerNum: 0,
-      ipAddress: []
+      ipAddress: [],
+      busType: ['D', 'V', 'M', 'W', 'N'],
+      busList: [],
+      msgWorkorder: {}
     }
   },
   computed: {
@@ -432,6 +405,8 @@ export default {
     })
     this.getDlCustomer()
     this.queryIpAddress()
+    this.queryMyServices()
+    this.queryMsgWorkorder()
   },
   methods: {
     handleClose() {
@@ -497,6 +472,33 @@ export default {
         console.log(error)
       })
     },
+    queryMyServices() {
+      this.busType.map((v) => {
+        this.$store.dispatch('usercommon/queryMyServices', { busType: v }).then(res => {
+          console.log(res.success)
+          if (!res.code && res.success) {
+            // this.ipAddress = res.data
+            this.busList.push(...res.data)
+          } else {
+            this.$message.error(res.msg)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      })
+    },
+    queryMsgWorkorder() {
+      this.$store.dispatch('usercommon/queryMsgWorkorder', {}).then(res => {
+        console.log(res.success)
+        if (!res.code && res.success) {
+          this.msgWorkorder = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     handleShow(param) {
       this.drawer = true
       this.$store.dispatch('announce/queryContentById', { id: param.id }).then(res => {
@@ -513,8 +515,14 @@ export default {
         console.log(error)
       })
     },
+    handleShowMsg() {
+      this.drawerMsg = true
+    },
     handleCloseDrawer() {
       this.drawer = false
+    },
+    handleCloseMsg() {
+      this.drawerMsg = false
     }
   }
 }
@@ -715,6 +723,7 @@ export default {
             display: inline-block;
             margin-right: 20px;
             font-size: 12px;
+            color: #333;
           }
         }
       }
@@ -724,6 +733,9 @@ export default {
         margin-left: -20px!important;
         margin-right: -20px!important;
         padding: 25px 10px 0 10px;
+        .el-col{
+          margin: 10px 0;
+        }
       }
       .prod-list .img{
         width: 51px;
@@ -879,6 +891,10 @@ export default {
     }
     .carousel{
       background: url('/static/img/home/img_14.png') no-repeat;
+      position: relative;
+      .el-drawer__wrapper{
+        position: absolute;
+      }
     }
     .el-carousel__item:nth-child(2n) {
       background-color: #99a9bf;
@@ -979,6 +995,21 @@ export default {
     }
     img{
       max-width: 100%;
+    }
+  }
+  .drawerMsg{
+    .el-drawer__header{
+      padding: 0px 20px;
+      line-height: 30px;
+      // height: 0px;
+    }
+    .el-drawer__close-btn{
+      position: relative;
+      right: -10px;
+      font-size: 14px;
+    }
+    .el-drawer__body{
+      padding: 0 20px;
     }
   }
 }
