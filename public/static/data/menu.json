@@ -8,6 +8,14 @@
         "target": "",
         "children": [
             {
+                "code": "cms-file-manage",
+                "parentCode": "cms-manage",
+                "text": "文件管理器",
+                "icon": "",
+                "url": "",
+                "target": ""
+            },
+            {
                 "code": "cms-component-manage",
                 "parentCode": "cms-manage",
                 "text": "组件管理",
