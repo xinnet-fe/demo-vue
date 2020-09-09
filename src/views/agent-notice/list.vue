@@ -2,7 +2,7 @@
   <div>
     <ul class="el-list el-list-style2">
       <li v-for="(item, i) in list" :key="i" class="el-list-item clearfix">
-        <strong class="tit"><a @click="handleShow(item)">{{ item.title }}<span v-if="item.preType === '1' && item.placedTop === '1'" class="icon-important" /><span v-if="item.preType === '2' && item.placedTop === '1'" class="icon-hot" /></a><br><span class="time">{{ item.updateTime }}</span></strong>
+        <strong class="tit"><a :href="'#/agent-detail/index/'+item.id" target="_blank">{{ item.title }}<span v-if="item.preType === '1' && item.placedTop === '1'" class="icon-important" /><span v-if="item.preType === '2' && item.placedTop === '1'" class="icon-hot" /></a><br><span class="time">{{ item.updateTime }}</span></strong>
         <p class="desc">{{ item.label }}</p>
       </li>
     </ul>
@@ -49,9 +49,9 @@ export default {
     })
   },
   methods: {
-    handleShow(item) {
-      this.$emit('showDetail', item)
-    },
+    // handleShow(item) {
+    //   this.$emit('showDetail', item)
+    // },
     onSearch(page) {
       const query = {
         preType: this.type

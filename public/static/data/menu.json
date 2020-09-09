@@ -24,5 +24,16 @@
         "url": "",
         "alwayShow": "false",
         "target": "tab"
+    },
+    {
+        "code": "agent-detail",
+        "parentCode": null,
+        "icon": "",
+        "text": "详情",
+        "url": "",
+        "alwayShow": "false",
+        "hidden": true,
+        "target": "tab",
+        "param": "/:id"
     }
 ]

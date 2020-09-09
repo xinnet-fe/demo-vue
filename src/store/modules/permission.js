@@ -98,6 +98,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       meta: {
         title: o.text
       },
+      hidden: o.hidden ? o.hidden : false,
       redirect: o.redirect ? o.redirect : 'noRedirect'
     }
     // 非外链且无子路由
@@ -131,7 +132,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       const title = route.meta.title
       route.children = [
         {
-          path: 'index',
+          path: `index${o.param ? o.param : ''}`,
           name: `${o.code}-index`,
           component: lazyLoadView(o.code),
           meta: { title }
@@ -146,6 +147,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     }
     routes.push(route)
   })
+  console.log(routes)
   return routes
 }
 

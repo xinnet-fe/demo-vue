@@ -11,25 +11,33 @@
               <tr>
                 <td class="col1">
                   <span class="img">
-                    <img src="/static/img/home/img_01.png" alt="" srcset="">
+                    <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_01.png" alt="" srcset=""></a>
                   </span>
                   <div class="info">
                     <div style="font-weight:bold">{{ user.agentCode }}
                       <span class="safe">
                         <i v-if="user.loginProtect === 'N'" class="icon">
-                          <img src="/static/img/home/img_09.png" alt="" srcset="">
+                          <el-tooltip class="item" effect="dark" content="未认证" placement="top">
+                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_09.png" alt="" srcset=""></a>
+                          </el-tooltip>
                         </i>
                         <i v-if="user.loginProtect === 'Y'" class="icon">
-                          <img src="/static/img/home/img_10.png" alt="" srcset="">
+                          <el-tooltip class="item" effect="dark" content="已认证" placement="top">
+                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_10.png" alt="" srcset=""></a>
+                          </el-tooltip>
                         </i>
                         <!-- <i v-if="user.agentType === 'N'" class="icon">
                           <img src="/static/img/home/img_11.png" alt="" srcset="">
                         </i> -->
                         <i v-if="user.agentType === 'P'" class="icon">
-                          <img src="/static/img/home/img_12.png" alt="" srcset="">
+                          <el-tooltip class="item" effect="dark" content="已认证" placement="top">
+                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_12.png" alt="" srcset=""></a>
+                          </el-tooltip>
                         </i>
                         <i v-if="user.agentType === 'C'" class="icon">
-                          <img src="/static/img/home/img_13.png" alt="" srcset="">
+                          <el-tooltip class="item" effect="dark" content="已认证" placement="top">
+                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_13.png" alt="" srcset=""></a>
+                          </el-tooltip>
                         </i>
                       </span>
                     </div>
@@ -89,24 +97,24 @@
                     </div>
                   </el-tab-pane>
                 </el-tabs>
-                <el-row :gutter="20" class="prod-list">
-                  <el-col v-for="(item, i) in busList" :key="i" :span="6">
-                    <div class="grid-content grid-content-prod-1 clearfix">
-                      <span class="img">
-                        <i class="iconfont icon-font01" />
-                      </span>
-                      <div class="info">
-                        <span>{{ item.productName }}</span>
-                        <em>{{ item.productNum }}</em>
-                        <div class="btns">
-                          <a href="" class="buy">购买</a>
-                          <span class="line">|</span>
-                          <a href="" class="mgmt">管理</a>
+                <div class="prod-list">
+                  <el-row :gutter="20">
+                    <el-col v-for="(item, i) in busList" :key="i" :span="6">
+                      <div class="grid-content grid-content-prod-1 clearfix">
+                        <span class="img">
+                          <i class="iconfont icon-font01" />
+                        </span>
+                        <div class="info">
+                          <span>{{ item.productName }}</span>
+                          <em>{{ item.productNum }}</em>
+                          <div class="btns">
+                            <a :href="item.productUrl" target="_blank" class="buy">购买</a>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </el-col>
-                </el-row>
+                    </el-col>
+                  </el-row>
+                </div>
               </div>
             </Box>
           </div>
@@ -162,7 +170,7 @@
             <Box type="1">
               <div slot="tit-left">帮助</div>
               <div slot="tit-right">
-                <a href="http://" target="_blank" rel="noopener noreferrer">更多</a>
+                <!-- <a href="http://" target="_blank" rel="noopener noreferrer">更多</a> -->
               </div>
               <div slot="cont">
                 <ul class="el-list el-list-style3 clearfix">
@@ -212,7 +220,9 @@
           <div class="carousel">
             <el-carousel trigger="click" height="230px">
               <el-carousel-item v-for="item in listAdvRight" :key="item.id">
-                <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="" @click="handleShow(item)">
+                <a :href="'#/agent-detail/index/'+item.id" target="_blank" rel="noopener noreferrer">
+                  <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="">
+                </a>
               </el-carousel-item>
             </el-carousel>
             <el-drawer
@@ -235,24 +245,24 @@
           </div>
           <div class="msgs">
             <el-row>
-              <el-col :span="8" style="cursor: pointer">
+              <el-col :span="12" style="cursor: pointer">
                 <div class="grid-content grid-content-msg-1" @click="handleShowMsg()">
                   <em>{{ msgWorkorder.list && msgWorkorder.list.result.length }}</em>
                   <p>未读消息</p>
                 </div>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="12">
                 <div class="grid-content grid-content-msg-2">
                   <em>{{ msgWorkorder.num }}</em>
                   <p>我的工单</p>
                 </div>
               </el-col>
-              <el-col :span="8">
+              <!-- <el-col :span="8">
                 <div class="grid-content grid-content-msg-3">
                   <em>13</em>
                   <p>急需续费产品</p>
                 </div>
-              </el-col>
+              </el-col> -->
             </el-row>
           </div>
           <div class="notice-list">
@@ -264,7 +274,7 @@
               <div slot="cont">
                 <ul class="el-list">
                   <li v-for="(item, i) in list" :key="i" class="el-list-item">
-                    <strong class="tit"><a @click="handleShow(item)">{{ item.title }}</a></strong>
+                    <strong class="tit"><a :href="'#/agent-detail/index/'+item.id" target="_blank">{{ item.title }}</a></strong>
                     <p class="desc">{{ item.updateTime }}</p>
                   </li>
                 </ul>
@@ -295,7 +305,9 @@
       <div class="carousel">
         <el-carousel trigger="click" height="460px">
           <el-carousel-item v-for="item in listAdvPop" :key="item.id">
-            <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="" @click="handleShow(item)">
+            <a :href="'#/agent-detail/index/'+item.id" target="_blank" rel="noopener noreferrer">
+              <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="">
+            </a>
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -369,7 +381,7 @@ export default {
       content: '',
       dlCustomerNum: 0,
       ipAddress: [],
-      busType: ['D', 'V', 'M', 'W', 'N'],
+      busType: ['D', 'VX', 'VC', 'M', 'W', 'N'],
       busList: [],
       msgWorkorder: {}
     }
@@ -461,7 +473,7 @@ export default {
       })
     },
     queryIpAddress() {
-      this.$store.dispatch('userinfo/queryIpAddress', {}).then(res => {
+      this.$store.dispatch('userinfo/queryIpAddress', { pageSize: 3 }).then(res => {
         console.log(res.success)
         if (!res.code && res.success) {
           this.ipAddress = res.data
@@ -730,9 +742,14 @@ export default {
 
       .prod-list{
         border-top: 1px solid #f5f5f5;
-        margin-left: -20px!important;
-        margin-right: -20px!important;
-        padding: 25px 10px 0 10px;
+
+        padding: 20px 10px 0 10px;
+        .el-row{
+          max-height: 150px;
+          margin-left: -20px!important;
+          // margin-right: -20px!important;
+          overflow: auto;
+        }
         .el-col{
           margin: 10px 0;
         }
@@ -802,7 +819,7 @@ export default {
       }
       .adv{
         height: 170px;
-        background: #6a98ed;
+        background: #6a98ed url('/static/img/home/img_15.jpg') no-repeat 100% 0;
         margin-bottom: 25px;
       }
       .order-num .img{

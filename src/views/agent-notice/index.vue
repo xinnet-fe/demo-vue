@@ -1,26 +1,13 @@
 <template>
   <div class="notice-container">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-show="!showDetail" v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="通知公告" name="first">
-        <List type="1" @showDetail="handleShow" />
+        <List type="1" />
       </el-tab-pane>
       <el-tab-pane label="精选活动" name="second">
-        <List type="2" @showDetail="handleShow" />
+        <List type="2" />
       </el-tab-pane>
     </el-tabs>
-    <el-drawer
-      :title="title"
-      size="50%"
-      :visible.sync="drawer"
-      :direction="direction"
-      :before-close="handleClose"
-    >
-      <div slot="title">
-        <h3>{{ title }}</h3>
-        <p><span>发布时间：{{ time }}</span><span>发布者：{{ author }}</span></p>
-      </div>
-      <div class="article" v-html="content" />
-    </el-drawer>
   </div>
 </template>
 
@@ -33,6 +20,7 @@ export default {
     return {
       activeName: 'first',
       drawer: false,
+      showDetail: false,
       direction: 'rtl',
       title: '',
       time: '2020-05-05',
@@ -44,26 +32,7 @@ export default {
 
   },
   methods: {
-    handleClick() {},
-    handleClose() {
-      this.drawer = false
-    },
-    handleShow(param) {
-      this.drawer = true
-      this.$store.dispatch('announce/queryContentById', { id: param.id }).then(res => {
-        console.log(res.success)
-        if (!res.code && res.success) {
-          this.title = res.data.title
-          this.content = res.data.content
-          this.time = res.data.updateTime
-          this.author = res.data.publisher
-        } else {
-          this.$message.error(res.msg)
-        }
-      }).catch(error => {
-        console.log(error)
-      })
-    }
+    handleClick() {}
   }
 }
 </script>
