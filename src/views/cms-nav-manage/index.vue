@@ -288,7 +288,7 @@ export default {
     })
     this.onSearch()
 
-    this.height = global.outerHeight + 'px'
+    this.height = global.innerHeight + 'px'
   },
   methods: {
     ...mapActions({
@@ -306,6 +306,7 @@ export default {
       if (this.uploadImageAddress === '1') {
         this.$refs.upload.$el.click()
       } else {
+        console.log(this.showIframeModal)
         // this.$refs.elfinder.contentWindow.showIframeModal = true
         this.showIframeModal = true
       }

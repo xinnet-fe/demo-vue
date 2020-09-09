@@ -25,9 +25,9 @@
     var showIframeModal = false;
     $(document).ready(function () {
       elFinder.prototype.loadCss('./elfinder/jquery-ui-1.12.1.custom/jquery-ui.css');
-      var height = window.outerHeight - 50;
+      var height = window.innerHeight - 18;
       $('#elfinder').elfinder({
-        url: 'http://localhost:9527/api/admin/elfinder/connector',
+        url: '/api/admin/elfinder/connector',
         lang: 'zh_CN',
         height: height,
         // height: window.innerHeight - 20,
@@ -218,12 +218,95 @@
           //                    }
         }
       });
+
+      // 同步路径
+      $('.elfinder-publish').on('click', function() {
+        var path = '';
+        var filePath = '';
+        // 当前目录
+        $('.elfinder-path > span').each(function() {
+          path += this.innerHTML;
+        });
+        // 选中文件、夹
+        var file = $('.elfinder-path + .elfinder-stat-selected').text();
+        if (!file) {
+          alert('请选择需要同步文件或目录！');
+          return;
+        }
+        file = file.split(',')[0];
+        if (file.indexOf('.') > -1) {
+          filePath = path + '/' + file;
+        } else {
+          filePath = path;
+        }
+        var hasSync = confirm('是否要同步' + filePath + '目录！');
+        $.ajax({
+          url: '/api/admin/filemanager/syncFile',
+          type: 'POST',
+          data: {
+            src: filePath
+          },
+          success: function(res) {
+            console.log(res)
+          }
+        })
+      });
+
+      // 复制路径
+      $('.elfinder-copypath').on('click', function() {
+        var path = '';
+        var filePath = '';
+        // 当前目录
+        $('.elfinder-path > span').each(function() {
+          path += this.innerHTML;
+        });
+        // 选中文件、夹
+        var file = $('.elfinder-path + .elfinder-stat-selected').text();
+        if (!file) {
+          alert('请选择需要复制的文件！');
+          return;
+        }
+        file = file.split(',')[0];
+        if (file.indexOf('.') > -1) {
+          filePath = path + '/' + file;
+        } else {
+          alert('请选择需要复制的文件！');
+          return;
+        }
+        console.log(filePath);
+        $('#copypath').val(filePath);
+      });
     });
   </script>
+  <style>
+  .elfinder-publish {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    z-index: 9992;
+    cursor: pointer;
+  }
+  .elfinder-copypath {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    z-index: 9992;
+    cursor: pointer;
+  }
+  .hide {
+    display: none;
+  }
+  </style>
 </head>
 
 <body>
   <div id="elfinder"></div>
+  <div class="elfinder-publish">
+    发布
+  </div>
+  <div class="elfinder-copypath">
+    <input id="copypath" value="">获取路径
+  </div>
 </body>
 
 </html>
