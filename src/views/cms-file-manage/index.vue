@@ -1,6 +1,19 @@
 <template>
-  <iframe frameborder="0" class="elfinder" src="/elfinder.html" />
+  <iframe frameborder="0" class="elfinder" :src="`${path}elfinder.html`" />
 </template>
+
+<script>
+import { hasDevelopment } from '@/settings'
+
+export default {
+  name: 'CmsFileManage',
+  data() {
+    return {
+      path: hasDevelopment ? '/' : '/xcms/admin/'
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 .elfinder {
