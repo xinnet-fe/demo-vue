@@ -32,11 +32,11 @@ export function changePwd(data) {
   })
 }
 // 控制台—查询ip地址数据
-export function queryIpAddress(data) {
+export function queryIpAddress(query) {
   return request({
     url: '/userinfo/queryIpAddress',
     method: 'post',
-    data
+    params: query
   })
 }
 

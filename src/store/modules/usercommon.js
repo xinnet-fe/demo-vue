@@ -24,6 +24,15 @@ const actions = {
         reject(error)
       })
     })
+  },
+  queryTradeOrderNum({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      api.queryTradeOrderNum(payload).then(res => {
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 

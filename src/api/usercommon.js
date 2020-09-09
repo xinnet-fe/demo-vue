@@ -14,3 +14,11 @@ export function queryMsgWorkorder(query) {
     params: query
   })
 }
+export function queryTradeOrderNum(query) {
+  return request({
+    url: '/usercommon/queryTradeOrderNum',
+    method: 'POST',
+    params: query
+  })
+}
+

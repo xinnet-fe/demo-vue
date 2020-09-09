@@ -146,7 +146,7 @@
                       </span>
                       <div class="info">
                         <span>待支付订单</span>
-                        <em>1024</em>
+                        <em>{{ tradeOrderNum.all }}</em>
                       </div>
                     </div>
                   </el-col>
@@ -157,7 +157,7 @@
                       </span>
                       <div class="info">
                         <span>待支付客户订单</span>
-                        <em>1024</em>
+                        <em>{{ tradeOrderNum.others }}</em>
                       </div>
                     </div>
                   </el-col>
@@ -383,7 +383,8 @@ export default {
       ipAddress: [],
       busType: ['D', 'VX', 'VC', 'M', 'W', 'N'],
       busList: [],
-      msgWorkorder: {}
+      msgWorkorder: {},
+      tradeOrderNum: {}
     }
   },
   computed: {
@@ -419,6 +420,7 @@ export default {
     this.queryIpAddress()
     this.queryMyServices()
     this.queryMsgWorkorder()
+    this.queryTradeOrderNum()
   },
   methods: {
     handleClose() {
@@ -504,6 +506,18 @@ export default {
         console.log(res.success)
         if (!res.code && res.success) {
           this.msgWorkorder = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    queryTradeOrderNum() {
+      this.$store.dispatch('usercommon/queryTradeOrderNum', {}).then(res => {
+        console.log(res.success)
+        if (!res.code && res.success) {
+          this.tradeOrderNum = res.data
         } else {
           this.$message.error(res.msg)
         }
