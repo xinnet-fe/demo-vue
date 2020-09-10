@@ -8,26 +8,19 @@
         <el-form-item label="居民身份证号" prop="idcard">
           <el-input v-model="formPersonal.idcard" />
         </el-form-item>
-        <el-form-item label="头像照片" prop="imageUrl">
+        <el-form-item label="头像照片" prop="imageId">
           <el-upload
-            class="avatar-uploader"
-            action="#"
-            :show-file-list="false"
+            class="upload-demo"
+            action="/realnamequery/upload"
             :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
+            :on-remove="handleRemove"
+            :limit="1"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
           >
-            <img v-if="formPersonal.imageUrl" :src="formPersonal.imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
-            <span v-if="formPersonal.imageUrl" class="el-upload-list__item-actions">
-              <span>
-                <i class="el-icon-upload2" /><br>重新上传
-              </span>
-            </span>
+            <el-button size="small">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">支持JPG（JPEG），BMP， PNG， GIF，TIFF,格式，大小不能超过1M</div>
           </el-upload>
-          <!-- <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog> -->
         </el-form-item>
         <el-form-item>
           <el-button size="medium" type="primary" @click="handleQuery1">查询</el-button>
@@ -63,7 +56,7 @@ export default {
       formPersonal: {
         name: '',
         idcard: '',
-        imageUrl: 'sadfsadfsdf'
+        imageId: ''
       },
       formBusiness: {
         nameCompany: '',
@@ -79,7 +72,7 @@ export default {
           { required: true, message: '请输入身份证号', trigger: 'blur' },
           { min: 1, max: 18, message: '格式错误', trigger: 'blur' }
         ],
-        imageUrl: [
+        imageId: [
           { required: true, message: '请上传照片', trigger: 'change' }
         ]
       },
@@ -96,7 +89,8 @@ export default {
           { required: true, message: '请输入法人姓名', trigger: 'blur' },
           { min: 1, max: 100, message: '格式错误', trigger: 'blur' }
         ]
-      }
+      },
+      fileList: []
     }
   },
   watch: {
@@ -111,53 +105,39 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event)
     },
-    handleAvatarSuccess(res, file) {
-      this.formPersonal.imageUrl = URL.createObjectURL(file.raw)
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
     },
-    beforeAvatarUpload(file) {
-      const type = 'image/jpeg,image/jpg,image/bmp,image/png,image/gif,image/tiff'
-      const isImg = type.indexOf(file.type)
-      const isLt1M = file.size / 1024 / 1024 < 1
-
-      if (isImg < 0) {
-        this.$message.error('上传头像格式错误!')
+    handleAvatarSuccess(res, file) {
+      if (res.code === '10000' && res.success) {
+        this.formPersonal.imageId = res.data
+      } else {
+        this.$message.warning(res.msg)
       }
-      if (!isLt1M) {
-        this.$message.error('上传头像图片大小不能超过 1MB!')
+    },
+    handleRemove(file, fileList) {
+      if (!fileList.length) {
+        this.formPersonal.imageId = ''
       }
-      return isImg && isLt1M
     },
     handleQuery1() {
       this.$refs.formPersonal.validate((valid) => {
-        alert(valid)
-        // const { oldpassword, password, confirmPassword, verifcode } = this.form
-        // if (valid) {
-        //   let validator = true
-        //   if (oldpassword === password) {
-        //     this.$message.error('新旧密码不能相同')
-        //     validator = false
-        //   }
-        //   if (password !== confirmPassword) {
-        //     this.$message.error({ message: '密码不一致', delay: 100 })
-        //     validator = false
-        //   }
-
-        //   if (validator) {
-        //     const obj = {
-        //       originalPwd: oldpassword,
-        //       newPwd: password,
-        //       confirmPwd: confirmPassword,
-        //       mobileyzm: verifcode
-        //     }
-        //     this.resetPwd(obj).then(() => {
-        //       this.$message({
-        //         type: 'success',
-        //         message: '密码修改成功'
-        //       })
-        //       this.handleClose()
-        //     })
-        //   }
-        // }
+        const { name, idcard, imageId } = this.formPersonal
+        if (valid) {
+          const data = {
+            name,
+            idcard,
+            imageId
+          }
+          this.$store.dispatch('realnamequery/comparePortrait', data).then(res => {
+            this.$message({
+              type: 'success',
+              message: res.message
+            })
+          }).catch(error => {
+            console.log(error)
+          })
+        }
       })
     },
     handleQuery2() {
@@ -169,7 +149,7 @@ export default {
 
 <style>
 .el-tabs.realname-info{
-  margin-top: -17px;
+  padding: 0 20px;
 }
 .realname-info .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
