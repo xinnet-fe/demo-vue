@@ -26,6 +26,15 @@ const actions = {
         reject(error)
       })
     })
+  },
+  compareEnterpriseInfo({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      api.compareEnterpriseInfo(payload).then(res => {
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 

@@ -1,57 +1,73 @@
 <template>
-  <el-tabs v-model="activeName" class="realname-info" @tab-click="handleClick">
-    <el-tab-pane label="身份证信息查询" name="first">
-      <el-form ref="formPersonal" :rules="rules1" :model="formPersonal" label-width="130px">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="formPersonal.name" />
-        </el-form-item>
-        <el-form-item label="居民身份证号" prop="idcard">
-          <el-input v-model="formPersonal.idcard" />
-        </el-form-item>
-        <el-form-item label="头像照片" prop="imageId">
-          <el-upload
-            class="upload-demo"
-            action="/realnamequery/upload"
-            :on-success="handleAvatarSuccess"
-            :on-remove="handleRemove"
-            :limit="1"
-            :on-exceed="handleExceed"
-            :file-list="fileList"
-          >
-            <el-button size="small">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">支持JPG（JPEG），BMP， PNG， GIF，TIFF,格式，大小不能超过1M</div>
-          </el-upload>
-        </el-form-item>
-        <el-form-item>
-          <el-button size="medium" type="primary" @click="handleQuery1">查询</el-button>
-        </el-form-item>
-      </el-form>
-    </el-tab-pane>
-    <el-tab-pane label="企业信息查询" name="second">
-      <el-form ref="formBusiness" :rules="rules2" :model="formBusiness" label-width="130px">
-        <el-form-item label="企业名称" prop="nameCompany">
-          <el-input v-model="formBusiness.name" />
-        </el-form-item>
-        <el-form-item label="统一社会信用代码" prop="creditCode">
-          <el-input v-model="formBusiness.name" />
-        </el-form-item>
-        <el-form-item label="法人姓名" prop="legalPerson">
-          <el-input v-model="formBusiness.name" />
-        </el-form-item>
-        <el-form-item>
-          <el-button size="medium" type="primary" @click="handleQuery2">查询</el-button>
-        </el-form-item>
-      </el-form>
-    </el-tab-pane>
-  </el-tabs>
+  <div>
+    <el-tabs v-model="activeName" class="realname-info" @tab-click="handleClick">
+      <el-tab-pane label="身份证信息查询" name="first">
+        <el-form ref="formPersonal" :rules="rules1" :model="formPersonal" label-width="130px">
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="formPersonal.name" />
+          </el-form-item>
+          <el-form-item label="居民身份证号" prop="idcard">
+            <el-input v-model="formPersonal.idcard" />
+          </el-form-item>
+          <el-form-item label="头像照片" prop="imageId">
+            <el-upload
+              class="upload-demo"
+              action="/realnamequery/upload"
+              :on-success="handleAvatarSuccess"
+              :on-remove="handleRemove"
+              :limit="1"
+              :on-exceed="handleExceed"
+              :file-list="fileList"
+            >
+              <el-button size="small">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">支持JPG（JPEG），BMP， PNG， GIF，TIFF,格式，大小不能超过1M</div>
+            </el-upload>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="medium" type="primary" :loading="loading1" @click="handleQuery1">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+      <el-tab-pane label="企业信息查询" name="second">
+        <el-form ref="formBusiness" :rules="rules2" :model="formBusiness" label-width="130px">
+          <el-form-item label="企业名称" prop="entname">
+            <el-input v-model="formBusiness.entname" />
+          </el-form-item>
+          <el-form-item label="统一社会信用代码" prop="creditcode">
+            <el-input v-model="formBusiness.creditcode" />
+          </el-form-item>
+          <el-form-item label="法人姓名" prop="frname">
+            <el-input v-model="formBusiness.frname" />
+          </el-form-item>
+          <el-form-item>
+            <el-button size="medium" type="primary" :loading="loading2" @click="handleQuery2">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+    </el-tabs>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="500px"
+    >
+      <span>{{ msg }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="medium" type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'RealNameInfo',
   components: {},
   data() {
     return {
+      msg: '',
+      dialogVisible: false,
       activeName: 'first',
       formPersonal: {
         name: '',
@@ -59,9 +75,9 @@ export default {
         imageId: ''
       },
       formBusiness: {
-        nameCompany: '',
-        creditCode: '',
-        legalPerson: ''
+        entname: '',
+        creditcode: '',
+        frname: ''
       },
       rules1: {
         name: [
@@ -77,15 +93,15 @@ export default {
         ]
       },
       rules2: {
-        nameCompany: [
+        entname: [
           { required: true, message: '请输入企业名称', trigger: 'blur' },
           { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' }
         ],
-        creditCode: [
+        creditcode: [
           { required: true, message: '请输入统一社会信用代码', trigger: 'blur' },
           { min: 1, max: 100, message: '格式错误', trigger: 'blur' }
         ],
-        legalPerson: [
+        frname: [
           { required: true, message: '请输入法人姓名', trigger: 'blur' },
           { min: 1, max: 100, message: '格式错误', trigger: 'blur' }
         ]
@@ -93,14 +109,21 @@ export default {
       fileList: []
     }
   },
+  computed: {
+    ...mapState({
+      loading1: state => state.loading.effects['realnamequery/comparePortrait'],
+      loading2: state => state.loading.effects['realnamequery/compareEnterpriseInfo']
+    })
+  },
   watch: {
     activeName(val) {
-      this.$router.push(`${this.$route.path}?tab=${val}`)
+      // this.$router.push(`${this.$route.path}?tab=${val}`)
     }
   },
   created() {
 
   },
+
   methods: {
     handleClick(tab, event) {
       console.log(tab, event)
@@ -130,10 +153,8 @@ export default {
             imageId
           }
           this.$store.dispatch('realnamequery/comparePortrait', data).then(res => {
-            this.$message({
-              type: 'success',
-              message: res.message
-            })
+            this.msg = res.message
+            this.dialogVisible = true
           }).catch(error => {
             console.log(error)
           })
@@ -141,7 +162,22 @@ export default {
       })
     },
     handleQuery2() {
-
+      this.$refs.formBusiness.validate((valid) => {
+        const { entname, creditcode, frname } = this.formBusiness
+        if (valid) {
+          const data = {
+            entname,
+            creditcode,
+            frname
+          }
+          this.$store.dispatch('realnamequery/compareEnterpriseInfo', data).then(res => {
+            this.msg = res.message
+            this.dialogVisible = true
+          }).catch(error => {
+            console.log(error)
+          })
+        }
+      })
     }
   }
 }

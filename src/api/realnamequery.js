@@ -14,3 +14,10 @@ export function comparePortrait(query) {
     params: query
   })
 }
+export function compareEnterpriseInfo(query) {
+  return request({
+    url: '/realnamequery/compareEnterpriseInfo',
+    method: 'POST',
+    params: query
+  })
+}
