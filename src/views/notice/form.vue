@@ -81,11 +81,9 @@
 <script>
 // import { VueEditor } from 'vue2-editor'
 import { mapActions, mapState } from 'vuex'
-import Editor from '@/components/vue-kindeditor-master/src/components/KindEditor.vue'
 export default {
   name: 'AgentNoticeForm',
   components: {
-    Editor
   },
   props: {
     visible: {
