@@ -55,7 +55,7 @@
       </el-form-item>
       <el-form-item label="内容">
         <vue-editor v-model="form.content" use-custom-image-handler @image-added="handleImageAdded" />
-        <!-- <editor
+        <editor
           id="editor_id"
           height="400px"
           width="680px"
@@ -63,10 +63,11 @@
           :after-change="afterChange()"
           plugins-path="/static/kindeditor/plugins/"
           upload-json="/userManager/upload"
+          :fill-desc-after-upload-image="false"
           file-post-name="file"
           :load-style-mode="false"
           @on-content-change="onContentChange"
-        /> -->
+        />
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -265,7 +266,7 @@ export default {
       console.log(val)
       this.form.content = val
     },
-    afterChange() {
+    afterChange(v) {
     },
     handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       const formData = new FormData()
