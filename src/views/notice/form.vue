@@ -54,7 +54,7 @@
         </el-dialog> -->
       </el-form-item>
       <el-form-item label="内容">
-        <vue-editor v-model="form.content" use-custom-image-handler @image-added="handleImageAdded" />
+        <!-- <vue-editor v-model="form.content" use-custom-image-handler @image-added="handleImageAdded" /> -->
         <editor
           id="editor_id"
           height="400px"
@@ -66,6 +66,7 @@
           :fill-desc-after-upload-image="false"
           file-post-name="file"
           :load-style-mode="false"
+          :after-upload="afterUpload"
           @on-content-change="onContentChange"
         />
       </el-form-item>
@@ -78,12 +79,13 @@
 </template>
 
 <script>
-import { VueEditor } from 'vue2-editor'
+// import { VueEditor } from 'vue2-editor'
 import { mapActions, mapState } from 'vuex'
+import Editor from '@/components/vue-kindeditor-master/src/components/KindEditor.vue'
 export default {
   name: 'AgentNoticeForm',
   components: {
-    VueEditor
+    Editor
   },
   props: {
     visible: {
@@ -267,6 +269,9 @@ export default {
       this.form.content = val
     },
     afterChange(v) {
+    },
+    afterUpload(res) {
+      alert(res)
     },
     handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       const formData = new FormData()
