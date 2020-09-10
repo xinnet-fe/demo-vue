@@ -9,12 +9,16 @@ import Layout from '@/layout'
 
 /* Router Modules */
 import componentsRouter from './demos/components'
-import chartsRouter from './demos/charts'
+// import chartsRouter from './demos/charts'
 import tableRouter from './demos/table'
-import nestedRouter from './demos/nested'
+// import nestedRouter from './demos/nested'
 import formRouter from './demos/form'
 import orderRouter from './demos/order'
 import dialogRouter from './demos/dialog'
+import boxRouter from './demos/box'
+import listRouter from './demos/list'
+import detailRouter from './demos/detail'
+
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -106,7 +110,10 @@ const demosConstantRoutes = hasDevelopment ? [
       }
     ]
   },
+  boxRouter,
+  listRouter,
   dialogRouter,
+  detailRouter,
   {
     path: '/dashboard',
     component: Layout,
@@ -211,7 +218,22 @@ const demosConstantRoutes = hasDevelopment ? [
     ]
   },
   /** when your routing map is too long, you can split it into small modules **/
-  componentsRouter
+  componentsRouter,
+  {
+    path: '/clipboard',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/clipboard/index'),
+        name: 'ClipboardDemo',
+        meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
+      }
+    ]
+  }
   // chartsRouter,
   // nestedRouter,
   // {
@@ -391,22 +413,6 @@ const demosConstantRoutes = hasDevelopment ? [
   //       component: () => import('@/views/demos/theme/index'),
   //       name: 'Theme',
   //       meta: { title: 'Theme', icon: 'theme', type: 'demo' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/clipboard',
-  //   component: Layout,
-  //   meta: {
-  //     type: 'demo'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/demos/clipboard/index'),
-  //       name: 'ClipboardDemo',
-  //       meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
   //     }
   //   ]
   // },

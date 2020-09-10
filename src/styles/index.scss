@@ -9,6 +9,7 @@
 @import './form.scss';
 @import './tabs.scss';
 @import './order.scss';
+@import './list.scss';
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -128,7 +129,7 @@ aside {
   padding: 20px;
 }
 .app-content{
-  padding: 20px;
+  padding: 0px;
 }
 .components-container {
   margin: 30px 50px;
