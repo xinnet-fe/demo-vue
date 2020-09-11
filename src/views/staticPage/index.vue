@@ -35,9 +35,17 @@ export default {
   },
   mounted() {
     this.$watch('$route', route => {
+      this.loadPage(route)
+    })
+    this.loadPage(this.$route)
+  },
+  methods: {
+    receiveMessageFromIframePage(e) {
+      // console.log(e)
+    },
+    loadPage(route) {
       const { meta } = route
       const visitedView = find(this.visitedViews, o => o.meta && o.meta.url === this.url)
-
       // visitedViews打开状态open是true
       if (visitedView && visitedView.title) {
         // 切换到当前标签
@@ -50,11 +58,6 @@ export default {
       } else {
         this.open = false
       }
-    })
-  },
-  methods: {
-    receiveMessageFromIframePage(e) {
-      // console.log(e)
     }
   }
 }
