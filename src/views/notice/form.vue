@@ -19,7 +19,7 @@
           <el-option v-for="item in authorList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="置顶有效期" prop="date">
+      <el-form-item label="置顶有效期" prop="date" :required="isHaveTo">
         <el-date-picker
           v-model="form.date"
           type="daterange"
@@ -32,7 +32,7 @@
       <el-form-item label="开关">
         <el-switch v-model="form.placedTop" active-value="1" inactive-value="0" />
       </el-form-item>
-      <el-form-item label="置顶图片上传">
+      <el-form-item label="置顶图片上传" prop="topTitlePathForView" :required="isHaveTo">
         <el-upload
           class="avatar-uploader"
           action="/userManager/upload"
@@ -98,6 +98,25 @@ export default {
     }
   },
   data() {
+  // 验证活动名称的函数
+    const validateName = (rule, value, callback) => {
+      // 当活动名称为空值且为必填时，抛出错误，反之通过校验
+      console.log(rule)
+      if (this.form.date === '' && this.isHaveTo) {
+        callback(new Error('请选择日期'))
+      } else {
+        callback()
+      }
+    }
+    const validateName2 = (rule, value, callback) => {
+      // 当活动名称为空值且为必填时，抛出错误，反之通过校验
+      console.log(rule)
+      if (this.form.date === '' && this.isHaveTo) {
+        callback(new Error('请上传图片'))
+      } else {
+        callback()
+      }
+    }
     return {
       form: {
         title: '',
@@ -141,7 +160,10 @@ export default {
           { required: true, message: '请选择！', trigger: 'change' }
         ],
         date: [
-          { required: true, message: '请选择！', trigger: 'change' }
+          { validator: validateName }
+        ],
+        topTitlePathForView: [
+          { validator: validateName2 }
         ]
       },
       editorItems: [
@@ -163,6 +185,9 @@ export default {
       set(val) {
         this.$emit('update:visible', val)
       }
+    },
+    isHaveTo: function() {
+      return this.form.placedTop !== '0'
     }
   },
   mounted() {
