@@ -62,9 +62,10 @@
           :content.sync="form.content"
           :after-change="afterChange()"
           plugins-path="/static/kindeditor/plugins/"
-          upload-json="/userManager/upload"
+          upload-json="/userManager/upload?type=kindeditor"
           :fill-desc-after-upload-image="false"
           file-post-name="file"
+          :items="editorItems"
           :load-style-mode="false"
           :after-upload="afterUpload"
           @on-content-change="onContentChange"
@@ -79,7 +80,6 @@
 </template>
 
 <script>
-// import { VueEditor } from 'vue2-editor'
 import { mapActions, mapState } from 'vuex'
 export default {
   name: 'AgentNoticeForm',
@@ -143,7 +143,12 @@ export default {
         date: [
           { required: true, message: '请选择！', trigger: 'change' }
         ]
-      }
+      },
+      editorItems: [
+        'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
+        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'pagebreak', 'anchor', 'link', 'unlink'
+      ]
     }
   },
   computed: {
@@ -269,7 +274,6 @@ export default {
     afterChange(v) {
     },
     afterUpload(res) {
-      alert(res)
     },
     handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       const formData = new FormData()
