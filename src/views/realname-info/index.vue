@@ -11,10 +11,12 @@
           </el-form-item>
           <el-form-item label="头像照片" prop="imageId">
             <el-upload
+              ref="upload"
               class="upload-demo"
               action="/realnamequery/upload"
               :on-success="handleAvatarSuccess"
               :on-remove="handleRemove"
+              :before-upload="handleBeforeUpload"
               :limit="1"
               :on-exceed="handleExceed"
               :file-list="fileList"
@@ -48,9 +50,10 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
+      custom-class="realnamereslut"
       width="500px"
     >
-      <span>{{ msg }}</span>
+      <span><i v-if="code==='10000'" class="el-icon-success" /><i v-if="code!=='10000'" class="el-icon-error" /> {{ msg }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button size="medium" type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
@@ -69,6 +72,7 @@ export default {
       msg: '',
       dialogVisible: false,
       activeName: 'first',
+      code: '',
       formPersonal: {
         name: '',
         idcard: '',
@@ -143,6 +147,19 @@ export default {
         this.formPersonal.imageId = ''
       }
     },
+    handleBeforeUpload(file) {
+      const type = 'image/jpeg,image/jpg,image/bmp,image/png,image/gif,image/tiff'
+      const isImg = type.indexOf(file.type)
+      const isLt = file.size / 1024 / 1024 < 1
+
+      if (isImg < 0) {
+        this.$message.error('上传头像格式错误!')
+      }
+      if (!isLt) {
+        this.$message.error('上传图片大小不能超过 1MB!')
+      }
+      return !!((isImg && isLt))
+    },
     handleQuery1() {
       this.$refs.formPersonal.validate((valid) => {
         const { name, idcard, imageId } = this.formPersonal
@@ -153,7 +170,13 @@ export default {
             imageId
           }
           this.$store.dispatch('realnamequery/comparePortrait', data).then(res => {
+            this.code = res.code
             this.msg = res.message
+            if (res.code === '10014' || res.code === '10015') {
+              this.msg = '照片质量不合格'
+            } else {
+              this.msg = res.message
+            }
             this.dialogVisible = true
           }).catch(error => {
             console.log(error)
@@ -236,5 +259,17 @@ export default {
 }
 .realname-info .avatar-uploader .el-upload__tip{
   color: #999;
+}
+.realnamereslut .el-icon-error:before{
+  font-size: 20px;
+  color: #f56c6c;
+  position: relative;
+  top: 2px;
+}
+.realnamereslut .el-icon-success:before{
+  font-size: 20px;
+  color: #67c23a;
+  position: relative;
+  top: 2px;
 }
 </style>
