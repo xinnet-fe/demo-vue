@@ -174,7 +174,14 @@ export default {
           this.$store.dispatch('realnamequery/comparePortrait', data).then(res => {
             this.code = res.code
             this.msg = res.message
-            if (res.code === '10014' || res.code === '10015') {
+            if (res.code === '10000') {
+              if ((res.data * 1) > 0.7) {
+                this.msg = '身份证信息验证通过'
+              } else {
+                this.code = '10000000'
+                this.msg = '身份证信息验证不通过'
+              }
+            } else if (res.code === '10014' || res.code === '10015') {
               this.msg = '照片质量不合格'
             } else {
               this.msg = res.message
