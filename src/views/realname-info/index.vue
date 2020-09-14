@@ -203,6 +203,7 @@ export default {
             frname
           }
           this.$store.dispatch('realnamequery/compareEnterpriseInfo', data).then(res => {
+            this.code = res.code
             this.msg = res.message
             this.dialogVisible = true
           }).catch(error => {
