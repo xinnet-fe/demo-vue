@@ -151,14 +151,16 @@ export default {
       const type = 'image/jpeg,image/jpg,image/bmp,image/png,image/gif,image/tiff'
       const isImg = type.indexOf(file.type)
       const isLt = file.size / 1024 / 1024 < 1
+      let format = true
 
       if (isImg < 0) {
+        format = false
         this.$message.error('上传头像格式错误!')
       }
       if (!isLt) {
         this.$message.error('上传图片大小不能超过 1MB!')
       }
-      return !!((isImg && isLt))
+      return format && isLt
     },
     handleQuery1() {
       this.$refs.formPersonal.validate((valid) => {
