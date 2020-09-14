@@ -33,6 +33,16 @@ for (let i = 0; i < count; i++) {
 
 export default [
   {
+    url: '/order/upload/',
+    type: 'post',
+    response: config => {
+      return {
+        error: 0,
+        url: 'http://www.xinnet.com//images/WblT7w0z9YS0AD4GXGg.jpg'
+      }
+    }
+  },
+  {
     url: '/order/list',
     type: 'get',
     response: config => {
