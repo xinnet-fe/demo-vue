@@ -1,10 +1,8 @@
-import { getUser, getSidebarMenus, changePwd, getAgentAccount, queryIpAddress } from '@/api/userinfo'
+import { getSidebarMenus, changePwd } from '@/api/userinfo'
 import { queryAgentCustomerList, sendEmail, findGradeByAgent, findDlCustomer } from '@/api/agent/users'
 import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
-  user: {},
-  account: {},
   menus: [],
   gradeByAgent: {},
   form: {
@@ -16,9 +14,6 @@ const state = {
 }
 
 const mutations = {
-  SET_USER: (state, user) => {
-    state.user = user
-  },
   SET_GRADE_BY_AGENT: (state, res) => {
     state.gradeByAgent = res
   },
@@ -31,9 +26,6 @@ const mutations = {
     state.form.confirmPassword = payload.confirmPwd
     state.form.verifcode = payload.mobileyzm
   },
-  SET_ACCOUNT: (state, payload) => {
-    state.account = payload
-  },
   CLEAR_PWD_FORM(state) {
     state.form.oldpassword = ''
     state.form.password = ''
@@ -44,26 +36,6 @@ const mutations = {
 
 const actions = {
   // get user info
-  getUser({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      // const storeUser = getStore('user')
-      // if (storeUser && storeUser.id) {
-      //   commit('SET_USER', storeUser)
-      //   resolve(storeUser)
-      // } else {
-      getUser().then(user => {
-        if (!user) {
-          reject('please Login again.')
-        }
-        commit('SET_USER', user.data)
-        setStore('user', user.data)
-        resolve(user)
-      }).catch(error => {
-        reject(error)
-      })
-      // }
-    })
-  },
   getSidebarMenus({ commit, state }) {
     return new Promise((resolve, reject) => {
       // const storeMenus = getStore && getStore('menus')
@@ -143,25 +115,6 @@ const actions = {
   findDlCustomer({ commit, state }, payload) {
     return new Promise((resolve, reject) => {
       findDlCustomer(payload).then(res => {
-        resolve(res)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-  getAgentAccount({ commit, state }, payload) {
-    return new Promise((resolve, reject) => {
-      getAgentAccount(payload).then(res => {
-        commit('SET_ACCOUNT', res.data)
-        resolve(res)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-  queryIpAddress({ commit, state }, payload) {
-    return new Promise((resolve, reject) => {
-      queryIpAddress(payload).then(res => {
         resolve(res)
       }).catch(error => {
         reject(error)

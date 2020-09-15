@@ -74,11 +74,14 @@
                         <el-button slot="append">查域名</el-button>
                       </el-input>
                       <div class="links">
-                        <a href="">批量域名注册</a>
-                        <a href="">批量域名注册</a>
-                        <a href="">批量域名注册</a>
-                        <a href="">批量域名注册</a>
-                        <a href="">批量域名注册</a>
+                        <a target="_blank" href="http://www.xinnet.com/domain/domain_batch_check_new.jsp">批量域名注册</a>
+                        <a target="_blank" href="http://www.xinnet.com/domain/premium.html">钻石域名注册</a>
+                        <a target="_blank" href="http://www.xinnet.com/domain/domainYkjRecommend.html">一口价二手域名</a>
+                        <a target="_blank" href="http://www.xinnet.com/domain/domain_book_search.jsp?f=nva">域名抢注</a>
+                        <a target="_blank" href="http://www.xinnet.com/domain/wtgm.html">委托购买</a>
+                        <a target="_blank" href="http://www.xinnet.com/domain/domainIn.html">域名转入</a>
+                        <a target="_blank" href="http://www.xinnet.com/domain/domainIntelligentRecommendation.html">域名推荐</a>
+                        <a target="_blank" href="http://www.xinnet.com/domain/price.html">域名价格总览</a>
                       </div>
                     </div>
                   </el-tab-pane>
@@ -87,13 +90,7 @@
                       <el-input v-model="queryBrand" placeholder="输入您想检索的商标名称、申请号、申请人名称">
                         <el-button slot="append">查商标</el-button>
                       </el-input>
-                      <div class="links">
-                        <a href="">商标注册</a>
-                        <a href="">商标注册</a>
-                        <a href="">商标注册</a>
-                        <a href="">商标注册</a>
-                        <a href="">商标注册</a>
-                      </div>
+                      <div class="links" />
                     </div>
                   </el-tab-pane>
                 </el-tabs>
@@ -235,10 +232,10 @@
               direction="btt"
               :before-close="handleCloseMsg"
             >
-              <ul class="el-list el-list-style2">
-                <li v-for="(item, i) in list" :key="i" class="el-list-item clearfix">
-                  <strong class="tit"><a>{{ item.title }}</a></strong>
-                  <p class="desc">{{ item.updateTime }}</p>
+              <ul v-if="msgWorkorder.list && msgWorkorder.list.result" class="el-list el-list-style2">
+                <li v-for="(item, i) in msgWorkorder.list.result" :key="i" class="el-list-item clearfix">
+                  <strong class="tit"><a>{{ item[1] }}</a></strong>
+                  <p class="desc">{{ item[3].time | parseTime('{y}-{m}-{d}') }}</p>
                 </li>
               </ul>
             </el-drawer>
@@ -247,7 +244,7 @@
             <el-row>
               <el-col :span="12" style="cursor: pointer">
                 <div class="grid-content grid-content-msg-1" @click="handleShowMsg()">
-                  <em>{{ msgWorkorder.list && msgWorkorder.list.result.length }}</em>
+                  <em>{{ msgWorkorder.list && msgWorkorder.list.totalCount }}</em>
                   <p>未读消息</p>
                 </div>
               </el-col>
@@ -274,7 +271,7 @@
               <div slot="cont">
                 <ul class="el-list">
                   <li v-for="(item, i) in list" :key="i" class="el-list-item">
-                    <strong class="tit"><a :href="'#/agent-detail/index/'+item.id" target="_blank">{{ item.title }}</a></strong>
+                    <strong class="tit"><a :href="'#/agent-detail/index/'+item.id" target="_blank">{{ item.title }}<span v-if="item.placedTop === '1'" class="icon-important" /></a></strong>
                     <p class="desc">{{ item.updateTime }}</p>
                   </li>
                 </ul>
@@ -389,10 +386,10 @@ export default {
   },
   computed: {
     ...mapState({
-      user: state => state.userinfo.user,
-      usersafe: state => state.usersafe.usersafe,
+      user: state => state.usercommon.user,
+      usersafe: state => state.usercommon.usersafe,
       gradeByAgent: state => state.userinfo.gradeByAgent,
-      account: state => state.userinfo.account
+      account: state => state.usercommon.account
     })
   },
   beforeCreate() {
@@ -475,7 +472,7 @@ export default {
       })
     },
     queryIpAddress() {
-      this.$store.dispatch('userinfo/queryIpAddress', { pageSize: 3 }).then(res => {
+      this.$store.dispatch('usercommon/queryIpAddress', { pageSize: 3 }).then(res => {
         console.log(res.success)
         if (!res.code && res.success) {
           this.ipAddress = res.data
@@ -977,6 +974,13 @@ export default {
         padding-top: 0px;
         padding-bottom: 0px;
       }
+      .icon-important{
+        margin-left: 5px;
+        display: inline-block;
+        width: 16px;
+        height: 13px;
+        background: url("/static/img/icon_01.png") no-repeat;
+      }
     }
     .login-list{
       .box-cont{
@@ -1033,6 +1037,9 @@ export default {
       padding: 0px 20px;
       line-height: 30px;
       // height: 0px;
+      span{
+        font-size: 12px;
+      }
     }
     .el-drawer__close-btn{
       position: relative;
@@ -1041,6 +1048,13 @@ export default {
     }
     .el-drawer__body{
       padding: 0 20px;
+    }
+    .el-list .tit a{
+      max-width: 170px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
     }
   }
 }

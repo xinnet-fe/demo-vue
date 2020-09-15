@@ -11,15 +11,15 @@ export default {
   name: 'App',
   created() {
     const { dispatch } = this.$store
-    dispatch('userinfo/getUser')
+    dispatch('usercommon/getUser')
     dispatch('userinfo/getSidebarMenus').then(menus => {
       dispatch('permission/generateMainRoutes', menus).then(routes => {
         router.addRoutes(routes)
       })
     })
-    dispatch('userinfo/getAgentAccount')
+    dispatch('usercommon/getAgentAccount')
     dispatch('userinfo/findGradeByAgent')
-    dispatch('usersafe/findSafeGrade')
+    dispatch('usercommon/findSafeGrade')
   }
 }
 </script>
