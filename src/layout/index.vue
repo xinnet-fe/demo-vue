@@ -11,7 +11,6 @@
       <app-main v-show="!$route.meta.url" />
       <static-page
         v-for="item in iframeRoutes"
-        v-show="showIframe(item)"
         :key="item.name"
         :url="item.meta.url"
       />
@@ -70,9 +69,9 @@ export default {
     }
   },
   methods: {
-    showIframe(route) {
-      return this.$route.meta && route.meta && this.$route.meta.url === route.meta.url
-    },
+    // showIframe(route) {
+    //   return this.$route.meta && route.meta && this.$route.meta.url === route.meta.url
+    // },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     }
