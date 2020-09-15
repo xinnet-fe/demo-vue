@@ -193,6 +193,7 @@ export default {
   mounted() {
     console.log(this.row)
     this.$nextTick(function() {
+      console.error(this)
       if (this.row.id) {
         this.form.title = this.row.title
         this.form.preType = this.row.preType

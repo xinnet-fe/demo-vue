@@ -155,7 +155,7 @@ export function findActivityAnnounce(query) {
 export function deleteActivityAnnounce(query) {
   return request({
     url: '/userManager/deleteActivityAnnounce',
-    method: 'get',
+    method: 'post',
     params: query
   })
 }
