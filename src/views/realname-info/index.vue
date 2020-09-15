@@ -204,6 +204,9 @@ export default {
           }
           this.$store.dispatch('realnamequery/compareEnterpriseInfo', data).then(res => {
             this.code = res.code
+            if (res.code === '10000' && res.data !== '1') {
+              this.code = '10000000'
+            }
             this.msg = res.message
             this.dialogVisible = true
           }).catch(error => {
