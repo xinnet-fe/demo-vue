@@ -55,7 +55,7 @@
           3.与代理商取的联系，完成交易<br>
           4.管理商品<br>
         </p>
-        <p><a href="https://login.xinnet.com/?service=http://console.xinnet.com/agent" rel="noopener noreferrer">去登录</a></p>
+        <p><a href="https://login.xinnet.com/?service=https://console.xinnet.com/agent/index.html" rel="noopener noreferrer">去登录</a></p>
       </div>
     </div>
     <div class="slideshow">

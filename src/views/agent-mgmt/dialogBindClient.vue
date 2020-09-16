@@ -49,7 +49,7 @@ export default {
     })
   },
   created() {
-    this.links = `http://console.xinnet.com/agent/inviteReg.html?agentCode=${this.user.agentCode}`
+    this.links = `https://console.xinnet.com/agent/inviteReg.html?agentCode=${this.user.agentCode}`
   },
   methods: {
     sendEmail() {

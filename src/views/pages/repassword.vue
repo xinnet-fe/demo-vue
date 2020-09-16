@@ -441,7 +441,7 @@ export default {
                   title: '提示',
                   confirmButtonText: '确定',
                   callback: action => {
-                    window.location.href = 'https://login.xinnet.com/?service=http://console.xinnet.com/agent'
+                    window.location.href = 'https://login.xinnet.com/?service=https://console.xinnet.com/agent/index.html'
                   }
                 })
               } else {

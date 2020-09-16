@@ -49,7 +49,7 @@ module.exports = {
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 
-  logoutApi: process.env.VUE_APP_ENV === 'production' ? 'https://sso.xinnet.com/logout?service=http://boss.xinnet.com/' : 'http://sso.xinnet.com:8084/logout?service=http://boss.xinnet.com:8082/',
+  logoutApi: process.env.VUE_APP_ENV === 'production' ? 'https://login.xinnet.com/?service=https://console.xinnet.com/agent/index.html' : 'https://login.xinnet.com/?service=https://console.xinnet.com/agent/index.html',
 
   // webpack配置，覆盖掉vue.config.js中初始值
   webpackConfig
