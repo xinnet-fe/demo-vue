@@ -53,7 +53,7 @@
           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog> -->
       </el-form-item>
-      <el-form-item label="内容">
+      <el-form-item label="内容" prop="content">
         <!-- <vue-editor v-model="form.content" use-custom-image-handler @image-added="handleImageAdded" /> -->
         <editor
           id="editor_id"
@@ -158,6 +158,9 @@ export default {
         ],
         publisher: [
           { required: true, message: '请选择！', trigger: 'change' }
+        ],
+        content: [
+          { required: true, message: '请填写！', trigger: 'change' }
         ],
         date: [
           { validator: validateName }
