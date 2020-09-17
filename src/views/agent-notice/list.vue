@@ -89,13 +89,13 @@ export default {
   display: inline-block;
   width: 16px;
   height: 13px;
-  background: url("/static/img/icon_01.png") no-repeat;
+  background: url("/agent/static/img/icon_01.png") no-repeat;
 }
 .el-list-style2 .icon-hot{
   margin-left: 5px;
   display: inline-block;
   width: 19px;
   height: 11px;
-  background: url("/static/img/icon_02.png") no-repeat;
+  background: url("/agent/static/img/icon_02.png") no-repeat;
 }
 </style>

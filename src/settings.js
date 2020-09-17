@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-09-16 10:25:11
+ * @LastEditTime: 2020-09-17 11:07:12
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\settings.js
+ */
 const webpackConfig = require('./webpackConfig.js')
 
 module.exports = {
@@ -13,7 +21,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether need tagsView
    */
-  tagsView: true,
+  tagsView: false,
 
   /**
    * @type {boolean} true | false
@@ -45,7 +53,7 @@ module.exports = {
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: '2j5MPq9I0LGzpEIFrvu',
+  xbtoken: 'Hxzd5RCZwJM9bjM3EWL',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 

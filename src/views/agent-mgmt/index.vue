@@ -154,7 +154,7 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.loading.effects['userinfo/queryAgentCustomerList'],
-      usersafe: state => state.usersafe.usersafe
+      usersafe: state => state.usercommon.usersafe
     })
   },
   created() {

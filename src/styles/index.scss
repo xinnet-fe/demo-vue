@@ -128,9 +128,6 @@ aside {
 .app-container {
   padding: 20px;
 }
-.app-content{
-  padding: 0px;
-}
 .components-container {
   margin: 30px 50px;
   position: relative;
@@ -201,26 +198,4 @@ input::-moz-input-placeholder {
 }
 input::-ms-input-placeholder {
   color: #999!important;
-}
-// 如果有外层xcs_mian容器, 主体容器调整
-.xcs_main .main-cont{
-  padding: 20px 20px 20px 20px!important;
-}
-.xcs_main .app-main {
-  height: calc(100vh - 50px)!important;
-  min-height: calc(100vh - 50px)!important;
-  position: relative;
-  top: 50px;
-}
-.xcs_main .main-breadcrumb {
-  display: none!important;
-}
-.xcs_main .sidebar-container{
-  left: 50px!important;
-}
-.xcs_main #app .main-container{
-  margin-left: 200px;
-}
-.xcs_main .hideLayout.main-container{
-  margin-left: 50px!important;
 }

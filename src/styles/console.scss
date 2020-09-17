@@ -20,20 +20,18 @@
 }
 
 // 左侧导航样式 重置
+
 .sidebar-logo-container{
-    background: #fff!important;
-    border-bottom: 1px solid #f2f2f2;
-    margin-top: 50px;
-    padding-left: 20px;
+    height: 50px;
+    background: #3a3a3a!important;
 }
-.sidebar-logo-container .sidebar-logo-link .sidebar-title{
-    color: #666!important;
-    font-size: 17px!important;
-    font-weight: normal!important;
+.sidebar-logo-container *{
+    display: none!important;
 }
 #app .sidebar-container{
     background: #fff;
-    width: 150px!important;
+    width: 200px!important;
+    border-left: 50px solid #494949;
 }
 #app .sidebar-container .el-menu-item,
 #app .sidebar-container .nest-menu .el-submenu > .el-submenu__title span,
@@ -76,6 +74,26 @@
 }
 
 // 右侧主体内容
+#app .app-content{
+    margin: 20px!important;
+    padding: 0px;
+}
+#app .sidebar-container.hideLayout{
+    width: 0px!important;
+}
+#app .main-container.hideLayout{
+    margin-left: 50px!important;
+}
+#app .main-container .app-main{
+    overflow: auto;
+    height: calc(100vh - 50px);
+}
 #app .main-container{
-    margin-left: 150px;
+    margin-left: 200px;
+}
+#app .main-container .main-breadcrumb .navbar {
+    background: #3a3a3a!important;
+}
+#app .main-container .main-breadcrumb .navbar *{
+    display: none!important;
 }

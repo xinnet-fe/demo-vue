@@ -1,6 +1,6 @@
 <template>
   <section class="app-main">
-    <section class="app-content" :style="[showLayout ? appMainMargin : '']">
+    <section class="app-content">
       <transition name="fade-transform" mode="out-in">
         <keep-alive :include="cachedViews">
           <router-view :key="key" />
@@ -49,7 +49,7 @@ export default {
   // min-height: calc(100vh - 50px);
   position: relative;
   overflow: hidden;
-  // margin: 20px 20px 0;
+  padding: 20px;
   background-color: #ffffff;
 }
 
@@ -67,14 +67,6 @@ export default {
 
   .fixed-header+.app-main {
     padding-top: 91px;
-  }
-}
-.hideLayout {
-  .app-main {
-    /* 84 = navbar + tags-view = 50 + 34 */
-    height: calc(100vh);
-    min-height: calc(100vh);
-    overflow: auto;
   }
 }
 </style>

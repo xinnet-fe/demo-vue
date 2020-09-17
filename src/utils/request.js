@@ -126,9 +126,9 @@ function logoutToLogin(message) {
   store.dispatch('user/resetToken')
   errorMessage(message)
 
-  const { $router, $route } = app
+  // const { $router, $route } = app
   if (hasDevelopment) {
-    $router.push(`/login?redirect=${$route.fullPath}`)
+    global.location = logoutApi
   } else {
     global.location = logoutApi
   }

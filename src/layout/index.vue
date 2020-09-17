@@ -1,11 +1,11 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar v-if="showLayout" class="sidebar-container" />
-    <div :class="{hasTagsView:needTagsView, hideLayout:!showLayout}" class="main-container" :style="[!showLayout ? leftSidebar : '']">
+    <sidebar :class="'sidebar-container ' + (showLayout ? '' : 'hideLayout')" />
+    <div :class="{hasTagsView:needTagsView, hideLayout:!showLayout}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}" class="main-breadcrumb">
-        <navbar v-if="showLayout" />
-        <tags-view v-if="showLayout && needTagsView" />
+        <navbar />
+        <tags-view v-if="needTagsView" />
       </div>
 
       <app-main v-show="!$route.meta.url" />

@@ -1,6 +1,6 @@
 <template>
   <div class="home-container">
-    <el-alert v-if="usersafe.userInfoAuth === 'N'" class="el-alert-top" type="warning" show-icon>
+    <el-alert v-if="usersafe && usersafe.userInfoAuth === 'N'" class="el-alert-top" type="warning" show-icon>
       <p slot="title">依据《中华人民共和国网络安全法》规定，您的账号未进行认证，请尽快完成认证，避免影响您后期业务正常使用，感谢您的支持与合作。<a href="http://console.xinnet.com/jump.html?p=realuser" class="a-blue">去实名&gt;&gt;</a></p>
     </el-alert>
     <el-row :gutter="20" class="main-cont">
@@ -11,32 +11,32 @@
               <tr>
                 <td class="col1">
                   <span class="img">
-                    <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_01.png" alt="" srcset=""></a>
+                    <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_01.png" alt="" srcset=""></a>
                   </span>
                   <div class="info">
                     <div style="font-weight:bold">{{ user.agentCode }}
                       <span class="safe">
                         <i v-if="user.loginProtect === 'N'" class="icon">
-                          <el-tooltip class="item" effect="dark" content="未认证" placement="top">
-                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_09.png" alt="" srcset=""></a>
+                          <el-tooltip class="item" effect="dark" content="登录保护未开启" placement="top">
+                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_09.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                         <i v-if="user.loginProtect === 'Y'" class="icon">
-                          <el-tooltip class="item" effect="dark" content="已认证" placement="top">
-                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_10.png" alt="" srcset=""></a>
+                          <el-tooltip class="item" effect="dark" content="登录保护已开启" placement="top">
+                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_10.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                         <!-- <i v-if="user.agentType === 'N'" class="icon">
-                          <img src="/static/img/home/img_11.png" alt="" srcset="">
+                          <img src="/agent/static/img/home/img_11.png" alt="" srcset="">
                         </i> -->
                         <i v-if="user.agentType === 'P'" class="icon">
                           <el-tooltip class="item" effect="dark" content="已认证" placement="top">
-                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_12.png" alt="" srcset=""></a>
+                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_12.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                         <i v-if="user.agentType === 'C'" class="icon">
                           <el-tooltip class="item" effect="dark" content="已认证" placement="top">
-                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/static/img/home/img_13.png" alt="" srcset=""></a>
+                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_13.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                       </span>
@@ -46,7 +46,7 @@
                 </td>
                 <td class="col2">
                   <span class="img">
-                    <img src="/static/img/home/img_02.png" alt="" srcset="">
+                    <img src="/agent/static/img/home/img_02.png" alt="" srcset="">
                   </span>
                   <div class="info">
                     <div>我的余额：<em>￥ {{ account.totalBalance }}</em></div>
@@ -71,7 +71,7 @@
                   <el-tab-pane label="域名">
                     <div class="queryDomain">
                       <el-input v-model="queryDomain" placeholder="输入域名，如：xinnet.com">
-                        <el-button slot="append">查域名</el-button>
+                        <el-button slot="append" @click="queryDomains">查域名</el-button>
                       </el-input>
                       <div class="links">
                         <a target="_blank" href="http://www.xinnet.com/domain/domain_batch_check_new.jsp">批量域名注册</a>
@@ -88,7 +88,7 @@
                   <el-tab-pane label="商标">
                     <div class="queryDomain">
                       <el-input v-model="queryBrand" placeholder="输入您想检索的商标名称、申请号、申请人名称">
-                        <el-button slot="append">查商标</el-button>
+                        <el-button slot="append" @click="queryBrands">查商标</el-button>
                       </el-input>
                       <div class="links" />
                     </div>
@@ -123,12 +123,17 @@
                 <router-link to="/agent-mgmt/index">客户管理</router-link>
               </div>
               <div slot="cont">
-                <div class="adv" />
+                <div class="adv">
+                  <strong>代付模式介绍</strong>
+                  <p>满足您的客户自主管理产品需求，使用中问题可直接发起工单，快速解决<br>
+                    流程：建立绑定关系 - 客户实名制 - 客户发起订单 - 绑定的代理商待支付<br>
+                    你可以再客户管理中管理您绑定的客户或者给客户发起绑定邀请</p>
+                </div>
                 <el-row class="order-num">
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-1 clearfix">
                       <span class="img">
-                        <img src="/static/img/home/img_03.png" alt="" srcset="">
+                        <img src="/agent/static/img/home/img_03.png" alt="" srcset="">
                       </span>
                       <div class="info">
                         <span>客户</span>
@@ -139,7 +144,7 @@
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-2 clearfix">
                       <span class="img">
-                        <img src="/static/img/home/img_04.png" alt="" srcset="">
+                        <img src="/agent/static/img/home/img_04.png" alt="" srcset="">
                       </span>
                       <div class="info">
                         <span>待支付订单</span>
@@ -150,7 +155,7 @@
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-3 clearfix">
                       <span class="img">
-                        <img src="/static/img/home/img_05.png" alt="" srcset="">
+                        <img src="/agent/static/img/home/img_05.png" alt="" srcset="">
                       </span>
                       <div class="info">
                         <span>待支付客户订单</span>
@@ -181,7 +186,7 @@
                       <a href="http://www.xinnet.com/service/zlxz/index.html" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">资料下载</span>
                         <span class="img">
-                          <img src="/static/img/home/img_06.png" alt="" srcset="">
+                          <img src="/agent/static/img/home/img_06.png" alt="" srcset="">
                         </span>
                       </a>
                     </div>
@@ -191,7 +196,7 @@
                       <a href="http://www.xinnet.com/service/xssl/index.html" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">新手指南</span>
                         <span class="img">
-                          <img src="/static/img/home/img_07.png" alt="" srcset="">
+                          <img src="/agent/static/img/home/img_07.png" alt="" srcset="">
                         </span>
                       </a>
                     </div>
@@ -201,7 +206,7 @@
                       <a href="http://www.xinnet.com/service/cjwt/index.html" target="_blank" rel="noopener noreferrer" class="clearfix">
                         <span class="text">常见问题</span>
                         <span class="img">
-                          <img src="/static/img/home/img_08.png" alt="" srcset="">
+                          <img src="/agent/static/img/home/img_08.png" alt="" srcset="">
                         </span>
                       </a>
                     </div>
@@ -251,7 +256,7 @@
               <el-col :span="12">
                 <div class="grid-content grid-content-msg-2">
                   <em>{{ msgWorkorder.num }}</em>
-                  <p>我的工单</p>
+                  <p>工单消息</p>
                 </div>
               </el-col>
               <!-- <el-col :span="8">
@@ -269,10 +274,15 @@
                 <router-link to="/agent-notice/index">查看公告</router-link>
               </div>
               <div slot="cont">
-                <ul class="el-list">
+                <ul v-if="list.length > 0" class="el-list">
                   <li v-for="(item, i) in list" :key="i" class="el-list-item">
                     <strong class="tit"><a :href="'#/agent-detail/index/'+item.id" target="_blank">{{ item.title }}<span v-if="item.placedTop === '1'" class="icon-important" /></a></strong>
                     <p class="desc">{{ item.updateTime }}</p>
+                  </li>
+                </ul>
+                <ul v-else class="el-list">
+                  <li class="el-list-item">
+                    暂无公告
                   </li>
                 </ul>
               </div>
@@ -420,6 +430,20 @@ export default {
     this.queryTradeOrderNum()
   },
   methods: {
+    queryDomains() {
+      if (this.queryDomain !== '') {
+        window.open(`http://www.xinnet.com/domain/domainQueryResult.html?prefix=${this.queryDomain}`)
+      } else {
+        this.$message.error('请输入您想注册的域名，如：xinnet')
+      }
+    },
+    queryBrands() {
+      if (this.queryBrand !== '') {
+        window.open(`http://www.xinnet.com/trademark/trademarkQueryResult.html?tmName=${this.queryBrand}`)
+      } else {
+        this.$message.error('输入您想检索的商标名称、申请号、申请人名称')
+      }
+    },
     handleClose() {
       this.dialogVisible = false
     },
@@ -606,9 +630,6 @@ export default {
         color: #7295d9;
       }
     }
-  }
-  .main-cont{
-    padding-top: 20px;
   }
   .grid-content-1{
     width: calc(100% - 320px);
@@ -830,8 +851,21 @@ export default {
       }
       .adv{
         height: 170px;
-        background: #6a98ed url('/static/img/home/img_15.jpg') no-repeat 100% 0;
+        background: #6a98ed url('/agent/static/img/home/img_15.jpg') no-repeat 100% 0;
         margin-bottom: 25px;
+        strong{
+          display: block;
+          font-size: 23px;
+          color: #fff;
+          padding: 40px 0 0 40px;
+          font-weight: normal;
+        }
+        p{
+          color: #fff;
+          font-size: 14px;
+          line-height: 24px;
+          padding: 0 0 0 40px;
+        }
       }
       .order-num .img{
         width: 51px;
@@ -918,7 +952,7 @@ export default {
     .grid-content{
     }
     .carousel{
-      background: url('/static/img/home/img_14.png') no-repeat;
+      background: url('/agent/static/img/home/img_14.png') no-repeat;
       position: relative;
       .el-drawer__wrapper{
         position: absolute;
@@ -979,7 +1013,7 @@ export default {
         display: inline-block;
         width: 16px;
         height: 13px;
-        background: url("/static/img/icon_01.png") no-repeat;
+        background: url("/agent/static/img/icon_01.png") no-repeat;
       }
     }
     .login-list{
