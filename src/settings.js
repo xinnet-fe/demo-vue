@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2020-09-16 10:25:11
- * @LastEditTime: 2020-09-17 11:07:12
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\settings.js
- */
 const webpackConfig = require('./webpackConfig.js')
 
 module.exports = {
@@ -53,7 +45,7 @@ module.exports = {
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: 'Hxzd5RCZwJM9bjM3EWL',
+  xbtoken: '6b9NAg3rxY3N3XRZbX2',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 

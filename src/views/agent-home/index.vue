@@ -51,14 +51,16 @@
                   <div class="info">
                     <div>我的余额：<em>￥ {{ account.totalBalance }}</em></div>
                     <p>
-                      <a href="http://" target="_blank" rel="noopener noreferrer">消费明细</a>
+                      <a href="http://www.xinnet.com/views/uc/html/financial/deal.html" target="_blank" rel="noopener noreferrer">消费明细</a>
                       <span class="line">|</span>
-                      <a href="http://" target="_blank" rel="noopener noreferrer">冻结资金</a>
+                      <a href="http://www.xinnet.com/views/uc/html/financial/freeze_detail.html" target="_blank" rel="noopener noreferrer">冻结资金</a>
                     </p>
                   </div>
                 </td>
                 <td class="col3">
-                  <el-button type="primary" size="mini">充值</el-button>
+                  <a href="http://console.xinnet.com/pageFinance.html#fina/recharge/recharge" target="_blank" rel="noopener noreferrer">
+                    <el-button type="primary" size="mini">充值</el-button>
+                  </a>
                 </td>
               </tr>
             </table>
@@ -102,11 +104,8 @@
                           <i class="iconfont icon-font01" />
                         </span>
                         <div class="info">
-                          <span>{{ item.productName }}</span>
-                          <em>{{ item.productNum }}</em>
-                          <div class="btns">
-                            <a :href="item.productUrl" target="_blank" class="buy">购买</a>
-                          </div>
+                          <em><a :href="item.productUrl" target="_blank" rel="noopener noreferrer">{{ item.productName }} {{ item.productNum }}</a></em>
+                          <span>7天内到期{{ item.expiredProductNum }}个</span>
                         </div>
                       </div>
                     </el-col>
@@ -239,7 +238,7 @@
             >
               <ul v-if="msgWorkorder.list && msgWorkorder.list.result" class="el-list el-list-style2">
                 <li v-for="(item, i) in msgWorkorder.list.result" :key="i" class="el-list-item clearfix">
-                  <strong class="tit"><a>{{ item[1] }}</a></strong>
+                  <strong class="tit"><a :href="'http://www.xinnet.com/helpcenter/opennotify.do?method=view&id='+item[0]" target="_blank">{{ item[1] }}</a></strong>
                   <p class="desc">{{ item[3].time | parseTime('{y}-{m}-{d}') }}</p>
                 </li>
               </ul>
@@ -249,14 +248,16 @@
             <el-row>
               <el-col :span="12" style="cursor: pointer">
                 <div class="grid-content grid-content-msg-1" @click="handleShowMsg()">
-                  <em>{{ msgWorkorder.list && msgWorkorder.list.totalCount }}</em>
+                  <em style="color: #f34649;font-size: 16px">{{ msgWorkorder.list && msgWorkorder.list.totalCount }}</em>
                   <p>未读消息</p>
                 </div>
               </el-col>
               <el-col :span="12">
                 <div class="grid-content grid-content-msg-2">
-                  <em>{{ msgWorkorder.num }}</em>
-                  <p>工单消息</p>
+                  <a href="http://www.xinnet.com/views/uc/html/service/my_service.html" target="_blank" rel="noopener noreferrer">
+                    <em>{{ msgWorkorder.num }}</em>
+                    <p>工单消息</p>
+                  </a>
                 </div>
               </el-col>
               <!-- <el-col :span="8">
@@ -618,7 +619,10 @@ export default {
     }
   }
   .el-alert-top{
+    width: 100%;
     background: #fff7da!important;
+    margin: -20px -20px 20px -20px;
+    box-sizing: content-box;
     .el-alert__icon{
       color: #f46a68;
     }
@@ -822,7 +826,7 @@ export default {
           color: #333;
           font-weight: 600;
           font-style: normal;
-          margin-bottom: 10px;
+          padding: 10px 0;
         }
         .btns{
           font-size: 12px;
