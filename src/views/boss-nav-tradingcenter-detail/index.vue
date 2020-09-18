@@ -1,5 +1,6 @@
 <template>
-  <div class="app-container">
+  <div>
+    <div class="btnBack"><a href="javascript:;" @click="handleBack"> &lt; 返回</a></div>
     <div class="contop">
       <h2 class="tit">
         <span />
@@ -160,9 +161,10 @@
 
 <script>
 // import { orderDetail } from '@/api/demos/order'
-
 export default {
   name: 'ComplexTable',
+  components: {
+  },
   filters: {
   },
   data() {
@@ -173,14 +175,15 @@ export default {
     }
   },
   created() {
-    const str = this.$route.params.id
-    const arr = {}
-    arr.buyOrderCode = str
-    this.getList(arr, 'buyOrderCode=' + str)
+    // const str = this.$route.query.id
+    // const arr = {}
+    // arr.buyOrderCode = str
+    // this.getList(arr, 'buyOrderCode=' + str)
+    this.getList()
   },
   methods: {
-    getList(id, data) {
-      this.$store.dispatch('tradeOrder/orderDetail', { id: id }).then(res => {
+    getList() {
+      this.$store.dispatch('tradeOrder/orderDetail', { 'buyOrderCode': this.$route.query.id }).then(res => {
         if (!res.data.orderHolder) {
           res.data.orderHolder = res.data.agentCode
         }
@@ -450,13 +453,20 @@ export default {
       // var seconds = ((mss % (1000 * 60)) / 1000).toFixed(0)
       // return days + " 天 " + hours + " 时 " + minutes + " 分 " + seconds + " 秒 "
       return days + ' 天 ' + hours + ' 时 ' + minutes + ' 分 '
+    },
+    handleBack() {
+      this.$router.push({ path: '/boss-nav-tradingcenter/boss-nav-tradingcenter-ordermanagement' })
     }
   }
 }
 </script>
 <style scoped>
-  .app-container {
+  .btnBack{
     background: #f3f7fa;
+    height: 50px;
+    line-height: 50px;
+    font-size: 14px;
+    padding: 0 20px;
   }
   .contop, .contable {
     background: #fff;

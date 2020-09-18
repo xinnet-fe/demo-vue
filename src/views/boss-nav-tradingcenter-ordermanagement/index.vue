@@ -24,13 +24,14 @@
         </el-select>
       </el-form-item>
       <el-form-item label="订单状态">
-        <el-select v-model="listQuery.orderStatus" placeholder="请选择订单状态" clearable style="margin-right: 10px;" class="filter-item">
+        <el-select v-model="listQuery.orderStatus" placeholder="请选择订单状态" clearable>
           <el-option v-for="item in orderStatus" :key="item.num" :label="item.name" :value="item.num" />
         </el-select>
       </el-form-item>
-      <el-form-item label="订单">
-        <el-radio v-model="listQuery.orderType" label="HY" @change="changeOrderType" @keyup.enter.native="handleFilter">会员订单</el-radio>
-        <el-radio v-model="listQuery.orderType" label="DL" @change="changeOrderType" @keyup.enter.native="handleFilter">代理订单</el-radio>
+      <el-form-item label="账号类型">
+        <el-select v-model="listQuery.orderType" placeholder="请选择" clearable>
+          <el-option v-for="item in orderTypeList" :key="item.num" :label="item.name" :value="item.num" />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="medium" @click="handleFilter">查询</el-button>
@@ -128,6 +129,7 @@
       <el-table-column label="操作" align="center" width="150" fixed="right">
         <template slot-scope="{row}">
           <el-button type="text" size="small" @click="orderLink(row.buyOrderCode)">查看订单</el-button>
+          <el-button type="text" size="small" @click="orderModify(row)">订单改价</el-button>
           <!-- <router-link :to="row.link" class="link-type">
             <span style="color:#0069ff;cursor:pointer;">查看订单{{ row.buyOrderCode }}</span>
           </router-link> -->
@@ -143,6 +145,21 @@
         <el-button type="primary" @click="dialogLogout = false">确定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="订单改价" :visible.sync="dialogOrderPriceShow" width="500px">
+      <el-form ref="form" :model="form" :rules="rules2" label-width="120px">
+        <el-form-item label="订单原价:">
+          ￥ {{ row.totalTradingPrices }}
+        </el-form-item>
+        <el-form-item label="修改价格:" prop="price">
+          <el-input v-model="form.price" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogOrderPriceShow = false">取 消</el-button>
+        <el-button type="primary" @click="dialogOrderPriceShow = false">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -152,7 +169,7 @@ import { mapState } from 'vuex'
 import waves from '@/directive/demos/waves' // waves directive
 import $ from 'jquery'
 import Pagination from '@/components/demos/Pagination' // secondary package based on el-pagination
-
+import isMoney from '@/utils/isMoney'
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
   { key: 'US', display_name: 'USA' },
@@ -184,6 +201,11 @@ export default {
   },
   data() {
     return {
+      row: {},
+      dialogOrderPriceShow: false,
+      form: {
+        price: 0
+      },
       resetListquery: {},
       shows: '',
       orderhao: '',
@@ -239,6 +261,10 @@ export default {
         { name: '增值服务', num: 'I' },
         { name: '服务市场', num: 'S_MART' }
       ],
+      orderTypeList: [
+        { name: '会员订单', num: 'HY' },
+        { name: '代理订单', num: 'DL' }
+      ],
       calendarTypeOptions,
       temp: {
         businessType: undefined,
@@ -264,6 +290,12 @@ export default {
         // column: [{ required: true, message: '请选择文章所属栏目', trigger: 'change' }],
         email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
         phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }]
+      },
+      rules2: {
+        price: [
+          { required: true, message: '请输入价格', trigger: 'blur' },
+          { validator: isMoney, message: '格式错误', trigger: 'blur' }
+        ]
       },
       categorylist: [],
       newsbanWords: '',
@@ -328,57 +360,16 @@ export default {
       }).catch(error => {
         console.log(error)
       })
-      // orderList(this.listQuery, str).then(res => {
-      //   res.data.list.forEach(row => {
-      //     const supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
-      //     if (supProductClass === 'D') {
-      //       row.supProductClassa = '域名'
-      //     } else if (supProductClass === 'V') {
-      //       row.supProductClassa = '虚机'
-      //     } else if (supProductClass === 'C') {
-      //       row.supProductClassa = '云计算'
-      //     } else if (supProductClass === 'M') {
-      //       row.supProductClassa = '邮局'
-      //     } else if (supProductClass === 'W') {
-      //       row.supProductClassa = '建站'
-      //     } else if (supProductClass === 'A') {
-      //       row.supProductClassa = '应用'
-      //     } else if (supProductClass === 'S') {
-      //       row.supProductClassa = '服务产品'
-      //     } else if (supProductClass === 'I') {
-      //       row.supProductClassa = '增值服务'
-      //     } else if (supProductClass === 'MART') {
-      //       row.supProductClassa = '服务市场'
-      //     }
-      //     row.businessTypes = row.businessType === 'N' ? '新开' : row.businessType === 'R' ? '续费' : row.businessType === 'U' ? '升级' : ''
-      //     row.goodsPaytypes = row.goodsPaytype === '01' ? '包年包月' : '次'
-      //     if (row.orderStatus === '1') {
-      //       row.orderStatusa = '待支付'
-      //     } else if (row.orderStatus === '2') {
-      //       row.orderStatusa = '支付中'
-      //     } else if (row.orderStatus === '3') {
-      //       row.orderStatusa = '已取消'
-      //     } else if (row.orderStatus === '4') {
-      //       row.orderStatusa = '已支付'
-      //     } else if (row.orderStatus === '5') {
-      //       row.orderStatusa = '支付失败'
-      //     }
-      //     row.link = '/boss-nav-tradingcenter-orderdetail/' + row.buyOrderCode
-      //     row.totalOriginalPrices = this.shuzi(row.totalOriginalPrice.toFixed(2))
-      //     row.totalTradingPrices = this.shuzi(row.totalTradingPrice.toFixed(2))
-      //   })
-      //   this.list = res.data.list
-      //   this.total = res.data.total
-      //   setTimeout(() => {
-      //     this.listLoading = false
-      //   }, 1.5 * 1000)
-      // })
     },
     orderLink(id) {
       this.$router.push({
-        path: '/boss-nav-tradingcenter-orderdetail/',
-        params: { id: id }
+        path: '/boss-nav-tradingcenter/boss-nav-tradingcenter-detail/',
+        query: { id: id }
       })
+    },
+    orderModify(row) {
+      this.row = row
+      this.dialogOrderPriceShow = true
     },
     shuzi(num) {
       var reg = /\d(?=(?:\d{3})+\b)/g
@@ -413,21 +404,23 @@ export default {
     },
     handleDownload() {
       // const str = this.getUrlparam(this.listQuery)
-      // orderList(this.listQuery, str).then(res => {
-      //   if (res.data.list.length) {
-      //     if (res.data.total < 600000) {
-      //       const str = this.getUrlparam(this.listQuery)
+      this.$store.dispatch('tradeOrder/orderList', this.listQuery).then(res => {
+        if (res.data.list.length) {
+          if (res.data.total < 600000) {
+            const str = this.getUrlparam(this.listQuery)
 
-      //       window.open(window.location.origin + '/boss/tradeOrder/exportExecl?' + str)
-      //     } else {
-      //       this.dialogLogout = true
-      //       this.shows = 'len'
-      //     }
-      //   } else {
-      //     this.dialogLogout = true
-      //     this.shows = 'length'
-      //   }
-      // })
+            window.open(window.location.origin + '/boss/tradeOrder/exportExecl?' + str)
+          } else {
+            this.dialogLogout = true
+            this.shows = 'len'
+          }
+        } else {
+          this.dialogLogout = true
+          this.shows = 'length'
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     },
     getUrlparam(obj) {
       let c = ''

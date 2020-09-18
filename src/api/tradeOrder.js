@@ -9,18 +9,18 @@ export function orderList(data) {
 }
 
 // 导出首页订单
-export function exportExecl(param) {
+export function exportExecl(data) {
   return request({
-    url: '/tradeOrder/exportExecl',
+    url: '/boss/tradeOrder/exportExecl',
     method: 'get',
-    params: param
+    params: data
   })
 }
 
 // 获取详情列表
 export function orderDetail(data) {
   return request({
-    url: '/tradeOrder/findTradeOrderDetail',
+    url: '/boss/tradeOrder/findTradeOrderDetail',
     method: 'POST',
     params: data
   })
