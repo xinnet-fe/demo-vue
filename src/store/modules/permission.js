@@ -97,7 +97,8 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       name: upperFirst(camelCase(name)),
       meta: {
         title: o.text
-      }
+      },
+      hidden: o.hidden ? o.hidden : false
     }
 
     // 非外链且无子路由
