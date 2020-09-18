@@ -8,11 +8,9 @@
 </template>
 
 <script>
-import tabPane from './components/TabPane'
-
 export default {
   name: 'Tab',
-  components: { tabPane },
+  components: {},
   data() {
     return {
       activeName: 'second'
