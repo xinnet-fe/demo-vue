@@ -24,6 +24,10 @@ const defaultProxy = {
     target: 'https://console.xinnet.com',
     changeOrigin: true
   },
+  '/commonpage': {
+    target: 'https://console.xinnet.com',
+    changeOrigin: true
+  },
   '/api': {
     target: 'https://console.xinnet.com',
     changeOrigin: true
