@@ -19,6 +19,14 @@ const defaultProxy = {
   '/portal': {
     target: 'http://119.10.116.247:8082',
     changeOrigin: true
+  },
+  '/employee': {
+    target: 'https://tradeboss.xinnet.com',
+    changeOrigin: true
+  },
+  '/tradeOrder': {
+    target: 'https://tradeboss.xinnet.com',
+    changeOrigin: true
   }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
