@@ -362,6 +362,9 @@ export default {
       this.uploadImageAddress = ''
       this.fileList = []
       delete this.form.id
+      this.$nextTick(() => {
+        this.activeName = 'basis'
+      })
     },
     showTipsModal(row) {
       this.form.id = row.id
@@ -372,7 +375,10 @@ export default {
     },
     beforeClose(done) {
       this.closeModal()
-      done()
+      this.$nextTick(() => {
+        this.activeName = 'basis'
+        done()
+      })
     },
     getList(query = {}) {
       const { name } = this.searchForm

@@ -353,6 +353,9 @@ export default {
       this.oldCode = ''
       this.uploadImageAddress = ''
       this.fileList = []
+      this.$nextTick(() => {
+        this.activeName = 'basis'
+      })
     },
     showTipsModal(row) {
       this.form.id = row.id
@@ -363,7 +366,10 @@ export default {
     },
     beforeClose(done) {
       this.closeModal()
-      done()
+      this.$nextTick(() => {
+        this.activeName = 'basis'
+        done()
+      })
     },
     getList(query = {}) {
       const { name, status } = this.searchForm
