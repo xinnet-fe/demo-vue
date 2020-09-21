@@ -22,11 +22,18 @@
 // 左侧导航样式 重置
 
 .sidebar-logo-container{
-    height: 50px;
-    background: #3a3a3a!important;
+    height: 100px!important;
+    border-top: 50px solid #3a3a3a;
+    background: #fff!important;
+    padding-left: 20px;
+    border-bottom: 1px solid #ececec;
 }
 .sidebar-logo-container *{
-    display: none!important;
+    // display: none!important;
+}
+.sidebar-logo-container .sidebar-title{
+    color: #333!important;
+    font-weight: normal!important;
 }
 #app .sidebar-container{
     background: #fff;
