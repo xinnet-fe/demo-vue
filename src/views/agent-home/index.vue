@@ -98,10 +98,10 @@
                 </el-tabs>
                 <div class="prod-list">
                   <el-row :gutter="20">
-                    <el-col v-for="(item, i) in busList" :key="i" :span="6">
+                    <el-col v-for="(item, i) in busList" v-show="item.productNum !== 0" :key="i" :span="6">
                       <div class="grid-content grid-content-prod-1 clearfix">
-                        <span class="img">
-                          <i class="iconfont icon-font01" />
+                        <span class="img" v-html="getImgByNavi(item.productName)">
+                          <!-- <i class="iconfont icon-font01" /> -->
                         </span>
                         <div class="info">
                           <em><a :href="item.productUrl" target="_blank" rel="noopener noreferrer">{{ item.productName }} {{ item.productNum }}</a></em>
@@ -400,7 +400,8 @@ export default {
       user: state => state.usercommon.user,
       usersafe: state => state.usercommon.usersafe,
       gradeByAgent: state => state.userinfo.gradeByAgent,
-      account: state => state.usercommon.account
+      account: state => state.usercommon.account,
+      menuData: state => state.userinfo.commonMenus.menuData
     })
   },
   beforeCreate() {
@@ -426,9 +427,13 @@ export default {
     })
     this.getDlCustomer()
     this.queryIpAddress()
-    this.queryMyServices()
     this.queryMsgWorkorder()
     this.queryTradeOrderNum()
+    setTimeout(() => {
+      const menus = window.XCS_Utils.getState()
+      this.$store.commit('userinfo/SET_COMMON_MENUS', menus)
+      this.queryMyServices()
+    }, 1000)
   },
   methods: {
     queryDomains() {
@@ -447,6 +452,21 @@ export default {
     },
     handleClose() {
       this.dialogVisible = false
+    },
+    getImgByNavi(str) {
+      const ind = this.menuData.findIndex(item => item.text === str)
+      if (ind === -1) {
+        return '<i class="iconfont icon-font10"></i>'
+      } else {
+        const obj = this.menuData[ind]
+        // const text = obj.text
+        const icon = obj.icon
+        if (icon === undefined || icon === '' || icon === null) {
+          return '<i class="iconfont icon-font10"></i>'
+        } else {
+          return '<i class="' + icon + '"></i>'
+        }
+      }
     },
     getNotice() {
       const query = {
@@ -509,6 +529,7 @@ export default {
       })
     },
     queryMyServices() {
+      // alert(JSON.stringify(this.menuData))
       this.busType.map((v) => {
         this.$store.dispatch('usercommon/queryMyServices', { busType: v }).then(res => {
           console.log(res.success)

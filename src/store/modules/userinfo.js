@@ -4,6 +4,9 @@ import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
   menus: [],
+  commonMenus: {
+    menuData: []
+  },
   gradeByAgent: {},
   form: {
     oldpassword: '',
@@ -19,6 +22,9 @@ const mutations = {
   },
   SET_MENUS: (state, menus) => {
     state.menus = menus
+  },
+  SET_COMMON_MENUS: (state, menus) => {
+    state.commonMenus = menus
   },
   SET_PWD: (state, payload) => {
     state.form.oldpassword = payload.originalPwd
