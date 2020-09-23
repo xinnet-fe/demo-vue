@@ -389,7 +389,7 @@ export default {
       content: '',
       dlCustomerNum: 0,
       ipAddress: [],
-      busType: ['D', 'VX', 'VC', 'M', 'W', 'N'],
+      busType: ['D', 'VX', 'VC', 'M', 'W', 'NJ', 'NP'],
       busList: [],
       msgWorkorder: {},
       tradeOrderNum: {}
