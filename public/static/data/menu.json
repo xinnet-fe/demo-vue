@@ -12,21 +12,27 @@
             "icon": "",
             "text": "代理申请",
             "url": "",
-            "target": "tab"
+            "target": "tab",
+            "hidden": false,
+            "param": ""
         }, {
             "code": "info",
             "parentCode": "agent-manage",
             "icon": "",
             "text": "代理商信息",
             "url": "",
-            "target": "tab"
+            "target": "tab",
+            "hidden": false,
+            "param": ""
         },{
             "code": "level",
             "parentCode": "agent-manage",
             "icon": "",
             "text": "级别管理",
             "url": "",
-            "target": "tab"
+            "target": "tab",
+            "hidden": false,
+            "param": ""
         },{
             "code": "client",
             "parentCode": "agent-manage",

@@ -8,10 +8,9 @@
 </template>
 
 <script>
-
 export default {
   name: 'Tab',
-  components: { },
+  components: {},
   data() {
     return {
       activeName: 'second'

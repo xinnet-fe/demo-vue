@@ -1,7 +1,7 @@
 <template>
   <div class="demo-container">
     <h3>行内表单</h3>
-    <el-form :inline="true" :model="formInline">
+    <el-form :inline="true">
       <el-form-item label="文本框">
         <el-input v-model="form.name" />
       </el-form-item>
@@ -157,6 +157,8 @@ export default {
     },
     onReset() {
       console.log('reset!')
+    },
+    handleChange() {
     }
   }
 }

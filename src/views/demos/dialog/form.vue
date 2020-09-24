@@ -197,6 +197,7 @@ export default {
     }
   },
   methods: {
+    handleChange() {},
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(_ => {
