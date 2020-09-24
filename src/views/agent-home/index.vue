@@ -295,7 +295,7 @@
             <Box type="2">
               <div slot="tit-left">最近登录</div>
               <div slot="tit-right">
-                <a href="http://" target="_blank" rel="noopener noreferrer">安全设置</a>
+                <a href="https://console.xinnet.com/hy/index.html#/safe" target="_blank" rel="noopener noreferrer">安全设置</a>
               </div>
               <div slot="cont">
                 <ul class="el-list el-list-style2">
