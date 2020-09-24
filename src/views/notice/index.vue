@@ -37,7 +37,7 @@
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch">查 询</el-button>
-        <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
+        <el-button size="medium" @click="resetForm">重 置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -130,6 +130,7 @@
 import { mapActions, mapState } from 'vuex'
 import DialogNoticeForm from './form'
 import Pagination from '@/components/Pagination'
+import clearFormDate from '@/utils/clearFormData'
 export default {
   name: 'AgentManageApply',
   components: {
@@ -263,9 +264,7 @@ export default {
       })
     },
     resetForm() {
-      const { form } = this.$refs
-      form.resetFields()
-      form.clearValidate('form')
+      clearFormDate(this.form)
     }
   }
 }

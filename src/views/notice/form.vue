@@ -285,10 +285,10 @@ export default {
     },
     beforeAvatarUpload(file) {
       const type = 'image/jpeg,image/jpg'
-      const isImg = type.indexOf(file.type)
+      const isImg = type.indexOf(file.type) >= 0
       const isLt1M = file.size < 500000
 
-      if (isImg < 0) {
+      if (!isImg) {
         this.$message.error('上传头像格式错误!')
       }
       if (!isLt1M) {

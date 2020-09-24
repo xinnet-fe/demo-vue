@@ -37,7 +37,7 @@
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch">查 询</el-button>
-        <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
+        <el-button size="medium" @click="resetForm">重 置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -108,7 +108,7 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import Pagination from '@/components/Pagination'
-
+import clearFormDate from '@/utils/clearFormData'
 export default {
   name: 'AgentManageClient',
   components: {
@@ -190,9 +190,7 @@ export default {
       })
     },
     resetForm() {
-      const { form } = this.$refs
-      form.resetFields()
-      form.clearValidate('form')
+      clearFormDate(this.form)
     },
     unbind(row) {
       this.unBund({ agentCode: row.agentCode, customerCode: row.customerCode }).then(res => {
