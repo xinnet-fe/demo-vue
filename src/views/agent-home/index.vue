@@ -18,23 +18,25 @@
                       <span class="safe">
                         <i v-if="user.loginProtect === 'N'" class="icon">
                           <el-tooltip class="item" effect="dark" content="登录保护未开启" placement="top">
-                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_09.png" alt="" srcset=""></a>
+                            <a href="https://console.xinnet.com/hy/index.html#/safe" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_09.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                         <i v-if="user.loginProtect === 'Y'" class="icon">
                           <el-tooltip class="item" effect="dark" content="登录保护已开启" placement="top">
-                            <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_10.png" alt="" srcset=""></a>
+                            <a href="https://console.xinnet.com/hy/index.html#/safe" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_10.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
-                        <!-- <i v-if="user.agentType === 'N'" class="icon">
-                          <img src="/agent/static/img/home/img_11.png" alt="" srcset="">
-                        </i> -->
-                        <i v-if="user.agentType === 'P'" class="icon">
+                        <i v-if="usersafe.userInfoAuth === 'N'" class="icon">
+                          <el-tooltip class="item" effect="dark" content="未认证" placement="top">
+                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_11.png" alt="" srcset=""></a>
+                          </el-tooltip>
+                        </i>
+                        <i v-if="usersafe.userInfoAuth === 'Y' && user.agentType === 'P'" class="icon">
                           <el-tooltip class="item" effect="dark" content="已认证" placement="top">
                             <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_12.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
-                        <i v-if="user.agentType === 'C'" class="icon">
+                        <i v-if="usersafe.userInfoAuth === 'Y' && user.agentType === 'C'" class="icon">
                           <el-tooltip class="item" effect="dark" content="已认证" placement="top">
                             <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_13.png" alt="" srcset=""></a>
                           </el-tooltip>
@@ -389,7 +391,7 @@ export default {
       content: '',
       dlCustomerNum: 0,
       ipAddress: [],
-      busType: ['D', 'VX', 'VC', 'M', 'W', 'NJ', 'NP'],
+      busType: ['D', 'VX', 'VC', 'M', 'W', 'NJ', 'NP', 'DOP', 'DCE', 'DCT'],
       busList: [],
       msgWorkorder: {},
       tradeOrderNum: {}
