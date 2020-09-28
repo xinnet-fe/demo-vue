@@ -55,6 +55,7 @@
             "icon": "",
             "text": "账单流水查询",
             "url": "",
+            "hidden": true,
             "target": "tab"
         },
         {
@@ -63,6 +64,7 @@
             "icon": "",
             "text": "代理消耗查询",
             "url": "",
+            "hidden": true,
             "target": "tab"
         }]
     }

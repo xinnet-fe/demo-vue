@@ -5,17 +5,17 @@
         <el-input v-model="form.title" :maxlength="50" />
       </el-form-item>
       <el-form-item label="类型" prop="preType">
-        <el-select v-model="form.preType" placeholder="请选择活动区域">
+        <el-select v-model="form.preType" placeholder="请选择类型">
           <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="标签" prop="label">
-        <el-select v-model="form.label" placeholder="请选择活动区域">
+        <el-select v-model="form.label" placeholder="请选择标签">
           <el-option v-for="item in tagList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="发布者" prop="publisher">
-        <el-select v-model="form.publisher" placeholder="请选择活动区域">
+        <el-select v-model="form.publisher" placeholder="请选择发布者">
           <el-option v-for="item in authorList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -151,13 +151,13 @@ export default {
           { required: true, message: '请填写！', trigger: 'blur' }
         ],
         preType: [
-          { required: true, message: '请选择！', trigger: 'change' }
+          { required: true, message: '请选择类型！', trigger: 'change' }
         ],
         label: [
-          { required: true, message: '请选择！', trigger: 'change' }
+          { required: true, message: '请选择标签！', trigger: 'change' }
         ],
         publisher: [
-          { required: true, message: '请选择！', trigger: 'change' }
+          { required: true, message: '请选择发布者！', trigger: 'change' }
         ],
         content: [
           { required: true, message: '请填写！', trigger: 'change' }
