@@ -11,34 +11,34 @@
               <tr>
                 <td class="col1">
                   <span class="img">
-                    <a href="http://" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_01.png" alt="" srcset=""></a>
+                    <a href="https://console.xinnet.com/hy/index.html#/safe" rel="noopener noreferrer"><img src="/agent/static/img/home/img_01.png" alt="" srcset=""></a>
                   </span>
                   <div class="info">
                     <div style="font-weight:bold">{{ user.agentCode }}
                       <span class="safe">
                         <i v-if="user.loginProtect === 'N'" class="icon">
                           <el-tooltip class="item" effect="dark" content="登录保护未开启" placement="top">
-                            <a href="https://console.xinnet.com/hy/index.html#/safe" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_09.png" alt="" srcset=""></a>
+                            <a href="https://console.xinnet.com/hy/index.html#/safe" rel="noopener noreferrer"><img src="/agent/static/img/home/img_09.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                         <i v-if="user.loginProtect === 'Y'" class="icon">
                           <el-tooltip class="item" effect="dark" content="登录保护已开启" placement="top">
-                            <a href="https://console.xinnet.com/hy/index.html#/safe" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_10.png" alt="" srcset=""></a>
+                            <a href="https://console.xinnet.com/hy/index.html#/safe" rel="noopener noreferrer"><img src="/agent/static/img/home/img_10.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                         <i v-if="usersafe.userInfoAuth === 'N'" class="icon">
                           <el-tooltip class="item" effect="dark" content="未认证" placement="top">
-                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_11.png" alt="" srcset=""></a>
+                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" rel="noopener noreferrer"><img src="/agent/static/img/home/img_11.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                         <i v-if="usersafe.userInfoAuth === 'Y' && user.agentType === 'P'" class="icon">
                           <el-tooltip class="item" effect="dark" content="已认证" placement="top">
-                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_12.png" alt="" srcset=""></a>
+                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" rel="noopener noreferrer"><img src="/agent/static/img/home/img_12.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                         <i v-if="usersafe.userInfoAuth === 'Y' && user.agentType === 'C'" class="icon">
                           <el-tooltip class="item" effect="dark" content="已认证" placement="top">
-                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer"><img src="/agent/static/img/home/img_13.png" alt="" srcset=""></a>
+                            <a href="http://console.xinnet.com/pageAccount.html#acct/aut/def" rel="noopener noreferrer"><img src="/agent/static/img/home/img_13.png" alt="" srcset=""></a>
                           </el-tooltip>
                         </i>
                       </span>
@@ -53,14 +53,14 @@
                   <div class="info">
                     <div>我的余额：<em>￥ {{ account.totalBalance }}</em></div>
                     <p>
-                      <a href="http://www.xinnet.com/views/uc/html/financial/deal.html" target="_blank" rel="noopener noreferrer">消费明细</a>
+                      <a href="http://www.xinnet.com/views/uc/html/financial/deal.html" rel="noopener noreferrer">消费明细</a>
                       <span class="line">|</span>
-                      <a href="http://www.xinnet.com/views/uc/html/financial/freeze_detail.html" target="_blank" rel="noopener noreferrer">冻结资金</a>
+                      <a href="http://www.xinnet.com/views/uc/html/financial/freeze_detail.html" rel="noopener noreferrer">冻结资金</a>
                     </p>
                   </div>
                 </td>
                 <td class="col3">
-                  <a href="http://console.xinnet.com/pageFinance.html#fina/recharge/recharge" target="_blank" rel="noopener noreferrer">
+                  <a href="http://console.xinnet.com/pageFinance.html#fina/recharge/recharge" rel="noopener noreferrer">
                     <el-button type="primary" size="mini">充值</el-button>
                   </a>
                 </td>
@@ -99,7 +99,7 @@
                   </el-tab-pane>
                 </el-tabs>
                 <div class="prod-list">
-                  <el-row :gutter="20">
+                  <el-row :gutter="20" :style="(!showAll ? 'height: 78px' : '')">
                     <el-col v-for="(item, i) in busList" v-show="item.productNum !== 0" :key="i" :span="6">
                       <div class="grid-content grid-content-prod-1 clearfix">
                         <span class="img" v-html="getImgByNavi(item.productName)">
@@ -112,6 +112,10 @@
                       </div>
                     </el-col>
                   </el-row>
+                  <div class="btns" @click="handleToggleShow">
+                    <i v-if="!showAll" class="el-icon-arrow-down" />
+                    <i v-else class="el-icon-arrow-up" />
+                  </div>
                 </div>
               </div>
             </Box>
@@ -301,7 +305,7 @@
                 <ul class="el-list el-list-style2">
                   <li v-for="(item, i) in ipAddress" :key="i" class="el-list-item clearfix">
                     <strong class="tit"><a>{{ item.ipAddress }}<br>{{ item.area }}</a></strong>
-                    <p class="desc">{{ item.updateTime }}</p>
+                    <p class="desc">{{ item.loginCreateTime }}</p>
                   </li>
                 </ul>
               </div>
@@ -394,7 +398,8 @@ export default {
       busType: ['D', 'VX', 'VC', 'M', 'W', 'NJ', 'NP', 'DOP', 'DCE', 'DCT'],
       busList: [],
       msgWorkorder: {},
-      tradeOrderNum: {}
+      tradeOrderNum: {},
+      showAll: false
     }
   },
   computed: {
@@ -594,6 +599,9 @@ export default {
     },
     handleCloseMsg() {
       this.drawerMsg = false
+    },
+    handleToggleShow() {
+      this.showAll = !this.showAll
     }
   }
 }
@@ -737,6 +745,9 @@ export default {
     }
     .resource-list{
       margin-bottom: 20px;
+      .box-cont{
+        padding-bottom: 0px;
+      }
       .domain-query{
         .el-tabs__nav{
           border-radius: 0px!important;
@@ -801,16 +812,27 @@ export default {
 
       .prod-list{
         border-top: 1px solid #f5f5f5;
-
+        overflow: hidden;
         padding: 20px 10px 0 10px;
         .el-row{
-          max-height: 150px;
-          margin-left: -20px!important;
-          // margin-right: -20px!important;
-          overflow: auto;
+          // height: 78px;
+          overflow: hidden;
         }
         .el-col{
           margin: 10px 0;
+        }
+        .btns{
+          text-align: center;
+          line-height: 25px;
+          color: #a9a7a7;
+          margin: 0 auto;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: 1px solid #ededed;
+          transform: translateY(50%);
+          box-shadow: 0 -2px 3px #e6e6e6;
+          cursor: pointer;
         }
       }
       .prod-list .img{
@@ -844,12 +866,15 @@ export default {
         }
         em{
           display: block;
-          font-size: 16px;
+          font-size: 14px;
           line-height: 16px;
           color: #333;
           font-weight: 600;
           font-style: normal;
           padding: 10px 0;
+          white-space:nowrap;
+          overflow:hidden;
+          text-overflow:ellipsis;
         }
         .btns{
           font-size: 12px;

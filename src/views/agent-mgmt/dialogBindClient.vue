@@ -45,10 +45,13 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.loading.effects['userinfo/sendEmail'],
-      user: state => state.userinfo.user
+      user: state => state.usercommon.user
     })
   },
   created() {
+
+  },
+  mounted() {
     this.links = `https://console.xinnet.com/agent/inviteReg.html?agentCode=${this.user.agentCode}`
   },
   methods: {
