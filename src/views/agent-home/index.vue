@@ -106,7 +106,7 @@
                           <!-- <i class="iconfont icon-font01" /> -->
                         </span>
                         <div class="info">
-                          <em><a :href="item.productUrl" target="_blank" rel="noopener noreferrer">{{ item.productName }} {{ item.productNum }}</a></em>
+                          <em><a :href="item.productUrl" rel="noopener noreferrer">{{ item.productName }} {{ item.productNum }}</a></em>
                           <span>7天内到期{{ item.expiredProductNum }}个</span>
                         </div>
                       </div>
@@ -227,7 +227,7 @@
           <div class="carousel">
             <el-carousel trigger="click" height="230px">
               <el-carousel-item v-for="item in listAdvRight" :key="item.id">
-                <a :href="'#/agent-detail/index/'+item.id" target="_blank" rel="noopener noreferrer">
+                <a :href="'#/agent-detail/index/'+item.id" rel="noopener noreferrer">
                   <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="">
                 </a>
               </el-carousel-item>
@@ -260,7 +260,7 @@
               </el-col>
               <el-col :span="12">
                 <div class="grid-content grid-content-msg-2">
-                  <a href="http://www.xinnet.com/views/uc/html/service/my_service.html" target="_blank" rel="noopener noreferrer">
+                  <a href="http://www.xinnet.com/views/uc/html/service/my_service.html" rel="noopener noreferrer">
                     <em>{{ msgWorkorder.num }}</em>
                     <p>工单消息</p>
                   </a>
@@ -283,7 +283,7 @@
               <div slot="cont">
                 <ul v-if="list.length > 0" class="el-list">
                   <li v-for="(item, i) in list" :key="i" class="el-list-item">
-                    <strong class="tit"><a :href="'#/agent-detail/index/'+item.id" target="_blank">{{ item.title }}<span v-if="item.placedTop === '1'" class="icon-important" /></a></strong>
+                    <strong class="tit"><a :href="'#/agent-detail/index/'+item.id">{{ item.title }}<span v-if="item.placedTop === '1'" class="icon-important" /></a></strong>
                     <p class="desc">{{ item.updateTime }}</p>
                   </li>
                 </ul>
@@ -299,7 +299,7 @@
             <Box type="2">
               <div slot="tit-left">最近登录</div>
               <div slot="tit-right">
-                <a href="https://console.xinnet.com/hy/index.html#/safe" target="_blank" rel="noopener noreferrer">安全设置</a>
+                <a href="https://console.xinnet.com/hy/index.html#/safe" rel="noopener noreferrer">安全设置</a>
               </div>
               <div slot="cont">
                 <ul class="el-list el-list-style2">
@@ -319,7 +319,7 @@
       <div class="carousel">
         <el-carousel trigger="click" height="460px">
           <el-carousel-item v-for="item in listAdvPop" :key="item.id">
-            <a :href="'#/agent-detail/index/'+item.id" target="_blank" rel="noopener noreferrer">
+            <a :href="'#/agent-detail/index/'+item.id" rel="noopener noreferrer">
               <img :src="'/agent/api/announce/echoImage?imgUrl='+item.topTitlePath" alt="" srcset="">
             </a>
           </el-carousel-item>

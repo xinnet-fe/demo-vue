@@ -113,7 +113,7 @@
         代理商平台需进行企业实名认证才可使用，请先完成企业实名认证。
       </div>
       <div slot="footer" class="dialog-footer">
-        <a class="el-button el-button--primary el-button--medium" href="http://console.xinnet.com/pageAccount.html#acct/aut/def" target="_blank" rel="noopener noreferrer">去实名</a>
+        <a class="el-button el-button--primary el-button--medium" href="http://console.xinnet.com/pageAccount.html#acct/aut/def" rel="noopener noreferrer">去实名</a>
       </div>
     </el-dialog>
   </div>
