@@ -137,13 +137,16 @@
 .el-dialog__wrapper {
   .el-dialog__footer {
     padding: 0 20px 30px;
-    button {
-      width: 105px;
-      height: 36px;;
-    }
+    // button {
+    //   width: 105px;
+    //   height: 36px;;
+    // }
     .el-button+.el-button {
       margin-left: 5px;
     }
+  }
+  .el-dialog__header{
+    padding-bottom: 0px;
   }
 }
 
