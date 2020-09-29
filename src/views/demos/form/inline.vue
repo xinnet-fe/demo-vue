@@ -84,12 +84,6 @@
 export default {
   data() {
     return {
-<<<<<<< HEAD
-      formInline: {
-        user: '',
-        region: ''
-      }
-=======
       form: {
         value: [],
         value1: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
@@ -165,7 +159,6 @@ export default {
       console.log('reset!')
     },
     handleChange() {
->>>>>>> master
     }
   },
   methods: {
