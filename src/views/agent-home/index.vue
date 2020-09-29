@@ -61,7 +61,7 @@
                 </td>
                 <td class="col3">
                   <a href="http://console.xinnet.com/pageFinance.html#fina/recharge/recharge" rel="noopener noreferrer">
-                    <el-button type="primary" size="mini">充值</el-button>
+                    <el-button type="primary" class="red" size="mini">充值</el-button>
                   </a>
                 </td>
               </tr>
@@ -107,7 +107,7 @@
                         </span>
                         <div class="info">
                           <em><a :href="item.productUrl" rel="noopener noreferrer">{{ item.productName }} {{ item.productNum }}</a></em>
-                          <span>7天内到期{{ item.expiredProductNum }}个</span>
+                          <span v-if="item.expiredProductNum >= 0">7天内到期{{ item.expiredProductNum }}个</span>
                         </div>
                       </div>
                     </el-col>

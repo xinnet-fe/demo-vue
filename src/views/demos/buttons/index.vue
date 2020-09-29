@@ -3,6 +3,7 @@
     <h3>基础状态</h3>
     <el-button>默认按钮</el-button>
     <el-button type="primary">主要按钮</el-button>
+    <el-button type="primary" class="red">主要按钮</el-button>
     <el-button type="success">成功按钮</el-button>
     <el-button type="info">信息按钮</el-button>
     <el-button type="warning">警告按钮</el-button>
@@ -10,6 +11,7 @@
     <h3>禁用状态</h3>
     <el-button disabled>默认按钮</el-button>
     <el-button type="primary" disabled>主要按钮</el-button>
+    <el-button type="primary" class="red" disabled>主要按钮</el-button>
     <el-button type="success" disabled>成功按钮</el-button>
     <el-button type="info" disabled>信息按钮</el-button>
     <el-button type="warning" disabled>警告按钮</el-button>

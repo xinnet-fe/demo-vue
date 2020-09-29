@@ -1,18 +1,46 @@
 .el-button--primary{
+    background: #7395db;
+    border-color: #7395db;
+}
+.el-button--primary:focus,
+.el-button--primary:hover{
+    background-color: #a0b3dc;
+    border-color: #a0b3dc;
+}
+.el-button--primary.is-disabled,
+.el-button--primary.is-disabled:active,
+.el-button--primary.is-disabled:focus,
+.el-button--primary.is-disabled:hover {
+    color: #FFF;
+    background-color: #a0b3dc;
+    border-color: #a0b3dc;
+}
+.el-button--primary.red{
     background: #f34649;
     border-color: #f34649;
 }
-.el-button--primary:hover{
-    background: #f3686a;
-    border-color: #f3686a;
+.el-button--primary.red:focus,
+.el-button--primary.red:hover{
+    background-color: #f37d7f;
+    border-color: #f37d7f;
+}
+.el-button--primary.red.is-disabled,
+.el-button--primary.red.is-disabled:active,
+.el-button--primary.red.is-disabled:focus,
+.el-button--primary.red.is-disabled:hover {
+    color: #FFF;
+    background-color: #f37d7f;
+    border-color: #f37d7f;
 }
 .box-container.type1 .box-tit-left::after,
 .box-container.type2 .box-tit-left::after{
     background: #f34649!important;
 }
-.el-tabs__active-bar,
-.el-pagination.is-background .el-pager li:not(.disabled).active{
+.el-tabs__active-bar{
     background: #f34649!important;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+    background: #7395db!important;
 }
 .el-tabs__item:hover,
 .el-tabs__item.is-active{
