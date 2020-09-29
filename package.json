@@ -107,6 +107,7 @@
     "svg-sprite-loader": "4.1.3",
     "svgo": "1.2.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
+    "vue-kindeditor": "0.4.5",
     "vue-template-compiler": "2.6.10"
   },
   "engines": {
