@@ -5,6 +5,7 @@
         "icon": "",
         "text": "专区首页",
         "url": "",
+        "hidden": true,
         "alwayShow": "false",
         "target": "tab"
     }, {

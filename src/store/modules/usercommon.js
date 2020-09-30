@@ -29,6 +29,15 @@ const actions = {
       api.getUser().then(user => {
         if (!user) {
           reject('please Login again.')
+        } else {
+          const hash = window.location.hash
+          if (user.data.consumerType !== 'DL') {
+            if (hash.indexOf('/agent-home/') >= 0) {
+              window.location.href = 'https://console.xinnet.com/hy/index.html'
+            } else {
+              window.location.href = 'http://xinnet.com/'
+            }
+          }
         }
         commit('SET_USER', user.data)
         setStore('user', user.data)

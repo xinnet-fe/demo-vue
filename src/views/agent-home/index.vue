@@ -415,7 +415,11 @@ export default {
     })
   },
   beforeCreate() {
-    this.$router.push({ path: '/agent-home/index?showLayout=false' })
+  },
+  created() {
+  },
+  beforeMount() {
+
   },
   mounted() {
     const adv = Cookies.get('agent-adv')
