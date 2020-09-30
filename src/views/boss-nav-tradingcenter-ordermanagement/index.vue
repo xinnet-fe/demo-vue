@@ -157,7 +157,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogOrderPriceShow = false">取 消</el-button>
-        <el-button type="primary" @click="dialogOrderPriceShow = false">确定</el-button>
+        <el-button type="primary" @click="dialogOrderPriceSubmit()">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -354,6 +354,7 @@ export default {
           row.link = '/boss-nav-tradingcenter-orderdetail/' + row.buyOrderCode
           row.totalOriginalPrices = this.shuzi(row.totalOriginalPrice.toFixed(2))
           row.totalTradingPrices = this.shuzi(row.totalTradingPrice.toFixed(2))
+          console.log(row.totalTradingPrices)
         })
         this.list = res.data.list
         this.total = res.data.total
@@ -513,6 +514,29 @@ export default {
       const a = this.listQuery.orderType
       this.resetModal()
       this.listQuery.orderType = a
+    },
+    dialogOrderPriceSubmit() {
+      const query = {
+        buyOrderCode: this.row.buyOrderCode,
+        price: this.form.price
+      }
+      this.$store.dispatch('tradeOrder/changeOrderPrice', query).then(res => {
+        console.log(res)
+        if (res.code === '0') {
+          this.$message({
+            message: '改价成功',
+            type: 'success'
+          })
+          this.dialogOrderPriceShow = false
+        } else {
+          this.$message({
+            message: res.data.msg,
+            type: 'error'
+          })
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }

@@ -24,8 +24,12 @@ const defaultProxy = {
     target: 'https://tradeboss.xinnet.com',
     changeOrigin: true
   },
-  '/tradeOrder': {
+  '/boss/tradeOrder': {
     target: 'https://tradeboss.xinnet.com',
+    changeOrigin: true
+  },
+  '/ui/tradeOrder': {
+    target: 'https://trade.xinnet.com',
     changeOrigin: true
   }
 }

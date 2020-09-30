@@ -25,3 +25,11 @@ export function orderDetail(data) {
     params: data
   })
 }
+// 订单改价
+export function changeOrderPrice(data) {
+  return request({
+    url: '/ui/tradeOrder/changeOrderPrice',
+    method: 'POST',
+    params: data
+  })
+}

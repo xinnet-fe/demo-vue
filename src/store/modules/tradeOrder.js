@@ -26,6 +26,15 @@ const actions = {
         reject(error)
       })
     })
+  },
+  changeOrderPrice({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      api.changeOrderPrice(payload).then(res => {
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 export default {
