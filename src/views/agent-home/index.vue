@@ -99,7 +99,10 @@
                   </el-tab-pane>
                 </el-tabs>
                 <div class="prod-list">
-                  <el-row :gutter="20" :style="(!showAll ? 'height: 78px' : '')">
+                  <p v-if="!busList.length" class="none">
+                    您目前还没有买任何产品哦，<a href="http://www.xinnet.com" target="_blank" rel="noopener noreferrer">立即选购</a>
+                  </p>
+                  <el-row v-if="busList.length" :gutter="20" :style="(!showAll ? 'height: 78px' : '')">
                     <el-col v-for="(item, i) in busList" v-show="item.productNum !== 0" :key="i" :span="6">
                       <div class="grid-content grid-content-prod-1 clearfix">
                         <span class="img" v-html="getImgByNavi(item.productName)">
@@ -112,7 +115,7 @@
                       </div>
                     </el-col>
                   </el-row>
-                  <div class="btns" @click="handleToggleShow">
+                  <div v-show="busList.length" class="btns" @click="handleToggleShow">
                     <i v-if="!showAll" class="el-icon-arrow-down" />
                     <i v-else class="el-icon-arrow-up" />
                   </div>
@@ -601,7 +604,11 @@ export default {
       this.drawerMsg = false
     },
     handleToggleShow() {
-      this.showAll = !this.showAll
+      if (!this.busList.length) {
+        this.showAll = false
+      } else {
+        this.showAll = !this.showAll
+      }
     }
   }
 }
@@ -814,6 +821,16 @@ export default {
         border-top: 1px solid #f5f5f5;
         overflow: hidden;
         padding: 20px 10px 0 10px;
+        p.none{
+          height: 78px;
+          line-height: 50px;
+          text-align: center;
+          font-size: 14px;
+          a{
+            color: #0180cd;
+            line-height: 14px;
+          }
+        }
         .el-row{
           // height: 78px;
           overflow: hidden;
