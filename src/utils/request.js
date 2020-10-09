@@ -21,62 +21,32 @@ const errorCode = {
 }
 
 const demoErrorCode = [60204, 50008]
-
 const vm = new Vue()
 
-// create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  baseURL: process.env.VUE_APP_BASE_API,
+  timeout: 5000
 })
 
-// request interceptor
 service.interceptors.request.use(
   config => {
-    // do something before request is sent
-
     if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
       config.headers['X-Token'] = getToken()
     }
     config.headers['X-Requested-With'] = 'XMLHttpRequest'
     return config
   },
   error => {
-    // do something with request error
-    console.log(error) // for debug
+    console.log(error)
     return Promise.reject(error)
   }
 )
 
-// response interceptor
 service.interceptors.response.use(
-  /**
-   * If you want to get http information such as headers or status
-   * Please return  response => response
-  */
-
-  /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
   response => {
     const res = response.data
-    const status = parseInt(res.status, 10)
     // mock必返回code，请求接口错误才返回code
     const code = res.code
-    // console.log(`status: ${status}`)
-    // console.log(`code: ${code}`)
-    // status：996登录超时
-    if (status === 996) {
-      const message = '登录超时'
-      logoutToLogin(message)
-      return Promise.reject(new Error(message))
-    }
 
     // 925010 访问拒绝
     if (code && code === 925010) {
@@ -125,9 +95,14 @@ service.interceptors.response.use(
   },
   error => {
     const { status } = error.response
+    // status：996登录超时
+    if (status === 996) {
+      const message = '登录超时'
+      logoutToLogin(message)
+      return Promise.reject(new Error(message))
+    }
+
     let message = ''
-    // console.log(error.response)
-    // console.error(`error status: ${status}`)
     // '3XX-4XX': '服务器响应错误'
     if (status >= 300 && status <= 499) {
       message = '服务器响应错误'

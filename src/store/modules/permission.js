@@ -93,11 +93,12 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
     const viewPath = o.code
 
     const route = {
-      path,
+      path: `${path}${o.param ? o.param : ''}`,
       name: upperFirst(camelCase(name)),
       meta: {
         title: o.text
-      }
+      },
+      hidden: o.hidden ? o.hidden : false
     }
 
     // 非外链且无子路由
@@ -130,7 +131,7 @@ function getAsyncRoutesByMenus(menus, parentViewPath) {
       const title = route.meta.title
       route.children = [
         {
-          path: 'index',
+          path: `index${o.param ? o.param : ''}`,
           name: `${o.code}-index`,
           component: lazyLoadView(o.code),
           meta: { title }

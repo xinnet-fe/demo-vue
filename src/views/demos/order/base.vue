@@ -82,9 +82,9 @@
     <!-- operate -->
     <el-form ref="operateForm" class="operate-form" :model="searchForm" :inline="true">
       <el-form-item>
-        <el-button size="mini" @click="">添加</el-button>
-        <el-button size="mini" @click="">批量删除</el-button>
-        <el-button size="mini" @click="">导出</el-button>
+        <el-button size="mini">添加</el-button>
+        <el-button size="mini">批量删除</el-button>
+        <el-button size="mini">导出</el-button>
       </el-form-item>
     </el-form>
     <!-- operate -->
@@ -462,7 +462,9 @@ export default {
           message: '请选择要删除的选项！'
         })
       }
-    }
+    },
+    handleChange() {},
+    onReset() {}
   }
 }
 </script>

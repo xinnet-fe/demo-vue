@@ -1,15 +1,7 @@
-/*
- * @Author: your name
- * @Date: 2020-06-23 12:34:19
- * @LastEditTime: 2020-06-23 12:37:42
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\settings.js
- */
 const webpackConfig = require('./webpackConfig.js')
 
 module.exports = {
-  title: '牧野管理平台',
+  title: '代理管理平台',
 
   /**
    * @type {boolean} true | false
