@@ -527,6 +527,7 @@ export default {
             message: '改价成功',
             type: 'success'
           })
+          this.getList()
           this.dialogOrderPriceShow = false
         } else {
           this.$message({
