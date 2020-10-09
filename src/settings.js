@@ -1,15 +1,7 @@
-/*
- * @Author: your name
- * @Date: 2020-06-23 12:34:19
- * @LastEditTime: 2020-06-23 12:37:42
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \202003-xinnet-webd:\works\demo-vue\src\settings.js
- */
 const webpackConfig = require('./webpackConfig.js')
 
 module.exports = {
-  title: '牧野管理平台',
+  title: '代理管理平台',
 
   /**
    * @type {boolean} true | false
@@ -53,7 +45,7 @@ module.exports = {
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: 'RN1nf3IUOnLDQBWpz0u',
+  xbtoken: 'SOxVZ37v5UgsxNV0Qu3',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 

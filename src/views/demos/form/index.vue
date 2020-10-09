@@ -124,7 +124,17 @@
         <el-input v-model="form.desc" type="textarea" />
       </el-form-item>
       <el-form-item label="文本编辑器">
-        <el-input v-model="form.desc" type="textarea" />
+        <editor
+          id="editor_id"
+          height="500px"
+          width="500px"
+          plugins-path="/static/kindeditor/plugins/"
+          upload-json="/order/upload/"
+          :items="editorItems"
+          :content="form.text"
+          :load-style-mode="false"
+          @on-content-change="handleContentChange"
+        />
       </el-form-item>
       <el-form-item>
         <el-button size="medium" type="primary" @click="onSubmit">立即创建</el-button>
@@ -139,7 +149,7 @@ export default {
   data() {
     return {
       form: {
-        value: [],
+        value: 0,
         value1: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
         value2: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
         value3: '',
@@ -151,6 +161,7 @@ export default {
         type: [],
         resource: '',
         desc: '',
+        text: '',
         num: 1,
         time: '',
         startTime: '',
@@ -189,7 +200,12 @@ export default {
       },
       dialogImageUrl: '',
       dialogVisible: false,
-      disabled: false
+      disabled: false,
+      editorItems: [
+        'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
+        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'pagebreak', 'anchor', 'link', 'unlink'
+      ]
     }
   },
   methods: {
@@ -206,6 +222,9 @@ export default {
     },
     handleDownload(file) {
       console.log(file)
+    },
+    handleContentChange(val) {
+      this.editorText = val
     }
   }
 }
