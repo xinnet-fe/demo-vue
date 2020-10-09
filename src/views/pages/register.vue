@@ -3,7 +3,7 @@
     <agent-header />
     <div class="main-body">
       <div v-show="step === 1" class="step1">
-        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px">
+        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px" @submit.native.prevent>
           <h3>立即申请加盟新网代理</h3>
           <el-form-item ref="name" label="联系人" prop="name">
             <el-input v-model="ruleForm.name" maxlength="15" @blur="handleBlur" />
@@ -36,10 +36,10 @@
             <span class="btnShowVcode" @click="handleShowVcode">点击开始验证</span>
           </el-form-item>
         </el-form>
-        <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="120px">
-          <el-form-item v-show="showVcode" ref="vcode" label="手机验证码" prop="vcode">
-            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" @blur="handleBlur" />
-            <el-button v-show="!success" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
+        <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="120px" @submit.native.prevent>
+          <el-form-item ref="vcode" label="手机验证码" prop="vcode">
+            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" style="width: 100px" @blur="handleBlur" @input="handleChangeVCode" />
+            <el-button v-show="!success" type="medium" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
             <span v-show="success" class="tips">重新发送({{ downTime }})</span>
           </el-form-item>
           <el-form-item ref="checked" label="" prop="checked">
@@ -320,7 +320,19 @@ export default {
         }, 10)
       }
     },
+    handleChangeVCode() {
+      console.log('======================')
+      // setTimeout(() => {
+      //   console.log(this.checkForm() + '-----' + this.checkForm2())
+      //   if (this.checkForm() && this.checkForm2()) {
+      //     this.btnDisabled = false
+      //   } else {
+      //     this.btnDisabled = true
+      //   }
+      // }, 10)
+    },
     handleChange(v) {
+      console.log(v)
       if (v) {
         if (this.checkForm2() && this.checkForm()) {
           this.btnDisabled = false
@@ -476,16 +488,18 @@ body{
 }
 .main-body .getVcode{
   width: auto;
+  height: 38px;
   text-align: center;
+  float: none!important;
 }
 .main-body .tips{
   font-size: 12px;
   color: #999;
   margin: 0 10px;
 }
-.main-body .el-input,
-.main-body .el-textarea{
-  width: 100%!important;
+.main-body .el-form-item .el-input,
+.main-body .el-form-item .el-textarea{
+  width: 100%;
 }
 .main-body .step1 a{
   color: #2495ca;

@@ -3,7 +3,7 @@
     <agent-header />
     <div class="main-body">
       <div v-show="step === 1" class="step1">
-        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px">
+        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px" @submit.native.prevent>
           <h3>接受代理邀请并注册</h3>
           <el-form-item ref="email" label="" prop="email">
             <el-input v-model="ruleForm.email" placeholder="请输入邮箱地址" @blur="handleBlur" />
@@ -26,10 +26,10 @@
             <span class="btnShowVcode" @click="handleShowVcode">点击开始验证</span>
           </el-form-item>
         </el-form>
-        <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px">
+        <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px" @submit.native.prevent>
           <el-form-item v-show="showVcode" ref="vcode" label="" prop="vcode">
-            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" @blur="handleBlur" />
-            <el-button v-show="!success" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
+            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" style="width: 100px" @blur="handleBlur" />
+            <el-button v-show="!success" type="medium" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
             <span v-show="success" class="tips">重新发送({{ downTime }})</span>
           </el-form-item>
           <el-form-item ref="checked" label="" prop="checked" style="margin-bottom: 0px">
@@ -402,8 +402,8 @@ body{
   border-radius: 5px;
   padding: 20px 80px;
 }
-.main-body .el-input{
-  width: 100%!important;
+.main-body .el-form-item .el-input{
+  width: 100%;
 }
 .main-body .item-btn .el-button{
   width: 100%;
@@ -421,7 +421,9 @@ body{
 }
 .main-body .getVcode{
   width: auto;
+  height: 38px;
   text-align: center;
+  float: none!important;
 }
 .main-body .tips{
   font-size: 12px;

@@ -3,7 +3,7 @@
     <agent-header />
     <div class="main-body">
       <div v-show="step === 1" class="step1">
-        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px">
+        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px" @submit.native.prevent>
           <h3>代理商重置密码</h3>
           <el-form-item ref="agentCode" label="" prop="agentCode">
             <el-input v-model="ruleForm.agentCode" placeholder="请输入代理商编号" @blur="handleBlur" />
@@ -16,10 +16,10 @@
             <span class="btnShowVcode" @click="handleShowVcode">点击开始验证</span>
           </el-form-item>
         </el-form>
-        <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px">
+        <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px" @submit.native.prevent>
           <el-form-item v-show="showVcode" ref="vcode" label="" prop="vcode">
-            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" placeholder="短信验证码" @blur="handleBlur" />
-            <el-button v-show="!success" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
+            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" placeholder="短信验证码" style="width: 100px" @blur="handleBlur" />
+            <el-button v-show="!success" type="medium" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
             <span v-show="success" class="tips">重新发送({{ downTime }})</span>
           </el-form-item>
           <el-form-item class="item-btn">
@@ -478,8 +478,8 @@ body{
   font-weight: normal;
   text-align: center;
 }
-.main-body .el-input{
-  width: 100%!important;
+.main-body .el-form-item .el-input{
+  width: 100%;
 }
 .main-body .show-pwd {
   position: absolute;
@@ -506,7 +506,9 @@ body{
 }
 .main-body .getVcode{
   width: auto;
+  height: 38px;
   text-align: center;
+  float: none!important;
 }
 .main-body .tips{
   font-size: 12px;

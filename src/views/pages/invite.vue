@@ -2,7 +2,7 @@
   <div id="app" style="height:100%;position:relative">
     <agent-header />
     <div class="main-body">
-      <el-form v-show="step === 1" ref="ruleForm" class="step1" :model="ruleForm" :rules="rules" label-width="0px">
+      <el-form v-show="step === 1" ref="ruleForm" class="step1" :model="ruleForm" :rules="rules" label-width="0px" @submit.native.prevent>
         <h3>接受代理邀请</h3>
         <el-form-item ref="userName" label="" prop="userName">
           <el-input v-model="ruleForm.userName" placeholder="请输入您的手机号或邮箱" @blur="handleBlur" />
