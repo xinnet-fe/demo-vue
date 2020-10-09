@@ -29,7 +29,19 @@ import {
   searchNav,
   navTargetMapping,
   navParentIdMapping,
-  navStatusSwitch
+  navStatusSwitch,
+  // 豆腐块
+  beancurdCubeList,
+  addBeancurdCube,
+  updateBeancurdCube,
+  destroyBeancurdCube,
+  searchBeancurdCube,
+  // 单页面
+  singlePageList,
+  addSinglePage,
+  updateSinglePage,
+  destroySinglePage,
+  searchSinglePage
 } from '@/api/cms'
 import map from 'lodash/map'
 
@@ -274,6 +286,66 @@ const actions = {
   },
   navStatusSwitch(_, query) {
     return navStatusSwitch(query)
+  },
+  // 豆腐块
+  beancurdCubeList(_, query) {
+    return beancurdCubeList(query).then(res => {
+      const { data } = res
+      if (data && data.listTree) {
+        return deepProcessListData(data.listTree)
+      }
+      return []
+    })
+  },
+  addBeancurdCube(_, query) {
+    return addBeancurdCube(query)
+  },
+  updateBeancurdCube(_, query) {
+    return updateBeancurdCube(query)
+  },
+  destroyBeancurdCube(_, query) {
+    return destroyBeancurdCube(query)
+  },
+  searchBeancurdCube(_, query) {
+    return searchBeancurdCube(query).then(res => {
+      if (res && res.data) {
+        const { navigation } = res.data
+        if (navigation && navigation.extra) {
+          navigation.extra = JSON.parse(navigation.extra)
+        }
+      }
+      return res
+    })
+  },
+  // 单页面
+  singlePageList(_, query) {
+    return singlePageList(query).then(res => {
+      const { data } = res
+      if (data && data.listTree) {
+        return deepProcessListData(data.listTree)
+      }
+      return []
+    })
+  },
+  addSinglePage(_, query) {
+    return addSinglePage(query)
+  },
+  updateSinglePage(_, query) {
+    return updateSinglePage(query)
+  },
+  destroySinglePage(_, query) {
+    return destroySinglePage(query)
+  },
+  searchSinglePage(_, query) {
+    return searchSinglePage(query).then(res => {
+      if (res && res.data) {
+        const { navigation } = res.data
+        if (navigation && navigation.extra) {
+          navigation.extra = JSON.parse(navigation.extra)
+        }
+      }
+      return res
+    })
   }
 }
 

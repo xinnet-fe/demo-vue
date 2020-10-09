@@ -183,8 +183,6 @@ export default {
       },
       // 修改时传递的旧code
       oldCode: '',
-      // 默认打开方式
-      formTarget: '',
       // 弹框表单规则
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
@@ -212,25 +210,16 @@ export default {
     })
   },
   created() {
-    this.getTargetMapping().then(res => {
-      const { list } = res.data
-      if (list && list.length) {
-        const { value } = list[0]
-        this.formTarget = value
-      }
-    })
     this.onSearch()
-
-    this.height = global.innerHeight + 'px'
   },
   methods: {
     ...mapActions({
-      getData: 'cms/navList',
-      add: 'cms/addNav',
-      update: 'cms/updateNav',
-      destroyData: 'cms/destroyNav',
-      searchNav: 'cms/searchNav',
-      getTargetMapping: 'cms/navTargetMapping',
+      getData: 'cms/beancurdCubeList',
+      add: 'cms/addBeancurdCube',
+      update: 'cms/updateBeancurdCube',
+      destroyData: 'cms/destroyBeancurdCube',
+      searchBeancurdCube: 'cms/searchBeancurdCube',
+      // 待修改确认，暂用导航的
       getParentIdMapping: 'cms/navParentIdMapping',
       updateStatus: 'cms/navStatusSwitch'
     }),
@@ -238,7 +227,7 @@ export default {
       this.getParentIdMapping().then(() => {
         if (row.id) {
           const query = { id: row.id }
-          this.searchNav(query).then(res => {
+          this.searchBeancurdCube(query).then(res => {
             const { navigation: nav } = res.data
             forEach(this.form, (v, k, o) => {
               this.form[k] = nav[k] || ''
@@ -261,7 +250,6 @@ export default {
           this.form.extra = ''
         }
       })
-      this.form.target = this.formTarget
       this.show = true
     },
     closeModal() {

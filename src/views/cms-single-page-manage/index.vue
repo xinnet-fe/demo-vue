@@ -132,9 +132,19 @@
 
     <!-- 模板管理 -->
     <el-dialog width="800px" :before-close="beforeTemplateClose" destroy-on-close title="模板管理" :visible.sync="showTemplate">
-      <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="页面名称" prop="name">
-          <el-input v-model="form.name" />
+      <el-form ref="templateForm">
+        <el-form-item>
+          <editor
+            id="editor_id"
+            width="760px"
+            height="560px"
+            plugins-path="/static/kindeditor/plugins/"
+            upload-json="/order/upload/"
+            :items="editorItems"
+            :content="form.editorText"
+            :load-style-mode="false"
+            @on-content-change="handleContentChange"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -202,7 +212,14 @@ export default {
         count: 0,
         pageNum: 1,
         pageSize: 30
-      }
+      },
+      // 模板内容
+      editorText: '',
+      editorItems: [
+        'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
+        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'pagebreak', 'anchor', 'link', 'unlink'
+      ]
     }
   },
   computed: {
@@ -213,25 +230,16 @@ export default {
     })
   },
   created() {
-    this.getTargetMapping().then(res => {
-      const { list } = res.data
-      if (list && list.length) {
-        const { value } = list[0]
-        this.formTarget = value
-      }
-    })
     this.onSearch()
-
-    this.height = global.innerHeight + 'px'
   },
   methods: {
     ...mapActions({
-      getData: 'cms/navList',
-      add: 'cms/addNav',
-      update: 'cms/updateNav',
-      destroyData: 'cms/destroyNav',
-      searchNav: 'cms/searchNav',
-      getTargetMapping: 'cms/navTargetMapping',
+      getData: 'cms/singlePageList',
+      add: 'cms/addSinglePage',
+      update: 'cms/updateSinglePage',
+      destroyData: 'cms/destroySinglePage',
+      searchSinglePage: 'cms/searchSinglePage',
+      // 待修改确认，暂用导航的
       getParentIdMapping: 'cms/navParentIdMapping',
       updateStatus: 'cms/navStatusSwitch'
     }),
@@ -239,7 +247,7 @@ export default {
       this.getParentIdMapping().then(() => {
         if (row.id) {
           const query = { id: row.id }
-          this.searchNav(query).then(res => {
+          this.searchSinglePage(query).then(res => {
             const { navigation: nav } = res.data
             forEach(this.form, (v, k, o) => {
               this.form[k] = nav[k] || ''
@@ -261,7 +269,6 @@ export default {
           this.modalTitle = '新增'
         }
       })
-      this.form.target = this.formTarget
       this.show = true
     },
     closeModal() {
@@ -394,6 +401,9 @@ export default {
     },
     closeIframe() {
       this.showIframeModal = false
+    },
+    handleContentChange(val) {
+      this.editorText = val
     }
   }
 }

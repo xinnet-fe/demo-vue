@@ -264,3 +264,87 @@ export function navStatusSwitch(data) {
     data
   })
 }
+
+// 豆腐块
+export function beancurdCubeList(query) {
+  return request({
+    url: '/admin/navigation/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function addBeancurdCube(data) {
+  return request({
+    url: '/admin/navigation/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateBeancurdCube(data) {
+  return request({
+    url: '/admin/navigation/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function destroyBeancurdCube(data) {
+  return request({
+    url: '/admin/navigation/del',
+    method: 'post',
+    data
+  })
+}
+
+// 详情
+export function searchBeancurdCube(params) {
+  return request({
+    url: '/admin/navigation/search',
+    method: 'get',
+    params
+  })
+}
+
+// 单页面
+export function singlePageList(query) {
+  return request({
+    url: '/admin/navigation/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function addSinglePage(data) {
+  return request({
+    url: '/admin/navigation/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateSinglePage(data) {
+  return request({
+    url: '/admin/navigation/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function destroySinglePage(data) {
+  return request({
+    url: '/admin/navigation/del',
+    method: 'post',
+    data
+  })
+}
+
+// 详情
+export function searchSinglePage(params) {
+  return request({
+    url: '/admin/navigation/search',
+    method: 'get',
+    params
+  })
+}
