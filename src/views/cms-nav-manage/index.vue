@@ -323,6 +323,7 @@ export default {
       this.getParentIdMapping().then(() => {
         if (row.id) {
           const query = { id: row.id }
+          this.form.id = row.id
           this.searchNav(query).then(res => {
             const { navigation: nav } = res.data
             this.fileList = nav.file ? [nav.file] : []
@@ -358,6 +359,7 @@ export default {
           o[k] = ''
         }
       })
+      this.form.id = ''
       this.oldCode = ''
       this.uploadImageAddress = ''
       this.fileList = []
@@ -397,8 +399,12 @@ export default {
       const formData = new FormData()
       const data = this.form
       const file = this.fileList.length ? this.fileList[0].raw : ''
-      const parentId = data.parentId && data.parentId.length ? String(data.parentId[data.parentId.length - 1]) : '0'
-
+      let parentId = '0'
+      if (data.parentId && data.parentId.length) {
+        parentId = String(data.parentId[data.parentId.length - 1])
+      } else if (data.parentId && data.parentId >= 0) {
+        parentId = data.parentId
+      }
       if (id) {
         formData.append('code', this.oldCode)
         formData.append('newCode', data.code)
@@ -407,6 +413,11 @@ export default {
       }
       const hotStatus = data.tag === '1' ? '1' : ''
       const newStatus = data.tag === '2' ? '1' : ''
+
+      let extra = data.extra
+      if (typeof data.extra === 'object') {
+        extra = JSON.stringify(data.extra)
+      }
       formData.append('name', data.name)
       formData.append('parentId', parentId)
       formData.append('desc', data.desc)
@@ -421,7 +432,7 @@ export default {
       formData.append('cssStyle', data.cssStyle)
       formData.append('cssClass', data.cssClass)
       formData.append('alt', data.alt)
-      formData.append('extra', data.extra)
+      formData.append('extra', extra)
       formData.append('content', data.content)
       formData.append('file', file)
       return formData

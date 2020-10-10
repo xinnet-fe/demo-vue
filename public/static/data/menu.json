@@ -37,30 +37,6 @@
                     "icon": "",
                     "url": "",
                     "target": "tab"
-                },
-                {
-                    "code": "cms-beancurd-cube-manage",
-                    "parentCode": "cms-component-manage",
-                    "text": "豆腐块管理",
-                    "icon": "",
-                    "url": "",
-                    "target": "tab"
-                }]
-            },
-            {
-                "code": "cms-page-manage",
-                "parentCode": "cms-manage",
-                "text": "页面管理",
-                "icon": "",
-                "url": "",
-                "target": "",
-                "children": [{
-                    "code": "cms-single-page-manage",
-                    "parentCode": "cms-page-manage",
-                    "text": "单页面管理",
-                    "icon": "",
-                    "url": "",
-                    "target": "tab"
                 }]
             }
         ]
