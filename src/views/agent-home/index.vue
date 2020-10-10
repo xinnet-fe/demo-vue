@@ -103,7 +103,7 @@
                     您目前还没有买任何产品哦，<a href="http://www.xinnet.com" target="_blank" rel="noopener noreferrer">立即选购</a>
                   </p>
                   <el-row v-if="busList.length" :gutter="20" :style="(!showAll ? 'height: 78px' : '')">
-                    <el-col v-for="(item, i) in busList" v-show="item.productNum !== 0" :key="i" :span="6">
+                    <el-col v-for="(item, i) in busList" :key="i" :span="6">
                       <div class="grid-content grid-content-prod-1 clearfix">
                         <span class="img" v-html="getImgByNavi(item.productName)">
                           <!-- <i class="iconfont icon-font01" /> -->
@@ -549,7 +549,10 @@ export default {
           console.log(res.success)
           if (!res.code && res.success) {
             // this.ipAddress = res.data
-            this.busList.push(...res.data)
+            const busArray = res.data.filter((v) => {
+              return v.productNum !== 0
+            })
+            this.busList.push(...busArray)
           } else {
             this.$message.error(res.msg)
           }

@@ -11,7 +11,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="关键词">
-        <el-input v-model="searchForm.name" placeholder="请输入关键词" />
+        <el-input v-model="searchForm.keywords" placeholder="请输入关键词" />
       </el-form-item>
       <el-form-item label="注册时间">
         <el-date-picker
@@ -92,6 +92,7 @@
     <el-dialog
       title="客户绑定"
       :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
       width="600px"
       :before-close="beforeClose"
     >
@@ -172,6 +173,7 @@ export default {
         registerStartTime: this.searchForm.time ? this.searchForm.time[0] : '',
         registerEndTime: this.searchForm.time ? this.searchForm.time[1] : '',
         bindStatus: this.searchForm.bindStatus
+
       }
       if (page) {
         query.pageNum = page.page
