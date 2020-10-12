@@ -37,7 +37,7 @@
           </el-form-item>
         </el-form>
         <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="120px" @submit.native.prevent>
-          <el-form-item ref="vcode" label="手机验证码" prop="vcode">
+          <el-form-item v-show="showVcode" ref="vcode" label="手机验证码" prop="vcode">
             <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" style="width: 100px" @blur="handleBlur" @input="handleChangeVCode" />
             <el-button v-show="!success" type="medium" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
             <span v-show="success" class="tips">重新发送({{ downTime }})</span>

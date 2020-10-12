@@ -53,9 +53,9 @@
                   <div class="info">
                     <div>我的余额：<em>￥ {{ account.totalBalance }}</em></div>
                     <p>
-                      <a href="http://www.xinnet.com/views/uc/html/financial/deal.html" rel="noopener noreferrer">消费明细</a>
+                      <a href="https://console.xinnet.com/hy/index.html#/financial?tab=account" rel="noopener noreferrer">收支明细</a>
                       <span class="line">|</span>
-                      <a href="http://www.xinnet.com/views/uc/html/financial/freeze_detail.html" rel="noopener noreferrer">冻结资金</a>
+                      <a href="https://console.xinnet.com/hy/index.html#/financial?tab=freeze" rel="noopener noreferrer">冻结资金</a>
                     </p>
                   </div>
                 </td>

@@ -55,6 +55,23 @@ const app = new Vue({
   el: '#app',
   router,
   store,
+  mounted() {
+    // console.log('main.js -> mounted()')
+    // 如果是IE11、10，vue中hash跳转使用a标签跳转将会失败，解决方案如下
+    const sUserAgent = navigator.userAgent.toLowerCase()
+    const ie11 = sUserAgent.indexOf('trident') > -1 && sUserAgent.indexOf('rv') > -1
+    const ie10 = sUserAgent.indexOf('msie 10') > -1
+    if (ie11 || ie10) {
+      console.log('绑定 hashchange 事件')
+      window.addEventListener('hashchange', () => {
+        var currentPath = window.location.hash.slice(1)
+        console.log(this.$route.path, currentPath)
+        if (this.$route.path !== currentPath) {
+          this.$router.push(currentPath)
+        }
+      })
+    }
+  },
   render: h => h(App)
 })
 
