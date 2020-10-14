@@ -470,15 +470,15 @@ export default {
     getImgByNavi(str) {
       const ind = this.menuData.findIndex(item => item.text === str)
       if (ind === -1) {
-        return '<i class="iconfont icon-font10"></i>'
+        return '<i class="iconfont icon-font22"></i>'
       } else {
         const obj = this.menuData[ind]
         // const text = obj.text
         const icon = obj.icon
         if (icon === undefined || icon === '' || icon === null) {
-          return '<i class="iconfont icon-font10"></i>'
+          return '<i class="iconfont icon-font22"></i>'
         } else {
-          return '<i class="' + icon + '"></i>'
+          return '<i class="iconfont ' + icon + '"></i>'
         }
       }
     },

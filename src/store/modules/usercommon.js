@@ -30,13 +30,9 @@ const actions = {
         if (!user) {
           reject('please Login again.')
         } else {
-          const hash = window.location.hash
+          // const hash = window.location.hash
           if (user.data.consumerType !== 'DL') {
-            if (hash.indexOf('/agent-home/') >= 0) {
-              window.location.href = 'https://console.xinnet.com/hy/index.html'
-            } else {
-              window.location.href = 'http://xinnet.com/'
-            }
+            window.location.href = 'https://console.xinnet.com/hy/index.html'
           }
         }
         commit('SET_USER', user.data)

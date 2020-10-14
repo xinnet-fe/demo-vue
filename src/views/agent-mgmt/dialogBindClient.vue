@@ -31,6 +31,7 @@ export default {
   data() {
     return {
       links: '',
+      links2: 'https://console.xinnet.com/agent/inviteReg.html',
       form2: {
         email: ''
       },
@@ -60,7 +61,7 @@ export default {
         if (valid) {
           const query = {
             userEmail: this.form2.email,
-            invitedUrl: this.links
+            invitedUrl: this.links2
           }
           this.$store.dispatch('userinfo/sendEmail', query).then((response) => {
             if (response.data.isSuccess === '1') {
