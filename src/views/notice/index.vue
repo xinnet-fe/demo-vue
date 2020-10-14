@@ -36,7 +36,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">查 询</el-button>
+        <el-button :loading="loading" type="primary" size="medium" @click="onSearch()">查 询</el-button>
         <el-button size="medium" @click="resetForm">重 置</el-button>
       </el-form-item>
     </el-form>
