@@ -264,7 +264,7 @@
               <el-col :span="12">
                 <div class="grid-content grid-content-msg-2">
                   <a href="http://www.xinnet.com/views/uc/html/service/my_service.html" rel="noopener noreferrer">
-                    <em>{{ msgWorkorder.num }}</em>
+                    <em>{{ msgWorkorder.num ? msgWorkorder.num : 0 }}</em>
                     <p>工单消息</p>
                   </a>
                 </div>
