@@ -14,5 +14,21 @@
         "text": "实名认证管理",
         "url": "",
         "target": ""
+    },
+    {
+        "code": "userCenter",
+        "parentCode": null,
+        "children": [{
+            "code": "userCenter-info",
+            "parentCode": "userCenter",
+            "icon": "",
+            "text": "用户信息管理",
+            "url": "",
+            "target": "tab"
+        }],
+        "icon": "memberCenter",
+        "text": "用户中心",
+        "url": "",
+        "target": ""
     }
 ]

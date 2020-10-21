@@ -23,6 +23,10 @@ const defaultProxy = {
   '/realnamequery': {
     target: 'http://usermanage.xinnet.com:8081',
     changeOrigin: true
+  },
+  '/usermanage': {
+    target: 'http://usermanage.xinnet.com:8081',
+    changeOrigin: true
   }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
