@@ -462,7 +462,9 @@ export default {
           message: '请选择要删除的选项！'
         })
       }
-    }
+    },
+    handleChange() {},
+    onReset() {}
   }
 }
 </script>

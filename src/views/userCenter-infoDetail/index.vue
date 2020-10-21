@@ -1,7 +1,7 @@
 <template>
   <div class="demo-container">
-    <Box type="1">
-      <div slot="tit-left"><a href="javascript:;" @click="handleBack"> &lt; 返回</a></div>
+    <Detail :handle-to-back="handleBack">
+      <!-- <div slot="tit-center">标题</div> -->
       <div slot="cont">
         <Box type="1">
           <div slot="tit-left">基本信息</div>
@@ -84,16 +84,17 @@
           </div>
         </Box>
       </div>
-    </Box>
+    </Detail>
   </div>
 </template>
 
 <script>
 import Box from '@/components/Box'
+import Detail from '@/components/Detail'
 import { getUserDetail } from '@/api/userinfoManage'
 export default {
   name: 'ComplexTable',
-  components: { Box },
+  components: { Box, Detail },
   // components: { Pagination },
   // directives: { waves },
   filters: {
@@ -135,7 +136,9 @@ export default {
     getList(agent) {
       getUserDetail({ agentCode: agent }).then(res => {
         res.bindSales = []
-        res.bindSales.push(res.bindSale)
+        if (res.bindSale) {
+          res.bindSales.push(res.bindSale)
+        }
         this.list = res
       })
     }

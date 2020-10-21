@@ -24,11 +24,15 @@
             "icon": "",
             "text": "用户信息管理",
             "url": "",
-            "target": "tab"
+            "target": "tab",
+            "hidden": false,
+            "param": ""
         }],
         "icon": "memberCenter",
         "text": "用户中心",
         "url": "",
-        "target": ""
+        "target": "",
+        "hidden": false,
+        "param": ""
     }
 ]
