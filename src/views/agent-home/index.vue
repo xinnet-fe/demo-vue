@@ -443,10 +443,13 @@ export default {
     this.queryIpAddress()
     this.queryMsgWorkorder()
     this.queryTradeOrderNum()
-    setTimeout(() => {
-      const menus = window.XCS_Utils.getState()
-      this.$store.commit('userinfo/SET_COMMON_MENUS', menus)
-      this.queryMyServices()
+    window.myTimer = setInterval(() => {
+      if (window.XCS_Utils && window.XCS_Utils.getState) {
+        clearInterval(window.myTimer)
+        const menus = window.XCS_Utils.getState()
+        this.$store.commit('userinfo/SET_COMMON_MENUS', menus)
+        this.queryMyServices()
+      }
     }, 1000)
   },
   methods: {
