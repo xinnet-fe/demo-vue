@@ -460,6 +460,20 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/userCenter-infoDetail',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'id',
+        component: () => import('@/views/index'),
+        name: 'Home',
+        hidden: true,
+        meta: { title: 'Home', icon: 'home', affix: true }
+      }
+    ]
+  },
+  {
     path: '/404',
     component: Layout,
     hidden: true,

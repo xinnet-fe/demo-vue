@@ -1,5 +1,6 @@
 <template>
   <div class="order-form">
+    <el-button @click="cl">click</el-button>
     <!-- search -->
     <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
       <el-form-item label="页面名称" prop="name">
@@ -233,6 +234,10 @@ export default {
     this.onSearch()
   },
   methods: {
+    cl() {
+      // this.$router.push('/home?showLayout=false')
+      this.$router.push('/userCenter-infoDetail/id?id=hy5192345&showLayout=false')
+    },
     ...mapActions({
       getData: 'cms/singlePageList',
       add: 'cms/addSinglePage',
