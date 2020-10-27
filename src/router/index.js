@@ -233,6 +233,19 @@ const demosConstantRoutes = hasDevelopment ? [
         meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
       }
     ]
+  },
+  {
+    path: '/boss-nav-tradingcenter',
+    component: Layout,
+    children: [
+      {
+        // path: '/boss-nav-tradingcenter-orderdetail/:id(\\d+)',
+        path: 'boss-nav-tradingcenter-detail',
+        component: () => import('@/views/boss-nav-tradingcenter-detail/index'),
+        name: 'orderdetail',
+        meta: { title: '订单详情', noCache: true, activeMenu: '/boss-nav-tradingcenter/oss-nav-tradingcenter-detail', type: 'demo' }
+      }
+    ]
   }
   // chartsRouter,
   // nestedRouter,

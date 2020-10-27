@@ -64,7 +64,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" width="215" label="批次编号">
+      <el-table-column align="center" width="215" label="服务编号">
         <template slot-scope="{row}">
           <span>{{ row.batchId }}</span>
         </template>
@@ -79,6 +79,12 @@
       <el-table-column class-name="status-col" width="185" label="商品名称">
         <template slot-scope="{row}">
           <span>{{ row.goodsName }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column class-name="status-col" width="185" label="配置信息">
+        <template slot-scope="{row}">
+          <span v-html="row.goodsContent" />
         </template>
       </el-table-column>
 
@@ -339,7 +345,7 @@ export default {
             row.supProductClassa = '服务市场'
           }
           row.businessTypes = row.businessType === 'N' ? '新开' : row.businessType === 'R' ? '续费' : row.businessType === 'U' ? '升级' : ''
-          row.goodsPaytypes = row.goodsPaytype === '01' ? '包年包月' : '次'
+          row.goodsPaytypes = row.goodsPaytype === '01' ? '包年包月' : '单次'
           if (row.orderStatus === '1') {
             row.orderStatusa = '待支付'
           } else if (row.orderStatus === '2') {

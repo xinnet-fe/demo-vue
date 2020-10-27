@@ -194,7 +194,7 @@ export default {
           }
         }
         res.data.businessTypes = res.data.businessType === 'N' ? '新开' : res.data.businessType === 'R' ? '续费' : res.data.businessType === 'U' ? '升级' : ''
-        res.data.goodsPaytypes = res.data.goodsPaytype === '01' ? '包年包月' : '次'
+        res.data.goodsPaytypes = res.data.goodsPaytype === '01' ? '包年包月' : '单次'
         // res.data.buyTimeLimits = res.data.bodys[0].
         let buyTimeLimits = res.data.bodys[0].buyTimeLimit.substr(res.data.bodys[0].buyTimeLimit.length - 1, 1)
         buyTimeLimits = buyTimeLimits === 'M' ? '月' : buyTimeLimits === 'Y' ? '年' : buyTimeLimits === 'D' ? '日' : ''
