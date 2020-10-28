@@ -323,44 +323,55 @@ export default {
         this.resetListquery = this.listQuery
       }
       this.$store.dispatch('tradeOrder/orderList', this.listQuery).then(res => {
-        res.data.list.forEach(row => {
-          const supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
-          if (supProductClass === 'D') {
-            row.supProductClassa = '域名'
-          } else if (supProductClass === 'V') {
-            row.supProductClassa = '虚机'
-          } else if (supProductClass === 'C') {
-            row.supProductClassa = '云计算'
-          } else if (supProductClass === 'M') {
-            row.supProductClassa = '邮局'
-          } else if (supProductClass === 'W') {
-            row.supProductClassa = '建站'
-          } else if (supProductClass === 'A') {
-            row.supProductClassa = '应用'
-          } else if (supProductClass === 'S') {
-            row.supProductClassa = '服务产品'
-          } else if (supProductClass === 'I') {
-            row.supProductClassa = '增值服务'
-          } else if (supProductClass === 'MART') {
-            row.supProductClassa = '服务市场'
+        res.data.list.map(row => {
+          if (row.supProductClass) {
+            const supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
+            if (supProductClass === 'D') {
+              row.supProductClassa = '域名'
+            } else if (supProductClass === 'V') {
+              row.supProductClassa = '虚机'
+            } else if (supProductClass === 'C') {
+              row.supProductClassa = '云计算'
+            } else if (supProductClass === 'M') {
+              row.supProductClassa = '邮局'
+            } else if (supProductClass === 'W') {
+              row.supProductClassa = '建站'
+            } else if (supProductClass === 'A') {
+              row.supProductClassa = '应用'
+            } else if (supProductClass === 'S') {
+              row.supProductClassa = '服务产品'
+            } else if (supProductClass === 'I') {
+              row.supProductClassa = '增值服务'
+            } else if (supProductClass === 'MART') {
+              row.supProductClassa = '服务市场'
+            }
           }
-          row.businessTypes = row.businessType === 'N' ? '新开' : row.businessType === 'R' ? '续费' : row.businessType === 'U' ? '升级' : ''
-          row.goodsPaytypes = row.goodsPaytype === '01' ? '包年包月' : '单次'
-          if (row.orderStatus === '1') {
-            row.orderStatusa = '待支付'
-          } else if (row.orderStatus === '2') {
-            row.orderStatusa = '支付中'
-          } else if (row.orderStatus === '3') {
-            row.orderStatusa = '已取消'
-          } else if (row.orderStatus === '4') {
-            row.orderStatusa = '已支付'
-          } else if (row.orderStatus === '5') {
-            row.orderStatusa = '支付失败'
+          if (row.businessType) {
+            row.businessTypes = row.businessType === 'N' ? '新开' : row.businessType === 'R' ? '续费' : row.businessType === 'U' ? '升级' : ''
+          }
+          if (row.goodsPaytype) {
+            row.goodsPaytypes = row.goodsPaytype === '01' ? '包年包月' : '单次'
+          }
+          if (row.orderStatus) {
+            if (row.orderStatus === '1') {
+              row.orderStatusa = '待支付'
+            } else if (row.orderStatus === '2') {
+              row.orderStatusa = '支付中'
+            } else if (row.orderStatus === '3') {
+              row.orderStatusa = '已取消'
+            } else if (row.orderStatus === '4') {
+              row.orderStatusa = '已支付'
+            } else if (row.orderStatus === '5') {
+              row.orderStatusa = '支付失败'
+            }
+          }
+          if (row.totalOriginalPrice) {
+            row.totalOriginalPrices = this.shuzi(row.totalOriginalPrice.toFixed(2))
+          }
+          if (row.totalTradingPrice) {
+            row.totalTradingPrices = this.shuzi(row.totalTradingPrice.toFixed(2))
           }
           row.link = '/boss-nav-tradingcenter-orderdetail/' + row.buyOrderCode
-          row.totalOriginalPrices = this.shuzi(row.totalOriginalPrice.toFixed(2))
-          row.totalTradingPrices = this.shuzi(row.totalTradingPrice.toFixed(2))
-          console.log(row.totalTradingPrices)
         })
         this.list = res.data.list
         this.total = res.data.total
