@@ -4,7 +4,11 @@
     <div class="main-body">
       <div v-show="step === 1" class="step1">
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px" @submit.native.prevent>
-          <h3>接受代理邀请并注册</h3>
+          <h3>接受代理邀请并注册
+            <el-tooltip class="item" effect="light" content="接受代理商邀请注册后，您将成为代理商的专属客户，您提交的所有订单将由邀请您的代理商代为支付，购买的服务或资源由您自主管理。如果您希望自行支付，请登录xinnet官网，注册普通会员。" placement="right">
+              <i class="el-icon-warning" style="color: #f47258; font-size: 20px;" />
+            </el-tooltip>
+          </h3>
           <el-form-item ref="email" label="" prop="email">
             <el-input v-model="ruleForm.email" placeholder="请输入邮箱地址" @blur="handleBlur" />
           </el-form-item>
@@ -28,20 +32,24 @@
         </el-form>
         <el-form ref="ruleForm2" :model="ruleForm2" :rules="rules" label-width="0px" @submit.native.prevent>
           <el-form-item v-show="showVcode" ref="vcode" label="" prop="vcode">
-            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" style="width: 100px" @blur="handleBlur" />
+            <el-input v-model="ruleForm2.vcode" maxlength="6" class="inputVcode" style="width: 100px" @blur="handleBlur" @input="handleChangeVCode" />
             <el-button v-show="!success" type="medium" class="getVcode" :loading="vcodeLoading" @click="getVerificationCode">获取验证码</el-button>
             <span v-show="success" class="tips">重新发送({{ downTime }})</span>
           </el-form-item>
-          <el-form-item ref="checked" label="" prop="checked" style="margin-bottom: 0px">
-            <el-checkbox-group v-model="ruleForm2.checked" style="display:inline-block" @change="handleChange">
-              <el-checkbox name="checked" label="checked">我已阅读并同意</el-checkbox>
-            </el-checkbox-group>
-            <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
-            <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
+          <el-form-item ref="checked" label="" prop="checked">
+            <div style="line-height: 20px;">
+              <el-checkbox-group v-model="ruleForm2.checked" style="display:inline-block;line-height: 20px;" @change="handleChange">
+                <el-checkbox name="checked" label="checked" style="padding: 0;">我已阅读并同意</el-checkbox>
+              </el-checkbox-group>
+              <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
+              <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
+              <a href="http://www.xinnet.com/service/cjwt/hy/zhuce/1856.html" target="_blank">《客户信息收集声明》</a>
+            </div>
+
           </el-form-item>
           <el-form-item class="item-btn">
             <el-button type="primary" :disabled="btnDisabled" :loading="btnLoading" @click="onSubmit">注册</el-button>
-            <p><a :href="'invite.html?agentCode=' + agentCode">我已注册过新网账号</a></p>
+            <!-- <p><a :href="'invite.html?agentCode=' + agentCode">我已注册过新网账号</a></p> -->
           </el-form-item>
         </el-form>
       </div>
@@ -113,8 +121,8 @@ export default {
           { validator: isPhone, message: '请填写正确的手机号码', trigger: 'blur' }
         ],
         vcode: [
-          { required: true, message: '请输入手机短信验证码', trigger: 'blur' },
-          { min: 6, max: 6, message: '验证码错误', trigger: 'blur' }
+          { required: true, message: '请输入手机短信验证码', trigger: 'change' },
+          { min: 6, max: 6, message: '验证码错误', trigger: 'change' }
         ],
         checked: [
           { type: 'array', required: true, message: '请阅读新网用户协议及代理协议并确认勾选', trigger: 'change' }
@@ -265,6 +273,16 @@ export default {
           }
         }, 10)
       }
+    },
+    handleChangeVCode() {
+      setTimeout(() => {
+        console.log(this.checkForm() + '------' + this.checkForm2())
+        if (this.checkForm() && this.checkForm2()) {
+          this.btnDisabled = false
+        } else {
+          this.btnDisabled = true
+        }
+      }, 10)
     },
     handleChange(v) {
       console.log(this.ruleForm2.checked)
@@ -432,6 +450,8 @@ body{
 }
 .main-body .step1 a{
   color: #2495ca;
+  font-size: 12px;
+  white-space: nowrap;
 }
 .main-body .btnShowVcode{
   cursor: pointer;

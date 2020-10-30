@@ -43,11 +43,14 @@
             <span v-show="success" class="tips">重新发送({{ downTime }})</span>
           </el-form-item>
           <el-form-item ref="checked" label="" prop="checked">
-            <el-checkbox-group v-model="ruleForm2.checked" style="display:inline-block" @change="handleChange">
-              <el-checkbox name="checked" label="checked">我已阅读并同意</el-checkbox>
-            </el-checkbox-group>
-            <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
-            <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
+            <div style="line-height: 20px;">
+              <el-checkbox-group v-model="ruleForm2.checked" style="display:inline-block;line-height: 20px;" @change="handleChange">
+                <el-checkbox name="checked" label="checked" style="padding: 0;">我已阅读并同意</el-checkbox>
+              </el-checkbox-group>
+              <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
+              <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
+              <a href="http://www.xinnet.com/service/cjwt/hy/zhuce/1856.html" target="_blank">《客户信息收集声明》</a>
+            </div>
           </el-form-item>
           <el-form-item class="item-btn">
             <el-button type="primary" :disabled="btnDisabled" :loading="btnLoading" @click="onSubmit">提交申请</el-button>
@@ -141,8 +144,8 @@ export default {
           { type: 'array', required: true, message: '请选择省份/城市', trigger: 'change' }
         ],
         vcode: [
-          { required: true, message: '请输入手机短信验证码', trigger: 'blur' },
-          { min: 6, max: 6, message: '验证码不正确', trigger: 'blur' }
+          { required: true, message: '请输入手机短信验证码', trigger: 'change' },
+          { min: 6, max: 6, message: '验证码不正确', trigger: 'change' }
         ],
         checked: [
           { type: 'array', required: true, message: '请阅读新网用户协议及代理协议并确认勾选', trigger: 'change' }
@@ -172,6 +175,7 @@ export default {
     }
   },
   mounted() {
+    // this.$refs.vcode.validate()
     this.$refs.checked.validateState = 'success'
     // this.ruleForm.options = citysList.CITYS_LIST
     // console.log(this.getCoreProvice)
@@ -321,15 +325,14 @@ export default {
       }
     },
     handleChangeVCode() {
-      console.log('======================')
-      // setTimeout(() => {
-      //   console.log(this.checkForm() + '-----' + this.checkForm2())
-      //   if (this.checkForm() && this.checkForm2()) {
-      //     this.btnDisabled = false
-      //   } else {
-      //     this.btnDisabled = true
-      //   }
-      // }, 10)
+      setTimeout(() => {
+        console.log(this.checkForm() + '-----' + this.checkForm2())
+        if (this.checkForm() && this.checkForm2()) {
+          this.btnDisabled = false
+        } else {
+          this.btnDisabled = true
+        }
+      }, 10)
     },
     handleChange(v) {
       console.log(v)
@@ -346,7 +349,7 @@ export default {
     checkForm() {
       let flag = true
       for (let index = 0; index < this.formItems.length; index++) {
-        console.log(this.$refs[this.formItems[index]].validateState)
+        // console.log(this.$refs[this.formItems[index]].validateState)
         if (this.$refs[this.formItems[index]].validateState !== 'success') {
           flag = false
           break
@@ -357,6 +360,9 @@ export default {
     checkForm2() {
       let flag = true
       for (let index = 0; index < this.formItems2.length; index++) {
+        // this.$refs.vcode.validate()
+        // console.log(this.ruleForm2.vcode)
+        // console.log(`${this.formItems2[index]}: ${this.$refs[this.formItems2[index]].validateState}`)
         if (this.$refs[this.formItems2[index]].validateState !== 'success') {
           flag = false
           break
@@ -503,6 +509,8 @@ body{
 }
 .main-body .step1 a{
   color: #2495ca;
+  font-size: 12px;
+  white-space: nowrap;
 }
 .main-body .btnShowVcode{
   cursor: pointer;
