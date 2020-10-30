@@ -1,6 +1,6 @@
 <template>
   <div class="contract-form">
-    <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close title="添加代理合同" :visible.sync="formVisible" width="500px">
+    <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close :title="title" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="合同编号" prop="telenumber">
           <el-input v-model="form.telenumber" maxlength="11" />
@@ -63,6 +63,7 @@ export default {
   data() {
     return {
       daterange: '',
+      title: '',
       form: {
         agentCode: '',
         telenumber: '',
@@ -115,6 +116,11 @@ export default {
   mounted() {
     this.$nextTick(() => {
       console.log(this.row)
+      if (this.row.id) {
+        this.title = '修改代理合同'
+      } else {
+        this.title = '添加代理合同'
+      }
       this.setData(this.row)
     })
   },

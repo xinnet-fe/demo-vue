@@ -210,6 +210,7 @@ export default {
     handleEdit(row) {
       this.formVisible = true
       this.row = row
+      this.row.id = 'asdfsdf'
     },
     handleDel(row) {
       console.log(row)
