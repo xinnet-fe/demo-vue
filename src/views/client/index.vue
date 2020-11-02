@@ -2,15 +2,13 @@
   <div class="order-form agent-manage-apply">
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true" class="search-form">
-      <el-form-item label="会员编号" prop="type">
-        <el-select v-model="form.type" @change="handleSelectChange">
-          <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
+      <el-form-item label="会员编号">
+        <el-input v-model="form.hyCode" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
-      <el-form-item label="关键词" prop="keywords">
-        <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
+      <el-form-item label="代理编号">
+        <el-input v-model="form.agentCode" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
-      <el-form-item label="申请时间" prop="registerDate">
+      <el-form-item label="申请时间">
         <el-date-picker
           v-model="form.registerDate"
           type="daterange"
@@ -20,7 +18,7 @@
           value-format="yyyy-MM-dd"
         />
       </el-form-item>
-      <el-form-item label="绑定时间" prop="bindingDate">
+      <el-form-item label="绑定时间">
         <el-date-picker
           v-model="form.bindingDate"
           type="daterange"
@@ -30,7 +28,7 @@
           value-format="yyyy-MM-dd"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="state">
+      <el-form-item label="状态">
         <el-select v-model="form.state">
           <el-option v-for="item in stateType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
@@ -118,9 +116,10 @@ export default {
     return {
       formVisible: false,
       row: {},
-      placeholder: '请输入关键字',
+      placeholder: '请输入',
       form: {
-        type: 'hyCode',
+        agentCode: '',
+        hyCode: '',
         keywords: '',
         registerDate: '',
         bindingDate: '',
@@ -161,9 +160,9 @@ export default {
     },
     onSearch(page) {
       const query = {
-        hyCode: this.form.type === 'hyCode' ? this.form.keywords : '',
+        hyCode: this.form.hyCode,
         userEmail: this.form.type === 'userEmail' ? this.form.keywords : '',
-        agentCode: this.form.type === 'agentCode' ? this.form.keywords : '',
+        agentCode: this.form.agentCode,
         bindStatus: this.form.state,
         registerStartTime: this.form.registerDate && this.form.registerDate[0] ? `${this.form.registerDate[0]} 00.00.00` : '',
         registerEndTime: this.form.registerDate && this.form.registerDate[1] ? `${this.form.registerDate[1]} 23.59.59` : '',
@@ -191,6 +190,7 @@ export default {
     },
     resetForm() {
       clearFormDate(this.form)
+      this.form.state = 1
     },
     unbind(row) {
       this.unBund({ agentCode: row.agentCode, customerCode: row.customerCode }).then(res => {

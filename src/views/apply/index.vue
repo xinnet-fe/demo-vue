@@ -2,15 +2,19 @@
   <div class="order-form agent-manage-apply">
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true" class="search-form">
-      <el-form-item label="" prop="memberId">
-        <el-select v-model="form.type" @change="handleSelectChange">
-          <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
+      <el-form-item label="代理编号">
+        <el-input v-model="form.agentCode" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
-      <el-form-item prop="keywords">
-        <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
+      <el-form-item label="手机号">
+        <el-input v-model="form.telenumber" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
-      <el-form-item label="申请时间" prop="date">
+      <el-form-item label="邮箱">
+        <el-input v-model="form.userNameEmail" :placeholder="placeholder" :clearable="true" />
+      </el-form-item>
+      <el-form-item label="联系人">
+        <el-input v-model="form.organizeNameCn" :placeholder="placeholder" :clearable="true" />
+      </el-form-item>
+      <el-form-item label="申请时间">
         <el-date-picker
           v-model="form.date"
           type="daterange"
@@ -20,14 +24,14 @@
           value-format="yyyy-MM-dd"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="state">
+      <el-form-item label="状态">
         <el-select v-model="form.state">
           <el-option v-for="item in stateType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch()">查 询</el-button>
-        <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
+        <el-button type="default" @click="resetForm">重 置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -109,6 +113,7 @@
 import { mapActions, mapState } from 'vuex'
 import DialogApplyForm from './form'
 import Pagination from '@/components/Pagination'
+import clearFormData from '@/utils/clearFormData.js'
 export default {
   name: 'AgentManageApply',
   components: {
@@ -119,9 +124,12 @@ export default {
     return {
       formVisible: false,
       row: {},
-      placeholder: '请输入关键字',
+      placeholder: '请输入',
       form: {
-        type: 'agentCode',
+        agentCode: '',
+        telenumber: '',
+        userNameEmail: '',
+        organizeNameCn: '',
         date: '',
         keywords: '',
         state: '01'
@@ -163,10 +171,10 @@ export default {
     onSearch(page) {
       console.log(this.form.date)
       const query = {
-        agentCode: this.form.type === 'agentCode' ? this.form.keywords : '',
-        telenumber: this.form.type === 'telenumber' ? this.form.keywords : '',
-        userNameEmail: this.form.type === 'userNameEmail' ? this.form.keywords : '',
-        organizeNameCn: this.form.type === 'organizeNameCn' ? this.form.keywords : '',
+        agentCode: this.form.agentCode,
+        telenumber: this.form.telenumber,
+        userNameEmail: this.form.userNameEmail,
+        organizeNameCn: this.form.organizeNameCn,
         pageNum: '',
         state: this.form.state,
         startDate: this.form.date && this.form.date[0] ? `${this.form.date[0]} 00.00.00` : '',
@@ -197,9 +205,7 @@ export default {
       this.row = row
     },
     resetForm() {
-      const { form } = this.$refs
-      form.resetFields()
-      form.clearValidate('form')
+      clearFormData(this.form)
     }
   }
 }

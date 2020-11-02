@@ -12,7 +12,7 @@
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch()">查 询</el-button>
-        <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
+        <el-button type="default" @click="resetForm">重 置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -87,6 +87,7 @@
 import { mapActions, mapState } from 'vuex'
 import DialogApplyForm from './form'
 import Pagination from '@/components/Pagination'
+import clearFormData from '@/utils/clearFormData.js'
 // import map from 'lodash/map'
 // import find from 'lodash/find'
 
@@ -156,9 +157,7 @@ export default {
       })
     },
     resetForm() {
-      const { form } = this.$refs
-      form.resetFields()
-      form.clearValidate('form')
+      clearFormData(this.form)
     },
     add() {
       this.formVisible = true

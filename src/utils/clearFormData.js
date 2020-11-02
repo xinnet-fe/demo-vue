@@ -8,6 +8,7 @@ import isPlainObject from 'lodash/isPlainObject'
 export default data => {
   forEach(data, (value, key) => {
     let newValue
+    console.log(value)
     if (isString(value)) {
       newValue = ''
     } else if (isNumber(value)) {

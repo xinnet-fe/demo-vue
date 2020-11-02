@@ -2,13 +2,11 @@
   <div class="order-form agent-manage-apply">
     <!-- search -->
     <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-form">
-      <el-form-item label="" prop="type">
-        <el-select v-model="searchForm.type">
-          <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
+      <el-form-item label="代理编号">
+        <el-input v-model="searchForm.agentCode" placeholder="请输入" :clearable="true" />
       </el-form-item>
-      <el-form-item label="关键词" prop="keywords">
-        <el-input v-model="searchForm.keywords" placeholder="请输入关键词" :clearable="true" />
+      <el-form-item label="渠道名称">
+        <el-input v-model="searchForm.organizeNameCn" placeholder="请输入" :clearable="true" />
       </el-form-item>
       <el-form-item label="开通时间" prop="date">
         <el-date-picker
@@ -40,12 +38,12 @@
       </el-form-item>
       <el-form-item label="级别" prop="gradeCode">
         <el-select v-model="searchForm.gradeCode">
-          <el-option v-for="item in allGrade" :key="item.id" :label="item.gradeName" :value="item.id" />
+          <el-option v-for="item in allGrade" :key="item.id" :label="item.gradeName" :value="(item.id + '')" />
         </el-select>
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch()">查 询</el-button>
-        <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
+        <el-button type="default" @click="resetForm">重 置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -149,6 +147,7 @@ import DialogFinanceForm from './financeForm'
 import DialogLevelForm from './levelForm'
 import DialogAccountForm from './accountForm'
 import Pagination from '@/components/Pagination'
+import clearFormData from '@/utils/clearFormData.js'
 export default {
   name: 'AgentManageInfo',
   components: {
@@ -170,12 +169,13 @@ export default {
       // table中复选框选中值
       multipleSelection: [],
       searchForm: {
-        type: 'agentCode',
+        agentCode: '',
+        organizeNameCn: '',
         memberId: '',
         keywords: '',
         date: [],
         state: '',
-        selectedOptions: '',
+        selectedOptions: [],
         financeCode: '',
         gradeCode: ''
       },
@@ -236,10 +236,11 @@ export default {
   methods: {
     ...mapActions('userManager', ['findDlInfo', 'breakInfomation']),
     onSearch(page) {
+      console.log(this.searchForm)
       const query = {
-        agentCode: this.searchForm.type === 'agentCode' ? this.searchForm.keywords : '',
+        agentCode: this.searchForm.agentCode,
         saleCode: this.searchForm.selectedOptions[1] ? this.searchForm.selectedOptions[1] : '',
-        organizeNameCn: this.searchForm.type === 'organizeNameCn' ? this.searchForm.keywords : '',
+        organizeNameCn: this.searchForm.organizeNameCn,
         organCode: this.searchForm.selectedOptions[0] ? this.searchForm.selectedOptions[0] : '',
         financeCode: this.searchForm.financeCode,
         gradeCode: this.searchForm.gradeCode,
@@ -266,9 +267,8 @@ export default {
       })
     },
     resetForm() {
-      const { searchForm } = this.$refs
-      searchForm.resetFields()
-      searchForm.clearValidate('searchForm')
+      // const { searchForm } = this.$refs
+      clearFormData(this.searchForm)
     },
     showDetailModal(row) {
       this.detailModalVisible = true
