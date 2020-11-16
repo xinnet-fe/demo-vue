@@ -3,7 +3,7 @@
     <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close :title="title" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="合同编号" prop="contractNo">
-          <el-input v-model="form.contractNo" maxlength="11" />
+          <el-input v-model="form.contractNo" maxlength="100" />
         </el-form-item>
         <el-form-item label="代理编号" prop="agentCode">
           <el-input v-model="form.agentCode" maxlength="50" />
@@ -84,10 +84,10 @@ export default {
       },
       rules: {
         contractNo: [
-          { required: true, message: '必须填写！', trigger: 'blur' }
+          { required: true, message: '请填写合同编号！', trigger: 'blur' }
         ],
         agentCode: [
-          { required: true, message: '必须填写！', trigger: 'blur' }
+          { required: true, message: '请填写代理编号！', trigger: 'blur' }
         ],
         date: [
           { required: true, message: '请选择！', trigger: 'change' }
