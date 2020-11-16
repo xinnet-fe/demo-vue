@@ -87,3 +87,11 @@ export function findDlCustomer(query) {
     params: query
   })
 }
+// 代理合同—校验版本接口
+export function validDlCustomer(query) {
+  return request({
+    url: '/agent/api/user/validDlCustomer',
+    method: 'post',
+    params: query
+  })
+}

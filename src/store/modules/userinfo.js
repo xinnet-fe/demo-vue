@@ -1,5 +1,5 @@
 import { getSidebarMenus, changePwd } from '@/api/userinfo'
-import { queryAgentCustomerList, sendEmail, findGradeByAgent, findDlCustomer } from '@/api/agent/users'
+import { queryAgentCustomerList, sendEmail, findGradeByAgent, findDlCustomer, validDlCustomer } from '@/api/agent/users'
 import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
@@ -121,6 +121,15 @@ const actions = {
   findDlCustomer({ commit, state }, payload) {
     return new Promise((resolve, reject) => {
       findDlCustomer(payload).then(res => {
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  validDlCustomer({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      validDlCustomer(payload).then(res => {
         resolve(res)
       }).catch(error => {
         reject(error)

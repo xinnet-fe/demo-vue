@@ -32,7 +32,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="medium" :loading="loading" @click="onSearch">查询</el-button>
-        <el-button size="medium" @click="dialogVisible = true">绑定客户</el-button>
+        <el-button size="medium" @click="handleBind">绑定客户</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -166,6 +166,21 @@ export default {
     }
   },
   methods: {
+    handleBind() {
+      this.$store.dispatch('userinfo/validDlCustomer', {}).then((response) => {
+        if (!response.code && response.data.isSuccess === '1') {
+          this.dialogVisible = true
+        } else {
+          this.$alert('绑定客户需要签署新版合同，请联系区域主管签署合同', {
+            confirmButtonText: '知道了',
+            callback: action => {
+            }
+          })
+        }
+      }).catch((error) => {
+        console.error(error)
+      })
+    },
     getList(page) {
       const query = {
         pageNum: 1,
