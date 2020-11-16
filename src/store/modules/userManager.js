@@ -185,6 +185,34 @@ const actions = {
     }).catch(error => {
       return error
     })
+  },
+  findAgentContract({ commit }, query) {
+    return api.findAgentContract(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  deleteAgentContract({ commit }, query) {
+    return api.deleteAgentContract(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  insertAgentContract({ commit }, query) {
+    return api.insertAgentContract(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  updateAgentContract({ commit }, query) {
+    return api.updateAgentContract(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
   }
 }
 

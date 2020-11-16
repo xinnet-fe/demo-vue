@@ -183,3 +183,35 @@ export function upload(query) {
     data: query
   })
 }
+// 代理合同--查询接口
+export function findAgentContract(query) {
+  return request({
+    url: '/userManager/findAgentContract',
+    method: 'post',
+    params: query
+  })
+}
+// 代理合同--删除接口
+export function deleteAgentContract(query) {
+  return request({
+    url: '/userManager/deleteAgentContract',
+    method: 'post',
+    params: query
+  })
+}
+// 代理合同--新增接口
+export function insertAgentContract(query) {
+  return request({
+    url: '/userManager/insertAgentContract',
+    method: 'post',
+    params: query
+  })
+}
+// 代理合同--修改接口
+export function updateAgentContract(query) {
+  return request({
+    url: '/userManager/updateAgentContract',
+    method: 'post',
+    params: query
+  })
+}

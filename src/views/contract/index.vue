@@ -3,24 +3,26 @@
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true" class="search-form">
       <el-form-item label="合同编号">
-        <el-input v-model="form.code" placeholder="" :clearable="true" maxlength="100" />
+        <el-input v-model="form.contractNo" placeholder="" :clearable="true" maxlength="100" />
       </el-form-item>
       <el-form-item label="代理编号">
         <el-input v-model="form.agentCode" placeholder="" :clearable="true" maxlength="50" />
       </el-form-item>
       <el-form-item label="合同类型">
-        <el-select v-model="form.type">
-          <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select v-model="form.contractType">
+          <el-option label="全部" value="" />
+          <el-option v-for="item in contractType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="合同版本">
-        <el-select v-model="form.ver">
-          <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select v-model="form.contractVersion">
+          <el-option label="全部" value="" />
+          <el-option v-for="item in contractVersion" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="有效期">
         <el-date-picker
-          v-model="form.date"
+          v-model="date"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
@@ -50,28 +52,30 @@
         :data="list"
       >
         <el-table-column
-          prop="title"
+          prop="contractNo"
           label="合同编号"
           width="200"
         />
         <el-table-column
-          prop="title"
+          prop="agentCode"
           label="代理编号"
         />
+        <el-table-column label="合同类型">
+          <template v-slot="scope">
+            {{ getContractType(scope.row.contractType) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="合同版本">
+          <template v-slot="scope">
+            {{ getContractVersion(scope.row.contractVersion) }}
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="type"
-          label="合同类型"
-        />
-        <el-table-column
-          prop="top"
-          label="合同版本"
-        />
-        <el-table-column
-          prop="tag"
+          prop="updateTime"
           label="操作时间"
         />
         <el-table-column
-          prop="date"
+          prop="updateName"
           label="操作人"
         />
         <el-table-column label="操作" fixed="right" width="150">
@@ -101,7 +105,7 @@
         @pagination="onSearch"
       />
     </div>
-    <dialog-contract-form v-if="formVisible" :visible.sync="formVisible" :row.sync="row" />
+    <dialog-contract-form v-if="formVisible" :visible.sync="formVisible" :row.sync="row" :contract-type="contractType" :contract-version="contractVersion" />
   </div>
 </template>
 <script>
@@ -109,7 +113,7 @@ import { mapActions, mapState } from 'vuex'
 import DialogContractForm from './form'
 import Pagination from '@/components/Pagination'
 export default {
-  name: 'AgentManageApply',
+  name: 'AgentContract',
   components: {
     DialogContractForm,
     Pagination
@@ -119,70 +123,70 @@ export default {
       formVisible: false,
       row: {},
       placeholder: '请输入关键字',
+      date: '',
       form: {
-        code: '',
+        contractNo: '',
         agentCode: '',
-        type: '',
-        ver: '',
-        date: ''
+        contractType: '',
+        contractVersion: '',
+        contractStartTime: '',
+        contractEndTime: '',
+        pageNum: 1,
+        pageSize: 20
       },
       list: [
-        {
-          title: '标题',
-          type: '类型',
-          top: 'true',
-          tag: '标签',
-          date: '2020-8-8',
-          author: '小新',
-          dateUpate: '2020-9-9',
-          updatePeople: '小新小新'
-        }
+
       ],
       page: {
         total: 0,
         page: 0,
         limit: 20
       },
-      memberType: [
-        { label: '代理编号', value: 'agentCode' },
-        { label: '手机号', value: 'telenumber' },
-        { label: '邮箱', value: 'userNameEmail' },
-        { label: '联系人', value: 'organizeNameCn' }
+      contractType: [
+        { label: '纸质合同', value: '1' },
+        { label: '电子合同', value: '2' }
       ],
-      stateType: [
-        { label: '全部', value: '' },
-        { label: '未开通', value: '01' },
-        { label: '已开通', value: '02' },
-        { label: '已冻结', value: '03' },
-        { label: '已关闭', value: '04' }
+      contractVersion: [
+        { label: 'V0', value: 'V0' },
+        { label: 'V1', value: 'V1' }
       ]
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['userManager/findDlApply']
+      loading: state => state.loading.effects['userManager/findAgentContract']
     })
+  },
+  watch: {
+    date: function(val) {
+      const v = val || ['', '']
+      this.form.contractStartTime = v[0] ? `${v[0]} 00:00:00` : ''
+      this.form.contractEndTime = v[1] ? `${v[1]} 23:59:59` : ''
+    }
   },
   mounted() {
     this.onSearch(1)
   },
   methods: {
-    ...mapActions('userManager', ['findDlApply']),
+    ...mapActions('userManager', ['findAgentContract', 'deleteAgentContract']),
     handleSelectChange(v) {
       console.log(v)
     },
+    getContractType(type) {
+      const text = this.contractType.filter((v) => {
+        return v.value === type
+      })
+      return text[0].label
+    },
+    getContractVersion(ver) {
+      const text = this.contractVersion.filter((v) => {
+        return v.value === ver
+      })
+      return text[0].label
+    },
     onSearch(page) {
       console.log(this.form.date)
-      const query = {
-        agentCode: this.form.type === 'agentCode' ? this.form.keywords : '',
-        telenumber: this.form.type === 'telenumber' ? this.form.keywords : '',
-        userNameEmail: this.form.type === 'userNameEmail' ? this.form.keywords : '',
-        organizeNameCn: this.form.type === 'organizeNameCn' ? this.form.keywords : '',
-        pageNum: '',
-        state: this.form.state,
-        startDate: this.form.date && this.form.date[0] ? `${this.form.date[0]} 00.00.00` : '',
-        endDate: this.form.date && this.form.date[1] ? `${this.form.date[1]} 23.59.59` : ''
-      }
+      const query = this.form
 
       if (page) {
         query.pageNum = page.page
@@ -190,10 +194,8 @@ export default {
       } else {
         query.pageNum = 1
         query.pageSize = 20
-        this.page.limit = 20
-        this.page.page = 1
       }
-      this.findDlApply(query).then(res => {
+      this.findAgentContract(query).then(res => {
         if (!res.code) {
           console.log(res)
           this.list = res.data.list
@@ -210,14 +212,13 @@ export default {
     handleEdit(row) {
       this.formVisible = true
       this.row = row
-      this.row.id = 'asdfsdf'
     },
     handleDel(row) {
       console.log(row)
-      this.breakInfomation({ agentCode: row.agentCode }).then(res => {
+      this.deleteAgentContract({ id: row.id }).then(res => {
         if (!res.code) {
           if (res.data.isSuccess === '1') {
-            this.$message.success('操作成功！')
+            this.$message.success('删除成功！')
             this.onSearch()
           } else {
             this.$message.error(res.msg)

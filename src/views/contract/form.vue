@@ -2,29 +2,29 @@
   <div class="contract-form">
     <el-dialog :close-on-click-modal="false" :before-close="beforeClose" destroy-on-close :title="title" :visible.sync="formVisible" width="500px">
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="合同编号" prop="telenumber">
-          <el-input v-model="form.telenumber" maxlength="11" />
+        <el-form-item label="合同编号" prop="contractNo">
+          <el-input v-model="form.contractNo" maxlength="11" />
         </el-form-item>
-        <el-form-item label="代理编号" prop="userNameEmail">
-          <el-input v-model="form.userNameEmail" maxlength="50" />
+        <el-form-item label="代理编号" prop="agentCode">
+          <el-input v-model="form.agentCode" maxlength="50" />
         </el-form-item>
-        <el-form-item label="合同类型">
-          <el-select v-model="form.type">
-            <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
+        <el-form-item label="合同类型" prop="contractType">
+          <el-select v-model="form.contractType">
+            <el-option v-for="item in contractType" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="合同版本">
-          <el-select v-model="form.ver">
-            <el-option v-for="item in memberType" :key="item.value" :label="item.label" :value="item.value" />
+        <el-form-item label="合同版本" prop="contractVersion">
+          <el-select v-model="form.contractVersion">
+            <el-option v-for="item in contractVersion" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <el-tooltip placement="top">
-            <div slot="content">多行信息<br>第二行信息</div>
+            <div slot="content">• 版本V0，2020年12月代理融合前版本<br>• 版本V1，融合后版本，支持代付模式</div>
             <i style="font-size: 20px" class="el-icon-warning-outline" />
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="合同有效期" prop="userNameEmail">
+        <el-form-item label="合同有效期" prop="date">
           <el-date-picker
-            v-model="daterange"
+            v-model="form.date"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -43,8 +43,6 @@
 
 <script>
 import clearFormData from '@/utils/clearFormData'
-import isPhone from '@/utils/isPhone'
-import isEmail from '@/utils/isEmail'
 import { mapActions, mapState } from 'vuex'
 export default {
   name: 'ContractForm',
@@ -52,6 +50,18 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    contractType: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    contractVersion: {
+      type: Array,
+      default() {
+        return []
+      }
     },
     row: {
       type: Object,
@@ -62,38 +72,38 @@ export default {
   },
   data() {
     return {
-      daterange: '',
       title: '',
       form: {
+        date: '',
+        contractNo: '',
         agentCode: '',
-        telenumber: '',
-        userNameEmail: '',
-        type: '',
-        ver: '',
-        dateBegin: '',
-        dateEnd: ''
+        contractType: '',
+        contractVersion: '',
+        startTime: '',
+        endTime: ''
       },
-      memberType: [
-        { label: '代理编号', value: 'agentCode' },
-        { label: '手机号', value: 'telenumber' },
-        { label: '邮箱', value: 'userNameEmail' },
-        { label: '联系人', value: 'organizeNameCn' }
-      ],
       rules: {
-        telenumber: [
-          { required: true, message: '必须填写！', trigger: 'blur' },
-          { validator: isPhone, message: '格式错误！', trigger: 'blur' }
+        contractNo: [
+          { required: true, message: '必须填写！', trigger: 'blur' }
         ],
-        userNameEmail: [
-          { required: true, message: '必须填写！', trigger: 'blur' },
-          { validator: isEmail, message: '格式错误！', trigger: 'blur' }
+        agentCode: [
+          { required: true, message: '必须填写！', trigger: 'blur' }
+        ],
+        date: [
+          { required: true, message: '请选择！', trigger: 'change' }
+        ],
+        contractType: [
+          { required: true, message: '请选择！', trigger: 'change' }
+        ],
+        contractVersion: [
+          { required: true, message: '请选择！', trigger: 'change' }
         ]
       }
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['userManager/updateDlInfomation']
+      loading: state => state.loading.effects['userManager/insertAgentContract']
     }),
     formVisible: {
       get() {
@@ -102,15 +112,6 @@ export default {
       set(val) {
         this.$emit('update:visible', val)
       }
-    }
-  },
-  watch: {
-    daterange(val) {
-      if (val && val.length === 2) {
-        this.form.dateBegin = val[0]
-        this.form.dateEnd = val[1]
-      }
-      console.log(this.form)
     }
   },
   mounted() {
@@ -125,40 +126,56 @@ export default {
     })
   },
   methods: {
-    ...mapActions('userManager', ['updateDlInfomation']),
+    ...mapActions('userManager', ['updateDlInfomation', 'insertAgentContract']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
         if (valid) {
-          this.form.agentCode = this.row.agentCode
-          console.log(this.form)
+          this.form.startTime = this.form.date && this.form.date[0] ? `${this.form.date[0]} 00.00.00` : ''
+          this.form.endTime = this.form.date && this.form.date[1] ? `${this.form.date[1]} 23.59.59` : ''
           // submit
-          this.updateDlInfomation(this.form).then(res => {
-            if (!res.code) {
-              if (res.data.isSuccess === '1') {
-                this.$message.success('修改成功!')
-                this.closeModal()
-                this.$emit('onSearch')
+          if (this.row.id) {
+            this.form.id = this.row.id
+            this.updateAgentContract(this.form).then(res => {
+              if (!res.code) {
+                if (res.data.isSuccess === '1') {
+                  this.$message.success('修改成功!')
+                  this.closeModal()
+                  this.$emit('onSearch')
+                } else {
+                  this.$message.error(res.msg)
+                }
               } else {
                 this.$message.error(res.msg)
               }
-            } else {
-              this.$message.error(res.msg)
-            }
-          }).catch(error => {
-            this.$message.error(error)
-          })
+            }).catch(error => {
+              this.$message.error(error)
+            })
+          } else {
+            this.insertAgentContract(this.form).then(res => {
+              if (!res.code) {
+                if (res.data.isSuccess === '1') {
+                  this.$message.success('添加成功!')
+                  this.closeModal()
+                  this.$emit('onSearch')
+                } else {
+                  this.$message.error(res.msg)
+                }
+              } else {
+                this.$message.error(res.msg)
+              }
+            }).catch(error => {
+              this.$message.error(error)
+            })
+          }
         } else {
           return false
         }
       })
     },
     closeModal() {
-      const { form } = this.$refs
       this.$emit('update:visible', false)
       this.$emit('update:row', {})
-      form.resetFields()
-      form.clearValidate('form')
       clearFormData(this.form)
     },
     beforeClose(done) {
