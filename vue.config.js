@@ -16,8 +16,19 @@ const customWebpackConfig = defaultSettings.webpackConfig
 
 // merge proxy
 const defaultProxy = {
-  '/portal': {
-    target: 'http://119.10.116.247:8082',
+  '/refundProduct': {
+    //target: 'https://host.xinnet.com',
+    target: 'https://test-cloud-boss.xinnet.com',
+    changeOrigin: true
+  },
+  '/v1': {
+    //target: 'https://host.xinnet.com',
+    target: 'https://test-cloud-boss.xinnet.com',
+    changeOrigin: true
+  },
+  '/instance': {
+    //target: 'https://host.xinnet.com',
+    target: 'https://test-cloud-boss.xinnet.com',
     changeOrigin: true
   }
 }
