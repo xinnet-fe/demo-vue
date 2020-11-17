@@ -17,18 +17,18 @@ const customWebpackConfig = defaultSettings.webpackConfig
 // merge proxy
 const defaultProxy = {
   '/refundProduct': {
-    //target: 'https://host.xinnet.com',
-    target: 'https://test-cloud-boss.xinnet.com',
+    target: 'https://host.xinnet.com',
+    //target: 'https://test-cloud-boss.xinnet.com', //　箭头云
     changeOrigin: true
   },
   '/v1': {
     //target: 'https://host.xinnet.com',
-    target: 'https://test-cloud-boss.xinnet.com',
+    target: 'https://test-cloud-boss.xinnet.com', //　箭头云
     changeOrigin: true
   },
   '/instance': {
-    //target: 'https://host.xinnet.com',
-    target: 'https://test-cloud-boss.xinnet.com',
+    target: 'https://host.xinnet.com',
+    //target: 'https://test-cloud-boss.xinnet.com', //　箭头云
     changeOrigin: true
   }
 }

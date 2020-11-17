@@ -2,22 +2,7 @@ import request from '@/utils/request'
 
 // 1、产品列表查询
 export function refundProduct_List(data) {
-  var url = ''
-  switch (data.productType) {
-    case 'ARROW':
-    case 'MYSQL':
-    case 'LOAD_BALANCE':
-    case 'FLOAT_IP':
-      url = '/refundProduct/list'
-      break
-    case 'RABBITMQ':
-    case 'NATGW':
-    case 'REDIS':
-      url = '/v1/makino/refundProduct/list'
-      break
-    default:
-      url = ''
-  }
+  var url = '/refundProduct/list'
   return request({
     url,
     method: 'get',
@@ -27,22 +12,7 @@ export function refundProduct_List(data) {
 
 // 2、产品下账单列表查询
 export function refundProduct_BillList(data) {
-  var url = ''
-  switch (data.productType) {
-    case 'ARROW':
-    case 'MYSQL':
-    case 'LOAD_BALANCE':
-    case 'FLOAT_IP':
-      url = '/refundProduct/billList'
-      break
-    case 'RABBITMQ':
-    case 'NATGW':
-    case 'REDIS':
-      url = '/v1/makino/refundProduct/billList'
-      break
-    default:
-      url = ''
-  }
+  var url = '/refundProduct/billList'
   return request({
     url,
     method: 'get',
@@ -52,22 +22,7 @@ export function refundProduct_BillList(data) {
 
 // 3、获取退费建议价格
 export function instance_Refund_Money(data) {
-  var url = ''
-  switch (data.productType) {
-    case 'ARROW':
-    case 'MYSQL':
-    case 'LOAD_BALANCE':
-    case 'FLOAT_IP':
-      url = '/instance/refund/money'
-      break
-    case 'RABBITMQ':
-    case 'NATGW':
-    case 'REDIS':
-      url = '/v1/makino/refund/money'
-      break
-    default:
-      url = ''
-  }
+  var url = '/instance/refund/money'
   return request({
     url,
     method: 'post',
@@ -77,22 +32,7 @@ export function instance_Refund_Money(data) {
 
 // 4、进行退费
 export function instance_Refund(data) {
-  var url = ''
-  switch (data.productType) {
-    case 'ARROW':
-    case 'MYSQL':
-    case 'LOAD_BALANCE':
-    case 'FLOAT_IP':
-      url = '/instance/refund'
-      break
-    case 'RABBITMQ':
-    case 'NATGW':
-    case 'REDIS':
-      url = '/v1/makino/refund'
-      break
-    default:
-      url = ''
-  }
+  var url = '/instance/refund'
   return request({
     url,
     method: 'post',

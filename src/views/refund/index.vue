@@ -2,44 +2,15 @@
   <div class="box-container">
     <div class="box-form">
       <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
-        <el-form-item label="用户ID" prop="agentCode">
-          <el-input v-model="form.agentCode" placeholder="请输入用户ID" />
-        </el-form-item>
 
         <el-form-item label="服务编号" label-width="auto" prop="serviceCode">
           <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
         </el-form-item>
-        <el-form-item label="服务开通日期" label-width="auto" prop="opentime">
-          <el-date-picker
-            v-model="form.opentime"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
+
+        <el-form-item label="站点名称" label-width="auto" prop="siteName">
+          <el-input v-model="form.siteName" placeholder="请输入站点名称" />
         </el-form-item>
-        <el-form-item label="服务状态" prop="businessState">
-          <el-select v-model="form.serviceState" placeholder="请选择服务状态">
-            <el-option label="全部" value="" />
-            <el-option label="正常" value="2" />
-            <el-option label="已到期" value="4" />
-            <el-option label="冻结中" value="8" />
-            <el-option label="已删除" value="64" />
-            <el-option label="未开通" value="128" />
-            <el-option label="开通失败" value="256" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="商品分类" prop="productType">
-          <el-select v-model="form.productType" placeholder="请选择商品分类">
-            <el-option label="云主机" value="ARROW" />
-            <el-option label="云数据库" value="MYSQL" />
-            <el-option label="负载均衡" value="LOAD_BALANCE" />
-            <el-option label="弹性IP" value="FLOAT_IP" />
-            <el-option label="NAT网关" value="NATGW" />
-            <el-option label="Redis" value="REDIS" />
-            <el-option label="RabbitMQ" value="RABBITMQ" />
-          </el-select>
-        </el-form-item>
+
         <el-form-item>
           <el-button size="medium" @click="onReset('form')">重置</el-button>
           <el-button type="primary" size="medium" @click="onSubmit('form')">查询</el-button>
@@ -49,13 +20,8 @@
     <div class="box-list">
       <el-table v-loading="loading" :data="listdata" style="width: 100%">
         <el-table-column prop="serviceCode" label="服务编号" width="150" />
-        <el-table-column prop="agentCode" label="用户ID" width="180" />
-        <el-table-column label="商品分类" width="110">
-          <template slot-scope="scope">
-            {{ deProductType(scope.row.productType) }}
-          </template>
-        </el-table-column>
         <el-table-column prop="productName" label="商品名称" />
+        <el-table-column prop="siteName" label="站点名称" />
         <el-table-column label="服务开通日期" width="140">
           <template slot-scope="scope">
             {{ YMDHMS(scope.row.beginTime) }}
@@ -227,21 +193,13 @@ export default {
     }
     return {
       form: {
-        productType: 'ARROW',
-        agentCode: '',
-        serviceCode: '',
-        opentime: '',
-        serviceState: ''
+        siteName: '',
+        serviceCode: ''
       },
       rules: {
-        agentCode: [
-          { validator: validateAlphanumeric, trigger: 'blur' }
-        ],
         serviceCode: [
+          { required: true, message: '请输入服务编号', trigger: 'blur' },
           { validator: validateAlphanumeric, trigger: 'blur' }
-        ],
-        productType: [
-          { required: true, message: '请输入商品分类', trigger: 'blur' }
         ]
       },
       loading: false,
@@ -282,7 +240,7 @@ export default {
     })
   },
   mounted() {
-    this.onSubmit('form')
+
   },
   methods: {
     YMD(dt) {
@@ -548,6 +506,11 @@ export default {
 <style lang="scss">
 .box-form{
   .el-range-separator{
+    font-size: 12px !important;
+  }
+}
+.box-page{
+  .el-pagination__total,.el-pagination__jump{
     font-size: 12px !important;
   }
 }
