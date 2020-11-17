@@ -119,10 +119,10 @@ export default {
       console.log(this.row)
       if (this.row.id) {
         this.title = '修改代理合同'
+        this.setData(this.row)
       } else {
         this.title = '添加代理合同'
       }
-      this.setData(this.row)
     })
   },
   methods: {
@@ -183,9 +183,12 @@ export default {
       done()
     },
     setData(row) {
-      const { telenumber, userNameEmail } = row
-      this.form.telenumber = telenumber
-      this.form.userNameEmail = userNameEmail
+      const { contractNo, agentCode, contractType, contractVersion } = row
+      this.form.contractNo = contractNo
+      this.form.agentCode = agentCode
+      this.form.contractType = contractType
+      this.form.contractVersion = contractVersion
+      this.form.date = [row.contractStartTime, row.contractEndTime]
     }
   }
 }

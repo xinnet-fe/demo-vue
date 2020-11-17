@@ -70,6 +70,11 @@
             {{ getContractVersion(scope.row.contractVersion) }}
           </template>
         </el-table-column>
+        <el-table-column label="合同有效期">
+          <template v-slot="scope">
+            {{ scope.row.contractStartTime ? scope.row.contractStartTime.split(" ")[0] : '-' }} 至 {{ scope.row.contractEndTime ? scope.row.contractEndTime.split(" ")[0] : '-' }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="updateTime"
           label="操作时间"
