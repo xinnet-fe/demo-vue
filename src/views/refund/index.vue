@@ -551,5 +551,10 @@ export default {
     font-size: 12px !important;
   }
 }
+.box-page{
+  .el-pagination__total,.el-pagination__jump{
+    font-size: 12px !important;
+  }
+}
 </style>
 
