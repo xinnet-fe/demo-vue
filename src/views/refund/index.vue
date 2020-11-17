@@ -2,12 +2,43 @@
   <div class="box-container">
     <div class="box-form">
       <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
-        <el-form-item label="服务编号" prop="serviceCode">
-          <el-input v-model="form.serviceCode" placeholder="请输入用户ID" />
+        <el-form-item label="用户ID" prop="agentCode">
+          <el-input v-model="form.agentCode" placeholder="请输入用户ID" />
         </el-form-item>
 
-        <el-form-item label="站点名称" label-width="auto" prop="siteName">
-          <el-input v-model="form.siteName" placeholder="请输入站点名称" />
+        <el-form-item label="服务编号" label-width="auto" prop="serviceCode">
+          <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
+        </el-form-item>
+        <el-form-item label="服务开通日期" label-width="auto" prop="opentime">
+          <el-date-picker
+            v-model="form.opentime"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="服务状态" prop="businessState">
+          <el-select v-model="form.serviceState" placeholder="请选择服务状态">
+            <el-option label="全部" value="" />
+            <el-option label="正常" value="2" />
+            <el-option label="已到期" value="4" />
+            <el-option label="冻结中" value="8" />
+            <el-option label="已删除" value="64" />
+            <el-option label="未开通" value="128" />
+            <el-option label="开通失败" value="256" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="商品分类" prop="productType">
+          <el-select v-model="form.productType" placeholder="请选择商品分类">
+            <el-option label="云主机" value="ARROW" />
+            <el-option label="云数据库" value="MYSQL" />
+            <el-option label="负载均衡" value="LOAD_BALANCE" />
+            <el-option label="弹性IP" value="FLOAT_IP" />
+            <el-option label="NAT网关" value="NATGW" />
+            <el-option label="Redis" value="REDIS" />
+            <el-option label="RabbitMQ" value="RABBITMQ" />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button size="medium" @click="onReset('form')">重置</el-button>
@@ -323,9 +354,8 @@ export default {
             productType: productType
           }
           if (opentime && opentime.length === 2) {
-            payload.beginTime = this.YMD(opentime[0].getTime())
-            payload.endTime = this.YMD(opentime[1].getTime())
-            console.log('opentime=', opentime)
+            payload.startDate = this.YMD(opentime[0].getTime())
+            payload.endDate = this.YMD(opentime[1].getTime())
           }
           this.loading = true
           // 查询
@@ -445,7 +475,7 @@ export default {
     },
     // 实际退费输入
     transMoney_Blur() {
-      if (Number(this.instanceRefund_Dialog.transMoney_Inp) === parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
+      if (this.instanceRefund_Dialog.transMoney_Inp === parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
         return true
       } else {
         this.$alert('请输入数字')
