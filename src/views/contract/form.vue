@@ -35,7 +35,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeModal">取 消</el-button>
-        <el-button type="primary" @click="onSubmit">确定</el-button>
+        <el-button type="primary" :loading="(loading || loading2)" @click="onSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -103,7 +103,8 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['userManager/insertAgentContract']
+      loading: state => state.loading.effects['userManager/insertAgentContract'],
+      loading2: state => state.loading.effects['userManager/updateAgentContract']
     }),
     formVisible: {
       get() {
@@ -126,7 +127,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('userManager', ['updateDlInfomation', 'insertAgentContract']),
+    ...mapActions('userManager', ['updateDlInfomation', 'insertAgentContract', 'updateAgentContract']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
