@@ -1,113 +1,121 @@
 <template>
   <div class="box-container">
-    <div class="box-form">
-      <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
 
-        <el-form-item label="服务编号" label-width="auto" prop="serviceCode">
-          <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
-        </el-form-item>
+    <div v-if="showBillList_Dialog.visible === false">
+      <div class="box-form">
+        <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
 
-        <el-form-item label="站点名称" label-width="auto" prop="siteName">
-          <el-input v-model="form.siteName" placeholder="请输入站点名称" />
-        </el-form-item>
+          <el-form-item label="服务编号" prop="serviceCode">
+            <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
+          </el-form-item>
 
-        <el-form-item>
-          <el-button size="medium" @click="onReset('form')">重置</el-button>
-          <el-button type="primary" size="medium" @click="onSubmit('form')">查询</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="box-list">
-      <el-table v-loading="loading" :data="listdata" style="width: 100%">
-        <el-table-column prop="serviceCode" label="服务编号" width="150" />
-        <el-table-column prop="productName" label="商品名称" />
-        <el-table-column prop="siteName" label="站点名称" />
-        <el-table-column label="服务开通日期" width="140">
-          <template slot-scope="scope">
-            {{ YMDHMS(scope.row.beginTime) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="服务到期日期" width="140">
-          <template slot-scope="scope">
-            {{ YMDHMS(scope.row.endTime) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="服务状态" width="100">
-          <template slot-scope="scope">
-            {{ scope.row.serviceState | serviceState }}
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="70">
-          <template slot-scope="scope">
-            <el-button v-if="scope.row.canRefund" type="text" @click="showBillList(scope.row)">退款</el-button>
-            <span v-else>不能退款</span>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div class="box-page">
-      <el-pagination
-        background
-        :current-page="page.currentPage"
-        :page-sizes="[10, 20, 30, 40, 50]"
-        :page-size="page.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="page.total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div>
-    <el-dialog
-      title=""
-      :visible.sync="showBillList_Dialog.visible"
-      width="60%"
-    >
-      <el-row>
-        <el-col :span="24">
-          <span style="margin-right:20px">服务编号：{{ showBillList_Dialog.serviceCode }}</span>
-          <el-button @click="instanceRefund('SERVICE')">退订所有服务</el-button>
-        </el-col>
-      </el-row>
-      <div>
-        <el-table
-          v-loading="showBillList_Dialog.loading"
-          :data="showBillList_Dialog.data"
-          style="width: 100%"
-        >
-          <el-table-column label="账单编号" width="270">
+          <el-form-item label="站点名称" prop="siteName">
+            <el-input v-model="form.siteName" placeholder="请输入站点名称" />
+          </el-form-item>
+
+          <el-form-item>
+            <el-button size="medium" @click="onReset('form')">重置</el-button>
+            <el-button type="primary" size="medium" @click="onSubmit('form')">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="box-list">
+        <el-table v-loading="loading" :data="listdata" style="width: 100%">
+          <el-table-column prop="serviceCode" label="服务编号" width="170" />
+          <el-table-column prop="productName" label="商品名称" />
+          <el-table-column prop="siteName" label="站点名称" />
+          <el-table-column label="服务开通日期" width="140">
             <template slot-scope="scope">
-              <span>{{ scope.row.billCode }}</span>
+              {{ YMDHMS(scope.row.beginTime) }}
             </template>
           </el-table-column>
-          <el-table-column label="账单类型" width="110">
+          <el-table-column label="服务到期日期" width="140">
             <template slot-scope="scope">
-              <span>{{ deBillLineType(scope.row.billLineType) }}</span>
+              {{ YMDHMS(scope.row.endTime) }}
             </template>
           </el-table-column>
-          <el-table-column label="商品类型" width="110">
+          <el-table-column label="服务状态" width="100">
             <template slot-scope="scope">
-              <span>{{ deGoodsType(scope.row.goodsType) }}</span>
+              {{ scope.row.serviceState | serviceState }}
             </template>
           </el-table-column>
-          <el-table-column label="生成时间">
+          <el-table-column label="操作" width="70">
             <template slot-scope="scope">
-              <span>{{ YMDHMS(scope.row.operateTime) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="120">
-            <template slot-scope="scope">
-              <span v-if="scope.row.isReturns === '01'">已退费</span>
-              <el-button v-if="scope.row.isReturns === '02'" @click="instanceRefund('ORDER', scope.row)">未退费</el-button>
-              <span v-if="scope.row.isReturns === '03'">后付费(不能退费)</span>
+              <el-button v-if="scope.row.canRefund" type="text" @click="showBillList(scope.row)">退款</el-button>
+              <span v-else>不能退款</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="showBillList_Dialog.visible = false">取 消</el-button>
-        <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">确 定</el-button>
-      </span>
-    </el-dialog>
+    </div>
+
+    <div v-if="showBillList_Dialog.visible === true">
+      <div style="padding:0px 20px 20px 20px;">
+        <el-row>
+          <el-col :span="24">
+            <span style="margin-right:20px">服务编号：{{ showBillList_Dialog.serviceCode }}</span>
+            <el-button @click="instanceRefund('SERVICE')">退订所有服务</el-button>
+          </el-col>
+        </el-row>
+        <div style="margin: 20px 0px">
+          <el-table
+            v-loading="showBillList_Dialog.loading"
+            :data="showBillList_Dialog.data"
+            style="width: 100%"
+          >
+            <el-table-column label="账单编号" width="270">
+              <template slot-scope="scope">
+                <span>{{ scope.row.billCode }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="用户ID" width="110">
+              <template slot-scope="scope">
+                <span>{{ scope.row.agentCode }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="账单类型" width="110">
+              <template slot-scope="scope">
+                <span>{{ deBillLineType(scope.row.billLineType) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="商品类型" width="110">
+              <template slot-scope="scope">
+                <span>{{ deGoodsType(scope.row.goodsType) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="账单实付金额">
+              <template slot-scope="scope">
+                <span>{{ RMB(scope.row.shouldRefund) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="退款金额">
+              <template slot-scope="scope">
+                <span>{{ RMB(scope.row.transMoney) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="生成时间">
+              <template slot-scope="scope">
+                <span>{{ YMDHMS(scope.row.operateTime) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="70">
+              <template slot-scope="scope">
+                <div v-if="scope.row.canRefund === false" />
+                <div v-else>
+                  <span v-if="scope.row.isReturns === '01'">已退款</span>
+                  <el-button v-if="scope.row.isReturns === '02'" type="text" @click="instanceRefund('ORDER', scope.row)">退款</el-button>
+                  <span v-if="scope.row.isReturns === '03'" title="后付费(不能退费)" />
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <span class="dialog-footer">
+          <el-button size="medium" @click="showBillList_Dialog.visible = false">取 消</el-button>
+          <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">确 定</el-button>
+        </span>
+      </div>
+    </div>
 
     <el-dialog
       title=""
@@ -116,10 +124,10 @@
     >
       <div>
         <span class="dz">系统建议退款金额：</span>
-        <span>{{ instanceRefund_Dialog.shouldRefund }}</span></div>
+        <span>{{ RMB(instanceRefund_Dialog.shouldRefund) }}</span></div>
       <div style="margin: 30px 0px 70px 0px">
         <span class="dz" style="float:left; padding-top:8px">实际退款金额：</span>
-        <span style="float:left"><el-input v-model="instanceRefund_Dialog.transMoney_Inp" @blur="transMoney_Blur" /></span>
+        <span style="float:left"><el-input v-model="instanceRefund_Dialog.transMoney_Inp" @blur="transMoney_Blur"><template slot="prepend">¥</template></el-input></span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="medium" @click="instanceRefund_Dialog.visible = false">取 消</el-button>
@@ -170,14 +178,10 @@ export default {
           return '正常'
         case 4:
           return '已到期'
-        case 8:
-          return '冻结中'
         case 64:
           return '已删除'
         case 128:
           return '未开通'
-        case 256:
-          return '开通失败'
       }
     }
   },
@@ -194,7 +198,7 @@ export default {
     return {
       form: {
         siteName: '',
-        serviceCode: ''
+        serviceCode: 'V1568783876480926908'
       },
       rules: {
         serviceCode: [
@@ -204,11 +208,6 @@ export default {
       },
       loading: false,
       listdata: [],
-      page: {
-        currentPage: 1,
-        total: 0, // 总条目数
-        pageSize: 20
-      },
       showBillList_Dialog: {
         item: {},
         visible: false,
@@ -249,24 +248,11 @@ export default {
     YMDHMS(dt) {
       return formatTime(dt, 'YYYY-MM-DD HH:mm:ss')
     },
-    deProductType(val) {
-      switch (val) {
-        case 'ARROW':
-          return '云主机'
-        case 'MYSQL':
-          return '云数据库'
-        case 'LOAD_BALANCE':
-          return '负载均衡'
-        case 'FLOAT_IP':
-          return '弹性IP'
-        case 'NATGW':
-          return 'NAT网关'
-        case 'REDIS':
-          return 'Redis'
-        case 'RABBITMQ':
-          return 'RabbitMQ'
-        default:
-          return ''
+    RMB(v) {
+      if (v) {
+        return '¥' + v
+      } else {
+        return ''
       }
     },
     deBillLineType(val) {
@@ -296,34 +282,26 @@ export default {
       }
     },
     onSubmit(formName) {
-      this.page.currentPage = 1
       this.GetList()
     },
     GetList() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          const { productType, agentCode, serviceCode, opentime, serviceState } = this.form
+          const { serviceCode, siteName } = this.form
           const payload = {
-            page: this.page.currentPage,
-            limit: this.page.pageSize,
-            agentCode: agentCode,
             serviceCode: serviceCode,
-            serviceState: serviceState,
-            productType: productType
-          }
-          if (opentime && opentime.length === 2) {
-            payload.startDate = this.YMD(opentime[0].getTime())
-            payload.endDate = this.YMD(opentime[1].getTime())
+            siteName: siteName
           }
           this.loading = true
           // 查询
+          this.listdata = []
           this.$store.dispatch('refund/refundProduct_List', payload).then(res => {
             this.loading = false
             if (res.success) {
               this.listdata = this.refundProduct_List.data
-              this.page.total = this.refundProduct_List.page.total_count
             } else {
-              msgError(res.message)
+              this.refundError_Dialog.visible = true
+              this.refundError_Dialog.text = res.message
             }
           }).catch(err => {
             this.loading = false
@@ -338,40 +316,24 @@ export default {
     onReset(formName) {
       this.$refs[formName].resetFields()
     },
-    handleSizeChange(val) {
-      this.page.pageSize = val
-      // console.log(`每页 ${val} 条`);
-      this.GetList()
-    },
-    handleCurrentChange(val) {
-      this.page.currentPage = val
-      // console.log(`当前页: ${val}`);
-      this.GetList()
-    },
-    handleClose(done) {
-      done()
-    },
     // 显示子账单
     showBillList(item) {
       const payload = {
-        agentCode: item.agentCode,
-        // billCode: item.第一个接口中没有账单编号,
-        serviceCode: item.serviceCode,
-        startDate: formatTime(item.beginTime, 'YYYY-MM-DD'),
-        endDate: formatTime(item.endTime, 'YYYY-MM-DD'),
-        productType: item.productType
+        serviceCode: item.serviceCode
       }
       this.showBillList_Dialog.item = item
       this.showBillList_Dialog.visible = true
       this.showBillList_Dialog.serviceCode = item.serviceCode
       this.showBillList_Dialog.loading = true
       this.refundProduct_BillList.data = []
+      this.showBillList_Dialog.data = []
       this.$store.dispatch('refund/refundProduct_BillList', payload).then(res => {
         this.showBillList_Dialog.loading = false
         if (res.success) {
           this.showBillList_Dialog.data = this.refundProduct_BillList.data
         } else {
-          msgError(res.message)
+          this.refundError_Dialog.visible = true
+          this.refundError_Dialog.text = res.message
         }
       }).catch(err => {
         this.showBillList_Dialog.loading = false
@@ -399,18 +361,18 @@ export default {
       if (refundType === 'SERVICE') {
         // 整单退费
         item = this.showBillList_Dialog.item
-        payload.agentCode = item.agentCode
+        // payload.agentCode = item.agentCode
         // payload.billCode = item.id  // 整单没有billCode
         payload.serviceCode = item.serviceCode
         payload.refundType = refundType
-        payload.productType = item.productType
+        // payload.productType = item.productType
       } else if (refundType === 'ORDER') {
         // 退单个订单
-        payload.agentCode = this.showBillList_Dialog.item.agentCode
+        // payload.agentCode = this.showBillList_Dialog.item.agentCode
         payload.billCode = item.billCode
         payload.serviceCode = this.showBillList_Dialog.item.serviceCode
         payload.refundType = refundType
-        payload.productType = item.productType
+        // payload.productType = item.productType
       } else {
         console.log('出错了')
         return
@@ -433,10 +395,10 @@ export default {
     },
     // 实际退费输入
     transMoney_Blur() {
-      if (this.instanceRefund_Dialog.transMoney_Inp === parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
+      if (Number(this.instanceRefund_Dialog.transMoney_Inp) === parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
         return true
       } else {
-        this.$alert('请输入数字')
+        this.$alert('请输入数字', '', { callback: () => {} })
         return false
       }
     },
@@ -445,18 +407,19 @@ export default {
       // console.log('是一级账单 showBillList_Dialog.item=', this.showBillList_Dialog.item)
       // console.log('子账单单独退 instanceRefund_Dialog.item=', this.instanceRefund_Dialog.item)
       if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
-        this.$alert('实际退费价格不能大于建议退费价格')
+        this.$alert('实际退费价格不能大于建议退费价格', '', { callback: () => {} })
       } else if (this.instanceRefund_Dialog.transMoney_Inp <= 0) {
-        this.$alert('实际退费价格必须大于零')
+        this.$alert('实际退费价格必须大于零', '', { callback: () => {} })
       } else if (this.transMoney_Blur() === true) {
         // 整单退费
         const payload = {
-          agentCode: this.showBillList_Dialog.item.agentCode,
+          // agentCode: this.showBillList_Dialog.item.agentCode,
           // billCode: this.instanceRefund_Dialog.item.billCode,// 整单没有billCode
           serviceCode: this.showBillList_Dialog.item.serviceCode,
+          shouldRefund: this.instanceRefund_Dialog.shouldRefund, // 应退费金额
           transMoney: this.instanceRefund_Dialog.transMoney_Inp, // 工作人员输入的实际退费金额
-          refundType: this.instanceRefund_Dialog.item.refundType,
-          productType: this.instanceRefund_Dialog.item.productType
+          refundType: this.instanceRefund_Dialog.item.refundType
+          // productType: this.instanceRefund_Dialog.item.productType
         }
         // 退单个订单
         if (this.instanceRefund_Dialog.item.refundType === 'ORDER') {
@@ -467,10 +430,16 @@ export default {
         this.instanceRefund_Dialog.btnText = '处理中..'
         this.$store.dispatch('refund/instance_Refund', payload).then(res => {
           if (res.success) {
-            this.$alert('退费成功', '提示', {})
+            this.$alert('退费成功', '提示', { callback: () => {
+              this.GetList() // 刷新页面
+            } })
+            this.showBillList_Dialog.visible = false
+          } else {
+            this.refundError_Dialog.visible = true
+            this.refundError_Dialog.text = res.message
           }
           this.instanceRefund_Dialog.visible = false
-          this.showBillList_Dialog.visible = false
+
           this.instanceRefund_Dialog.disabled = false
           this.instanceRefund_Dialog.btnText = '确 定'
         }).catch(err => {

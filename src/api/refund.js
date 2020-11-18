@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // 1、产品列表查询
 export function refundProduct_List(data) {
-  var url = '/refundProduct/list'
+  var url = '/refundProduct/list/vhost'
   return request({
     url,
     method: 'get',
@@ -22,7 +22,7 @@ export function refundProduct_BillList(data) {
 
 // 3、获取退费建议价格
 export function instance_Refund_Money(data) {
-  var url = '/instance/refund/money'
+  var url = '/refundProduct/refund/money'
   return request({
     url,
     method: 'post',
@@ -32,7 +32,7 @@ export function instance_Refund_Money(data) {
 
 // 4、进行退费
 export function instance_Refund(data) {
-  var url = '/instance/refund'
+  var url = '/refundProduct/refund'
   return request({
     url,
     method: 'post',
