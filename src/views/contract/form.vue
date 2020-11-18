@@ -132,8 +132,8 @@ export default {
       this.$refs.form.validate((valid) => {
         console.log(valid)
         if (valid) {
-          this.form.startTime = this.form.date && this.form.date[0] ? `${this.form.date[0]} 00.00.00` : ''
-          this.form.endTime = this.form.date && this.form.date[1] ? `${this.form.date[1]} 23.59.59` : ''
+          this.form.startTime = this.form.date && this.form.date[0] ? `${this.form.date[0]} 00:00:00` : ''
+          this.form.endTime = this.form.date && this.form.date[1] ? `${this.form.date[1]} 23:59:59` : ''
           // submit
           if (this.row.id) {
             this.form.id = this.row.id
@@ -142,7 +142,7 @@ export default {
                 if (res.data.isSuccess === '1') {
                   this.$message.success('修改成功!')
                   this.closeModal()
-                  this.$emit('onSearch')
+                  this.$parent.onSearch()
                 } else {
                   this.$message.error(res.msg)
                 }
@@ -158,7 +158,7 @@ export default {
                 if (res.data.isSuccess === '1') {
                   this.$message.success('添加成功!')
                   this.closeModal()
-                  this.$emit('onSearch')
+                  this.$parent.onSearch()
                 } else {
                   this.$message.error(res.msg)
                 }
