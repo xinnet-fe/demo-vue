@@ -24,12 +24,12 @@
           <el-table-column prop="serviceCode" label="服务编号" width="170" />
           <el-table-column prop="productName" label="商品名称" />
           <el-table-column prop="siteName" label="站点名称" />
-          <el-table-column label="服务开通日期" width="140">
+          <el-table-column label="服务开通日期" width="150">
             <template slot-scope="scope">
               {{ YMDHMS(scope.row.beginTime) }}
             </template>
           </el-table-column>
-          <el-table-column label="服务到期日期" width="140">
+          <el-table-column label="服务到期日期" width="150">
             <template slot-scope="scope">
               {{ YMDHMS(scope.row.endTime) }}
             </template>
@@ -122,13 +122,21 @@
       :visible.sync="instanceRefund_Dialog.visible"
       width="30%"
     >
-      <div>
-        <span class="dz">系统建议退款金额：</span>
-        <span>{{ RMB(instanceRefund_Dialog.shouldRefund) }}</span></div>
-      <div style="margin: 30px 0px 70px 0px">
-        <span class="dz" style="float:left; padding-top:8px">实际退款金额：</span>
-        <span style="float:left"><el-input v-model="instanceRefund_Dialog.transMoney_Inp" @blur="transMoney_Blur"><template slot="prepend">¥</template></el-input></span>
-      </div>
+      <el-form ref="instanceRefund_Dialog" :model="instanceRefund_Dialog" :rules="instanceRefund_Dialog.rules">
+        <div>
+          <span class="dz">系统建议退款金额：</span>
+          <span>{{ RMB(instanceRefund_Dialog.shouldRefund) }}</span></div>
+        <div style="margin: 30px 0px 70px 0px">
+          <span class="dz" style="float:left; padding-top:8px">实际退款金额：</span>
+          <span style="float:left">
+            <el-form-item label="" prop="transMoney_Inp">
+              <el-input v-model="instanceRefund_Dialog.transMoney_Inp" blur="transMoney_Blur">
+                <template slot="prepend">¥</template>
+              </el-input>
+            </el-form-item>
+          </span>
+        </div>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="medium" @click="instanceRefund_Dialog.visible = false">取 消</el-button>
         <el-button type="primary" :disabled="instanceRefund_Dialog.disabled" size="medium" @click="confirmRefund()">{{ instanceRefund_Dialog.btnText }}</el-button>
@@ -221,6 +229,22 @@ export default {
         shouldRefund: '', // 建议退费
         transMoney: '', // 实际退费（后端返回值）
         transMoney_Inp: '', // 实际退费（前端输入框）
+        rules: {
+          transMoney_Inp: [
+            { required: true, message: '请输入实际退费价格', trigger: 'blur' },
+            { validator: (rule, value, callback) => {
+              if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
+                callback(new Error('实际退费价格不能大于建议退费价格'))
+              } else if (this.instanceRefund_Dialog.transMoney_Inp <= 0) {
+                callback(new Error('实际退费价格必须大于零'))
+              } else if (Number(this.instanceRefund_Dialog.transMoney_Inp) !== parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: 'blur' }
+          ]
+        },
         disabled: false, // 退费按钮是否可用
         btnText: '确 定' // 退费按钮文字
       },
@@ -393,7 +417,7 @@ export default {
         this.refundError_Dialog.text = err
       })
     },
-    // 实际退费输入
+    /* // 实际退费输入
     transMoney_Blur() {
       if (Number(this.instanceRefund_Dialog.transMoney_Inp) === parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
         return true
@@ -401,55 +425,55 @@ export default {
         this.$alert('请输入数字', '', { callback: () => {} })
         return false
       }
-    },
+    },*/
     // 确认退费
     confirmRefund() {
       // console.log('是一级账单 showBillList_Dialog.item=', this.showBillList_Dialog.item)
       // console.log('子账单单独退 instanceRefund_Dialog.item=', this.instanceRefund_Dialog.item)
-      if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
-        this.$alert('实际退费价格不能大于建议退费价格', '', { callback: () => {} })
-      } else if (this.instanceRefund_Dialog.transMoney_Inp <= 0) {
-        this.$alert('实际退费价格必须大于零', '', { callback: () => {} })
-      } else if (this.transMoney_Blur() === true) {
-        // 整单退费
-        const payload = {
-          // agentCode: this.showBillList_Dialog.item.agentCode,
-          // billCode: this.instanceRefund_Dialog.item.billCode,// 整单没有billCode
-          serviceCode: this.showBillList_Dialog.item.serviceCode,
-          shouldRefund: this.instanceRefund_Dialog.shouldRefund, // 应退费金额
-          transMoney: this.instanceRefund_Dialog.transMoney_Inp, // 工作人员输入的实际退费金额
-          refundType: this.instanceRefund_Dialog.item.refundType
-          // productType: this.instanceRefund_Dialog.item.productType
-        }
-        // 退单个订单
-        if (this.instanceRefund_Dialog.item.refundType === 'ORDER') {
-          payload.billCode = this.instanceRefund_Dialog.item.billCode
-        }
-        // 退费
-        this.instanceRefund_Dialog.disabled = true
-        this.instanceRefund_Dialog.btnText = '处理中..'
-        this.$store.dispatch('refund/instance_Refund', payload).then(res => {
-          if (res.success) {
-            this.$alert('退费成功', '提示', { callback: () => {
-              this.GetList() // 刷新页面
-            } })
-            this.showBillList_Dialog.visible = false
-          } else {
-            this.refundError_Dialog.visible = true
-            this.refundError_Dialog.text = res.message
+      this.$refs['instanceRefund_Dialog'].validate((valid) => {
+        if (valid) {
+          // 整单退费
+          const payload = {
+            // agentCode: this.showBillList_Dialog.item.agentCode,
+            // billCode: this.instanceRefund_Dialog.item.billCode,// 整单没有billCode
+            serviceCode: this.showBillList_Dialog.item.serviceCode,
+            shouldRefund: this.instanceRefund_Dialog.shouldRefund, // 应退费金额
+            transMoney: this.instanceRefund_Dialog.transMoney_Inp, // 工作人员输入的实际退费金额
+            refundType: this.instanceRefund_Dialog.item.refundType
+            // productType: this.instanceRefund_Dialog.item.productType
           }
-          this.instanceRefund_Dialog.visible = false
+          // 退单个订单
+          if (this.instanceRefund_Dialog.item.refundType === 'ORDER') {
+            payload.billCode = this.instanceRefund_Dialog.item.billCode
+          }
+          // 退费
+          this.instanceRefund_Dialog.disabled = true
+          this.instanceRefund_Dialog.btnText = '处理中..'
+          this.$store.dispatch('refund/instance_Refund', payload).then(res => {
+            if (res.success) {
+              this.$alert('退费成功', '提示', { callback: () => {
+                this.GetList() // 刷新页面
+              } })
+              this.showBillList_Dialog.visible = false
+            } else {
+              this.refundError_Dialog.visible = true
+              this.refundError_Dialog.text = res.message
+            }
+            this.instanceRefund_Dialog.visible = false
 
-          this.instanceRefund_Dialog.disabled = false
-          this.instanceRefund_Dialog.btnText = '确 定'
-        }).catch(err => {
-          this.instanceRefund_Dialog.visible = false
-          this.showBillList_Dialog.visible = false
-          this.instanceRefund_Dialog.disabled = false
-          this.instanceRefund_Dialog.btnText = '确 定'
-          msgError(err)
-        })
-      }
+            this.instanceRefund_Dialog.disabled = false
+            this.instanceRefund_Dialog.btnText = '确 定'
+          }).catch(err => {
+            this.instanceRefund_Dialog.visible = false
+            this.showBillList_Dialog.visible = false
+            this.instanceRefund_Dialog.disabled = false
+            this.instanceRefund_Dialog.btnText = '确 定'
+            msgError(err)
+          })
+        } else {
+          console.log('表单错误')
+        }
+      })
     }
   }
 }
