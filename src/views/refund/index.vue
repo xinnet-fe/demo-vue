@@ -111,8 +111,7 @@
           </el-table>
         </div>
         <span class="dialog-footer">
-          <el-button size="medium" @click="showBillList_Dialog.visible = false">取 消</el-button>
-          <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">确 定</el-button>
+          <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">返 回</el-button>
         </span>
       </div>
     </div>
@@ -206,7 +205,7 @@ export default {
     return {
       form: {
         siteName: '',
-        serviceCode: 'V1568783876480926908'
+        serviceCode: ''// V1568783876480926908
       },
       rules: {
         serviceCode: [
@@ -273,10 +272,10 @@ export default {
       return formatTime(dt, 'YYYY-MM-DD HH:mm:ss')
     },
     RMB(v) {
-      if (v) {
-        return '¥' + v
-      } else {
+      if (v === undefined || v === null || v === '') {
         return ''
+      } else {
+        return '¥' + v
       }
     },
     deBillLineType(val) {
@@ -417,15 +416,6 @@ export default {
         this.refundError_Dialog.text = err
       })
     },
-    /* // 实际退费输入
-    transMoney_Blur() {
-      if (Number(this.instanceRefund_Dialog.transMoney_Inp) === parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
-        return true
-      } else {
-        this.$alert('请输入数字', '', { callback: () => {} })
-        return false
-      }
-    },*/
     // 确认退费
     confirmRefund() {
       // console.log('是一级账单 showBillList_Dialog.item=', this.showBillList_Dialog.item)
@@ -452,9 +442,10 @@ export default {
           this.$store.dispatch('refund/instance_Refund', payload).then(res => {
             if (res.success) {
               this.$alert('退费成功', '提示', { callback: () => {
-                this.GetList() // 刷新页面
+                // this.GetList() // 刷新页面
+                this.showBillList(this.showBillList_Dialog.item) // 重新显示子账单
               } })
-              this.showBillList_Dialog.visible = false
+              // this.showBillList_Dialog.visible = false
             } else {
               this.refundError_Dialog.visible = true
               this.refundError_Dialog.text = res.message
