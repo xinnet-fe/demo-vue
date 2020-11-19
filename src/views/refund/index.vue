@@ -147,8 +147,7 @@
         </el-table>
       </div>
       <span class="dialog-footer">
-        <el-button size="medium" @click="showBillList_Dialog.visible = false">取 消</el-button>
-        <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">确 定</el-button>
+        <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">返 回</el-button>
       </span>
     </div>
 
@@ -156,11 +155,12 @@
       title=""
       :visible.sync="instanceRefund_Dialog.visible"
       width="30%"
+      :destroy-on-close="true"
     >
       <el-form ref="instanceRefund_Dialog" :model="instanceRefund_Dialog" :rules="instanceRefund_Dialog.rules">
         <div>
           <span class="dz">系统建议退款金额：</span>
-          <span>{{ instanceRefund_Dialog.shouldRefund }}</span></div>
+          <span>{{ RMB(instanceRefund_Dialog.shouldRefund) }}</span></div>
         <div style="margin: 30px 0px 70px 0px">
           <span class="dz" style="float:left; padding-top:8px">实际退款金额：</span>
           <span style="float:left">
@@ -325,10 +325,10 @@ export default {
       return formatTime(dt, 'YYYY-MM-DD HH:mm:ss')
     },
     RMB(v) {
-      if (v) {
-        return '¥' + v
-      } else {
+      if (v === undefined || v === null || v === '') {
         return ''
+      } else {
+        return '¥' + v
       }
     },
     deProductType(val) {
@@ -539,10 +539,17 @@ export default {
           this.instanceRefund_Dialog.btnText = '处理中..'
           this.$store.dispatch('refund/instance_Refund', payload).then(res => {
             if (res.success) {
-              this.$alert('退费成功', '提示', {})
+              this.$alert('退费成功', '提示', { callback: () => {
+                // this.GetList() // 刷新页面
+                this.showBillList(this.showBillList_Dialog.item) // 重新显示子账单
+              } })
+              // this.showBillList_Dialog.visible = false
+            } else {
+              this.refundError_Dialog.visible = true
+              this.refundError_Dialog.text = res.message
             }
             this.instanceRefund_Dialog.visible = false
-            this.showBillList_Dialog.visible = false
+
             this.instanceRefund_Dialog.disabled = false
             this.instanceRefund_Dialog.btnText = '确 定'
           }).catch(err => {
