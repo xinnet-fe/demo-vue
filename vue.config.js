@@ -18,7 +18,7 @@ const customWebpackConfig = defaultSettings.webpackConfig
 const defaultProxy = {
   '/refundProduct': {
     //target: 'https://host.xinnet.com',
-    target: 'https://test-cloud-boss.xinnet.com',
+    target: 'https://test-cloud-boss.xinnet.com', // 箭头云   java and python
     changeOrigin: true
   },
   '/v1': {
