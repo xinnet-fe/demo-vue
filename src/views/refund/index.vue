@@ -9,10 +9,6 @@
             <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
           </el-form-item>
 
-          <el-form-item label="站点名称" prop="siteName">
-            <el-input v-model="form.siteName" placeholder="请输入站点名称" />
-          </el-form-item>
-
           <el-form-item>
             <el-button size="medium" @click="onReset('form')">重置</el-button>
             <el-button type="primary" size="medium" @click="onSubmit('form')">查询</el-button>
@@ -26,12 +22,12 @@
           <el-table-column prop="siteName" label="站点名称" />
           <el-table-column label="服务开通日期" width="150">
             <template slot-scope="scope">
-              {{ YMDHMS(scope.row.beginTime) }}
+              {{ scope.row.beginTime }}
             </template>
           </el-table-column>
           <el-table-column label="服务到期日期" width="150">
             <template slot-scope="scope">
-              {{ YMDHMS(scope.row.endTime) }}
+              {{ scope.row.endTime }}
             </template>
           </el-table-column>
           <el-table-column label="服务状态" width="100">
@@ -83,6 +79,11 @@
                 <span>{{ deGoodsType(scope.row.goodsType) }}</span>
               </template>
             </el-table-column>
+            <el-table-column label="赠送年限">
+              <template slot-scope="scope">
+                <span>{{ scope.row.freeTimeAmount === 0 ? '' : scope.row.freeTimeAmount + '月' }}</span>
+              </template>
+            </el-table-column>
             <el-table-column label="账单实付金额">
               <template slot-scope="scope">
                 <span>{{ RMB(scope.row.shouldRefund) }}</span>
@@ -90,12 +91,12 @@
             </el-table-column>
             <el-table-column label="退款金额">
               <template slot-scope="scope">
-                <span>{{ RMB(scope.row.transMoney) }}</span>
+                <span>{{ RMB(scope.row.operateReundMoney) }}</span>
               </template>
             </el-table-column>
             <el-table-column label="生成时间">
               <template slot-scope="scope">
-                <span>{{ YMDHMS(scope.row.operateTime) }}</span>
+                <span>{{ scope.row.operateTime }}</span>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="70">
@@ -204,7 +205,6 @@ export default {
     }
     return {
       form: {
-        siteName: '',
         serviceCode: ''// V1568783876480926908
       },
       rules: {
@@ -310,10 +310,9 @@ export default {
     GetList() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          const { serviceCode, siteName } = this.form
+          const { serviceCode } = this.form
           const payload = {
-            serviceCode: serviceCode,
-            siteName: siteName
+            serviceCode: serviceCode
           }
           this.loading = true
           // 查询

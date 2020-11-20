@@ -128,7 +128,7 @@
           id="editor_id"
           height="500px"
           width="500px"
-          plugins-path="/static/kindeditor/plugins/"
+          plugins-path="/static/vhost/kindeditor/plugins/"
           upload-json="/order/upload/"
           :items="editorItems"
           :content="form.text"

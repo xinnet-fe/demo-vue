@@ -73,7 +73,7 @@ const configureWebpack = merge(defaultConfigureWebpack, customWebpackConfig.conf
 const defaultRootConfig = {
   publicPath: '/',
   outputDir: 'dist',
-  assetsDir: 'static',
+  assetsDir: 'static/vhost',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false
 }
