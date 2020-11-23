@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export function getUser(query) {
   return request({
     url: '/refundProduct/employee/getEmployeeInfo',
-    // url: 'static/vhost/data/account.json',
+    // url: 'static/ec/data/account.json',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function getUser(query) {
 export function getSidebarMenus(query) {
   return request({
     // url: '/navigation/listNavigation',
-    url: 'static/vhost/data/menu.json',
+    url: 'static/ec/data/menu.json',
     method: 'get',
     params: query
   })

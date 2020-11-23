@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // 1、产品列表查询
 export function refundProduct_List(data) {
-  var url = '/refundProduct/list/vhost'
+  var url = '/refundProduct/list/ec'
   return request({
     url,
     method: 'get',

@@ -19,7 +19,6 @@
         <el-table v-loading="loading" :data="listdata" style="width: 100%">
           <el-table-column prop="serviceCode" label="服务编号" width="170" />
           <el-table-column prop="productName" label="商品名称" />
-          <el-table-column prop="siteName" label="站点名称" />
           <el-table-column label="服务开通日期" width="150">
             <template slot-scope="scope">
               {{ scope.row.beginTime }}
@@ -94,7 +93,7 @@
                 <span>{{ RMB(scope.row.operateReundMoney) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="生成时间">
+            <el-table-column label="生成时间" width="140">
               <template slot-scope="scope">
                 <span>{{ scope.row.operateTime }}</span>
               </template>
@@ -205,7 +204,7 @@ export default {
     }
     return {
       form: {
-        serviceCode: ''// V1568783876480926908
+        serviceCode: ''// V1568783876480926908    E1604632583338699462   E是驰云、V是虚机
       },
       rules: {
         serviceCode: [

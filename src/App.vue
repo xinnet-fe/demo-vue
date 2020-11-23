@@ -20,8 +20,8 @@ export default {
       const { name } = this.$route
       if (name === 'Refund') {
         permissions.some(item => {
-          const arr = item.split(':')
-          console.log('item=', arr)
+          // const arr = item.split(':')
+          // console.log('item=', arr)
         })
       }
     })
