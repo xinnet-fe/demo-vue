@@ -16,7 +16,7 @@ const customWebpackConfig = defaultSettings.webpackConfig
 
 // merge proxy
 const defaultProxy = {
-  '/refundProduct': {
+  '/smartBus-Makino-v1': {
     //target: 'https://host.xinnet.com',
     target: 'https://test-cloud-boss.xinnet.com', // 箭头云   java and python
     changeOrigin: true
@@ -26,11 +26,11 @@ const defaultProxy = {
     target: 'https://test-cloud-boss.xinnet.com',
     changeOrigin: true
   },
-  '/instance': {
+  /*'/instance': {
     //target: 'https://host.xinnet.com',
     target: 'https://test-cloud-boss.xinnet.com',
     changeOrigin: true
-  }
+  }*/
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
 

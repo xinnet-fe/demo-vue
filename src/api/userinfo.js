@@ -2,6 +2,7 @@ import request from '@/utils/request'
 
 export function getUser(query) {
   return request({
+    // url: '/smartBus-Makino-v1/refundProduct/employee/getEmployeeInfo',
     // url: '/employee/getEmployeeInfo',
     url: 'static/data/account.json',
     method: 'get',

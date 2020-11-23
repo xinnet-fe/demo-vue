@@ -8,7 +8,7 @@ export function refundProduct_List(data) {
     case 'MYSQL':
     case 'LOAD_BALANCE':
     case 'FLOAT_IP':
-      url = '/refundProduct/list'
+      url = '/smartBus-Makino-v1/refundProduct/list'
       break
     case 'RABBITMQ':
     case 'NATGW':
@@ -33,7 +33,7 @@ export function refundProduct_BillList(data) {
     case 'MYSQL':
     case 'LOAD_BALANCE':
     case 'FLOAT_IP':
-      url = '/refundProduct/billList'
+      url = '/smartBus-Makino-v1/refundProduct/billList'
       break
     case 'RABBITMQ':
     case 'NATGW':
@@ -58,7 +58,7 @@ export function instance_Refund_Money(data) {
     case 'MYSQL':
     case 'LOAD_BALANCE':
     case 'FLOAT_IP':
-      url = '/instance/refund/money'
+      url = '/smartBus-Makino-v1/instance/refund/money'
       break
     case 'RABBITMQ':
     case 'NATGW':
@@ -83,7 +83,7 @@ export function instance_Refund(data) {
     case 'MYSQL':
     case 'LOAD_BALANCE':
     case 'FLOAT_IP':
-      url = '/instance/refund'
+      url = '/smartBus-Makino-v1/instance/refund'
       break
     case 'RABBITMQ':
     case 'NATGW':
