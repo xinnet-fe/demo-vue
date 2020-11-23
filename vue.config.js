@@ -19,18 +19,11 @@ const defaultProxy = {
   '/refundProduct': {
     //target: 'https://host.xinnet.com',
     target: 'https://stage.host.xinnet.com', // 虚机 驰云 
-    //target: 'https://test-cloud-boss.xinnet.com', //　箭头云
     changeOrigin: true
   },
-  //'/v1': {
-    //target: 'https://host.xinnet.com',
-    //target: 'https://test-cloud-boss.xinnet.com', //　箭头云
-    //changeOrigin: true
-  //},
   '/instance': {
     //target: 'https://host.xinnet.com',
     target: 'https://stage.host.xinnet.com', // 虚机 驰云 
-    //target: 'https://test-cloud-boss.xinnet.com', //　箭头云
     changeOrigin: true
   }
 }
