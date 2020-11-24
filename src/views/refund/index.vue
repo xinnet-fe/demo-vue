@@ -20,6 +20,7 @@
           <el-table-column prop="serviceCode" label="服务编号" width="170" />
           <el-table-column prop="productName" label="商品名称" />
           <el-table-column prop="siteName" label="站点名称" />
+          <el-table-column prop="buyTime" label="购买日期" />
           <el-table-column label="服务开通日期" width="150">
             <template slot-scope="scope">
               {{ scope.row.beginTime }}
