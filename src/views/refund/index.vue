@@ -93,19 +93,16 @@
                 <span>{{ RMB(scope.row.operateReundMoney) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="生成时间" width="140">
+            <el-table-column label="生成时间" width="150">
               <template slot-scope="scope">
                 <span>{{ scope.row.operateTime }}</span>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="70">
               <template slot-scope="scope">
-                <div v-if="scope.row.canRefund === false" />
-                <div v-else>
-                  <span v-if="scope.row.isReturns === '01'">已退款</span>
-                  <el-button v-if="scope.row.isReturns === '02'" type="text" @click="instanceRefund('ORDER', scope.row)">退款</el-button>
-                  <span v-if="scope.row.isReturns === '03'" title="后付费(不能退费)" />
-                </div>
+                <span v-if="scope.row.canRefund === false && scope.row.isReturns === '01'">已退款</span>
+                <span v-if="scope.row.canRefund === false && scope.row.isReturns === '03'" title="后付费(不能退费)" />
+                <el-button v-if="scope.row.canRefund === true && scope.row.isReturns === '02'" type="text" @click="instanceRefund('ORDER', scope.row)">退款</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -120,6 +117,7 @@
       title=""
       :visible.sync="instanceRefund_Dialog.visible"
       width="30%"
+      :destroy-on-close="true"
     >
       <el-form ref="instanceRefund_Dialog" :model="instanceRefund_Dialog" :rules="instanceRefund_Dialog.rules">
         <div>
@@ -231,11 +229,12 @@ export default {
           transMoney_Inp: [
             { required: true, message: '请输入实际退费价格', trigger: 'blur' },
             { validator: (rule, value, callback) => {
-              if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
-                callback(new Error('实际退费价格不能大于建议退费价格'))
-              } else if (this.instanceRefund_Dialog.transMoney_Inp <= 0) {
-                callback(new Error('实际退费价格必须大于零'))
-              } else if (Number(this.instanceRefund_Dialog.transMoney_Inp) !== parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
+              const inpVal = Number(this.instanceRefund_Dialog.transMoney_Inp)
+              if (inpVal > this.instanceRefund_Dialog.actualCost) {
+                callback(new Error('不能大于实际花费总金额' + this.instanceRefund_Dialog.actualCost))
+              } else if (inpVal <= 0) {
+                callback(new Error('实际退款金额必须大于零'))
+              } else if (inpVal !== parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
                 callback(new Error('请输入数字'))
               } else {
                 callback()
@@ -405,6 +404,7 @@ export default {
           this.instanceRefund_Dialog.shouldRefund = this.instance_Refund_Money.data.shouldRefund
           this.instanceRefund_Dialog.transMoney = this.instance_Refund_Money.data.transMoney
           this.instanceRefund_Dialog.transMoney_Inp = this.instance_Refund_Money.data.transMoney
+          this.instanceRefund_Dialog.actualCost = this.instance_Refund_Money.data.actualCost
         } else {
           this.refundError_Dialog.visible = true
           this.refundError_Dialog.text = res.message
