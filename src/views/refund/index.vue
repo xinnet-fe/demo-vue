@@ -44,6 +44,18 @@
           </el-table-column>
         </el-table>
       </div>
+      <div class="box-page">
+        <el-pagination
+          background
+          :current-page="page.currentPage"
+          :page-sizes="[10, 20, 30, 40, 50]"
+          :page-size="page.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="page.total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
 
     <div v-if="showBillList_Dialog.visible === true">
@@ -213,6 +225,11 @@ export default {
       },
       loading: false,
       listdata: [],
+      page: {
+        currentPage: 1,
+        total: 0, // 总条目数
+        pageSize: 20
+      },
       showBillList_Dialog: {
         item: {},
         visible: false,
@@ -260,7 +277,7 @@ export default {
     })
   },
   mounted() {
-
+    this.onSubmit('form')
   },
   methods: {
     YMD(dt) {
@@ -303,6 +320,7 @@ export default {
       }
     },
     onSubmit(formName) {
+      this.page.currentPage = 1
       this.GetList()
     },
     GetList() {
@@ -310,6 +328,8 @@ export default {
         if (valid) {
           const { serviceCode } = this.form
           const payload = {
+            page: this.page.currentPage,
+            limit: this.page.pageSize,
             serviceCode: serviceCode
           }
           this.loading = true
@@ -335,6 +355,16 @@ export default {
     },
     onReset(formName) {
       this.$refs[formName].resetFields()
+    },
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      // console.log(`每页 ${val} 条`);
+      this.GetList()
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val
+      // console.log(`当前页: ${val}`);
+      this.GetList()
     },
     // 显示子账单
     showBillList(item) {
