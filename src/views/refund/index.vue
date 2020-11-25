@@ -95,7 +95,7 @@
                 <span>{{ RMB(scope.row.operateReundMoney) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="生成时间">
+            <el-table-column label="生成时间" width="150">
               <template slot-scope="scope">
                 <span>{{ scope.row.operateTime }}</span>
               </template>
@@ -119,6 +119,7 @@
       title=""
       :visible.sync="instanceRefund_Dialog.visible"
       width="30%"
+      :destroy-on-close="true"
     >
       <el-form ref="instanceRefund_Dialog" :model="instanceRefund_Dialog" :rules="instanceRefund_Dialog.rules">
         <div>
@@ -228,13 +229,14 @@ export default {
         transMoney_Inp: '', // 实际退费（前端输入框）
         rules: {
           transMoney_Inp: [
-            { required: true, message: '请输入实际退费价格', trigger: 'blur' },
+            { required: true, message: '请输入实际退款金额', trigger: 'blur' },
             { validator: (rule, value, callback) => {
-              if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
-                callback(new Error('实际退费价格不能大于建议退费价格'))
-              } else if (this.instanceRefund_Dialog.transMoney_Inp <= 0) {
-                callback(new Error('实际退费价格必须大于零'))
-              } else if (Number(this.instanceRefund_Dialog.transMoney_Inp) !== parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
+              const inpVal = Number(this.instanceRefund_Dialog.transMoney_Inp)
+              if (inpVal > this.instanceRefund_Dialog.actualCost) {
+                callback(new Error('不能大于实际花费总金额' + this.instanceRefund_Dialog.actualCost))
+              } else if (inpVal <= 0) {
+                callback(new Error('实际退款金额必须大于零'))
+              } else if (inpVal !== parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
                 callback(new Error('请输入数字'))
               } else {
                 callback()
@@ -404,6 +406,7 @@ export default {
           this.instanceRefund_Dialog.shouldRefund = this.instance_Refund_Money.data.shouldRefund
           this.instanceRefund_Dialog.transMoney = this.instance_Refund_Money.data.transMoney
           this.instanceRefund_Dialog.transMoney_Inp = this.instance_Refund_Money.data.transMoney
+          this.instanceRefund_Dialog.actualCost = this.instance_Refund_Money.data.actualCost
         } else {
           this.refundError_Dialog.visible = true
           this.refundError_Dialog.text = res.message
