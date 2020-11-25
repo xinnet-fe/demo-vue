@@ -17,8 +17,8 @@ const customWebpackConfig = defaultSettings.webpackConfig
 // merge proxy
 const defaultProxy = {
   '/refundProduct': {
-    //target: 'https://host.xinnet.com',
-    target: 'https://stage.host.xinnet.com', // 虚机 驰云 
+    target: 'https://host.xinnet.com',  // 虚机 （测试环境）
+    //target: 'https://stage.host.xinnet.com', // 虚机 驰云  （预发环境）
     //target: 'https://test-cloud-boss.xinnet.com', //　箭头云
     changeOrigin: true
   },
@@ -28,8 +28,8 @@ const defaultProxy = {
     //changeOrigin: true
   //},
   '/instance': {
-    //target: 'https://host.xinnet.com',
-    target: 'https://stage.host.xinnet.com', // 虚机 驰云 
+    target: 'https://host.xinnet.com',
+    //target: 'https://stage.host.xinnet.com', // 虚机 驰云 
     //target: 'https://test-cloud-boss.xinnet.com', //　箭头云
     changeOrigin: true
   }

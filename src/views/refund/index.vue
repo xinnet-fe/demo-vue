@@ -102,12 +102,9 @@
             </el-table-column>
             <el-table-column label="操作" width="70">
               <template slot-scope="scope">
-                <div v-if="scope.row.canRefund === false" />
-                <div v-else>
-                  <span v-if="scope.row.isReturns === '01'">已退款</span>
-                  <el-button v-if="scope.row.isReturns === '02'" type="text" @click="instanceRefund('ORDER', scope.row)">退款</el-button>
-                  <span v-if="scope.row.isReturns === '03'" title="后付费(不能退费)" />
-                </div>
+                <span v-if="scope.row.canRefund === false && scope.row.isReturns === '01'">已退款</span>
+                <span v-if="scope.row.canRefund === false && scope.row.isReturns === '03'" title="后付费(不能退费)" />
+                <el-button v-if="scope.row.canRefund === true && scope.row.isReturns === '02'" type="text" @click="instanceRefund('ORDER', scope.row)">退款</el-button>
               </template>
             </el-table-column>
           </el-table>
