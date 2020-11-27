@@ -58,17 +58,17 @@
     >
       <!-- @selection-change="handleSelectionChange" -->
       <!-- <el-table-column type="selection" width="55" /> -->
-      <el-table-column align="center" width="175" label="订单编号">
+      <el-table-column align="center" width="185" label="订单编号">
         <template slot-scope="{row}">
           <span>{{ row.buyOrderCode }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" width="215" label="服务编号">
+      <!-- <el-table-column align="center" width="215" label="服务编号">
         <template slot-scope="{row}">
           <span>{{ row.batchId }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column align="center" width="100" label="商品分类">
         <template slot-scope="{row}">
@@ -82,7 +82,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column class-name="status-col" width="185" label="配置信息">
+      <el-table-column class-name="status-col" width="185" label="商品内容">
         <template slot-scope="{row}">
           <span v-html="row.goodsContent" />
         </template>
@@ -120,11 +120,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="付费类型" align="center" width="100">
+      <!-- <el-table-column label="付费类型" align="center" width="100">
         <template slot-scope="{row}">
           <span>{{ row.goodsPaytypes }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column label="订单状态" align="center" width="80">
         <template slot-scope="{row}">
@@ -132,13 +132,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="150" fixed="right">
+      <el-table-column label="操作" align="center" width="150">
         <template slot-scope="{row}">
-          <el-button type="text" size="small" @click="orderLink(row.buyOrderCode)">查看订单</el-button>
-          <el-button type="text" size="small" @click="orderModify(row)">订单改价</el-button>
-          <!-- <router-link :to="row.link" class="link-type">
-            <span style="color:#0069ff;cursor:pointer;">查看订单{{ row.buyOrderCode }}</span>
-          </router-link> -->
+          <router-link :to="row.link" class="link-type">
+            <span style="color:#0069ff;cursor:pointer;">查看订单</span>
+          </router-link>
+          <el-button v-if="row.orderStatus === '1' && orderVisible" style="color:#0069ff;" type="text" size="small" @click="orderModify(row)">订单改价</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -171,6 +170,7 @@
 
 <script>
 // import { orderList } from '@/api/demos/order'
+import { getUser } from '@/api/userinfo'
 import { mapState } from 'vuex'
 import waves from '@/directive/demos/waves' // waves directive
 import $ from 'jquery'
@@ -259,13 +259,14 @@ export default {
       superProductClassCode: [
         { name: '域名', num: 'D' },
         { name: '虚机', num: 'V' },
-        { name: '云计算', num: 'C' },
         { name: '邮局', num: 'M' },
         { name: '建站', num: 'W' },
         { name: '应用', num: 'A' },
         { name: '服务产品', num: 'S' },
-        { name: '增值服务', num: 'I' },
-        { name: '服务市场', num: 'S_MART' }
+        { name: '租用托管', num: 'Z' },
+        { name: '轻应用服务器', num: 'E' },
+        { name: '云产品', num: 'N' },
+        { name: '云产品(老)', num: 'C' }
       ],
       orderTypeList: [
         { name: '会员订单', num: 'HY' },
@@ -299,13 +300,14 @@ export default {
       },
       rules2: {
         price: [
-          { required: true, message: '请输入价格', trigger: 'blur' },
-          { validator: isMoney, message: '格式错误', trigger: 'blur' }
+          { required: true, message: '请输入价格', trigger: 'blur' }
+          // { required: true, validator: isMoney, message: '格式错误，只能输入小数点后两位', trigger: 'blur' }
         ]
       },
       categorylist: [],
       newsbanWords: '',
-      value1: ''
+      value1: '',
+      orderVisible: false
     }
   },
   computed: {
@@ -314,6 +316,18 @@ export default {
     })
   },
   created() {
+    getUser().then(res => {
+      res.permissions.map(v => {
+        if (v.indexOf('changeprice') !== Number(-1)) {
+          this.orderVisible = true
+        }
+      })
+      res.roles.map(i => {
+        if (i === '超级管理员') {
+          this.orderVisible = true
+        }
+      })
+    })
     this.getList()
   },
   methods: {
@@ -325,25 +339,27 @@ export default {
       this.$store.dispatch('tradeOrder/orderList', this.listQuery).then(res => {
         res.data.list.map(row => {
           if (row.supProductClass) {
-            const supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
-            if (supProductClass === 'D') {
+            // const supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
+            if (row.supProductClass === 'D') {
               row.supProductClassa = '域名'
-            } else if (supProductClass === 'V') {
+            } else if (row.supProductClass === 'V') {
               row.supProductClassa = '虚机'
-            } else if (supProductClass === 'C') {
-              row.supProductClassa = '云计算'
-            } else if (supProductClass === 'M') {
+            } else if (row.supProductClass === 'M') {
               row.supProductClassa = '邮局'
-            } else if (supProductClass === 'W') {
+            } else if (row.supProductClass === 'W') {
               row.supProductClassa = '建站'
-            } else if (supProductClass === 'A') {
+            } else if (row.supProductClass === 'A') {
               row.supProductClassa = '应用'
-            } else if (supProductClass === 'S') {
+            } else if (row.supProductClass === 'S') {
               row.supProductClassa = '服务产品'
-            } else if (supProductClass === 'I') {
-              row.supProductClassa = '增值服务'
-            } else if (supProductClass === 'MART') {
-              row.supProductClassa = '服务市场'
+            } else if (row.supProductClass === 'Z') {
+              row.supProductClassa = '租用托管'
+            } else if (row.supProductClass === 'E') {
+              row.supProductClassa = '轻应用服务器'
+            } else if (row.supProductClass === 'N') {
+              row.supProductClassa = '云产品'
+            } else if (row.supProductClass === 'C') {
+              row.supProductClassa = '云产品(老)'
             }
           }
           if (row.businessType) {
@@ -368,10 +384,10 @@ export default {
           if (row.totalOriginalPrice) {
             row.totalOriginalPrices = this.shuzi(row.totalOriginalPrice.toFixed(2))
           }
-          if (row.totalTradingPrice) {
+          if (row.totalTradingPrice || row.totalTradingPrice === 0) {
             row.totalTradingPrices = this.shuzi(row.totalTradingPrice.toFixed(2))
           }
-          row.link = '/boss-nav-tradingcenter-orderdetail/' + row.buyOrderCode
+          row.link = `/boss-nav-tradingcenter/boss-nav-tradingcenter-detail?id=${row.buyOrderCode}&showLayout=false`
         })
         this.list = res.data.list
         this.total = res.data.total
@@ -379,19 +395,21 @@ export default {
         console.log(error)
       })
     },
-    orderLink(id) {
-      this.$router.push({
-        path: '/boss-nav-tradingcenter/boss-nav-tradingcenter-detail/',
-        query: { id: id }
-      })
-    },
     orderModify(row) {
       this.row = row
+      if (row.totalTradingPrice) {
+        this.form.price = row.totalTradingPrice
+      } else {
+        this.form.price = 0
+      }
       this.dialogOrderPriceShow = true
     },
     shuzi(num) {
       var reg = /\d(?=(?:\d{3})+\b)/g
       return String(num).replace(reg, '$&,')
+    },
+    handlePrice() {
+      console.log(this.form.price, isMoney.test(this.form.price), 'pppric')
     },
     changeOrders() {
       const orderType = this.listQuery.orderType
@@ -537,8 +555,8 @@ export default {
         buyOrderCode: this.row.buyOrderCode,
         price: this.form.price
       }
+      // tradeOrder/changeOrderPrice
       this.$store.dispatch('tradeOrder/changeOrderPrice', query).then(res => {
-        console.log(res)
         if (res.code === '0') {
           this.$message({
             message: '改价成功',

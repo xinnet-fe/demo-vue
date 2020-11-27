@@ -139,6 +139,10 @@
             label="订单优惠券"
           />
           <el-table-column
+            prop="coupon07"
+            label="订单改价"
+          />
+          <el-table-column
             prop="couponprice"
             label="总优惠金额"
           />
@@ -205,13 +209,11 @@ export default {
             row.tradingPrice = '￥' + this.shuzi(row.tradingPrice.toFixed(2))
           }
           row.orderStatusa = res.data.orderStatusa
-          row.supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
+          // row.supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
           if (row.supProductClass === 'D') {
             row.supProductClassa = '域名'
           } else if (row.supProductClass === 'V') {
             row.supProductClassa = '虚机'
-          } else if (row.supProductClass === 'C') {
-            row.supProductClassa = '云计算'
           } else if (row.supProductClass === 'M') {
             row.supProductClassa = '邮局'
           } else if (row.supProductClass === 'W') {
@@ -220,10 +222,14 @@ export default {
             row.supProductClassa = '应用'
           } else if (row.supProductClass === 'S') {
             row.supProductClassa = '服务产品'
-          } else if (row.supProductClass === 'I') {
-            row.supProductClassa = '增值服务'
-          } else if (row.supProductClass === 'MART') {
-            row.supProductClassa = '服务市场'
+          } else if (row.supProductClass === 'Z') {
+            row.supProductClassa = '租用托管'
+          } else if (row.supProductClass === 'E') {
+            row.supProductClassa = '轻应用服务器'
+          } else if (row.supProductClass === 'N') {
+            row.supProductClassa = '云产品'
+          } else if (row.supProductClass === 'C') {
+            row.supProductClassa = '云产品(老)'
           }
         })
         let cou1 = 0
@@ -232,6 +238,7 @@ export default {
         let cou4 = 0
         let cou5 = 0
         let cou6 = 0
+        let cou7 = 0
         if (res.data.promotionInUseVOList) {
           res.data.promotionInUseVOList.forEach(row => {
             if (row.preType === 'ACTIVITY_BUY_PRESENT') {
@@ -245,9 +252,11 @@ export default {
               row.coupon04 = 0
               row.coupon05 = 0
               row.coupon06 = 0
+              row.coupon07 = 0
               if (!row.preMoney) {
                 row.preMoney = 0
               }
+              console.log(row.preType === 'ACTIVITY_FULL_DISCOUNT', row.preType === 'PRICE_CHANGE', 'row.preType')
               if (row.preType === 'COUPON_ORDER') {
                 cou6 = row.preMoney
                 row.coupon06 = row.preMoney
@@ -266,8 +275,11 @@ export default {
               } else if (row.preType === 'ACTIVITY_FULL_DISCOUNT') {
                 cou1 = row.preMoney
                 row.coupon01 = row.preMoney
+              } else if (row.preType === 'PRICE_CHANGE') {
+                cou7 = row.preMoney
+                row.coupon07 = row.preMoney
               }
-              row.couponprice = row.coupon01 + row.coupon02 + row.coupon03 + row.coupon04 + row.coupon05 + row.coupon06
+              row.couponprice = row.coupon01 + row.coupon02 + row.coupon03 + row.coupon04 + row.coupon05 + row.coupon06 + row.coupon07
             }
           })
         }
@@ -275,6 +287,9 @@ export default {
         a[0] = res.data
         this.tableDatas = a
 
+        if (this.tableDatas[0].payDateString) {
+          this.tableDatas[0].updateDateString = ' — —'
+        }
         if (this.tableDatas[0].payDeadTime === undefined) {
           this.tableDatas[0].payDeadTime = ' — —'
         }
@@ -292,7 +307,8 @@ export default {
           res.data.promotionInUseVOList[0].coupon04 = cou4 !== 0 ? '￥' + this.shuzi(cou4.toFixed(2)) : 0
           res.data.promotionInUseVOList[0].coupon05 = cou5 !== 0 ? '￥' + this.shuzi(cou5.toFixed(2)) : 0
           res.data.promotionInUseVOList[0].coupon06 = cou6 !== 0 ? '￥' + this.shuzi(cou6.toFixed(2)) : 0
-          const totalprice = cou1 + cou2 + cou3 + cou4 + cou5 + cou6
+          res.data.promotionInUseVOList[0].coupon07 = cou7 !== 0 ? '￥' + this.shuzi(cou7.toFixed(2)) : 0
+          const totalprice = cou1 + cou2 + cou3 + cou4 + cou5 + cou6 + cou7
           res.data.promotionInUseVOList[0].couponprice = totalprice !== 0 ? '￥' + this.shuzi(totalprice.toFixed(2)) : 0
           if (!res.data.promotionInUseVOList[0].preDescs) {
             res.data.promotionInUseVOList[0].preDescs = '暂无数据'
@@ -306,6 +322,7 @@ export default {
           promotionInUseVOList.coupon04 = 0
           promotionInUseVOList.coupon05 = 0
           promotionInUseVOList.coupon06 = 0
+          promotionInUseVOList.coupon07 = 0
           promotionInUseVOList.couponprice = 0
           promotionInUseVOList.preDescs = '暂无数据'
           this.promotionInUseVOList = [promotionInUseVOList]
@@ -455,7 +472,8 @@ export default {
       return days + ' 天 ' + hours + ' 时 ' + minutes + ' 分 '
     },
     handleBack() {
-      this.$router.push({ path: '/boss-nav-tradingcenter/boss-nav-tradingcenter-ordermanagement' })
+      this.$router.go(-1)
+      // this.$router.push({ path: '/boss-nav-tradingcenter/boss-nav-tradingcenter-ordermanagement' })
     }
   }
 }

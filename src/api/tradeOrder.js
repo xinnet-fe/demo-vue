@@ -28,7 +28,8 @@ export function orderDetail(data) {
 // 订单改价
 export function changeOrderPrice(data) {
   return request({
-    url: '/ui/tradeOrder/changeOrderPrice',
+    // url: '/ui/tradeOrder/changeOrderPrice',
+    url: '/boss/tradeOrder/changeOrderPrice',
     method: 'POST',
     params: data
   })

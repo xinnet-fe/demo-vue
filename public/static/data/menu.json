@@ -23,8 +23,7 @@
                 "url": "",
                 "alwayShow": "false",
                 "hidden": true,
-                "target": "tab",
-                "param": "/:id"
+                "target": "tab"
             }
         ]
     }
