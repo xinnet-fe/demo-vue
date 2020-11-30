@@ -184,7 +184,8 @@ export default {
   },
   data() {
     return {
-      btnDisabled: false, // 批量删除按钮的 disabled
+      refundBatchDomain: '', // 批量退费时的域名
+      btnDisabled: false, // 批量退费时按钮的 disabled
       refundBatchVal: false, // 是否选中了批量
       constRefundType: 2, // 1特殊退费 2 常规退费
       form: {
@@ -222,7 +223,7 @@ export default {
               callback()
             } else {
               const arr = value.split(/\n/)
-              if (arr.length >= 10) {
+              if (arr.length > 10) {
                 callback(new Error('最多输入10条域名'))
                 return
               }
@@ -388,6 +389,8 @@ export default {
                 this.page.total = this.queryRefundList.data.totalRows // 服务列表（数量）
                 // btnDisabled 批量删除按钮的 disabled 状态
                 this.btnDisabled = !this.listdata.some(item => item.isOperateCurrent)
+                // 批量退费时的所有可退费的域名
+                this.refundBatchDomain = this.listdata.filter(item => item.isOperateCurrent).map(item => item.domainName)
               } else {
                 msgError(res.message || res.msg)
               }
@@ -422,11 +425,12 @@ export default {
     },
     // 退费
     confirm_Refund(item, parentItem) {
-      this.$confirm('您确定要退费吗?', '提示', {
+      this.$confirm('退费将删除域名，操作不可逆，您是否确认退费？<br>' + item.domainName.replace(/\n/g, '<br>'), '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
-        lockScroll: false
+        lockScroll: false,
+        dangerouslyUseHTMLString: true
       }).then(() => {
         this.refund(item, parentItem)
       }).catch(() => {
@@ -478,11 +482,12 @@ export default {
     },
     // 整个退费
     confirm_refund_all(item) {
-      this.$confirm('您确定要退费吗?', '提示', {
+      this.$confirm('退费将删除域名，操作不可逆，您是否确认退费？<br>' + item.domainName.replace(/\n/g, '<br>'), {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
-        lockScroll: false
+        lockScroll: false,
+        dangerouslyUseHTMLString: true
       }).then(() => {
         this.refund_all(item)
       }).catch(() => {
@@ -503,11 +508,12 @@ export default {
     },
     // 批量退费
     confirm_refund_batch() {
-      this.$confirm('您确定要退费吗?', '提示', {
+      this.$confirm('退费将删除域名，操作不可逆，您是否确认退费？<br>' + this.refundBatchDomain.join('<br>'), {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
-        lockScroll: false
+        lockScroll: false,
+        dangerouslyUseHTMLString: true
       }).then(() => {
         this.refund_batch()
       }).catch(() => {
