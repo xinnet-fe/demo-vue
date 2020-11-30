@@ -18,6 +18,7 @@ const customWebpackConfig = defaultSettings.webpackConfig
 const defaultProxy = {
   '/domainRefund': {
     target: 'http://domaina.xinnet.com',  // 域名退费
+    //target: 'http://domain.xinnet.com',  // 域名退费
     changeOrigin: true
   },
 }

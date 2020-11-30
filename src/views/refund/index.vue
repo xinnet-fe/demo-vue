@@ -1,12 +1,35 @@
 <template>
   <div class="box-container">
 
-    <div v-if="showBillList_Dialog.visible === false">
+    <div>
       <div class="box-form">
         <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
 
           <el-form-item label="服务编号" prop="serviceCode">
             <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
+          </el-form-item>
+
+          <el-form-item label="用户ID" prop="agentCode">
+            <el-input v-model="form.agentCode" placeholder="请输入用户ID" />
+          </el-form-item>
+
+          <el-form-item label="服务开通日期" label-width="100px" prop="opentime">
+            <el-date-picker
+              v-model="form.opentime"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            />
+          </el-form-item>
+
+          <el-form-item label="域名搜索" prop="domainNames">
+            <el-input
+              v-model="form.domainNames"
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4}"
+              placeholder="请输入域名(多个域名回车分割，最多输入10个)"
+            />
           </el-form-item>
 
           <el-form-item>
@@ -15,157 +38,124 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="box-list">
-        <el-table v-loading="loading" :data="listdata" style="width: 100%">
-          <el-table-column prop="serviceCode" label="服务编号" width="170" />
-          <el-table-column prop="productName" label="商品名称" />
-          <el-table-column prop="siteName" label="站点名称" />
-          <el-table-column prop="buyTime" label="购买日期" />
-          <el-table-column label="服务开通日期" width="150">
-            <template slot-scope="scope">
-              {{ scope.row.beginTime }}
-            </template>
-          </el-table-column>
-          <el-table-column label="服务到期日期" width="150">
-            <template slot-scope="scope">
-              {{ scope.row.endTime }}
-            </template>
-          </el-table-column>
-          <el-table-column label="服务状态" width="100">
-            <template slot-scope="scope">
-              {{ scope.row.serviceState | serviceState }}
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="70">
-            <template slot-scope="scope">
-              <el-button v-if="scope.row.canRefund" type="text" @click="showBillList(scope.row)">退款</el-button>
-              <span v-else>不能退款</span>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="box-page">
-        <el-pagination
-          background
-          :current-page="page.currentPage"
-          :page-sizes="[10, 20, 30, 40, 50]"
-          :page-size="page.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="page.total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </div>
-
-    <div v-if="showBillList_Dialog.visible === true">
-      <div style="padding:0px 20px 20px 20px;">
-        <el-row>
-          <el-col :span="24">
-            <span style="margin-right:20px">服务编号：{{ showBillList_Dialog.serviceCode }}</span>
-            <el-button @click="instanceRefund('SERVICE')">退订所有服务</el-button>
-          </el-col>
-        </el-row>
-        <div style="margin: 20px 0px">
-          <el-table
-            v-loading="showBillList_Dialog.loading"
-            :data="showBillList_Dialog.data"
-            style="width: 100%"
-          >
-            <el-table-column label="账单编号" width="270">
-              <template slot-scope="scope">
-                <span>{{ scope.row.billCode }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="用户ID" width="110">
-              <template slot-scope="scope">
-                <span>{{ scope.row.agentCode }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="账单类型" width="110">
-              <template slot-scope="scope">
-                <span>{{ deBillLineType(scope.row.billLineType) }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="商品类型" width="110">
-              <template slot-scope="scope">
-                <span>{{ deGoodsType(scope.row.goodsType) }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="赠送年限">
-              <template slot-scope="scope">
-                <span>{{ scope.row.freeTimeAmount === 0 ? '' : scope.row.freeTimeAmount + '月' }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="账单实付金额">
-              <template slot-scope="scope">
-                <span>{{ RMB(scope.row.shouldRefund) }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="退款金额">
-              <template slot-scope="scope">
-                <span>{{ RMB(scope.row.operateReundMoney) }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="生成时间">
-              <template slot-scope="scope">
-                <span>{{ scope.row.operateTime }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="70">
-              <template slot-scope="scope">
-                <span v-if="scope.row.canRefund === false && scope.row.isReturns === '01'">已退款</span>
-                <span v-if="scope.row.canRefund === false && scope.row.isReturns === '03'" title="后付费(不能退费)" />
-                <el-button v-if="scope.row.canRefund === true && scope.row.isReturns === '02'" type="text" @click="instanceRefund('ORDER', scope.row)">退款</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+      <div v-loading="loading" class="box-list">
+        <div v-if="searchState === 0 && listdata.length === 0" class="listResult">
+          请输入查询条件，进行查询。
         </div>
-        <span class="dialog-footer">
-          <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">返 回</el-button>
-        </span>
+        <div v-else-if="loading" class="listResult">
+          查询中..
+        </div>
+        <div v-else-if="searchState > 0 && listdata.length === 0" class="listResult">
+          没有查询到结果
+        </div>
+        <div v-else-if="searchState > 0 && listdata.length > 0">
+          <div class="list-title">
+            <div>
+              <el-checkbox v-model="refund_batch_val" :disabled="btnDisabled" @change="refund_batch_change" />
+            </div>
+            <div>
+              <el-button :disabled="btnDisabled" @click="confirm_refund_batch()">批量退费</el-button>
+            </div>
+          </div>
+          <div v-for="item in listdata" :key="item.serviceCode" class="list-item">
+            <div class="item-title">
+              <div>
+                <el-checkbox v-model="item.checked" :disabled="!item.isOperateCurrent" />
+              </div>
+              <div>
+                服务编号：{{ item.serviceCode }}
+              </div>
+              <div>
+                服务起止日期：{{ item.applyDate + ' - ' + item.expireDate }}
+              </div>
+              <div>
+                <el-checkbox v-model="item.isAuthReview" />
+                命名失败
+              </div>
+              <div>
+                <el-button :disabled="!item.isOperateCurrent" @click="confirm_refund_all(item)">退订整条服务</el-button>
+              </div>
+            </div>
+            <div class="item-children">
+              <el-table :data="item.billList" style="width: 100%">
+                <el-table-column label="账单编号" width="240">
+                  <template slot-scope="scope">
+                    {{ scope.row.billCode }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="用户ID" width="150">
+                  <template slot-scope="scope">
+                    {{ scope.row.agentCode }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="账单类型" width="100">
+                  <template slot-scope="scope">
+                    {{ deBillLineType(scope.row.billLineType) }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="域名">
+                  <template slot-scope="scope">
+                    {{ scope.row.domainName }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="生成时间" width="150">
+                  <template slot-scope="scope">
+                    {{ scope.row.operateTime }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="账单实付金额" width="100">
+                  <template slot-scope="scope">
+                    {{ RMB(scope.row.price) }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button v-if="scope.row.isRefundFlag && scope.row.isReturns==='02'" slot="reference" type="text" @click="confirm_Refund(scope.row, item)">退费</el-button>
+                    <span v-if="scope.row.isRefundFlag===false && scope.row.isReturns==='02'" class="no">退款</span>
+                    <span v-if="scope.row.isReturns==='01'">已退款</span>
+                    <span v-if="scope.row.loading"><i class="el-icon-loading" /></span>
+                    <el-tooltip v-else-if="scope.row.loading === false && scope.row.state===2" effect="dark" :content="scope.row.res" placement="top-start">
+                      <i class="el-icon-error error">失败</i>
+                    </el-tooltip>
+                    <i v-else-if="scope.row.loading === false && scope.row.state===1" class="el-icon-success success">成功</i>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+          <div class="box-page">
+            <el-pagination
+              background
+              :current-page="page.currentPage"
+              :page-size="page.pageSize"
+              layout="total, prev, pager, next, jumper"
+              :total="page.total"
+              @current-change="handleCurrentChange"
+            />
+            <!-- , sizes :page-sizes="[10, 20, 30, 40, 50]"  @size-change="handleSizeChange"-->
+          </div>
+        </div>
       </div>
     </div>
 
     <el-dialog
       title=""
-      :visible.sync="instanceRefund_Dialog.visible"
+      :visible.sync="Msg_Dialog.visible"
       width="30%"
+      :destroy-on-close="true"
     >
-      <el-form ref="instanceRefund_Dialog" :model="instanceRefund_Dialog" :rules="instanceRefund_Dialog.rules">
-        <div>
-          <span class="dz">系统建议退款金额：</span>
-          <span>{{ RMB(instanceRefund_Dialog.shouldRefund) }}</span></div>
-        <div style="margin: 30px 0px 70px 0px">
-          <span class="dz" style="float:left; padding-top:8px">实际退款金额：</span>
-          <span style="float:left">
-            <el-form-item label="" prop="transMoney_Inp">
-              <el-input v-model="instanceRefund_Dialog.transMoney_Inp" blur="transMoney_Blur">
-                <template slot="prepend">¥</template>
-              </el-input>
-            </el-form-item>
-          </span>
-        </div>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="instanceRefund_Dialog.visible = false">取 消</el-button>
-        <el-button type="primary" :disabled="instanceRefund_Dialog.disabled" size="medium" @click="confirmRefund()">{{ instanceRefund_Dialog.btnText }}</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog
-      title=""
-      :visible.sync="refundError_Dialog.visible"
-      width="30%"
-    >
-      <div class="dz" style="text-align:center;">
-        <span>该资源/账单不可退订！</span>
+      <div class="dz" :style="{'text-align':'center'}">
+        <span>{{ Msg_Dialog.title }}</span>
       </div>
-      <div style="margin: 25px 0px 0px 0px; text-align:center; font-size:15px;">
-        <i>{{ refundError_Dialog.text }}</i>
+      <div :style="{'margin':'20px 0px 0px 0px', 'text-align':Msg_Dialog.textAlign, 'font-size':'12px'}">
+        <div v-if="Msg_Dialog.text !== ''" style="font-size:15px; padding-left: 40px; line-height:160%;" v-html="Msg_Dialog.text" />
+        <i v-if="Msg_Dialog.text === ''" style="font-size:15px;">您本次操作退费域名 {{ this.Msg_Dialog.num }} / {{ this.Msg_Dialog.totalNum }} 个</i>
+        <i v-if="Msg_Dialog.num != Msg_Dialog.totalNum" class="el-icon-loading" />
+        <div style="margin: 10px 0px; line-height:160%" v-html="Msg_Dialog.resSuccess" />
+        <div style="margin: 10px 0px; line-height:160%" v-html="Msg_Dialog.resFail" />
       </div>
       <div slot="footer" class="dialog-footer" style="text-align:center;">
-        <el-button type="primary" size="medium" @click="refundError_Dialog.visible = false">知道了</el-button>
+        <el-button type="primary" size="medium" @click="Msg_Dialog.visible = false">知道了</el-button>
       </div>
     </el-dialog>
   </div>
@@ -175,6 +165,8 @@
 import formatTime from '@/utils/formatTime.js'
 import { mapState } from 'vuex'
 import { Message } from 'element-ui'
+import { validUpperCase } from '@/utils/validate'
+import tableRouter from '@/router/demos/table'
 
 function msgError(message) {
   Message({
@@ -188,100 +180,132 @@ export default {
   filters: {
     time(dt) {
       return formatTime(dt, 'YYYY-MM-DD')
-    },
-    // 服务状态（2 正常 4 已到期 8 冻结中 64 已删除 128 未开通 256 开通失败）
-    serviceState(i) {
-      switch (i) {
-        case 2:
-          return '正常'
-        case 4:
-          return '已到期'
-        case 64:
-          return '已删除'
-        case 128:
-          return '未开通'
-      }
     }
   },
   data() {
-    var validateAlphanumeric = (rule, value, callback) => {
-      if (value === '') {
-        callback()
-      } else if (/^[a-zA-Z0-9]+$/.test(value)) {
-        callback()
-      } else {
-        callback(new Error('只允许输入字母和数字'))
-      }
-    }
     return {
+      btnDisabled: false, // 批量删除按钮的 disabled
+      refundBatchVal: false, // 是否选中了批量
+      constRefundType: 2, // 1特殊退费 2 常规退费
       form: {
-        serviceCode: ''// V1568783876480926908
+        serviceCode: '',
+        agentCode: 'hy5192312',
+        opentime: ['2020-10-01', '2020-12-31'],
+        domainNames: ''
       },
       rules: {
+        agentCode: [
+          { validator: (rule, value, callback) => {
+            if (value === '') {
+              callback()
+            } else if (/^[a-zA-Z0-9]+$/.test(value)) {
+              callback()
+            } else {
+              callback(new Error('只允许输入字母和数字'))
+            }
+          }, trigger: 'blur' }
+        ],
         serviceCode: [
-          { required: true, message: '请输入服务编号', trigger: 'blur' },
-          { validator: validateAlphanumeric, trigger: 'blur' }
+          { validator: (rule, value, callback) => {
+            if (value === '') {
+              callback()
+            } else if (/^[a-zA-Z0-9]+$/.test(value)) {
+              callback()
+            } else {
+              callback(new Error('只允许输入字母和数字'))
+            }
+          }, trigger: 'blur' }
+        ],
+        domainNames: [
+          { validator: (rule, value, callback) => {
+            if (value === '') {
+              callback()
+            } else {
+              const arr = value.split(/\n/)
+              if (arr.length >= 10) {
+                callback(new Error('最多输入10条域名'))
+                return
+              }
+              arr.forEach(item => {
+                if (item === '') {
+                  callback(new Error('域名不能有空行'))
+                  return
+                }
+                if (item && /^.+\..+$/.test(item) === false) {
+                  callback(new Error('域名不合法'))
+                  return
+                }
+              })
+              callback()
+            }
+          }, trigger: 'blur' }
         ]
       },
       loading: false,
       listdata: [],
+      searchState: 0, // 0 没有点击过查询， 1 点击过1次查询
       page: {
         currentPage: 1,
         total: 0, // 总条目数
-        pageSize: 20
+        pageSize: 10
       },
-      showBillList_Dialog: {
-        item: {},
+      // 提示菜单
+      Msg_Dialog: {
         visible: false,
-        serviceCode: '',
-        loading: false,
-        data: []
-      },
-      instanceRefund_Dialog: {
-        item: {},
-        visible: false,
-        shouldRefund: '', // 建议退费
-        transMoney: '', // 实际退费（后端返回值）
-        transMoney_Inp: '', // 实际退费（前端输入框）
-        rules: {
-          transMoney_Inp: [
-            { required: true, message: '请输入实际退费价格', trigger: 'blur' },
-            { validator: (rule, value, callback) => {
-              if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
-                callback(new Error('实际退费价格不能大于建议退费价格'))
-              } else if (this.instanceRefund_Dialog.transMoney_Inp <= 0) {
-                callback(new Error('实际退费价格必须大于零'))
-              } else if (Number(this.instanceRefund_Dialog.transMoney_Inp) !== parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
-                callback(new Error('请输入数字'))
-              } else {
-                callback()
-              }
-            }, trigger: 'blur' }
-          ]
-        },
-        disabled: false, // 退费按钮是否可用
-        btnText: '确 定' // 退费按钮文字
-      },
-      refundError_Dialog: {
-        visible: false,
-        text: '显示退费原因'
+        title: '',
+        textAlign: 'center',
+        text: '',
+        resSuccess: '', // 成功的文本
+        resSuccessObj: {},
+        resFail: '', // 失败的文本
+        resFailObj: {},
+        num: 0, // 返回了的请求总数
+        totalNum: 0 // 请求总数
       }
     }
   },
   computed: {
     ...mapState({
-      refundProduct_List: state => state.refund.refundProduct_List,
-      refundProduct_BillList: state => state.refund.refundProduct_BillList,
-      instance_Refund_Money: state => state.refund.instance_Refund_Money,
-      instance_Refund: state => state.refund.instance_Refund
-    })
+      queryRefundList: state => state.refund.queryRefundList,
+      refundOrder: state => state.refund.refundOrder
+    }),
+    refund_batch_val: {
+      get() {
+        const bln1 = this.listdata.every(item => item.checked || !item.isOperateCurrent)
+        const bln2 = this.listdata.every(item => !item.isOperateCurrent)
+        // bln2 为真时，表示当前页，每一条服务都不可以退费
+        if (bln2 === false) {
+          return bln1
+        } else {
+          if (this.btnDisabled) {
+            this.refundBatchVal = false
+            return false
+          } else {
+            return this.refundBatchVal
+          }
+        }
+      },
+      set(v) {
+        // console.log('v=', v)
+      }
+    }
   },
   mounted() {
-    this.onSubmit('form')
+    // this.onSubmit('form')
   },
   methods: {
     YMD(dt) {
-      return formatTime(dt, 'YYYY-MM-DD')
+      switch (typeof (dt)) {
+        case 'string':
+          return formatTime(new Date(dt).getTime(), 'YYYY-MM-DD')
+          break
+        case 'object':
+          return formatTime(dt.getTime(), 'YYYY-MM-DD')
+        case 'number':
+          return formatTime(dt, 'YYYY-MM-DD')
+        default:
+          return dt
+      }
     },
     YMDHMS(dt) {
       return formatTime(dt, 'YYYY-MM-DD HH:mm:ss')
@@ -309,44 +333,76 @@ export default {
           return ''
       }
     },
-    deGoodsType(val) {
-      switch (val) {
-        case '01':
-          return '单品'
-        case '05':
-          return '附属'
-        default:
-          return ''
-      }
-    },
     onSubmit(formName) {
       this.page.currentPage = 1
       this.GetList()
     },
     GetList() {
+      this.searchState++
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          const { serviceCode } = this.form
+          const { serviceCode, agentCode, domainNames, opentime } = this.form
           const payload = {
-            page: this.page.currentPage,
-            limit: this.page.pageSize,
-            serviceCode: serviceCode
+            pageNum: this.page.currentPage,
+            pageSize: this.page.pageSize,
+            refundType: this.constRefundType, // 1 特殊退费 2 常规退费
+            serviceCode,
+            agentCode,
+            domainNames: domainNames.split(/\n/g).join(',')
           }
-          this.loading = true
-          // 查询
-          this.listdata = []
-          this.$store.dispatch('refund/refundProduct_List', payload).then(res => {
-            this.loading = false
-            if (res.success) {
-              this.listdata = this.refundProduct_List.data
-            } else {
-              this.refundError_Dialog.visible = true
-              this.refundError_Dialog.text = res.message
+          if (opentime && opentime.length === 2) {
+            payload.applyStartDate = this.YMD(opentime[0])
+            payload.applyEndDate = this.YMD(opentime[1])
+          }
+          // 表单验证
+          if ((agentCode && opentime && opentime.length === 2) || (serviceCode) || (domainNames)) {
+            // 查询
+            this.loading = true
+            this.listdata = []
+            this.$store.dispatch('refund/queryRefundList', payload).then(res => {
+              this.loading = false
+              if (res.code === null || res.code === undefined) {
+                // 服务列表
+                this.listdata = this.queryRefundList.data.list.map(item => {
+                  // 退订整条服务的按钮是否允许被点击，及当前服务在批量退费时是否允许被选中
+                  let isOperateCurrent = false // 默认不允许操作
+                  const body = {
+                    ...item,
+                    checked: false, // 是否选中复选框
+                    isAuthReview: false, // 是否选中命名失败
+                    billList: item.billList.map(billItem => {
+                      if (billItem.isRefundFlag && billItem.isReturns === '02') {
+                        isOperateCurrent = true
+                      }
+                      return {
+                        ...billItem,
+                        loading: false, // 单条退费时 loading 效果
+                        res: '', // 单条退费时 response 返回值
+                        state: '' // 单条退费时 成功 or 失败
+                      }
+                    })
+                  }
+                  body.isOperateCurrent = isOperateCurrent
+                  return body
+                })
+                this.page.total = this.queryRefundList.data.totalRows // 服务列表（数量）
+                // btnDisabled 批量删除按钮的 disabled 状态
+                this.btnDisabled = !this.listdata.some(item => item.isOperateCurrent)
+              } else {
+                msgError(res.message || res.msg)
+              }
+            }).catch(err => {
+              this.loading = false
+              msgError(err)
+            })
+          } else {
+            this.Msg_Dialog = {
+              visible: true,
+              title: '满足其中一种条件即可查询',
+              textAlign: 'left',
+              text: '1、根据用户ID与服务开通日期查询<br>2、根据服务编号查询<br>3、根据域名查询<br>'
             }
-          }).catch(err => {
-            this.loading = false
-            msgError(err)
-          })
+          }
         } else {
           console.log('表单错误')
           return false
@@ -358,138 +414,129 @@ export default {
     },
     handleSizeChange(val) {
       this.page.pageSize = val
-      // console.log(`每页 ${val} 条`);
       this.GetList()
     },
     handleCurrentChange(val) {
       this.page.currentPage = val
-      // console.log(`当前页: ${val}`);
       this.GetList()
     },
-    // 显示子账单
-    showBillList(item) {
+    // 退费
+    confirm_Refund(item, parentItem) {
+      this.$confirm('您确定要退费吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        lockScroll: false
+      }).then(() => {
+        this.refund(item, parentItem)
+      }).catch(() => {
+        console.log('取消操作')
+      })
+    },
+    refund(item, parentItem) {
       const payload = {
-        serviceCode: item.serviceCode
+        agentCode: item.agentCode,
+        serviceCode: item.serviceCode,
+        billLineCode: item.billLineCode,
+        billCode: item.billCode, // 账单编号
+        domainName: item.domainName,
+        price: item.price, // 退费交易价格
+        transMoney: item.price, // 实际退费价格
+        isAuthReview: parentItem.isAuthReview ? 1 : 2, // 1命名审核 2 非命名审核
+        refundType: this.constRefundType // 1特殊退费 2 常规退费
       }
-      this.showBillList_Dialog.item = item
-      this.showBillList_Dialog.visible = true
-      this.showBillList_Dialog.serviceCode = item.serviceCode
-      this.showBillList_Dialog.loading = true
-      this.refundProduct_BillList.data = []
-      this.showBillList_Dialog.data = []
-      this.$store.dispatch('refund/refundProduct_BillList', payload).then(res => {
-        this.showBillList_Dialog.loading = false
-        if (res.success) {
-          this.showBillList_Dialog.data = this.refundProduct_BillList.data
+      item.loading = true
+      this.$store.dispatch('refund/refundOrder', payload).then(res => {
+        item.loading = false
+        item.res = res.msg
+        this.Msg_Dialog.num++
+
+        let arr
+        if (res.code === null || res.code === undefined) {
+          // console.log('退费成功')
+          item.state = 1
+          if (this.Msg_Dialog.resSuccessObj === undefined || this.Msg_Dialog.resSuccessObj === null) {
+            this.Msg_Dialog.resSuccessObj = {}
+          }
+          this.Msg_Dialog.resSuccessObj[payload.domainName] = '退费成功' // res.msg // 成功
+          arr = Object.entries(this.Msg_Dialog.resSuccessObj)
+          this.$set(this.Msg_Dialog, 'resSuccess', '成功' + arr.length + '个<br>' + arr.map(item => item[0] + ' ' + item[1]).join('<br>') + '')
         } else {
-          this.refundError_Dialog.visible = true
-          this.refundError_Dialog.text = res.message
+          // console.log('退费失败')
+          item.state = 2
+          if (this.Msg_Dialog.resFailObj === undefined || this.Msg_Dialog.resFailObj === null) {
+            this.Msg_Dialog.resFailObj = {}
+          }
+          this.Msg_Dialog.resFailObj[payload.domainName] = res.msg // 失败原因
+          arr = Object.entries(this.Msg_Dialog.resFailObj)
+          this.$set(this.Msg_Dialog, 'resFail', '失败' + arr.length + '个<br>' + arr.map(item => item[0] + ' ' + item[1]).join('<br>') + '')
         }
       }).catch(err => {
-        this.showBillList_Dialog.loading = false
+        item.loading = false
         msgError(err)
       })
     },
-    // 显示退费窗口
-    instanceRefund(refundType, item) {
-      // this.showBillList_Dialog.item  是一级账单
-      // item 是子账单
-      if (item) {
-        // 子账单单独退
-        this.instanceRefund_Dialog.item = item
-        this.instanceRefund_Dialog.item.refundType = refundType
-      } else {
-        // 整单退
-        this.instanceRefund_Dialog.item = {
-          refundType,
-          // billCode: this.showBillList_Dialog.item.billCode,// 整单没有billCode
-          productType: this.showBillList_Dialog.item.productType
-        }
-      }
-
-      const payload = {}
-      if (refundType === 'SERVICE') {
-        // 整单退费
-        item = this.showBillList_Dialog.item
-        // payload.agentCode = item.agentCode
-        // payload.billCode = item.id  // 整单没有billCode
-        payload.serviceCode = item.serviceCode
-        payload.refundType = refundType
-        // payload.productType = item.productType
-      } else if (refundType === 'ORDER') {
-        // 退单个订单
-        // payload.agentCode = this.showBillList_Dialog.item.agentCode
-        payload.billCode = item.billCode
-        payload.serviceCode = this.showBillList_Dialog.item.serviceCode
-        payload.refundType = refundType
-        // payload.productType = item.productType
-      } else {
-        console.log('出错了')
-        return
-      }
-
-      this.$store.dispatch('refund/instance_Refund_Money', payload).then((res) => {
-        if (res.success) {
-          this.instanceRefund_Dialog.visible = true
-          this.instanceRefund_Dialog.shouldRefund = this.instance_Refund_Money.data.shouldRefund
-          this.instanceRefund_Dialog.transMoney = this.instance_Refund_Money.data.transMoney
-          this.instanceRefund_Dialog.transMoney_Inp = this.instance_Refund_Money.data.transMoney
-        } else {
-          this.refundError_Dialog.visible = true
-          this.refundError_Dialog.text = res.message
-        }
-      }).catch(err => {
-        this.refundError_Dialog.visible = true
-        this.refundError_Dialog.text = err
+    // 整个退费
+    confirm_refund_all(item) {
+      this.$confirm('您确定要退费吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        lockScroll: false
+      }).then(() => {
+        this.refund_all(item)
+      }).catch(() => {
+        console.log('取消操作')
       })
     },
-    // 确认退费
-    confirmRefund() {
-      // console.log('是一级账单 showBillList_Dialog.item=', this.showBillList_Dialog.item)
-      // console.log('子账单单独退 instanceRefund_Dialog.item=', this.instanceRefund_Dialog.item)
-      this.$refs['instanceRefund_Dialog'].validate((valid) => {
-        if (valid) {
-          // 整单退费
-          const payload = {
-            // agentCode: this.showBillList_Dialog.item.agentCode,
-            // billCode: this.instanceRefund_Dialog.item.billCode,// 整单没有billCode
-            serviceCode: this.showBillList_Dialog.item.serviceCode,
-            shouldRefund: this.instanceRefund_Dialog.shouldRefund, // 应退费金额
-            transMoney: this.instanceRefund_Dialog.transMoney_Inp, // 工作人员输入的实际退费金额
-            refundType: this.instanceRefund_Dialog.item.refundType
-            // productType: this.instanceRefund_Dialog.item.productType
-          }
-          // 退单个订单
-          if (this.instanceRefund_Dialog.item.refundType === 'ORDER') {
-            payload.billCode = this.instanceRefund_Dialog.item.billCode
-          }
-          // 退费
-          this.instanceRefund_Dialog.disabled = true
-          this.instanceRefund_Dialog.btnText = '处理中..'
-          this.$store.dispatch('refund/instance_Refund', payload).then(res => {
-            if (res.success) {
-              this.$alert('退费成功', '提示', { callback: () => {
-                // this.GetList() // 刷新页面
-                this.showBillList(this.showBillList_Dialog.item) // 重新显示子账单
-              } })
-              // this.showBillList_Dialog.visible = false
-            } else {
-              this.refundError_Dialog.visible = true
-              this.refundError_Dialog.text = res.message
-            }
-            this.instanceRefund_Dialog.visible = false
-
-            this.instanceRefund_Dialog.disabled = false
-            this.instanceRefund_Dialog.btnText = '确 定'
-          }).catch(err => {
-            this.instanceRefund_Dialog.visible = false
-            this.showBillList_Dialog.visible = false
-            this.instanceRefund_Dialog.disabled = false
-            this.instanceRefund_Dialog.btnText = '确 定'
-            msgError(err)
-          })
-        } else {
-          console.log('表单错误')
+    refund_all(item) {
+      let i = 0
+      item.billList.forEach(billItem => {
+        if (billItem.isRefundFlag && billItem.isReturns === '02') {
+          i++
+          this.refund(billItem, item)
+        }
+      })
+      if (i === 0) {
+        msgError('此服务的子账单均不得退款')
+      }
+    },
+    // 批量退费
+    confirm_refund_batch() {
+      this.$confirm('您确定要退费吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        lockScroll: false
+      }).then(() => {
+        this.refund_batch()
+      }).catch(() => {
+        console.log('取消操作')
+      })
+    },
+    refund_batch() {
+      let n = 0
+      this.listdata.forEach(item => {
+        if (item.checked) {
+          n++
+          this.refund_all(item)
+        }
+      })
+      this.Msg_Dialog = {
+        visible: true,
+        title: '批量退费操作结果',
+        text: '',
+        textAlign: 'center',
+        num: 0,
+        totalNum: n
+      }
+    },
+    // 批量退费 复选框
+    refund_batch_change(v) {
+      this.refundBatchVal = v
+      this.listdata.forEach(item => {
+        if (item.isOperateCurrent) {
+          item.checked = v
         }
       })
     }
@@ -504,9 +551,62 @@ export default {
 
   .box-list{
     margin: 0px 20px 20px 20px;
-  }
-  .box-page{
-    margin: 0px 20px;
+    font-size: 12px;
+
+    .no{
+      color: #999;
+    }
+    .success{
+      color: green;
+    }
+    .error{
+      color: red;
+    }
+    .listResult{
+      text-align:center; padding-top:20px;
+    }
+    .list-title{
+      background: #f3f7fa;
+      display: table;
+      width: 100%;
+      padding: 20px 0px;
+      >div{
+        display: table-cell;
+      }
+      >div:nth-child(1){
+        width: 40px;
+        text-align: center;
+      }
+    }
+    .list-item{
+      .item-title{
+        display: table;
+        width: 100%;
+        margin: 10px 0px 10px 0px;
+        >div{
+          display: table-cell;
+        }
+        >div:nth-child(1){
+          width: 40px;
+          text-align: center;
+        }
+        >div:nth-child(2){
+          width: 200px;
+        }
+        >div:nth-child(3){
+
+        }
+        >div:nth-child(4){
+          width: 15%;
+        }
+        >div:nth-child(5){
+          width: 15%;
+        }
+      }
+      .item-children{
+        margin-bottom: 50px;
+      }
+    }
   }
   .dz{
     font-size: 18px;
@@ -515,9 +615,17 @@ export default {
 }
 </style>
 <style lang="scss">
+.box-container{
+  .el-dialog__body{
+    padding: 0px !important;
+  }
+}
 .box-form{
   .el-range-separator{
     font-size: 12px !important;
+  }
+  .el-form .el-textarea__inner {
+    min-height: 54px !important;
   }
 }
 .box-page{

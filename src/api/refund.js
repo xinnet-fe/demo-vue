@@ -1,41 +1,22 @@
 import request from '@/utils/request'
+import querystring from 'querystring'
 
-// 1、产品列表查询
-export function refundProduct_List(data) {
-  var url = '/refundProduct/list/vhost'
-  return request({
-    url,
-    method: 'get',
-    params: data
-  })
-}
-
-// 2、产品下账单列表查询
-export function refundProduct_BillList(data) {
-  var url = '/refundProduct/billList'
-  return request({
-    url,
-    method: 'get',
-    params: data
-  })
-}
-
-// 3、获取退费建议价格
-export function instance_Refund_Money(data) {
-  var url = '/refundProduct/refund/money'
+// 1、域名退费列表查询
+export function queryRefundList(data) {
+  var url = '/domainRefund/queryRefundList'
   return request({
     url,
     method: 'post',
-    data
+    data: querystring.stringify(data)
   })
 }
 
-// 4、进行退费
-export function instance_Refund(data) {
-  var url = '/refundProduct/refund'
+// 2、域名退费接口
+export function refundOrder(data) {
+  var url = '/domainRefund/refundOrder'
   return request({
     url,
     method: 'post',
-    data
+    data: querystring.stringify(data)
   })
 }
