@@ -21,7 +21,7 @@ const actions = {
   queryRefundList({ commit }, payload) {
     return new Promise((resolve, reject) => {
       queryRefundList(payload).then(res => {
-        if (res.code === null || res.code === undefined) {
+        if (res.code === null || res.code === undefined || res.code === '') {
           commit('QUERYREFUNDLIST', res)
         }
         resolve(res)
@@ -33,7 +33,7 @@ const actions = {
   refundOrder({ commit }, payload) {
     return new Promise((resolve, reject) => {
       refundOrder(payload).then(res => {
-        if (res.code === null || res.code === undefined) {
+        if (res.code === null || res.code === undefined || res.code === '') {
           commit('REFUNDORDER', res)
         }
         resolve(res)

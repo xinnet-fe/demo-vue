@@ -361,7 +361,7 @@ export default {
             this.listdata = []
             this.$store.dispatch('refund/queryRefundList', payload).then(res => {
               this.loading = false
-              if (res.code === null || res.code === undefined) {
+              if (res.code === null || res.code === undefined || res.code === '') {
                 // 服务列表
                 this.listdata = this.queryRefundList.data.list.map(item => {
                   // 退订整条服务的按钮是否允许被点击，及当前服务在批量退费时是否允许被选中
@@ -452,7 +452,7 @@ export default {
         this.Msg_Dialog.num++
 
         let arr
-        if (res.code === null || res.code === undefined) {
+        if (res.code === null || res.code === undefined || res.code === '') {
           // console.log('退费成功')
           item.state = 1
           if (this.Msg_Dialog.resSuccessObj === undefined || this.Msg_Dialog.resSuccessObj === null) {
