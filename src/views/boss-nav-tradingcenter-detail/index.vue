@@ -299,6 +299,10 @@ export default {
         if (this.tableDatas[0].updateDateString === undefined) {
           this.tableDatas[0].updateDateString = ' — —'
         }
+        if (res.data.orderStatus === '2') {
+          this.tableDatas[0].payDateString = res.data.updateDateString
+          this.tableDatas[0].updateDateString = ' — —'
+        }
         this.tableData = res.data.bodys
         if (res.data.promotionInUseVOList) {
           res.data.promotionInUseVOList[0].coupon01 = cou1 !== 0 ? '￥' + this.shuzi(cou1.toFixed(2)) : 0
