@@ -6,7 +6,7 @@
           "code": "refund",
           "parentCode": "agent-client-app",
           "icon": "",
-          "text": "退费",
+          "text": "常规退费",
           "url": "",
           "target": "tab",
           "hidden": false,

@@ -111,8 +111,8 @@
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
                     <el-button v-if="scope.row.isRefundFlag && scope.row.isReturns==='02'" slot="reference" type="text" @click="confirm_Refund(scope.row, item)">退费</el-button>
-                    <span v-if="scope.row.isRefundFlag===false && scope.row.isReturns==='02'" class="no">退款</span>
-                    <span v-if="scope.row.isReturns==='01'">已退款</span>
+                    <span v-if="scope.row.isRefundFlag===false && scope.row.isReturns==='02'" class="no">退费</span>
+                    <span v-if="scope.row.isReturns==='01'">已退费</span>
                     <span v-if="scope.row.loading"><i class="el-icon-loading" /></span>
                     <el-tooltip v-else-if="scope.row.loading === false && scope.row.state===2" effect="dark" :content="scope.row.res" placement="top-start">
                       <i class="el-icon-error error">失败</i>
@@ -190,8 +190,8 @@ export default {
       constRefundType: 2, // 1特殊退费 2 常规退费
       form: {
         serviceCode: '',
-        agentCode: 'hy5192312',
-        opentime: ['2020-10-01', '2020-12-31'],
+        agentCode: '',//hy5192312
+        opentime: null, //['2020-10-01', '2020-12-31']
         domainNames: ''
       },
       rules: {
@@ -503,7 +503,7 @@ export default {
         }
       })
       if (i === 0) {
-        msgError('此服务的子账单均不得退款')
+        msgError('此服务的子账单均不得退费')
       }
     },
     // 批量退费
