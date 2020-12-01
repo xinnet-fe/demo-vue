@@ -32,7 +32,7 @@
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch()">查 询</el-button>
-        <!-- <el-button type="primary" @click="resetForm">重 置</el-button> -->
+        <el-button size="medium" @click="resetForm">重 置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -117,6 +117,7 @@
 import { mapActions, mapState } from 'vuex'
 import DialogContractForm from './form'
 import Pagination from '@/components/Pagination'
+import clearFormDate from '@/utils/clearFormData'
 export default {
   name: 'AgentContract',
   components: {
@@ -199,6 +200,8 @@ export default {
       } else {
         query.pageNum = 1
         query.pageSize = 20
+        this.page.page = 1
+        this.page.limit = 20
       }
       this.findAgentContract(query).then(res => {
         if (!res.code) {
@@ -236,9 +239,8 @@ export default {
       })
     },
     resetForm() {
-      const { form } = this.$refs
-      form.resetFields()
-      form.clearValidate('form')
+      clearFormDate(this.form)
+      this.date = ''
     }
   }
 }

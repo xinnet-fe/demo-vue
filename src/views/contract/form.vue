@@ -77,8 +77,8 @@ export default {
         date: '',
         contractNo: '',
         agentCode: '',
-        contractType: '',
-        contractVersion: '',
+        contractType: '1',
+        contractVersion: 'V0',
         startTime: '',
         endTime: ''
       },
