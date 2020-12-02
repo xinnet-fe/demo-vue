@@ -5,7 +5,7 @@
       <div v-show="step === 1" class="step1">
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px" @submit.native.prevent>
           <h3>接受代理邀请并注册
-            <el-tooltip class="item" effect="light" content="接受代理商邀请注册后，您将成为代理商的专属客户，您提交的所有订单将由邀请您的代理商代为支付，购买的服务或资源由您自主管理。如果您希望自行支付，请登录xinnet官网，注册普通会员。" placement="right">
+            <el-tooltip class="item" effect="light" content="接受邀请后您将成为代理商的专属客户，之后您在新网平台的所有订单将由代理商代为支付且不再享受新网会员的任何活动优惠。购买的商品或服务将由您自主管理。" placement="right">
               <i class="el-icon-warning" style="color: #f47258; font-size: 20px;" />
             </el-tooltip>
           </h3>
@@ -42,7 +42,6 @@
                 <el-checkbox name="checked" label="checked" style="padding: 0;">我已阅读并同意</el-checkbox>
               </el-checkbox-group>
               <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
-              <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
               <a href="http://www.xinnet.com/service/cjwt/hy/zhuce/1856.html" target="_blank">《客户信息收集声明》</a>
             </div>
 

@@ -48,7 +48,6 @@
                 <el-checkbox name="checked" label="checked" style="padding: 0;">我已阅读并同意</el-checkbox>
               </el-checkbox-group>
               <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
-              <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
               <a href="http://www.xinnet.com/service/cjwt/hy/zhuce/1856.html" target="_blank">《客户信息收集声明》</a>
             </div>
           </el-form-item>
@@ -61,7 +60,7 @@
       <div v-show="step === 2" class="result step2">
         <div class="icon"><i class="el-icon-circle-check" /></div>
         <h3>恭喜您！您的代理账号已申请成功！</h3>
-        <p>您的代理账号（登录账号）为：<span class="agentCode">{{ agentCode }}</span><br>目前该账号还未正式开通，不能进入控制台，我们的区域主管会与您沟通，完成后续开通流程，请保持电话畅通。<br><a href="https://agent.xinnet.com/login/pages/agentLogin.jsp" rel="noopener noreferrer">区域渠道经理信息</a></p>
+        <p>您的代理账号（登录账号）为：<span class="agentCode">{{ agentCode }}</span><br>目前该账号还未正式开通，暂不能登录，我们的区域渠道经理会与您联系进行开通，请保持电话畅通，或通过下方信息联系区域渠道经理。<br><a href="https://agent.xinnet.com/login/pages/agentLogin.jsp" rel="noopener noreferrer">区域渠道经理信息</a></p>
       </div>
     </div>
     <div class="slideshow">
