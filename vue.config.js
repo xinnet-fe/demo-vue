@@ -33,6 +33,10 @@ const defaultProxy = {
     //target: 'http://domaina.xinnet.com',  // 域名退费
     target: 'http://domain-boss.xinnet.com',
     changeOrigin: true
+  },
+  '/certificate': {
+    target: 'http://domain-boss.xinnet.com',
+    changeOrigin: true
   }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
