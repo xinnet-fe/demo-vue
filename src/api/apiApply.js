@@ -7,9 +7,9 @@ export function getApiApplyList(data) {
   return request({
     url,
     method: 'post',
-    data: querystring.stringify(data),
-    //method: 'get',
-    //params: data
+    data: querystring.stringify(data)
+    // method: 'get',
+    // params: data
   })
 }
 // 锁定解锁用户
