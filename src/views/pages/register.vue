@@ -48,6 +48,7 @@
                 <el-checkbox name="checked" label="checked" style="padding: 0;">我已阅读并同意</el-checkbox>
               </el-checkbox-group>
               <a href="http://www.xinnet.com/views/agreement/register_agreement.html" target="_blank">《新网用户协义》</a>
+              <a href="https://agent.xinnet.com/Modules/downloads/register/AgentRegistrationAgreement.zip" target="_blank">《代理合同》</a>
               <a href="http://www.xinnet.com/service/cjwt/hy/zhuce/1856.html" target="_blank">《客户信息收集声明》</a>
             </div>
           </el-form-item>
