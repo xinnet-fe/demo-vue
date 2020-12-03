@@ -11,7 +11,7 @@ const state = {
   refundOrder: {},
   // 特殊
   querySpecRefundList: {},
-  refundSpecOrder: {},
+  refundSpecOrder: {}
 }
 
 const mutations = {
@@ -28,7 +28,7 @@ const mutations = {
   },
   REFUNDSPECORDER: (state, res) => {
     state.refundSpecOrder = res
-  },
+  }
 }
 
 const actions = {
@@ -81,7 +81,7 @@ const actions = {
         reject(err)
       })
     })
-  },
+  }
 }
 
 export default {

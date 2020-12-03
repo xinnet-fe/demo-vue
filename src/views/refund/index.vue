@@ -3,7 +3,7 @@
 
     <div>
       <div class="box-form order-form">
-        <el-form class="search-form" ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
+        <el-form ref="form" class="search-form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
 
           <el-form-item label="服务编号" prop="serviceCode">
             <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
@@ -162,7 +162,7 @@
 </template>
 
 <script>
-import {abc} from '@/api/refund.js'
+import { abc } from '@/api/refund.js'
 import formatTime from '@/utils/formatTime.js'
 import { mapState } from 'vuex'
 import { Message } from 'element-ui'
@@ -191,8 +191,8 @@ export default {
       constRefundType: 2, // 1特殊退费 2 常规退费
       form: {
         serviceCode: '',
-        agentCode: '',//hy5192312
-        opentime: null, //['2020-10-01', '2020-12-31']
+        agentCode: '', // hy5192312
+        opentime: null, // ['2020-10-01', '2020-12-31']
         domainNames: ''
       },
       rules: {

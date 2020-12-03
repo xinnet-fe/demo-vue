@@ -1,31 +1,72 @@
 [
-    {
-        "code": "agent-client-app",
-        "parentCode": null,
-        "children": [{
-          "code": "refund",
-          "parentCode": "agent-client-app",
-          "icon": "",
-          "text": "常规退费",
-          "url": "",
-          "target": "tab",
-          "hidden": false,
-          "param": ""
-        },{
-          "code": "refund-special",
-          "parentCode": "agent-client-app",
-          "icon": "",
-          "text": "特殊退费",
-          "url": "",
-          "target": "tab",
-          "hidden": false,
-          "param": ""
-        }],
-        "icon": "applicationCenter",
-        "text": "域名",
-        "url": "",
-        "target": "",
-        "hidden": false,
-        "param": ""
-    }
+  {
+    "code": "refund",
+    "parentCode": "",
+    "icon": "",
+    "text": "常规退费",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "refund-special",
+    "parentCode": "",
+    "icon": "",
+    "text": "特殊退费",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "nsThreshold",
+    "parentCode": "",
+    "icon": "",
+    "text": "域名解析阈值管理",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "apiApplyList",
+    "parentCode": "",
+    "icon": "",
+    "text": "域名API申请管理",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "ipList",
+    "parentCode": "",
+    "icon": "",
+    "text": "接入IP地址查询",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "goDaddyList",
+    "parentCode": "",
+    "icon": "",
+    "text": "GoDaddy证书查询",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "ruichengList",
+    "parentCode": "",
+    "icon": "",
+    "text": "锐城新证书查询",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  }
 ]

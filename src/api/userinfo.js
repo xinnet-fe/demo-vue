@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getUser(query) {
   return request({
-    // url: '/refundProduct/employee/getEmployeeInfo',
+    // url: '/employee/getEmployeeInfo',
     url: 'static/domain/data/account.json',
     method: 'get',
     params: query

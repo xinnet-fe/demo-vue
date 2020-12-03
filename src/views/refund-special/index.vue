@@ -264,7 +264,7 @@ export default {
     }
   },
   watch: {
-    
+
   },
   computed: {
     ...mapState({
