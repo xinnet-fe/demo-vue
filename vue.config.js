@@ -21,6 +21,10 @@ const defaultProxy = {
     //target: 'http://domain.xinnet.com',  // 域名退费
     changeOrigin: true
   },
+  '/nsThreshold': {
+    target: 'http://domain-boss.xinnet.com',
+    changeOrigin: true
+  }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
 
