@@ -2,7 +2,7 @@
   <div class="box-container">
 
     <div>
-      <div class="box-form">
+      <div class="box-form order-form">
         <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
 
           <el-form-item label="服务编号" prop="serviceCode">
@@ -263,10 +263,13 @@ export default {
       }
     }
   },
+  watch: {
+    
+  },
   computed: {
     ...mapState({
-      queryRefundList: state => state.refund.queryRefundList,
-      refundOrder: state => state.refund.refundOrder
+      querySpecRefundList: state => state.refund.querySpecRefundList,
+      refundSpecOrder: state => state.refund.refundSpecOrder
     }),
     refund_batch_val: {
       get() {
@@ -358,11 +361,11 @@ export default {
             // 查询
             this.loading = true
             this.listdata = []
-            this.$store.dispatch('refund/queryRefundList', payload).then(res => {
+            this.$store.dispatch('refund/querySpecRefundList', payload).then(res => {
               this.loading = false
               if (res.code === null || res.code === undefined || res.code === '') {
                 // 服务列表
-                this.listdata = this.queryRefundList.data.list.map(item => {
+                this.listdata = this.querySpecRefundList.data.list.map(item => {
                   // 退订整条服务的按钮是否允许被点击，及当前服务在批量退费时是否允许被选中
                   let isOperateCurrent = false // 默认不允许操作
                   const body = {
@@ -384,7 +387,7 @@ export default {
                   body.isOperateCurrent = isOperateCurrent
                   return body
                 })
-                this.page.total = this.queryRefundList.data.totalRows // 服务列表（数量）
+                this.page.total = this.querySpecRefundList.data.totalRows // 服务列表（数量）
                 // btnDisabled 批量删除按钮的 disabled 状态
                 this.btnDisabled = !this.listdata.some(item => item.isOperateCurrent)
                 // 批量退费时的所有可退费的域名
@@ -448,7 +451,7 @@ export default {
         refundType: this.constRefundType // 1特殊退费 2 常规退费
       }
       item.loading = true
-      this.$store.dispatch('refund/refundOrder', payload).then(res => {
+      this.$store.dispatch('refund/refundSpecOrder', payload).then(res => {
         item.loading = false
         item.res = res.msg
         this.Msg_Dialog.num++
@@ -509,7 +512,7 @@ export default {
       item.billList.forEach(bill => {
         bill.loading = true
       })
-      this.$store.dispatch('refund/refundOrder', payload).then(res => {
+      this.$store.dispatch('refund/refundSpecOrder', payload).then(res => {
         // item.loading = false
         // item.res = res.msg
         this.Msg_Dialog.num++
@@ -601,7 +604,6 @@ export default {
 <style lang="scss" scoped>
 .box-container{
   border-bottom: 20px solid #f3f7fa;
-  padding: 20px 0px;
 
   .box-list{
     margin: 0px 20px 20px 20px;
@@ -617,7 +619,7 @@ export default {
       color: red;
     }
     .listResult{
-      text-align:center; padding-top:20px;
+      text-align:center; padding:20px;
     }
     .list-title{
       background: #f3f7fa;

@@ -16,11 +16,22 @@ const customWebpackConfig = defaultSettings.webpackConfig
 
 // merge proxy
 const defaultProxy = {
-  '/domainRefund': {
-    target: 'http://domaina.xinnet.com',  // 域名退费
-    //target: 'http://domain.xinnet.com',  // 域名退费
+  '/api/domainRefund': {
+    //target: 'http://domaina.xinnet.com',  // 域名退费
+    target: 'http://domain-boss.xinnet.com',  // 域名退费
+    pathRewrite: {
+      '^/api':''
+    },
     changeOrigin: true
   },
+  '/nsThreshold': {
+    target: 'http://domain-boss.xinnet.com',
+    changeOrigin: true
+  },
+  '/apiApply': {
+    target: 'http://domain-boss.xinnet.com',
+    changeOrigin: true
+  }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
 

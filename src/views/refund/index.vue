@@ -2,8 +2,8 @@
   <div class="box-container">
 
     <div>
-      <div class="box-form">
-        <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
+      <div class="box-form order-form">
+        <el-form class="search-form" ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
 
           <el-form-item label="服务编号" prop="serviceCode">
             <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
@@ -162,6 +162,7 @@
 </template>
 
 <script>
+import {abc} from '@/api/refund.js'
 import formatTime from '@/utils/formatTime.js'
 import { mapState } from 'vuex'
 import { Message } from 'element-ui'
@@ -553,7 +554,6 @@ export default {
 <style lang="scss" scoped>
 .box-container{
   border-bottom: 20px solid #f3f7fa;
-  padding: 20px 0px;
 
   .box-list{
     margin: 0px 20px 20px 20px;
@@ -569,7 +569,7 @@ export default {
       color: red;
     }
     .listResult{
-      text-align:center; padding-top:20px;
+      text-align:center; padding:20px;
     }
     .list-title{
       background: #f3f7fa;
