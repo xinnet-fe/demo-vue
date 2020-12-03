@@ -11,6 +11,15 @@
           "target": "tab",
           "hidden": false,
           "param": ""
+        },{
+          "code": "refund-special",
+          "parentCode": "agent-client-app",
+          "icon": "",
+          "text": "特殊退费",
+          "url": "",
+          "target": "tab",
+          "hidden": false,
+          "param": ""
         }],
         "icon": "applicationCenter",
         "text": "域名",
