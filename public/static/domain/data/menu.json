@@ -28,5 +28,45 @@
     "target": "tab",
     "hidden": false,
     "param": ""
+  },
+  {
+    "code": "apiApplyList",
+    "parentCode": "",
+    "icon": "",
+    "text": "域名API申请管理",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "ipList",
+    "parentCode": "",
+    "icon": "",
+    "text": "接入IP地址查询",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "goDaddyList",
+    "parentCode": "",
+    "icon": "",
+    "text": "GoDaddy证书查询",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "ruichengList",
+    "parentCode": "",
+    "icon": "",
+    "text": "锐城新证书查询",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
   }
 ]

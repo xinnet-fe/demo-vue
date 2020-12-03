@@ -24,6 +24,10 @@ const defaultProxy = {
   '/nsThreshold': {
     target: 'http://domain-boss.xinnet.com',
     changeOrigin: true
+  },
+  '/apiApply': {
+    target: 'http://domain-boss.xinnet.com',
+    changeOrigin: true
   }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
