@@ -18,7 +18,7 @@
     <!-- operate -->
     <el-form ref="operateForm" class="operate-form" :model="searchForm" :inline="true">
       <el-form-item>
-        <el-button size="mini">添加</el-button>
+        <el-button size="mini" @click="handleShowAdd({})">添加</el-button>
       </el-form-item>
     </el-form>
     <!-- operate -->
@@ -48,7 +48,7 @@
         label="操作"
       >
         <template v-slot="scope">
-          <el-button type="text" size="mini">修改</el-button>
+          <el-button type="text" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
           <el-popconfirm title="确定删除吗？" @onConfirm="handleDel(scope.row)">
             <el-button slot="reference" type="text" size="mini">删除</el-button>
           </el-popconfirm>
@@ -62,18 +62,23 @@
       @pagination="onSearch"
     />
     <!-- table -->
+
+    <!-- 添加接入IP -->
+    <DialogAddIp v-if="dialogVisible" :visible.sync="dialogVisible" :row.sync="row" @refresh="onSearch" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination'
+import DialogAddIp from './dialogAddIp'
 import { mapState } from 'vuex'
 import clearFormData from '@/utils/clearFormData'
 
 export default {
   name: 'NsThreshold',
   components: {
-    Pagination
+    Pagination,
+    DialogAddIp
   },
   props: {},
   data() {
@@ -89,7 +94,9 @@ export default {
         total: 0,
         page: 1,
         limit: 20
-      }
+      },
+      dialogVisible: true,
+      row: {}
     }
   },
   computed: {
@@ -142,6 +149,14 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+    handleShowAdd(data) {
+      this.row = data
+      this.dialogVisible = true
+    },
+    handleUpdate(data) {
+      this.row = data
+      this.dialogVisible = true
     }
   }
 }
