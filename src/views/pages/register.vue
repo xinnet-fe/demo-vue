@@ -61,7 +61,7 @@
       <div v-show="step === 2" class="result step2">
         <div class="icon"><i class="el-icon-circle-check" /></div>
         <h3>恭喜您！您的代理账号已申请成功！</h3>
-        <p>您的代理账号（登录账号）为：<span class="agentCode">{{ agentCode }}</span><br>目前该账号还未正式开通，暂不能登录，我们的区域渠道经理会与您联系进行开通，请保持电话畅通，或通过下方信息联系区域渠道经理。<br><a href="https://agent.xinnet.com/login/pages/agentLogin.jsp" rel="noopener noreferrer">区域渠道经理信息</a></p>
+        <p>您的代理账号（登录账号）为：<span class="agentCode">{{ agentCode }}</span><br>目前该账号还未正式开通，暂不能登录，我们的区域渠道经理会与您联系进行开通，请保持电话畅通，或通过下方信息联系区域渠道经理。<br><a href="http://www.xinnet.com/agent/agent.html" rel="noopener noreferrer">区域渠道经理信息</a></p>
       </div>
     </div>
     <div class="slideshow">
@@ -405,7 +405,7 @@ export default {
               this.agentCode = response.data.agentCode
               this.step = 2
               setTimeout(() => {
-                window.location.href = 'https://agent.xinnet.com/login/pages/agentLogin.jsp'
+                window.location.href = 'http://www.xinnet.com/agent/agent.html'
               }, 5000)
             } else {
               this.$message.error('注册失败')
