@@ -3,12 +3,7 @@
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true" class="search-form">
       <el-form-item label="级别名称" prop="level">
-        <el-select v-model="form.type" @change="handleSelectChange">
-          <el-option v-for="item in levelOptions" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="关键词" prop="keywords">
-        <el-input v-model="form.keywords" :placeholder="placeholder" :clearable="true" />
+        <el-input v-model="form.keywords" placeholder="" :clearable="true" :maxlength="50" />
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch()">查 询</el-button>
@@ -103,7 +98,7 @@ export default {
       row: {},
       placeholder: '请输入关键字',
       form: {
-        type: 'gradleName',
+        type: '',
         keywords: ''
       },
       list: [],
@@ -135,8 +130,8 @@ export default {
     },
     onSearch(page) {
       const query = {
-        gradleName: this.form.type === 'gradleName' ? this.form.keywords : '',
-        name: this.form.type === 'name' ? this.form.keywords : ''
+        gradleName: this.form.keywords,
+        name: ''
       }
       if (page) {
         query.pageNum = page.page
