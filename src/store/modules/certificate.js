@@ -24,6 +24,24 @@ const actions = {
         reject(err)
       })
     })
+  },
+  findCertificateByCertId({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.findCertificateByCertId(payload).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  findSSlNewByCertId({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.findSSlNewByCertId(payload).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
 

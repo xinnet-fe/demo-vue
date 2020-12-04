@@ -1,11 +1,10 @@
 <template>
   <div>
-    <span @click="showDetail=true">open</span>
     <div v-show="!showDetail" class="order-form">
       <!-- search -->
       <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
         <el-form-item label="流水号">
-          <el-input v-model="searchForm.serviceCode" />
+          <el-input v-model="searchForm.certUnique" />
         </el-form-item>
         <el-form-item label="所属账号">
           <el-input v-model="searchForm.agentCode" />
@@ -14,7 +13,7 @@
           <el-input v-model="searchForm.commonName" />
         </el-form-item>
         <el-form-item label="证书ID">
-          <el-input v-model="searchForm.certificateId" />
+          <el-input v-model="searchForm.certId" />
         </el-form-item>
         <el-form-item label="服务编号">
           <el-input v-model="searchForm.serviceCode" />
@@ -148,12 +147,11 @@
         </el-table-column>
         <el-table-column
           fixed="right"
-          width="100px"
+          width="60px"
           label="操作"
         >
           <template v-slot="scope">
-            {{ scope }}
-            <el-button type="text" size="mini">详情</el-button>
+            <el-button type="text" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -222,9 +220,10 @@ export default {
   data() {
     return {
       searchForm: {
+        certUnique: '',
         serviceCode: '',
         commonName: '',
-        certificateId: '',
+        certId: '',
         orderCode: '',
         agentCode: '',
         productType: '',
@@ -233,6 +232,8 @@ export default {
         applyDateEnd: '',
         takeDateBegin: '',
         takeDateEnd: '',
+        expiredDateBegin: '',
+        expiredDateEnd: '',
         pageNo: 1,
         pageSize: 20
       },
@@ -317,19 +318,24 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['certificate/queryCertificateList']
+      loading: state => state.loading.effects['certificate/querySslList']
     })
   },
   watch: {
-    date1: function(val) {
+    date2: function(val) {
       const v = val || ['', '']
       this.searchForm.applyDateBegin = v[0] ? `${v[0]} 00:00:00` : ''
       this.searchForm.applyDateEnd = v[1] ? `${v[1]} 23:59:59` : ''
     },
-    date2: function(val) {
+    date1: function(val) {
       const v = val || ['', '']
       this.searchForm.takeDateBegin = v[0] ? `${v[0]} 00:00:00` : ''
       this.searchForm.takeDateEnd = v[1] ? `${v[1]} 23:59:59` : ''
+    },
+    date3: function(val) {
+      const v = val || ['', '']
+      this.searchForm.expiredDateBegin = v[0] ? `${v[0]} 00:00:00` : ''
+      this.searchForm.expiredDateEnd = v[1] ? `${v[1]} 23:59:59` : ''
     }
   },
   mounted() {
@@ -349,7 +355,7 @@ export default {
         this.page.page = 1
         this.page.limit = 20
       }
-      this.$store.dispatch('certificate/queryCertificateList', query).then(res => {
+      this.$store.dispatch('certificate/querySslList', query).then(res => {
         if (!res.code) {
           this.list = res.list
           this.page.total = res.totalRows
@@ -368,6 +374,9 @@ export default {
     },
     handleBack() {
       this.showDetail = false
+    },
+    handleDetail(row) {
+      this.showDetail = true
     }
   }
 }

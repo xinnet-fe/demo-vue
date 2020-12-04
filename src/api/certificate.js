@@ -19,3 +19,21 @@ export function querySslList(data) {
     data: querystring.stringify(data)
   })
 }
+// GoDaddy-详情查询
+export function findCertificateByCertId(data) {
+  var url = '/certificate/findCertificateByCertId'
+  return request({
+    url,
+    method: 'post',
+    data: querystring.stringify(data)
+  })
+}
+// 锐城-详情查询
+export function findSSlNewByCertId(data) {
+  var url = '/certificate/findSSlNewByCertId'
+  return request({
+    url,
+    method: 'post',
+    data: querystring.stringify(data)
+  })
+}

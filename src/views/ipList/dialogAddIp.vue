@@ -10,7 +10,7 @@
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="代理编号：" prop="agentCode">
-        <el-input v-model="form.agentCode" maxlength="50" placeholder="请输入代理编号" style="width:260px" />
+        <el-input v-model="form.agentCode" maxlength="50" placeholder="请输入代理编号" :disabled="(row.agentCode && row.agentCode.length > 0)" style="width:260px" />
       </el-form-item>
       <el-form-item label="IP地址：" prop="ip">
         <el-input v-model="form.ip" maxlength="15" placeholder="请输入节点ip地址，多节点用 - 分隔" style="width:260px" />
@@ -99,9 +99,9 @@ export default {
           // this.form.ip = this.form.ip.replace(/\./g, '-')
           if (this.row.id) {
             this.form.id = this.row.id
-            this.$store.dispatch('domainApiApply/modifySettingById', this.form).then(res => {
+            this.$store.dispatch('apiApply/modifySettingById', this.form).then(res => {
               this.loading = false
-              if (!res.code && res.success) {
+              if (!res.code && res.data.isSuccess === 1) {
                 this.$message({
                   message: '修改成功',
                   type: 'success'
@@ -109,16 +109,16 @@ export default {
                 this.handleClose()
                 this.$emit('refresh')
               } else {
-                // this.$message.error(res.msg)
+                this.$message.error(res.msg)
               }
             }).catch(error => {
               this.loading = false
               console.log(error)
             })
           } else {
-            this.$store.dispatch('domainApiApply/addApiAuthIp', this.form).then(res => {
+            this.$store.dispatch('apiApply/addApiAuthIp', this.form).then(res => {
               this.loading = false
-              if (!res.code && res.success) {
+              if (!res.code && res.data.isSuccess === 1) {
                 this.$message({
                   message: '添加成功',
                   type: 'success'
@@ -126,7 +126,7 @@ export default {
                 this.handleClose()
                 this.$emit('refresh')
               } else {
-                // this.$message.error(res.msg)
+                this.$message.error(res.msg)
               }
             }).catch(error => {
               this.loading = false

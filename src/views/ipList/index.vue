@@ -84,7 +84,7 @@ export default {
   data() {
     return {
       searchForm: {
-        agentCode: '',
+        agentCode: 'agent171901',
         ip: '',
         pageNum: 1,
         pageSize: 20
@@ -95,7 +95,7 @@ export default {
         page: 1,
         limit: 20
       },
-      dialogVisible: true,
+      dialogVisible: false,
       row: {}
     }
   },

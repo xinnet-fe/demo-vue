@@ -1,6 +1,5 @@
 <template>
   <div>
-    <span @click="showDetail=true">open</span>
     <div v-show="!showDetail" class="order-form">
       <!-- search -->
       <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
@@ -129,12 +128,11 @@
         />
         <el-table-column
           fixed="right"
-          width="100px"
+          width="60px"
           label="操作"
         >
           <template v-slot="scope">
-            {{ scope }}
-            <el-button type="text" size="mini">详情</el-button>
+            <el-button type="text" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -213,14 +211,14 @@ export default {
       },
       showDetail: false,
       basicLabel: {
-        agentCode: '证书ID',
-        company: '主域名',
+        certificateId: '证书ID',
+        commonName: '主域名',
         market: '辅域名',
         level: '域名',
-        phone: '产品名称',
-        email: '证书状态',
-        province: '证书签发时间',
-        city: '证书到期时间'
+        productType: '产品名称',
+        status: '证书状态',
+        takeDate: '证书签发时间',
+        expireDate: '证书到期时间'
       },
       basicInfo: {
         agentCode: 'safsd',
@@ -286,6 +284,9 @@ export default {
     },
     handleBack() {
       this.showDetail = false
+    },
+    handleDetail(row) {
+      this.showDetail = true
     }
   }
 }
