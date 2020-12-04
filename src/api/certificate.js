@@ -3,7 +3,7 @@ import querystring from 'querystring'
 
 // GoDaddy-列表
 export function queryCertificateList(data) {
-  var url = '/certificate/queryCertificateList'
+  var url = '/api/certificate/queryCertificateList'
   return request({
     url,
     method: 'post',
@@ -12,7 +12,7 @@ export function queryCertificateList(data) {
 }
 // 锐城-列表
 export function querySslList(data) {
-  var url = '/certificate/querySslList'
+  var url = '/api/certificate/querySslList'
   return request({
     url,
     method: 'post',
@@ -21,7 +21,7 @@ export function querySslList(data) {
 }
 // GoDaddy-详情查询
 export function findCertificateByCertId(data) {
-  var url = '/certificate/findCertificateByCertId'
+  var url = '/api/certificate/findCertificateByCertId'
   return request({
     url,
     method: 'post',
@@ -30,7 +30,7 @@ export function findCertificateByCertId(data) {
 }
 // 锐城-详情查询
 export function findSSlNewByCertId(data) {
-  var url = '/certificate/findSSlNewByCertId'
+  var url = '/api/certificate/findSSlNewByCertId'
   return request({
     url,
     method: 'post',

@@ -20,22 +20,29 @@ const defaultProxy = {
     //target: 'http://domaina.xinnet.com',  // 域名退费
     target: 'http://domain-boss.xinnet.com',  // 域名退费
     pathRewrite: {
-      '^/api':''
+      '^/api': ''
     },
     changeOrigin: true
   },
   '/nsThreshold': {
-    //target: 'http://domaina.xinnet.com',  // 域名退费
     target: 'http://domain-boss.xinnet.com',
+    pathRewrite: {
+      '^/api': ''
+    },
     changeOrigin: true
   },
   '/apiApply': {
-    //target: 'http://domaina.xinnet.com',  // 域名退费
     target: 'http://domain-boss.xinnet.com',
+    pathRewrite: {
+      '^/api': ''
+    },
     changeOrigin: true
   },
   '/certificate': {
     target: 'http://domain-boss.xinnet.com',
+    pathRewrite: {
+      '^/api': ''
+    },
     changeOrigin: true
   }
 }

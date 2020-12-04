@@ -213,7 +213,7 @@ export default {
       basicLabel: {
         certificateId: '证书ID',
         commonName: '主域名',
-        market: '辅域名',
+        subjectAlternativeNames: '辅域名',
         level: '域名',
         productType: '产品名称',
         status: '证书状态',
@@ -287,6 +287,16 @@ export default {
     },
     handleDetail(row) {
       this.showDetail = true
+      this.$store.dispatch('certificate/findCertificateByCertId', { certificateId: row.certificateId }).then(res => {
+        if (!res.code) {
+          this.list = res.list
+          this.page.total = res.totalRows
+        } else {
+          this.$message.error(res.msg || res.message)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }

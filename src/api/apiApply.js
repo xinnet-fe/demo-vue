@@ -3,7 +3,7 @@ import querystring from 'querystring'
 
 // 域名api管理-列表
 export function getApiApplyList(data) {
-  var url = '/apiApply/getApiApplyList'
+  var url = '/api/apiApply/getApiApplyList'
   return request({
     url,
     method: 'post',
@@ -14,7 +14,7 @@ export function getApiApplyList(data) {
 }
 // 锁定解锁用户
 export function modifyState(data) {
-  var url = '/apiApply/modifyState'
+  var url = '/api/apiApply/modifyState'
   return request({
     url,
     method: 'post',
@@ -23,7 +23,7 @@ export function modifyState(data) {
 }
 // 查询IP配置列表
 export function selectApiSettingIps(data) {
-  var url = '/apiApply/selectApiSettingIps'
+  var url = '/api/apiApply/selectApiSettingIps'
   return request({
     url,
     method: 'post',
@@ -32,7 +32,7 @@ export function selectApiSettingIps(data) {
 }
 // 添加ip配置
 export function addApiAuthIp(data) {
-  var url = '/apiApply/addApiAuthIp'
+  var url = '/api/apiApply/addApiAuthIp'
   return request({
     url,
     method: 'post',
@@ -41,7 +41,7 @@ export function addApiAuthIp(data) {
 }
 // 删除单个ip配置
 export function deleteSettingById(data) {
-  var url = '/apiApply/deleteSettingById'
+  var url = '/api/apiApply/deleteSettingById'
   return request({
     url,
     method: 'post',
@@ -50,7 +50,7 @@ export function deleteSettingById(data) {
 }
 // 修改ip配置
 export function modifySettingById(data) {
-  var url = '/apiApply/modifySettingById'
+  var url = '/api/apiApply/modifySettingById'
   return request({
     url,
     method: 'post',
