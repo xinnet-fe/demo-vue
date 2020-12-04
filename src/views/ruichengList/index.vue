@@ -77,7 +77,7 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="serviceCode"
+          prop="certUnique"
           label="流水号"
         />
         <el-table-column
@@ -85,24 +85,24 @@
           label="账号"
         />
         <el-table-column
-          prop="certificateId"
+          prop="certId"
           label="证书ID"
         />
 
         <el-table-column
-          prop="applyDate"
+          prop="createDate"
           label="申请时间"
         />
         <el-table-column
-          prop="takeDate"
+          prop="beginDate"
           label="开始时间"
         />
         <el-table-column
-          prop="expireDate"
+          prop="endDate"
           label="结束时间"
         />
         <el-table-column
-          prop="commonName"
+          prop="price"
           label="价格"
         />
         <el-table-column
@@ -114,35 +114,18 @@
           label="服务编号"
         />
         <el-table-column
+          prop="productType"
           label="证书类型"
-        >
-          <template v-slot="scope">
-            <span v-if="scope.row.productType === 'DV_SSL_1'">单域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_5'">5域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_10'">10域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_15'">15域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_20'">20域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_N'">通配符</span>
-          </template>
-        </el-table-column>
+        />
         <el-table-column
-          prop="email"
+          prop="domainLen"
           label="域名数量"
         />
         <el-table-column
           label="证书状态"
         >
           <template v-slot="scope">
-            <span v-if="scope.row.status === 0">未申请</span>
-            <span v-if="scope.row.status === 1">待签发</span>
-            <span v-if="scope.row.status === 2">已签发</span>
-            <span v-if="scope.row.status === 3">已吊销</span>
-            <span v-if="scope.row.status === 4">已取消</span>
-            <span v-if="scope.row.status === 5">验证失败</span>
-            <span v-if="scope.row.status === 6">撤销中</span>
-            <span v-if="scope.row.status === 7">重新签发中</span>
-            <span v-if="scope.row.status === 8">重新签发中</span>
-            <span v-if="scope.row.status === 9">已过期</span>
+            {{ sslDomainStatus[scope.row.status] }}
           </template>
         </el-table-column>
         <el-table-column
@@ -166,7 +149,7 @@
     <Detail v-if="showDetail" :handle-to-back="handleBack">
       <div slot="tit-center">证书详情</div>
       <div slot="cont">
-        <el-descriptions :column="2" :labels="basicLabel" :data="basicInfo" style="margin-bottom: 20px;" />
+        <el-descriptions :column="1" :labels="basicLabel" :data="basicInfo" style="margin-bottom: 20px;" />
         <Box type="2">
           <div slot="tit-left">历史记录详情</div>
           <div slot="tit-right" />
@@ -176,21 +159,21 @@
               style="width: 100%"
             >
               <el-table-column
-                prop="date"
+                prop="operateDate"
                 label="操作时间"
                 width="180"
               />
               <el-table-column
-                prop="name"
+                prop="operateType"
                 label="操作类型"
                 width="180"
               />
               <el-table-column
-                prop="address"
+                prop="operateContent"
                 label="操作内容"
               />
               <el-table-column
-                prop="address"
+                prop="operateCode"
                 label="操作账号"
               />
             </el-table>
@@ -262,58 +245,51 @@ export default {
         page: 1,
         limit: 20
       },
+      sslDomainStatus: {
+        'PENDING': '申请中',
+        'COMPLETE': '申请成功',
+        'CANCELLED': '已取消',
+        'REISSUED': '重签'
+      },
+      status: {
+        'nogoing': '待验证',
+        'verified': '验证通过'
+      },
       showDetail: false,
       basicLabel: {
-        agentCode: '流水号',
-        company: '账号',
-        market: '证书Id',
-        level: '域名',
-        phone: '年限',
-        email: '开始时间',
-        province: '结束时间',
-        city: '申请时间',
-        address: '订单号',
-        address1: '证书类型',
-        address2: '域名数量',
-        address3: '解析主机头',
-        address4: '解析值',
-        address5: '解析是否验证',
-        address6: '证书状态'
+        certUnique: '流水号',
+        agentCode: '账号',
+        certId: '证书Id',
+        domainName: '域名',
+        years: '年限',
+        beginDate: '开始时间',
+        endDate: '结束时间',
+        createDate: '申请时间',
+        orderCode: '订单号',
+        productType: '证书类型',
+        domainLen: '域名数量',
+        dcvDnsHost: '解析主机头',
+        dcvDnsValue: '解析值',
+        status: '解析是否验证',
+        sslDomainStatus: '证书状态'
       },
       basicInfo: {
-        agentCode: '流水号',
-        company: '账号',
-        market: '证书Id',
-        level: '域名',
-        phone: '年限',
-        email: '开始时间',
-        province: '结束时间',
-        city: '申请时间',
-        address: '订单号',
-        address1: '证书类型',
-        address2: '域名数量',
-        address3: '解析主机头',
-        address4: '解析值',
-        address5: '解析是否验证',
-        address6: '证书状态'
+        certUnique: '',
+        agentCode: '',
+        certId: '',
+        domainName: '',
+        years: '',
+        beginDate: '',
+        endDate: '',
+        createDate: '',
+        orderCode: '',
+        productType: '',
+        domainLen: '',
+        dcvDnsHost: '',
+        dcvDnsValue: '',
+        status: ''
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: []
     }
   },
   computed: {
@@ -357,8 +333,8 @@ export default {
       }
       this.$store.dispatch('certificate/querySslList', query).then(res => {
         if (!res.code) {
-          this.list = res.list
-          this.page.total = res.totalRows
+          this.list = res.data.list
+          this.page.total = res.data.totalRows
         } else {
           this.$message.error(res.msg || res.message)
         }
@@ -377,6 +353,30 @@ export default {
     },
     handleDetail(row) {
       this.showDetail = true
+      this.$store.dispatch('certificate/findSSlNewByCertId', { certId: row.certId }).then(res => {
+        if (!res.code) {
+          this.basicInfo.certUnique = res.data.certificateNew.certUnique
+          this.basicInfo.agentCode = res.data.certificateNew.agentCode
+          this.basicInfo.certId = res.data.certificateNew.certId
+          this.basicInfo.domainName = res.data.certificateNew.domainName
+          this.basicInfo.years = res.data.certificateNew.years
+          this.basicInfo.beginDate = res.data.certificateNew.beginDate
+          this.basicInfo.endDate = res.data.certificateNew.endDate
+          this.basicInfo.createDate = res.data.certificateNew.createDate
+          this.basicInfo.orderCode = res.data.certificateNew.orderCode
+          this.basicInfo.productType = res.data.certificateNew.productType
+          this.basicInfo.domainLen = res.data.certificateNew.domainLen
+          this.basicInfo.dcvDnsHost = res.data.certificateNew.dcvDnsHost
+          this.basicInfo.dcvDnsValue = res.data.certificateNew.dcvDnsValue
+          this.basicInfo.status = this.status[res.data.certificateNew.status]
+          this.basicInfo.sslDomainStatus = this.sslDomainStatus[res.data.certificateNew.sslDomainStatus]
+          this.tableData = res.data.SSLRecordsList
+        } else {
+          this.$message.error(res.msg || res.message)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }

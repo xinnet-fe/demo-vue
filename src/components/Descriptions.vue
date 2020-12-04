@@ -103,11 +103,11 @@ export default {
         margin: 0;
 
         > .label {
-          flex: 0 0 40% ;
+          flex: 0 0 20% ;
           background: #ededed;
         }
         > .text {
-          flex: 1 0 58%;
+          flex: 1 0 78%;
         }
 
         > div {

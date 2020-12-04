@@ -74,12 +74,7 @@
           label="产品名称"
         >
           <template v-slot="scope">
-            <span v-if="scope.row.productType === 'DV_SSL_1'">单域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_5'">5域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_10'">10域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_15'">15域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_20'">20域名</span>
-            <span v-if="scope.row.productType === 'DV_SSL_N'">通配符</span>
+            <span>{{ productType[scope.row.productType] }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -106,16 +101,7 @@
           label="证书状态"
         >
           <template v-slot="scope">
-            <span v-if="scope.row.status === 0">未申请</span>
-            <span v-if="scope.row.status === 1">待签发</span>
-            <span v-if="scope.row.status === 2">已签发</span>
-            <span v-if="scope.row.status === 3">已吊销</span>
-            <span v-if="scope.row.status === 4">已取消</span>
-            <span v-if="scope.row.status === 5">验证失败</span>
-            <span v-if="scope.row.status === 6">撤销中</span>
-            <span v-if="scope.row.status === 7">重新签发中</span>
-            <span v-if="scope.row.status === 8">重新签发中</span>
-            <span v-if="scope.row.status === 9">已过期</span>
+            <span>{{ status[scope.row.status] }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -210,25 +196,43 @@ export default {
         limit: 20
       },
       showDetail: false,
+      productType: {
+        'DV_SSL_1': '单域名',
+        'DV_SSL_5': '5域名',
+        'DV_SSL_10': '10域名',
+        'DV_SSL_15': '15域名',
+        'DV_SSL_20': '20域名',
+        'DV_SSL_N': '通配符'
+      },
+      status: {
+        0: '未申请',
+        1: '待签发',
+        2: '已签发',
+        3: '已吊销',
+        4: '已取消',
+        5: '验证失败',
+        6: '撤销中',
+        7: '重新签发中',
+        8: '重新签发中',
+        9: '已过期'
+      },
       basicLabel: {
         certificateId: '证书ID',
         commonName: '主域名',
         subjectAlternativeNames: '辅域名',
-        level: '域名',
         productType: '产品名称',
         status: '证书状态',
         takeDate: '证书签发时间',
         expireDate: '证书到期时间'
       },
       basicInfo: {
-        agentCode: 'safsd',
-        company: 'safd',
-        market: 'asdfdsf',
-        level: 'asdfsadfsd',
-        phone: '15110066180',
-        email: '',
-        province: '北京',
-        city: '北京'
+        certificateId: '',
+        commonName: '',
+        subjectAlternativeNames: '',
+        productType: '',
+        status: '',
+        takeDate: '',
+        expireDate: ''
       }
     }
   },
@@ -268,8 +272,8 @@ export default {
       }
       this.$store.dispatch('certificate/queryCertificateList', query).then(res => {
         if (!res.code) {
-          this.list = res.list
-          this.page.total = res.totalRows
+          this.list = res.data.list
+          this.page.total = res.data.totalRows
         } else {
           this.$message.error(res.msg || res.message)
         }
@@ -289,8 +293,13 @@ export default {
       this.showDetail = true
       this.$store.dispatch('certificate/findCertificateByCertId', { certificateId: row.certificateId }).then(res => {
         if (!res.code) {
-          this.list = res.list
-          this.page.total = res.totalRows
+          this.basicInfo.certificateId = res.data.certificateId
+          this.basicInfo.commonName = res.data.commonName
+          this.basicInfo.subjectAlternativeNames = res.data.subjectAlternativeNames
+          this.basicInfo.productType = this.productType[res.data.productType]
+          this.basicInfo.status = this.status[res.data.status]
+          this.basicInfo.takeDate = res.data.takeDate
+          this.basicInfo.expireDate = res.data.expireDate
         } else {
           this.$message.error(res.msg || res.message)
         }
