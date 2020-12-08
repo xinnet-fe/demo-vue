@@ -27,6 +27,7 @@ export function refundProduct_List(data) {
 
 // 2、产品下账单列表查询
 export function refundProduct_BillList(data) {
+  // console.log('refundProduct_BillList -> ', data, data.productType)
   var url = ''
   switch (data.productType) {
     case 'ARROW':
@@ -42,6 +43,7 @@ export function refundProduct_BillList(data) {
       break
     default:
       url = ''
+      console.log('错误的productType')
   }
   return request({
     url,

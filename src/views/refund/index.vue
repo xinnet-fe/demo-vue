@@ -436,6 +436,7 @@ export default {
     },
     // 显示子账单
     showBillList(item) {
+      // console.log('item=', item)
       const payload = {
         agentCode: item.agentCode,
         // billCode: item.第一个接口中没有账单编号,
@@ -449,6 +450,7 @@ export default {
       this.showBillList_Dialog.serviceCode = item.serviceCode
       this.showBillList_Dialog.loading = true
       this.refundProduct_BillList.data = []
+      // console.log('dispatch -> refund/refundProduct_BillList', payload)
       this.$store.dispatch('refund/refundProduct_BillList', payload).then(res => {
         this.showBillList_Dialog.loading = false
         if (res.success) {
@@ -496,7 +498,7 @@ export default {
         payload.refundType = refundType
         payload.productType = item.productType
       } else {
-        console.log('出错了')
+        console.log('错误的refundType')
         return
       }
 

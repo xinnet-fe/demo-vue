@@ -53,6 +53,7 @@ const actions = {
   },
   // 2、产品下账单列表查询
   refundProduct_BillList({ commit }, payload) {
+    // console.log('2、产品下账单列表查询')
     // return refundProduct_BillList(payload).then(res => commit('REFUNDPRODUCTBILLLIST', res))
     return new Promise((resolve, reject) => {
       refundProduct_BillList(payload).then(res => {
@@ -81,6 +82,7 @@ const actions = {
   },
   // 4、进行退费
   instance_Refund({ commit }, payload) {
+    // console.log('4、进行退费')
     // return instance_Refund(payload).then(res => commit('INSTANCEREFUND', res))
     return new Promise((resolve, reject) => {
       instance_Refund(payload).then(res => {
