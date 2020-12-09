@@ -68,10 +68,19 @@
             "target": "tab"
         },
         {
-            "code": "consume",
+            "code": "consumeagent",
             "parentCode": "agent-manage",
             "icon": "",
             "text": "代理消耗查询",
+            "url": "",
+            "hidden": false,
+            "target": "tab"
+        },
+        {
+            "code": "consumehy",
+            "parentCode": "agent-manage",
+            "icon": "",
+            "text": "会员消耗查询",
             "url": "",
             "hidden": false,
             "target": "tab"

@@ -17,7 +17,9 @@ import Echarts from 'echarts'
 import VueKindEditor from 'vue-kindeditor'
 import 'kindeditor/kindeditor-all-min.js'
 import 'kindeditor/themes/default/default.css'
+import moment from 'moment'// 导入文件
 
+Vue.prototype.$moment = moment// 赋值使用
 Vue.use(VueKindEditor)
 
 /**

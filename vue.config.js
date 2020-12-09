@@ -152,7 +152,7 @@ function defaultChainWebpack(config) {
 module.exports = {
   ...rootConfig,
   devServer: {
-    before: require('./mock/mock-server.js'),
+    // before: require('./mock/mock-server.js'),
     port: port,
     open: false,
     disableHostCheck: true,
@@ -161,8 +161,6 @@ module.exports = {
       errors: true
     },
     proxy,
-    disableHostCheck: true,
-    before: require('./mock/mock-server.js')
   },
   configureWebpack,
   chainWebpack
