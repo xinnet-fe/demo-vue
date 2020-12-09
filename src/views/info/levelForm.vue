@@ -45,9 +45,6 @@ export default {
       }
     }
   },
-  mounted () {
-
-  },
   computed: {
     ...mapState('userManager', ['allGrade']),
     formVisible: {
@@ -57,6 +54,12 @@ export default {
       set(val) {
         this.$emit('update:visible', val)
       }
+    }
+  },
+  mounted() {
+    const selected = this.$parent.multipleSelection
+    if (selected.length === 1) {
+      this.setData(selected)
     }
   },
   methods: {
@@ -87,7 +90,6 @@ export default {
           }).catch(error => {
             this.$message.error(error)
           })
-
         } else {
           return false
         }
@@ -105,13 +107,10 @@ export default {
       done()
     },
     setData(selected) {
-      this.form.level = selected[0].gradeCode * 1
+      this.form.level = selected[0].gradeCode ? selected[0].gradeCode * 1 : ''
     },
     open() {
-      const selected = this.$parent.multipleSelection
-      if (selected.length === 1) {
-        this.setData(selected)
-      }
+
     }
   }
 }
