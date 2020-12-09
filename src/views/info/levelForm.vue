@@ -57,10 +57,7 @@ export default {
     }
   },
   mounted() {
-    const selected = this.$parent.multipleSelection
-    if (selected.length === 1) {
-      this.setData(selected)
-    }
+
   },
   methods: {
     ...mapActions('userManager', ['batchUpdate']),
@@ -110,7 +107,10 @@ export default {
       this.form.level = selected[0].gradeCode ? selected[0].gradeCode * 1 : ''
     },
     open() {
-
+      const selected = this.$parent.multipleSelection
+      if (selected.length === 1) {
+        this.setData(selected)
+      }
     }
   }
 }

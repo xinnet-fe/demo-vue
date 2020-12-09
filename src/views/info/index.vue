@@ -133,8 +133,8 @@
     </div>
     <dialog-detail v-if="detailModalVisible" :visible.sync="detailModalVisible" :row.sync="row" />
     <dialog-business-form v-if="businessModalVisible" :visible.sync="businessModalVisible" :selected="multipleSelection" />
-    <dialog-finance-form v-if="financeModalVisible" :visible.sync="financeModalVisible" :selected="multipleSelection" />
-    <dialog-level-form v-if="levelModalVisible" :visible.sync="levelModalVisible" :selected="multipleSelection" />
+    <dialog-finance-form :visible.sync="financeModalVisible" :selected="multipleSelection" />
+    <dialog-level-form :visible.sync="levelModalVisible" :selected="multipleSelection" />
     <dialog-account-form v-if="accountModalVisible" :visible.sync="accountModalVisible" :row.sync="row" @onSearch="onSearch" />
   </div>
 </template>
