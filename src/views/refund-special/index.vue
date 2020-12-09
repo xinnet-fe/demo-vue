@@ -147,7 +147,7 @@
       </div>
       <div :style="{'margin':'20px 0px 0px 0px', 'text-align':Msg_Dialog.textAlign, 'font-size':'12px'}">
         <div v-if="Msg_Dialog.text !== ''" style="font-size:15px; padding-left: 40px; line-height:160%;" v-html="Msg_Dialog.text" />
-        <i v-if="Msg_Dialog.text === ''" style="font-size:15px;">您本次操作退费域名 {{ this.Msg_Dialog.num }} / {{ this.Msg_Dialog.totalNum }} 个</i>
+        <i v-if="Msg_Dialog.text === ''" style="font-size:15px;">您本次操作退费域名 {{ Msg_Dialog.num }} / {{ Msg_Dialog.totalNum }} 个</i>
         <i v-if="Msg_Dialog.num != Msg_Dialog.totalNum" class="el-icon-loading" />
         <div style="margin: 10px 0px; line-height:160%" v-html="Msg_Dialog.resSuccess" />
         <div style="margin: 10px 0px; line-height:160%" v-html="Msg_Dialog.resFail" />
@@ -163,8 +163,8 @@
 import formatTime from '@/utils/formatTime.js'
 import { mapState } from 'vuex'
 import { Message } from 'element-ui'
-import { validUpperCase } from '@/utils/validate'
-import tableRouter from '@/router/demos/table'
+// import { validUpperCase } from '@/utils/validate'
+// import tableRouter from '@/router/demos/table'
 
 function msgError(message) {
   Message({
@@ -184,6 +184,7 @@ export default {
     return {
       refundBatchDomain: '', // 批量退费时的域名
       btnDisabled: false, // 批量退费时按钮的 disabled
+      refund_batch_val: false, // 批量退费时按钮前面的复选框
       refundBatchVal: false, // 是否选中了批量
       constRefundType: 1, // 1特殊退费 2 常规退费
       form: {
@@ -263,32 +264,26 @@ export default {
       }
     }
   },
-  watch: {
-
-  },
   computed: {
     ...mapState({
       querySpecRefundList: state => state.refund.querySpecRefundList,
       refundSpecOrder: state => state.refund.refundSpecOrder
-    }),
-    refund_batch_val: {
-      get() {
-        const bln1 = this.listdata.every(item => item.checked || !item.isOperateCurrent)
-        const bln2 = this.listdata.every(item => !item.isOperateCurrent)
-        // bln2 为真时，表示当前页，每一条服务都不可以退费
-        if (bln2 === false) {
-          return bln1
+    })
+  },
+  watch: {
+    listdata(val) {
+      const bln1 = val.every(item => item.checked || !item.isOperateCurrent)
+      const bln2 = val.every(item => !item.isOperateCurrent)
+      // bln2 为真时，表示当前页，每一条服务都不可以退费
+      if (bln2 === false) {
+        this.refund_batch_val = bln1
+      } else {
+        if (this.btnDisabled) {
+          this.refundBatchVal = false
+          this.refund_batch_val = false
         } else {
-          if (this.btnDisabled) {
-            this.refundBatchVal = false
-            return false
-          } else {
-            return this.refundBatchVal
-          }
+          this.refund_batch_val = this.refundBatchVal
         }
-      },
-      set(v) {
-        // console.log('v=', v)
       }
     }
   },
@@ -300,7 +295,6 @@ export default {
       switch (typeof (dt)) {
         case 'string':
           return formatTime(new Date(dt).getTime(), 'YYYY-MM-DD')
-          break
         case 'object':
           return formatTime(dt.getTime(), 'YYYY-MM-DD')
         case 'number':
