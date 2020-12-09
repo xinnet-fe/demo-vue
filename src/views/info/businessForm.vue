@@ -4,10 +4,11 @@
       <el-form ref="form" :model="form" label-width="180px" :rules="rules">
         <el-form-item label="选择分公司/选择销售" prop="selectedOptions" required>
           <el-cascader
-            :options="queryOrganSaleList"
             v-model="form.selectedOptions"
-            @change="handleChange">
-          </el-cascader>
+            placeholder="请选择业务归属"
+            :options="queryOrganSaleList"
+            @change="handleChange"
+          />
         </el-form-item>
         <!-- <el-form-item label="选择销售" prop="market" required>
           <el-select v-model="form.market" placeholder="请绑定销售">
@@ -52,17 +53,9 @@ export default {
       }
     }
   },
-  mounted () {
-    this.$nextTick(() => {
-      const selected = this.$parent.multipleSelection
-      if (selected.length === 1) {
-        this.setData(selected)
-      }
-    })
-  },
   computed: {
     ...mapState({
-      queryOrganSaleList (state) {
+      queryOrganSaleList(state) {
         // console.log(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value'))
         // return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
         return state.userManager.queryOrganSaleList.map((v) => {
@@ -92,6 +85,14 @@ export default {
       }
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      const selected = this.$parent.multipleSelection
+      if (selected.length === 1) {
+        this.setData(selected)
+      }
+    })
+  },
   methods: {
     ...mapActions('userManager', ['batchUpdate']),
     onSubmit() {
@@ -116,13 +117,15 @@ export default {
               this.closeModal()
               this.$parent.onSearch()
             }
-          }).catch(error => {})
+          }).catch(error => {
+            console.log(error)
+          })
         } else {
           return false
         }
       })
     },
-    handleChange () {
+    handleChange() {
 
     },
     closeModal() {

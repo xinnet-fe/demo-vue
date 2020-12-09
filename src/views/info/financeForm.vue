@@ -57,6 +57,12 @@ export default {
       }
     }
   },
+  mounted() {
+    const selected = this.$parent.multipleSelection
+    if (selected.length === 1) {
+      this.setData(selected)
+    }
+  },
   methods: {
     ...mapActions('userManager', ['batchUpdate']),
     onSubmit() {
@@ -105,10 +111,7 @@ export default {
       this.form.finance = selected[0].financeCode
     },
     open() {
-      const selected = this.$parent.multipleSelection
-      if (selected.length === 1) {
-        this.setData(selected)
-      }
+
     }
   }
 }
