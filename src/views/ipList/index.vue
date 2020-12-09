@@ -122,11 +122,11 @@ export default {
         this.page.limit = 20
       }
       this.$store.dispatch('apiApply/selectApiSettingIps', query).then(res => {
-        if (!res.code && res.message === 'success') {
+        if (!res.code) {
           this.list = res.data.list
           this.page.total = res.data.totalRows
         } else {
-          this.$message.error(res.msg)
+          this.$message.error(res.msg || '')
         }
       }).catch(error => {
         console.log(error)
