@@ -39,11 +39,11 @@
         label="操作"
       >
         <template v-slot="scope">
-          <el-popconfirm v-if="scope.row.checkState === '02'" title="这是一段内容确定删除吗？" @confirm="handleLock(scope.row)">
+          <el-popconfirm v-if="scope.row.checkState === '02'" title="确定锁定吗？" @onConfirm="handleLock(scope.row)">
             <el-button slot="reference" type="text" size="mini">锁定</el-button>
           </el-popconfirm>
-          <el-popconfirm v-if="scope.row.checkState === '03'" title="这是一段内容确定删除吗？" @confirm="handleUnlock(scope.row)">
-            <el-button slot="reference" style="margin-left: 10px" type="text" size="mini">解锁</el-button>
+          <el-popconfirm v-if="scope.row.checkState === '03'" title="确定解锁吗？" @onConfirm="handleUnlock(scope.row)">
+            <el-button slot="reference" type="text" size="mini">解锁</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -116,6 +116,42 @@ export default {
     },
     onReset() {
       clearFormData(this.searchForm)
+    },
+    handleLock(row) {
+      const query = {
+        id: row.id,
+        state: '03',
+        agentCode: row.agentCode
+      }
+      this.$store.dispatch('apiApply/modifyState', query).then(res => {
+        if (!res.code && res.data.isSuccess === 1) {
+          this.$message({
+            message: '锁定成功',
+            type: 'success'
+          })
+          this.onSearch()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleUnlock(row) {
+      const query = {
+        id: row.id,
+        state: '02',
+        agentCode: row.agentCode
+      }
+      this.$store.dispatch('apiApply/modifyState', query).then(res => {
+        if (!res.code && res.data.isSuccess === 1) {
+          this.$message({
+            message: '解锁成功',
+            type: 'success'
+          })
+          this.onSearch()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }

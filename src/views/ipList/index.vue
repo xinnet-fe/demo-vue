@@ -2,18 +2,26 @@
   <div class="order-form">
     <!-- search -->
     <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-      <el-form-item label="用户账号">
+      <el-form-item label="用户编号">
         <el-input v-model="searchForm.agentCode" />
       </el-form-item>
-      <el-form-item label="域名">
-        <el-input v-model="searchForm.domainName" />
+      <el-form-item label="IP地址">
+        <el-input v-model="searchForm.ip" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="medium" :loading="loading" @click="onSearch">查询</el-button>
+        <el-button type="primary" size="medium" :loading="loading" @click="onSearch()">查询</el-button>
         <el-button size="medium" @click="onReset">重置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
+
+    <!-- operate -->
+    <el-form ref="operateForm" class="operate-form" :model="searchForm" :inline="true">
+      <el-form-item>
+        <el-button size="mini" @click="handleShowAdd({})">添加</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- operate -->
 
     <!-- table -->
     <el-table
@@ -23,61 +31,27 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="domainName"
-        label="域名"
-      />
-      <el-table-column
         prop="agentCode"
-        label="用户账号"
+        label="用户编号"
         width="120"
       />
       <el-table-column
-        label="NS"
-      >
-        <template v-slot="scope">
-          {{ scope.row.nsThresholdTotal }} | <span style="color: #f00">{{ scope.row.nsThresholdUsed }}</span>
-        </template>
-      </el-table-column>
+        prop="apiIp"
+        label="IP地址"
+      />
       <el-table-column
-        label="A"
-      >
-        <template v-slot="scope">
-          {{ scope.row.aThresholdTotal }} | <span style="color: #f00">{{ scope.row.aThresholdUsed }}</span>
-        </template>
-      </el-table-column>
+        prop="addDate"
+        label="添加时间"
+      />
       <el-table-column
-        label="CNAME"
+        width="100px"
+        label="操作"
       >
         <template v-slot="scope">
-          {{ scope.row.cnameThresholdTotal }} | <span style="color: #f00">{{ scope.row.cnameThresholdUsed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="MX"
-      >
-        <template v-slot="scope">
-          {{ scope.row.mxThresholdTotal }} | <span style="color: #f00">{{ scope.row.mxThresholdUsed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="TXT"
-      >
-        <template v-slot="scope">
-          {{ scope.row.txtThresholdTotal }} | <span style="color: #f00">{{ scope.row.txtThresholdUsed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="AAAA"
-      >
-        <template v-slot="scope">
-          {{ scope.row.aaaaThresholdTotal }} | <span style="color: #f00">{{ scope.row.aaaaThresholdUsed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="SRV"
-      >
-        <template v-slot="scope">
-          {{ scope.row.srvThresholdTotal }} | <span style="color: #f00">{{ scope.row.srvThresholdUsed }}</span>
+          <el-button type="text" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-popconfirm title="确定删除吗？" @onConfirm="handleDel(scope.row)">
+            <el-button slot="reference" type="text" size="mini">删除</el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -88,26 +62,31 @@
       @pagination="onSearch"
     />
     <!-- table -->
+
+    <!-- 添加接入IP -->
+    <DialogAddIp v-if="dialogVisible" :visible.sync="dialogVisible" :row.sync="row" @refresh="onSearch" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination'
+import DialogAddIp from './dialogAddIp'
 import { mapState } from 'vuex'
 import clearFormData from '@/utils/clearFormData'
 
 export default {
   name: 'NsThreshold',
   components: {
-    Pagination
+    Pagination,
+    DialogAddIp
   },
   props: {},
   data() {
     return {
       searchForm: {
         agentCode: '',
-        domainName: '',
-        pageNo: 1,
+        ip: '',
+        pageNum: 1,
         pageSize: 20
       },
       list: [],
@@ -115,16 +94,18 @@ export default {
         total: 0,
         page: 1,
         limit: 20
-      }
+      },
+      dialogVisible: false,
+      row: {}
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['nsThreshold/queryNsThresholdList']
+      loading: state => state.loading.effects['apiApply/selectApiSettingIps']
     })
   },
   mounted() {
-    this.onSearch()
+    // this.onSearch()
   },
   methods: {
     onSearch(page) {
@@ -132,18 +113,20 @@ export default {
         ...this.searchForm
       }
       if (page) {
-        query.pageNo = page.page
+        query.pageNum = page.page
         query.pageSize = page.limit
       } else {
-        query.pageNo = 1
+        query.pageNum = 1
         query.pageSize = 20
         this.page.page = 1
         this.page.limit = 20
       }
-      this.$store.dispatch('nsThreshold/queryNsThresholdList', query).then(res => {
+      this.$store.dispatch('apiApply/selectApiSettingIps', query).then(res => {
         if (!res.code && res.message === 'success') {
           this.list = res.data.list
           this.page.total = res.data.totalRows
+        } else {
+          this.$message.error(res.msg)
         }
       }).catch(error => {
         console.log(error)
@@ -151,6 +134,29 @@ export default {
     },
     onReset() {
       clearFormData(this.searchForm)
+    },
+    handleDel(row) {
+      this.$store.dispatch('apiApply/deleteSettingById', { id: row.id }).then(res => {
+        if (!res.code && res.success) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.onSearch()
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleShowAdd(data) {
+      this.row = data
+      this.dialogVisible = true
+    },
+    handleUpdate(data) {
+      this.row = data
+      this.dialogVisible = true
     }
   }
 }
