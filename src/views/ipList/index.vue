@@ -136,7 +136,7 @@ export default {
       clearFormData(this.searchForm)
     },
     handleDel(row) {
-      this.$store.dispatch('apiApply/deleteSettingById', { id: row.id }).then(res => {
+      this.$store.dispatch('apiApply/deleteSettingById', { id: row.id, agentCode: row.agentCode }).then(res => {
         if (!res.code && res.success) {
           this.$message({
             message: '删除成功',
