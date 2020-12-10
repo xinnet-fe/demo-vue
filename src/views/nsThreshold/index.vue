@@ -141,7 +141,7 @@ export default {
         this.page.limit = 20
       }
       this.$store.dispatch('nsThreshold/queryNsThresholdList', query).then(res => {
-        if (!res.code && res.message === 'success') {
+        if (!res.code) {
           this.list = res.data.list
           this.page.total = res.data.totalRows
         }
