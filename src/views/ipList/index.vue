@@ -137,7 +137,7 @@ export default {
     },
     handleDel(row) {
       this.$store.dispatch('apiApply/deleteSettingById', { id: row.id, agentCode: row.agentCode }).then(res => {
-        if (!res.code && res.success) {
+        if (!res.code) {
           this.$message({
             message: '删除成功',
             type: 'success'
