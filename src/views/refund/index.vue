@@ -206,10 +206,10 @@ export default {
       domainSearchResult: '', // 根据域名结果，例如：查询10条，此次查询范围内有8条有数据，2条无数据（1.cn、2.cn）。
       form: {
         serviceCode: '',
-        // agentCode: '',//'agent5648689',
-        // opentime: null,//['2020-10-01', '2020-12-31'],
-        agentCode: 'agent5648689',
-        opentime: ['2020-10-01', '2020-12-31'],
+        agentCode: '', // 'agent5648689',
+        opentime: null, // ['2020-10-01', '2020-12-31'],
+        // agentCode: 'agent5648689',
+        // opentime: ['2020-10-01', '2020-12-31'],
         domainNames: '', // '20201212xinnet.com\nxin2020120702.com\n1.com\n2.cn',
         refundState: 1 // 退款状态
       },
@@ -353,7 +353,16 @@ export default {
       }
     },
     YMDHMS(dt) {
-      return formatTime(dt, 'YYYY-MM-DD HH:mm:ss')
+      switch (typeof (dt)) {
+        case 'string':
+          return formatTime(new Date(dt).getTime(), 'YYYY-MM-DD HH:mm:ss')
+        case 'object':
+          return formatTime(dt.getTime(), 'YYYY-MM-DD HH:mm:ss')
+        case 'number':
+          return formatTime(dt, 'YYYY-MM-DD HH:mm:ss')
+        default:
+          return dt
+      }
     },
     RMB(v) {
       if (v === undefined || v === null || v === '') {
@@ -397,8 +406,8 @@ export default {
             domainNames: domainNames.split(/\n/g).join(',')
           }
           if (opentime && opentime.length === 2) {
-            payload.applyStartDate = this.YMD(opentime[0])
-            payload.applyEndDate = this.YMD(opentime[1])
+            payload.applyStartDate = this.YMD(opentime[0]) + ' 00:00:00'
+            payload.applyEndDate = this.YMD(opentime[1]) + ' 23:59:59'
           }
           // 表单验证
           if ((agentCode && opentime && opentime.length === 2) || (serviceCode) || (domainNames)) {
