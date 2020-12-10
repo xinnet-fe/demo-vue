@@ -23,6 +23,17 @@
             />
           </el-form-item>
 
+          <el-form-item label="退费状态" prop="refundState">
+            <el-select v-model="form.refundState" placeholder="请选择">
+              <el-option
+                v-for="item in refundStateOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="域名搜索" prop="domainNames">
             <el-input
               v-model="form.domainNames"
@@ -51,11 +62,12 @@
         <div v-else-if="searchState > 0 && listdata.length > 0">
           <div class="list-title">
             <div>
-              <el-checkbox v-model="refund_batch_val" :disabled="btnDisabled" @change="refund_batch_change" />
+              <el-checkbox v-model="refund_batch_val" :disabled="cbDisabled" @change="refund_batch_change" />
             </div>
             <div>
               <el-button :disabled="btnDisabled" @click="confirm_refund_batch()">批量退费</el-button>
             </div>
+            <div>{{ domainSearchResult }}</div>
           </div>
           <div v-for="item in listdata" :key="item.serviceCode" class="list-item">
             <div class="item-title">
@@ -185,17 +197,26 @@ export default {
   },
   data() {
     return {
-      refundBatchDomain: '', // 批量退费时的域名
+      refundBatchDomain: '', // 批量退费时（被选中）的域名
+      cbDisabled: false, // 批量退费时复选框的 disabled
       btnDisabled: false, // 批量退费时按钮的 disabled
-      refund_batch_val: false, // 批量退费时按钮前面的复选框
-      refundBatchVal: false, // 是否选中了批量
+      refund_batch_val: false, // 批量退费时按钮前面的复选框  是否被选中  v-model
+      refundBatchVal: false, // 批量退费时按钮前面的复选框  是否被选中    @change
       constRefundType: 2, // 1特殊退费 2 常规退费
+      domainSearchResult: '', // 根据域名结果，例如：查询10条，此次查询范围内有8条有数据，2条无数据（1.cn、2.cn）。
       form: {
         serviceCode: '',
-        agentCode: '', // hy5192312
-        opentime: null, // ['2020-10-01', '2020-12-31']
-        domainNames: ''
+        // agentCode: '',//'agent5648689',
+        // opentime: null,//['2020-10-01', '2020-12-31'],
+        agentCode: 'agent5648689',
+        opentime: ['2020-10-01', '2020-12-31'],
+        domainNames: '', // '20201212xinnet.com\nxin2020120702.com\n1.com\n2.cn',
+        refundState: 1 // 退款状态
       },
+      refundStateOptions: [
+        { value: 1, label: '未退费' },
+        { value: 2, label: '已退费' }
+      ],
       rules: {
         agentCode: [
           { validator: (rule, value, callback) => {
@@ -274,20 +295,45 @@ export default {
     })
   },
   watch: {
-    listdata(val) {
-      const bln1 = val.every(item => item.checked || !item.isOperateCurrent)
-      const bln2 = val.every(item => !item.isOperateCurrent)
-      // bln2 为真时，表示当前页，每一条服务都不可以退费
-      if (bln2 === false) {
-        this.refund_batch_val = bln1
-      } else {
-        if (this.btnDisabled) {
+    listdata: {
+      handler(val) {
+        // 每条服务都需符合（选中 或 不允许退费）
+        const bln1 = val.every(item => item.checked || !item.isOperateCurrent)
+        // bln2 为真时，表示当前页，每一条服务都不可以退费
+        const bln2 = val.every(item => !item.isOperateCurrent)
+        // 只要有一条服务被选中
+        const bln3 = val.some(item => item.checked)
+
+        if (bln2 === false) {
+          // 如果 bln2 等于 false，表示至少有1条服务，允许用户选中
+          this.refund_batch_val = bln1 // 批量退费时按钮前面的复选框  是否被选中
+          this.cbDisabled = false // 批量退费时按钮前面的复选框  是否允许选中
+        } else {
           this.refundBatchVal = false
           this.refund_batch_val = false
-        } else {
-          this.refund_batch_val = this.refundBatchVal
+          this.cbDisabled = true
         }
-      }
+        // 批量删除按钮的 disabled 状态
+        this.btnDisabled = !bln3
+        // 批量退费时的所有可退费的域名
+        this.refundBatchDomain = val.filter(item => item.checked).map(item => item.domainName)
+        // domainSearchResult
+        if (this.form.domainNames !== '') {
+          const domains = this.form.domainNames.split(/\n/)
+          const domainsErrResult = domains.filter(item => val.every(obj => obj.domainName !== item))
+          const allLen = domains.length
+          const errLen = domainsErrResult.length
+          if (errLen === 0) {
+            this.domainSearchResult = '查询' + allLen + '条，此次查询范围内有' + (allLen - errLen) + '条有数据。'
+          } else {
+            this.domainSearchResult = '查询' + allLen + '条，此次查询范围内有' + (allLen - errLen) + '条有数据，' + errLen + '条无数据（' + domainsErrResult.join('、') + '）。'
+          }
+        } else {
+          this.domainSearchResult = ''
+        }
+      },
+      immediate: true, // 刷新加载 立马触发一次handler
+      deep: true // 可以深度检测到 listdata 对象的属性值的变化
     }
   },
   mounted() {
@@ -340,13 +386,14 @@ export default {
       this.searchState++
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          const { serviceCode, agentCode, domainNames, opentime } = this.form
+          const { serviceCode, agentCode, domainNames, opentime, refundState } = this.form
           const payload = {
             pageNum: this.page.currentPage,
             pageSize: this.page.pageSize,
             refundType: this.constRefundType, // 1 特殊退费 2 常规退费
             serviceCode,
             agentCode,
+            refundState,
             domainNames: domainNames.split(/\n/g).join(',')
           }
           if (opentime && opentime.length === 2) {
@@ -386,9 +433,9 @@ export default {
                 })
                 this.page.total = this.queryRefundList.data.totalRows // 服务列表（数量）
                 // btnDisabled 批量删除按钮的 disabled 状态
-                this.btnDisabled = !this.listdata.some(item => item.isOperateCurrent)
+                // this.btnDisabled = !this.listdata.some(item => item.isOperateCurrent)
                 // 批量退费时的所有可退费的域名
-                this.refundBatchDomain = this.listdata.filter(item => item.isOperateCurrent).map(item => item.domainName)
+                // this.refundBatchDomain = this.listdata.filter(item => item.isOperateCurrent).map(item => item.domainName)
               } else {
                 msgError(res.message || res.msg)
               }
@@ -579,6 +626,10 @@ export default {
       >div:nth-child(1){
         width: 40px;
         text-align: center;
+      }
+      >div:nth-child(2){
+        width: 120px;
+        text-align: left;
       }
     }
     .list-item{

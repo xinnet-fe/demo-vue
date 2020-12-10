@@ -49,7 +49,7 @@
         <div v-else-if="searchState > 0 && listdata.length > 0">
           <div class="list-title">
             <div>
-              <el-checkbox v-model="refund_batch_val" :disabled="btnDisabled" @change="refund_batch_change" />
+              <el-checkbox v-model="refund_batch_val" :disabled="cbDisabled" @change="refund_batch_change" />
             </div>
             <div>
               <el-button :disabled="btnDisabled" @click="confirm_refund_batch()">批量退费</el-button>
@@ -183,6 +183,7 @@ export default {
   data() {
     return {
       refundBatchDomain: '', // 批量退费时的域名
+      cbDisabled: false, // 批量退费时复选框的 disabled
       btnDisabled: false, // 批量退费时按钮的 disabled
       refund_batch_val: false, // 批量退费时按钮前面的复选框
       refundBatchVal: false, // 是否选中了批量
@@ -271,20 +272,47 @@ export default {
     })
   },
   watch: {
-    listdata(val) {
-      const bln1 = val.every(item => item.checked || !item.isOperateCurrent)
-      const bln2 = val.every(item => !item.isOperateCurrent)
-      // bln2 为真时，表示当前页，每一条服务都不可以退费
-      if (bln2 === false) {
-        this.refund_batch_val = bln1
-      } else {
-        if (this.btnDisabled) {
+    listdata: {
+      handler(val) {
+        // 每条服务都需符合（选中 或 不允许退费）
+        const bln1 = val.every(item => item.checked || !item.isOperateCurrent)
+        // bln2 为真时，表示当前页，每一条服务都不可以退费
+        const bln2 = val.every(item => !item.isOperateCurrent)
+        // 只要有一条服务被选中
+        const bln3 = val.some(item => item.checked)
+
+        if (bln2 === false) {
+          // 如果 bln2 等于 false，表示至少有1条服务，允许用户选中
+          this.refund_batch_val = bln1 // 批量退费时按钮前面的复选框  是否被选中
+          this.cbDisabled = false // 批量退费时按钮前面的复选框  是否允许选中
+        } else {
           this.refundBatchVal = false
           this.refund_batch_val = false
-        } else {
-          this.refund_batch_val = this.refundBatchVal
+          this.cbDisabled = true
         }
-      }
+        // 批量删除按钮的 disabled 状态
+        this.btnDisabled = !bln3
+        // 批量退费时的所有可退费的域名
+        this.refundBatchDomain = val.filter(item => item.checked).map(item => item.domainName)
+        // domainSearchResult
+        /*
+        if (this.form.domainNames !== '') {
+          const domains = this.form.domainNames.split(/\n/)
+          const domainsErrResult = domains.filter(item => val.every(obj => obj.domainName !== item) )
+          const allLen = domains.length
+          const errLen = domainsErrResult.length
+          if (errLen === 0) {
+            this.domainSearchResult = '查询'+allLen+'条，此次查询范围内有'+(allLen - errLen)+'条有数据。'
+          } else {
+            this.domainSearchResult = '查询'+allLen+'条，此次查询范围内有'+(allLen - errLen)+'条有数据，' + errLen + '条无数据（' + domainsErrResult.join('、') + '）。'
+          }
+        } else {
+          this.domainSearchResult = ''
+        }
+        */
+      },
+      immediate: true, // 刷新加载 立马触发一次handler
+      deep: true // 可以深度检测到 listdata 对象的属性值的变化
     }
   },
   mounted() {
