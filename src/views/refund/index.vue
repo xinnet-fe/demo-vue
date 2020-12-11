@@ -90,24 +90,34 @@
             </div>
             <div class="item-children">
               <el-table :data="item.billList" style="width: 100%">
-                <el-table-column label="账单编号" width="240">
+                <el-table-column label="账单编号" width="220">
                   <template slot-scope="scope">
                     {{ scope.row.billCode }}
                   </template>
                 </el-table-column>
-                <el-table-column label="用户ID" width="150">
+                <el-table-column label="用户ID" width="120">
                   <template slot-scope="scope">
                     {{ scope.row.agentCode }}
                   </template>
                 </el-table-column>
-                <el-table-column label="账单类型" width="100">
+                <el-table-column label="账单类型" width="70">
                   <template slot-scope="scope">
                     {{ deBillLineType(scope.row.billLineType) }}
                   </template>
                 </el-table-column>
-                <el-table-column label="域名">
+                <el-table-column label="域名" width="180">
                   <template slot-scope="scope">
                     {{ scope.row.domainName }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="商品名称">
+                  <template slot-scope="scope">
+                    {{ scope.row.goodsName }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="年限">
+                  <template slot-scope="scope">
+                    {{ timeAmountUnit(scope.row.timeAmount, scope.row.timeUnit) }}
                   </template>
                 </el-table-column>
                 <el-table-column label="生成时间" width="150">
@@ -174,7 +184,7 @@
 </template>
 
 <script>
-// import { abc } from '@/api/refund.js'
+import { formatEnUnit } from '@/utils/formatUnit.js'
 import formatTime from '@/utils/formatTime.js'
 import { mapState } from 'vuex'
 import { Message } from 'element-ui'
@@ -206,8 +216,8 @@ export default {
       domainSearchResult: '', // 根据域名结果，例如：查询10条，此次查询范围内有8条有数据，2条无数据（1.cn、2.cn）。
       form: {
         serviceCode: '',
-        agentCode: '', // 'agent5648689',
-        opentime: null, // ['2020-10-01', '2020-12-31'],
+        agentCode: '',
+        opentime: null,
         // agentCode: 'agent5648689',
         // opentime: ['2020-10-01', '2020-12-31'],
         domainNames: '', // '20201212xinnet.com\nxin2020120702.com\n1.com\n2.cn',
@@ -340,6 +350,9 @@ export default {
     // this.onSubmit('form')
   },
   methods: {
+    timeAmountUnit(a, u) {
+      return a + formatEnUnit(u)
+    },
     YMD(dt) {
       switch (typeof (dt)) {
         case 'string':

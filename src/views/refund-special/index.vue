@@ -76,24 +76,34 @@
             </div>
             <div class="item-children">
               <el-table :data="item.billList" style="width: 100%">
-                <el-table-column label="账单编号" width="240">
+                <el-table-column label="账单编号" width="220">
                   <template slot-scope="scope">
                     {{ scope.row.billCode }}
                   </template>
                 </el-table-column>
-                <el-table-column label="用户ID" width="150">
+                <el-table-column label="用户ID" width="120">
                   <template slot-scope="scope">
                     {{ scope.row.agentCode }}
                   </template>
                 </el-table-column>
-                <el-table-column label="账单类型" width="100">
+                <el-table-column label="账单类型" width="70">
                   <template slot-scope="scope">
                     {{ deBillLineType(scope.row.billLineType) }}
                   </template>
                 </el-table-column>
-                <el-table-column label="域名">
+                <el-table-column label="域名" width="180">
                   <template slot-scope="scope">
                     {{ scope.row.domainName }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="商品名称">
+                  <template slot-scope="scope">
+                    {{ scope.row.goodsName }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="年限">
+                  <template slot-scope="scope">
+                    {{ timeAmountUnit(scope.row.timeAmount, scope.row.timeUnit) }}
                   </template>
                 </el-table-column>
                 <el-table-column label="生成时间" width="150">
@@ -160,6 +170,7 @@
 </template>
 
 <script>
+import { formatEnUnit } from '@/utils/formatUnit.js'
 import formatTime from '@/utils/formatTime.js'
 import { mapState } from 'vuex'
 import { Message } from 'element-ui'
@@ -319,6 +330,9 @@ export default {
     // this.onSubmit('form')
   },
   methods: {
+    timeAmountUnit(a, u) {
+      return a + formatEnUnit(u)
+    },
     YMD(dt) {
       switch (typeof (dt)) {
         case 'string':
