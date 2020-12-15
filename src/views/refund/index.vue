@@ -110,7 +110,7 @@
           </el-table>
         </div>
         <span class="dialog-footer">
-          <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">返 回</el-button>
+          <el-button type="primary" size="medium" @click="back">返 回</el-button>
         </span>
       </div>
     </div>
@@ -307,6 +307,12 @@ export default {
     },
     onSubmit(formName) {
       this.GetList()
+    },
+    back() {
+      this.showBillList_Dialog.visible = false
+      this.$nextTick(() => {
+        this.GetList()
+      })
     },
     GetList() {
       this.$refs['form'].validate((valid) => {
