@@ -68,12 +68,12 @@
                 <span>{{ scope.row.agentCode }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="账单类型" width="110">
+            <el-table-column label="账单类型">
               <template slot-scope="scope">
                 <span>{{ deBillLineType(scope.row.billLineType) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="商品类型" width="110">
+            <el-table-column label="商品类型">
               <template slot-scope="scope">
                 <span>{{ deGoodsType(scope.row.goodsType) }}</span>
               </template>
@@ -83,7 +83,7 @@
                 <span>{{ scope.row.freeTimeAmount === 0 ? '' : scope.row.freeTimeAmount + '月' }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="账单实付金额">
+            <el-table-column label="账单实付金额" width="100">
               <template slot-scope="scope">
                 <span>{{ RMB(scope.row.shouldRefund) }}</span>
               </template>
@@ -108,7 +108,7 @@
           </el-table>
         </div>
         <span class="dialog-footer">
-          <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">返 回</el-button>
+          <el-button type="primary" size="medium" @click="back">返 回</el-button>
         </span>
       </div>
     </div>
@@ -305,6 +305,12 @@ export default {
     onSubmit(formName) {
       this.GetList()
     },
+    back() {
+      this.showBillList_Dialog.visible = false
+      this.$nextTick(() => {
+        this.GetList()
+      })
+    },
     GetList() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -335,6 +341,7 @@ export default {
     },
     onReset(formName) {
       this.$refs[formName].resetFields()
+      this.form.serviceCode = ''
     },
     // 显示子账单
     showBillList(item) {
