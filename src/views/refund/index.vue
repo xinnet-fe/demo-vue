@@ -332,11 +332,12 @@ export default {
           const domains = this.form.domainNames.split(/\n/)
           const domainsErrResult = domains.filter(item => val.every(obj => obj.domainName !== item))
           const allLen = domains.length
+          const successLen = val.length
           const errLen = domainsErrResult.length
           if (errLen === 0) {
-            this.domainSearchResult = '查询' + allLen + '条，此次查询范围内有' + (allLen - errLen) + '条有数据。'
+            this.domainSearchResult = '查询' + allLen + '条，此次查询范围内有' + successLen + '条有数据。'
           } else {
-            this.domainSearchResult = '查询' + allLen + '条，此次查询范围内有' + (allLen - errLen) + '条有数据，' + errLen + '条无数据（' + domainsErrResult.join('、') + '）。'
+            this.domainSearchResult = '查询' + allLen + '条，此次查询范围内有' + successLen + '条有数据，' + errLen + '条无数据（' + domainsErrResult.join('、') + '）。'
           }
         } else {
           this.domainSearchResult = ''
