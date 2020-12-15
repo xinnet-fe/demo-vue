@@ -70,12 +70,12 @@
                 <span>{{ scope.row.agentCode }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="账单类型" width="110">
+            <el-table-column label="账单类型">
               <template slot-scope="scope">
                 <span>{{ deBillLineType(scope.row.billLineType) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="商品类型" width="110">
+            <el-table-column label="商品类型">
               <template slot-scope="scope">
                 <span>{{ deGoodsType(scope.row.goodsType) }}</span>
               </template>
@@ -85,7 +85,7 @@
                 <span>{{ scope.row.freeTimeAmount === 0 ? '' : scope.row.freeTimeAmount + '月' }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="账单实付金额">
+            <el-table-column label="账单实付金额" width="100">
               <template slot-scope="scope">
                 <span>{{ RMB(scope.row.shouldRefund) }}</span>
               </template>
@@ -232,6 +232,7 @@ export default {
             { required: true, message: '请输入实际退款金额', trigger: 'blur' },
             { validator: (rule, value, callback) => {
               const inpVal = Number(this.instanceRefund_Dialog.transMoney_Inp)
+              // console.log('inpVal=', inpVal, this.instanceRefund_Dialog.actualCost)
               if (inpVal > this.instanceRefund_Dialog.actualCost) {
                 callback(new Error('不能大于实际花费总金额' + this.instanceRefund_Dialog.actualCost))
               } else if (inpVal <= 0) {
@@ -337,6 +338,7 @@ export default {
     },
     onReset(formName) {
       this.$refs[formName].resetFields()
+      this.form.serviceCode = ''
     },
     // 显示子账单
     showBillList(item) {
