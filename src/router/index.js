@@ -435,7 +435,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/home',
+    redirect: '/agent-client-app/refund', // '/home',
     hidden: true,
     children: [
       {
