@@ -132,7 +132,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="150">
+      <el-table-column label="操作" align="center" width="150" fixed="right">
         <template slot-scope="{row}">
           <router-link :to="row.link" class="link-type">
             <span style="color:#0069ff;cursor:pointer;">查看订单</span>
@@ -387,7 +387,7 @@ export default {
           if (row.totalTradingPrice || row.totalTradingPrice === 0) {
             row.totalTradingPrices = this.shuzi(row.totalTradingPrice.toFixed(2))
           }
-          row.link = `/boss-nav-tradingcenter/boss-nav-tradingcenter-detail?id=${row.buyOrderCode}&showLayout=false`
+          row.link = `/order-detail/index?id=${row.buyOrderCode}&showLayout=false`
         })
         this.list = res.data.list
         this.total = res.data.total

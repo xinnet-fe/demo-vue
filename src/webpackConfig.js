@@ -17,7 +17,16 @@ module.exports = {
   // },
   // devServer proxy
   proxy: {
-
+    '/bill': {
+      target: 'https://tradeBoss.xinnet.com',
+      secure: false,
+      changeOrigin: true
+    },
+    '/product': {
+      target: 'https://tradeBoss.xinnet.com',
+      secure: false,
+      changeOrigin: true
+    }
   },
 
   /**
