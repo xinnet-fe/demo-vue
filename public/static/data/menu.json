@@ -1,89 +1,11 @@
 [
     {
-        "code": "agent-manage",
         "parentCode": null,
         "icon": "applicationCenter",
-        "text": "代理商管理",
         "url": "",
-        "target": "",
-        "children": [{
-            "code": "apply",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "代理申请",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        }, {
-            "code": "info",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "代理商信息",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        },{
-            "code": "level",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "级别管理",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        },{
-            "code": "client",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "代理商绑定客户管理",
-            "url": "",
-            "target": "tab"
-        },
-        {
-            "code": "notice",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "活动公告管理",
-            "url": "",
-            "target": "tab"
-        },
-        {
-            "code": "contract",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "代理合同管理",
-            "url": "",
-            "hidden": false,
-            "target": "tab"
-        },
-        {
-            "code": "billflow",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "账单流水查询",
-            "url": "",
-            "hidden": false,
-            "target": "tab"
-        },
-        {
-            "code": "consumeagent",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "代理消耗查询",
-            "url": "",
-            "hidden": false,
-            "target": "tab"
-        },
-        {
-            "code": "consumehy",
-            "parentCode": "agent-manage",
-            "icon": "",
-            "text": "会员消耗查询",
-            "url": "",
-            "hidden": false,
-            "target": "tab"
-        }]
+        "code": "billflow",
+        "text": "账单流水查询",
+        "hidden": false,
+        "target": "tab"
     }
 ]
