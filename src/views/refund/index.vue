@@ -117,8 +117,8 @@
 
     <el-dialog
       title=""
+      custom-class="customWidthRefundDialog"
       :visible.sync="instanceRefund_Dialog.visible"
-      width="30%"
       :destroy-on-close="true"
     >
       <el-form ref="instanceRefund_Dialog" :model="instanceRefund_Dialog" :rules="instanceRefund_Dialog.rules">
@@ -144,8 +144,8 @@
 
     <el-dialog
       title=""
+      custom-class="customWidthRefundDialog"
       :visible.sync="refundError_Dialog.visible"
-      width="30%"
     >
       <div class="dz" style="text-align:center;">
         <span>该资源/账单不可退订！</span>
@@ -479,6 +479,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .box-container{
   border-bottom: 20px solid #f3f7fa;
   padding: 20px 0px;
@@ -496,6 +497,10 @@ export default {
 }
 </style>
 <style lang="scss">
+.customWidthRefundDialog{
+  width: 30%;
+  min-width: 450px;
+}
 .box-form{
   .el-range-separator{
     font-size: 12px !important;
