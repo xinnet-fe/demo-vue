@@ -137,7 +137,7 @@ export default {
     }).catch(error => {
       console.log(error)
     })
-    this.onSearch()
+    // this.onSearch()
   },
   methods: {
     ...mapActions('accountDetail', ['list', 'getTransactionType']),
@@ -145,6 +145,13 @@ export default {
       console.log(v)
     },
     onSearch(page) {
+      if (!this.form.agentCode.length) {
+        this.$message({
+          message: '请填写用户编号！',
+          type: 'warning'
+        });
+        return false
+      }
       console.log(this.form.date)
       const query = {
         agentCode: this.form.agentCode,
