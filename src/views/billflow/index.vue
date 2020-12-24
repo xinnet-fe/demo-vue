@@ -12,7 +12,7 @@
       </el-form-item>
       <el-form-item label="交易时间">
         <el-date-picker
-          v-model="form.date"
+          v-model="date"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
@@ -125,8 +125,8 @@ export default {
   watch: {
     date: function(val) {
       const v = val || ['', '']
-      this.form.startDate = v[0] ? `${v[0]} 00:00:00` : ''
-      this.form.endDate = v[1] ? `${v[1]} 23:59:59` : ''
+      this.form.startDate = v[0] ? v[0] : ''
+      this.form.endDate = v[1] ? v[1] : ''
     }
   },
   mounted() {
@@ -145,6 +145,8 @@ export default {
       console.log(v)
     },
     onSearch(page) {
+      console.log("--------")
+      console.log(this.form)
       if (!this.form.agentCode.length) {
         this.$message({
           message: '请填写用户编号！',
@@ -152,7 +154,9 @@ export default {
         });
         return false
       }
-      console.log(this.form.date)
+      console.log("**********")
+      console.log(this.form)
+      console.log("**********")
       const query = {
         agentCode: this.form.agentCode,
         startDate: this.form.startDate,
