@@ -134,7 +134,7 @@
           </el-table-column>
           <el-table-column label="生成时间">
             <template slot-scope="scope">
-              <span>{{ YMDHMS(scope.row.operateTime) }}</span>
+              <span>{{ scope.row.operateTime }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="120">
@@ -147,7 +147,7 @@
         </el-table>
       </div>
       <span class="dialog-footer">
-        <el-button type="primary" size="medium" @click="showBillList_Dialog.visible = false">返 回</el-button>
+        <el-button type="primary" size="medium" @click="back">返 回</el-button>
       </span>
     </div>
 
@@ -418,8 +418,19 @@ export default {
         }
       })
     },
+    back() {
+      this.showBillList_Dialog.visible = false
+      this.$nextTick(() => {
+        this.GetList()
+      })
+    },
     onReset(formName) {
       this.$refs[formName].resetFields()
+      this.form.productType = 'ARROW'
+      this.form.agentCode = ''
+      this.form.serviceCode = ''
+      this.form.opentime = ''
+      this.form.serviceState = ''
     },
     handleSizeChange(val) {
       this.page.pageSize = val
