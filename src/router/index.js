@@ -435,12 +435,14 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/home',
+    // redirect: '/home',
+    redirect: '/agent-client-app/refund',
     hidden: true,
     children: [
       {
         path: 'home',
         component: () => import('@/views/index'),
+        // component: () => import('@/views/refund/index'),
         name: 'Home',
         hidden: true,
         meta: { title: 'Home', icon: 'home', affix: true }
