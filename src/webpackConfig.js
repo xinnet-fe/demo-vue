@@ -26,6 +26,10 @@ module.exports = {
       target: 'https://tradeBoss.xinnet.com',
       secure: false,
       changeOrigin: true
+    },
+    '/api': {
+      target: 'https://tradeBoss.xinnet.com',
+      changeOrigin: true
     }
   },
 

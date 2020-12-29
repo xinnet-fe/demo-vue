@@ -11,7 +11,7 @@
       <el-form-item label="服务编号">
         <el-input v-model="form.serviceCode" placeholder="" :clearable="true" />
       </el-form-item>
-      <el-form-item label="订单编号">
+      <el-form-item label="账单编号">
         <el-input v-model="form.billCode" placeholder="" :clearable="true" />
       </el-form-item>
       <el-form-item label="域名">
@@ -25,7 +25,7 @@
           v-model="selectedOptions"
           :clearable="true"
           :change-on-select="true"
-          :options="queryOrganSaleList"
+          :options="organSaleList"
         />
       </el-form-item>
       <el-form-item label="产品类型">
@@ -80,7 +80,7 @@
       >
         <el-table-column
           prop="billCode"
-          label="订单号"
+          label="账单编号"
           width="180"
           fixed
         />
@@ -132,29 +132,21 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="productCode"
+          prop="supProductClassName"
           label="产品类型"
         />
         <el-table-column
           prop="serviceCode"
           label="服务编号"
         />
-        <el-table-column label="交易类型">
+        <el-table-column label="商品类型">
           <template v-slot="scope">
-            {{ getBillLineType(scope.row.billLineType) }}
+            {{ scope.row.goodsType === '01' ? '主产品' : '附属产品' }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="goodsType"
-          label="商品类型"
-        />
-        <el-table-column
           prop="domainName"
           label="域名"
-        />
-        <el-table-column
-          prop="organName"
-          label="财务归属"
         />
       </el-table>
       <pagination
@@ -207,6 +199,7 @@ export default {
         multiple: true,
         checkStrictly: true
       },
+      organSaleList: [],
       options: [],
       date: '',
       selectedOptions: [],
@@ -274,27 +267,27 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['bill/billList'],
-      queryOrganSaleList(state) {
-        // console.log(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value'))
-        // return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
-        return state.userManager.queryOrganSaleList.map((v) => {
-          const item = {
-            label: v.name,
-            value: v.orgCode
-          }
-          if (v.salemans && v.salemans.length) {
-            item.children = []
-            item.children = v.salemans.map((v2) => {
-              return {
-                label: v2.name,
-                value: v2.ptid
-              }
-            })
-          }
-          return item
-        })
-      }
+      loading: state => state.loading.effects['bill/billList']
+      // queryOrganSaleList(state) {
+      //   // console.log(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value'))
+      //   // return JSON.parse(JSON.stringify(state.userManager.queryOrganSaleList).replace(/(orgCode|ptid)/g, 'value').replace(/(name)/g, 'label'))
+      //   return state.userManager.queryOrganSaleList.map((v) => {
+      //     const item = {
+      //       label: v.name,
+      //       value: v.orgCode
+      //     }
+      //     if (v.salemans && v.salemans.length) {
+      //       item.children = []
+      //       item.children = v.salemans.map((v2) => {
+      //         return {
+      //           label: v2.name,
+      //           value: v2.ptid
+      //         }
+      //       })
+      //     }
+      //     return item
+      //   })
+      // }
     })
   },
   watch: {
@@ -326,6 +319,7 @@ export default {
   },
   mounted() {
     this.getProductQuery()
+    this.queryOrganSaleList()
     // this.onSearch()
   },
   methods: {
@@ -383,32 +377,37 @@ export default {
       return c
     },
     onSearch(page) {
-      if (!this.date.length) {
-        this.$message({
-          message: '请选择日期',
-          type: 'warning'
-        })
-        return false
-      }
-      // 因数据量较大，消耗查询及导出功能，对单用户（输入用户编号）支持一年的时间范围查询，不限用户（未输入用户编号）仅支持一个月时间范围查询。
-      const diff = this.$moment(this.form.endDate).diff(this.$moment(this.form.startDate), 'days')
-      if (this.form.agentCode.length) {
-        if (diff > 366) {
-          this.$message({
-            message: '超出查询时间范围',
-            type: 'warning'
-          })
-          return false
-        }
+      if (this.form.goodsName.length || this.form.goodsCode.length || this.form.serviceCode.length || this.form.billCode.length || this.form.domainName.length || this.form.agentCode.length) {
+        console.log('ok')
       } else {
-        if (diff > 31) {
+        if (!this.date.length) {
           this.$message({
-            message: '超出查询时间范围',
+            message: '请输入关键词，或选择时间（最多一个月）查询',
             type: 'warning'
           })
           return false
         }
+        // 因数据量较大，消耗查询及导出功能，对单用户（输入用户编号）支持一年的时间范围查询，不限用户（未输入用户编号）仅支持一个月时间范围查询。
+        const diff = this.$moment(this.form.endDate).diff(this.$moment(this.form.startDate), 'days')
+        if (this.form.agentCode.length) {
+          if (diff > 366) {
+            this.$message({
+              message: '超出查询时间范围',
+              type: 'warning'
+            })
+            return false
+          }
+        } else {
+          if (diff > 31) {
+            this.$message({
+              message: '超出查询时间范围',
+              type: 'warning'
+            })
+            return false
+          }
+        }
       }
+
       console.log(this.form.date)
       const query = this.form
 
@@ -540,6 +539,28 @@ export default {
           return v
         })
         console.log(this.options)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    queryOrganSaleList() {
+      this.$store.dispatch('userinfo/queryOrganSaleList', {}).then(res => {
+        this.organSaleList = res.map((v) => {
+          const item = {
+            label: v.name,
+            value: v.orgCode
+          }
+          if (v.salemans && v.salemans.length) {
+            item.children = []
+            item.children = v.salemans.map((v2) => {
+              return {
+                label: v2.name,
+                value: v2.ptid
+              }
+            })
+          }
+          return item
+        })
       }).catch(error => {
         console.log(error)
       })

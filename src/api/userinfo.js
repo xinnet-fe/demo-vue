@@ -25,3 +25,12 @@ export function changePwd(data) {
     data
   })
 }
+// 获取销售
+export function queryOrganSaleList(data) {
+  return request({
+    url: '/api/organ/query/queryOrganSaleList',
+    method: 'post',
+    data
+  })
+}
+

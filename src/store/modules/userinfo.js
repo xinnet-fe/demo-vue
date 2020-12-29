@@ -1,4 +1,4 @@
-import { getUser, getSidebarMenus, changePwd } from '@/api/userinfo'
+import { getUser, getSidebarMenus, changePwd, queryOrganSaleList } from '@/api/userinfo'
 import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
@@ -103,6 +103,15 @@ const actions = {
 
   clearPwdForm({ commit }) {
     commit('CLEAR_PWD_FORM')
+  },
+  queryOrganSaleList({ commit, state }, payload) {
+    return new Promise((resolve, reject) => {
+      queryOrganSaleList(payload).then(res => {
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 
