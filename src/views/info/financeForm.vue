@@ -64,7 +64,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('userManager', ['batchUpdate']),
+    ...mapActions('userManager', ['batchUpdateFinance']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
@@ -80,7 +80,7 @@ export default {
             }).join(','),
             attribution: this.form.finance
           }
-          this.batchUpdate(params).then(res => {
+          this.batchUpdateFinance(params).then(res => {
             if (!res.code) {
               this.$message.success('修改成功!')
               this.closeModal()

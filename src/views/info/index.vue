@@ -106,13 +106,13 @@
             <span v-if="scope.row.state === '04'">已关闭</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" width="180">
+        <el-table-column label="操作" fixed="right" width="80">
           <template v-slot="scope">
             <el-button size="mini" type="text" @click="showDetailModal(scope.row)">
               详情
             </el-button>
-            <el-button size="mini" type="text" @click="showAccountModal(scope.row)">修改账号</el-button>
-            <el-popconfirm
+            <!-- <el-button size="mini" type="text" @click="showAccountModal(scope.row)">修改账号</el-button> -->
+            <!-- <el-popconfirm
               v-if="scope.row.state !== '04'"
               title="确定终止吗？"
               @onConfirm="stop(scope.row)"
@@ -120,7 +120,7 @@
               <el-button slot="reference" style="margin-left:10px" size="mini" type="text">
                 终止
               </el-button>
-            </el-popconfirm>
+            </el-popconfirm> -->
           </template>
         </el-table-column>
       </el-table>

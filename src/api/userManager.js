@@ -215,3 +215,27 @@ export function updateAgentContract(query) {
     params: query
   })
 }
+// 代理商信息--业务归属提交
+export function batchUpdateYeWu(query) {
+  return request({
+    url: '/userManager/batchUpdateYeWu',
+    method: 'post',
+    params: query
+  })
+}
+// 代理商信息--财务归属提交
+export function batchUpdateFinance(query) {
+  return request({
+    url: '/userManager/batchUpdateFinance',
+    method: 'post',
+    params: query
+  })
+}
+// 代理商信息--修改等级提交
+export function batchUpdateLevel(query) {
+  return request({
+    url: '/userManager/batchUpdateLevel',
+    method: 'post',
+    params: query
+  })
+}

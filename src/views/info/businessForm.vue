@@ -94,7 +94,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('userManager', ['batchUpdate']),
+    ...mapActions('userManager', ['batchUpdateYeWu']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
@@ -111,7 +111,7 @@ export default {
             organCode: this.form.selectedOptions[0],
             saleCode: this.form.selectedOptions[1]
           }
-          this.batchUpdate(params).then(res => {
+          this.batchUpdateYeWu(params).then(res => {
             if (!res.code) {
               this.$message.success('修改成功!')
               this.closeModal()

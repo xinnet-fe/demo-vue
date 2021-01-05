@@ -213,6 +213,27 @@ const actions = {
     }).catch(error => {
       return error
     })
+  },
+  batchUpdateYeWu({ commit }, query) {
+    return api.batchUpdateYeWu(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  batchUpdateFinance({ commit }, query) {
+    return api.batchUpdateFinance(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  batchUpdateLevel({ commit }, query) {
+    return api.batchUpdateLevel(query).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
   }
 }
 

@@ -63,7 +63,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('userManager', ['batchUpdate']),
+    ...mapActions('userManager', ['batchUpdateLevel']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
         console.log(valid)
@@ -79,7 +79,7 @@ export default {
             }).join(','),
             gradeCode: this.form.level
           }
-          this.batchUpdate(params).then(res => {
+          this.batchUpdateLevel(params).then(res => {
             if (!res.code) {
               this.$message.success('修改成功!')
               this.closeModal()
