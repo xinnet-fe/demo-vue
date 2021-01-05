@@ -1,158 +1,103 @@
 <template>
-  <div class="order-form">
-    <el-form ref="searchForm" class="search-form" :inline="true">
-      <el-form-item label="输入订单号">
-        <el-input v-model="listQuery.buyOrderCode" placeholder="请输入订单号" @input="changeOrderid" @keyup.enter.native="handleFilter" />
-      </el-form-item>
-      <el-form-item label="用户账号">
-        <el-input v-model="listQuery.agentCode" placeholder="请输入用户账号" @input="changeAgentCode" @keyup.enter.native="handleFilter" />
-      </el-form-item>
-      <el-form-item label="服务编号">
-        <el-input v-model="listQuery.serviceCode" placeholder="请输入服务编号" @input="changeServiceCode" @keyup.enter.native="handleFilter" />
-      </el-form-item>
-      <el-form-item label="订单类型">
-        <el-select v-model="listQuery.businessType" placeholder="请选择订单类型" clearable>
-          <el-option v-for="item in businessType" :key="item.num" :label="item.name" :value="item.num" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="提交时间">
-        <el-date-picker v-model="value1" type="daterange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
-      </el-form-item>
-      <el-form-item label="商品类别">
-        <el-select v-model="listQuery.superProductClassCode" placeholder="请选择商品类别" clearable>
-          <el-option v-for="item in superProductClassCode" :key="item.num" :label="item.name" :value="item.num" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="订单状态">
-        <el-select v-model="listQuery.orderStatus" placeholder="请选择订单状态" clearable>
-          <el-option v-for="item in orderStatus" :key="item.num" :label="item.name" :value="item.num" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="账号类型">
-        <el-select v-model="listQuery.orderType" placeholder="请选择" clearable>
-          <el-option v-for="item in orderTypeList" :key="item.num" :label="item.name" :value="item.num" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" size="medium" @click="handleFilter">查询</el-button>
-        <el-button size="medium" @click="resetModal">重置</el-button>
-      </el-form-item>
-    </el-form>
-    <!-- operate -->
-    <el-form ref="operateForm" class="operate-form" :inline="true">
-      <el-form-item>
-        <el-button v-waves size="mini" :loading="downloadLoading" @click="handleDownload">导出</el-button>
-      </el-form-item>
-    </el-form>
-    <!-- operate -->
-
-    <!-- Note that row-key is necessary to get a correct row order. -->
-    <el-table
-      ref="dragTable"
-      :key="tableKey"
-      v-loading="loading"
-      :data="list"
-      fit
-      highlight-current-row
-      style="width: 100%"
+  <div>
+    <el-tabs
+      v-show="!showDetail"
+      v-model="activeName"
+      style="padding: 0 20px;"
+      @tab-click="handleTabClick"
     >
-      <!-- @selection-change="handleSelectionChange" -->
-      <!-- <el-table-column type="selection" width="55" /> -->
-      <el-table-column align="center" width="185" label="订单编号">
-        <template slot-scope="{row}">
-          <span>{{ row.buyOrderCode }}</span>
-        </template>
-      </el-table-column>
-
-      <!-- <el-table-column align="center" width="215" label="服务编号">
-        <template slot-scope="{row}">
-          <span>{{ row.batchId }}</span>
-        </template>
-      </el-table-column> -->
-
-      <el-table-column align="center" width="100" label="商品分类">
-        <template slot-scope="{row}">
-          <span>{{ row.supProductClassa }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column class-name="status-col" width="185" label="商品名称">
-        <template slot-scope="{row}">
-          <span>{{ row.goodsName }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column class-name="status-col" width="185" label="商品内容">
-        <template slot-scope="{row}">
-          <span v-html="row.goodsContent" />
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="订单提交时间" width="140">
-        <template slot-scope="{row}">
-          <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="120" label="用户账号">
-        <template slot-scope="{row}">
-          <span>{{ row.agentCode }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="120" label="订单原价">
-        <template slot-scope="{row}">
-          <span>￥{{ row.totalOriginalPrices }}</span>
-          <!-- <span>￥{{ row.totalOriginalPrices.toFixed(2) }}</span> -->
-        </template>
-      </el-table-column>
-
-      <el-table-column width="120" label="订单实付金额">
-        <template slot-scope="{row}">
-          <span>￥{{ row.totalTradingPrices }}</span>
-          <!-- <span>￥{{ row.totalTradingPrices.toFixed(2) }}</span> -->
-        </template>
-      </el-table-column>
-
-      <el-table-column label="订单类型">
-        <template slot-scope="{row}">
-          <span>{{ row.businessTypes }}</span>
-        </template>
-      </el-table-column>
-
-      <!-- <el-table-column label="付费类型" align="center" width="100">
-        <template slot-scope="{row}">
-          <span>{{ row.goodsPaytypes }}</span>
-        </template>
-      </el-table-column> -->
-
-      <el-table-column label="订单状态" align="center" width="80">
-        <template slot-scope="{row}">
-          <span>{{ row.orderStatusa }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="操作" align="center" width="150" fixed="right">
-        <template slot-scope="{row}">
-          <router-link :to="row.link" class="link-type">
-            <span style="color:#0069ff;cursor:pointer;">查看订单</span>
-          </router-link>
-          <el-button v-if="row.orderStatus === '1' && orderVisible" style="color:#0069ff;" type="text" size="small" @click="orderModify(row)">订单改价</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <pagination v-show="total>0" :total="total" :list.sync="resetListquery" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize" @pagination="getList" />
-
-    <el-dialog :title="dialogLogouttit" :visible.sync="dialogLogout">
-      <p v-if="shows === 'length'">当前数据为0条，无法导出</p>
+      <el-tab-pane label="会员订单信息管理" name="hy">
+        <order-hy ref="listhy" :download-loading="downloadLoading" @getDetail="getDetail" @orderModify="orderModify" @download="handleDownload" />
+      </el-tab-pane>
+      <el-tab-pane label="代理订单信息管理" name="agent">
+        <order-agent ref="listagent" :download-loading="downloadLoading" @getDetail="getDetail" @orderModify="orderModify" @download="handleDownload" />
+      </el-tab-pane>
+    </el-tabs>
+    <div v-if="showDetail" class="order-detail">
+      <div class="btnBack">
+        <a href="javascript:;" @click="handleBack"> &lt; 返回</a>
+      </div>
+      <div class="contop">
+        <h2 class="tit">
+          <span />
+          <p>基本信息</p>
+        </h2>
+        <div class="contables conmiddle-table">
+          <el-table :data="tableDatas" style="width: 100%">
+            <el-table-column prop="buyOrderCode" label="订单编号" />
+            <el-table-column prop="batchId" label="批次编号" />
+            <el-table-column prop="businessTypes" label="订单类型" />
+            <el-table-column prop="goodsPaytypes" label="付费类型" />
+            <el-table-column prop="buyTimeLimits" label="购买时长" />
+            <el-table-column prop="createTimeString" label="订单提交时间" />
+          </el-table>
+          <el-table :data="tableDatas" style="width: 100%">
+            <el-table-column prop="payDeadTime" label="剩余支付时间" />
+            <el-table-column prop="payDateString" label="订单支付时间" />
+            <el-table-column prop="updateDateString" label="订单取消/关闭时间" />
+            <el-table-column prop="orderHolder" label="订单提交人" />
+            <el-table-column prop="agentCode" label="订单付款人" />
+            <el-table-column prop="buyChannel" label="下单渠道" />
+          </el-table>
+        </div>
+      </div>
+      <div class="contable conmiddle">
+        <h2 class="tit">
+          <span />
+          <p>商品信息</p>
+        </h2>
+        <div class="contables conmiddle-table">
+          <el-table :data="tableData" style="width: 100%">
+            <el-table-column prop="goodsCode" label="商品编号" />
+            <el-table-column prop="serviceCode" label="服务编码" />
+            <el-table-column prop="goodsName" label="商品名称" />
+            <el-table-column prop="supProductClassa" label="商品分类" />
+            <el-table-column prop="tradingPrice" label="商品单价" />
+            <el-table-column prop="orderStatusa" label="订单状态" />
+          </el-table>
+        </div>
+      </div>
+      <div class="contable conmiddle">
+        <h2 class="tit">
+          <span />
+          <p>优惠信息</p>
+        </h2>
+        <div class="contables conmiddle-table">
+          <el-table :data="promotionInUseVOList" style="width: 100%">
+            <el-table-column prop="coupon01" label="购物车满折" />
+            <el-table-column prop="coupon02" label="多年购买" />
+            <el-table-column prop="coupon03" label="商品组合优惠" />
+            <el-table-column prop="coupon04" label="批量购买优惠" />
+            <el-table-column prop="coupon05" label="商品优惠券" />
+            <el-table-column prop="coupon06" label="订单优惠券" />
+            <el-table-column prop="coupon07" label="订单改价" />
+            <el-table-column prop="couponprice" label="总优惠金额" />
+          </el-table>
+        </div>
+        <div class="contables conmiddle-table">
+          <el-table :data="promotionInUseVOList" style="width: 20%">
+            <el-table-column prop="preDescs" label="买赠" />
+          </el-table>
+        </div>
+      </div>
+    </div>
+    <el-dialog title="提示" :visible.sync="dialogLogout">
+      <p v-if="shows === 0">当前数据为0条，无法导出</p>
       <p v-else>当前数据已超过6万条，无法导出</p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogLogout = false">确定</el-button>
+        <el-button
+          type="primary"
+          @click="dialogLogout = false"
+        >确定</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="订单改价" :visible.sync="dialogOrderPriceShow" width="500px">
-      <el-form ref="form" :model="form" :rules="rules2" label-width="120px">
+    <el-dialog
+      title="订单改价"
+      :visible.sync="dialogOrderPriceShow"
+      width="500px"
+    >
+      <el-form ref="formChangePrice" :model="form" :rules="rules2" label-width="120px">
         <el-form-item label="订单原价:">
           ￥ {{ row.totalTradingPrices }}
         </el-form-item>
@@ -162,137 +107,37 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogOrderPriceShow = false">取 消</el-button>
-        <el-button type="primary" @click="dialogOrderPriceSubmit()">确定</el-button>
+        <el-button
+          type="primary"
+          :loading="loadingBtn"
+          @click="dialogOrderPriceSubmit()"
+        >确定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-// import { orderList } from '@/api/demos/order'
-import { getUser } from '@/api/userinfo'
-import { mapState } from 'vuex'
-import waves from '@/directive/demos/waves' // waves directive
-import $ from 'jquery'
-import Pagination from '@/components/demos/Pagination' // secondary package based on el-pagination
+import orderHy from './hy.vue'
+import orderAgent from './agent.vue'
 import isMoney from '@/utils/isMoney'
-const calendarTypeOptions = [
-  { key: 'CN', display_name: 'China' },
-  { key: 'US', display_name: 'USA' },
-  { key: 'JP', display_name: 'Japan' },
-  { key: 'EU', display_name: 'Eurozone' }
-]
-
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
 
 export default {
-  name: 'DragTable',
-  components: { Pagination },
-  directives: { waves },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
-  },
+  name: 'Order',
+  components: { orderHy, orderAgent },
   data() {
     return {
-      row: {},
+      activeName: 'hy',
       dialogOrderPriceShow: false,
+      row: {},
       form: {
         price: 0
       },
-      resetListquery: {},
-      shows: '',
-      orderhao: '',
-      zhanghao: '',
-      servicehao: '',
+      shows: 0,
+      showDetail: false,
+      loadingBtn: false,
       downloadLoading: false,
-      tableKey: 0,
-      orderid: undefined,
-      list: null,
-      total: 0,
-      listLoading: true,
-      listQuery: {
-        buyOrderCode: undefined,
-        pageNum: 1,
-        pageSize: 10,
-        // sort: '+id',
-        businessType: undefined,
-        superProductClassCode: undefined,
-        title: undefined,
-        classId: undefined,
-        auditState: undefined,
-        publishState: undefined,
-        // publishState: '1591924192000',
-        startTime: undefined,
-        endTime: undefined,
-        orderStatus: undefined,
-        orderType: 'HY',
-        agentCode: undefined,
-        serviceCode: undefined
-      },
-      auditState: [{ name: '未审核', num: 0 }, { name: '已通过', num: 1 }, { name: '未通过', num: 2 }],
-      publishState: [{ name: '未发布', num: 0 }, { name: '已发布', num: 1 }],
-      orderStatus: [
-        { name: '待支付', num: 1 },
-        { name: '支付中', num: 2 },
-        { name: '已取消', num: 3 },
-        { name: '已支付', num: 4 },
-        { name: '支付失败', num: 5 }
-      ],
-      businessType: [
-        { name: '新开', num: 'N' },
-        { name: '续费', num: 'R' },
-        { name: '升级', num: 'U' }
-      ],
-      superProductClassCode: [
-        { name: '域名', num: 'D' },
-        { name: '虚机', num: 'V' },
-        { name: '邮局', num: 'M' },
-        { name: '建站', num: 'W' },
-        { name: '应用', num: 'A' },
-        { name: '服务产品', num: 'S' },
-        { name: '租用托管', num: 'Z' },
-        { name: '轻应用服务器', num: 'E' },
-        { name: '云产品', num: 'N' },
-        { name: '云产品(老)', num: 'C' }
-      ],
-      orderTypeList: [
-        { name: '会员订单', num: 'HY' },
-        { name: '代理订单', num: 'DL' }
-      ],
-      calendarTypeOptions,
-      temp: {
-        businessType: undefined,
-        productClass: undefined,
-        title: undefined,
-        categoryName: undefined,
-        auditState: undefined,
-        publishState: undefined,
-        createTime: new Date(),
-        orderStatus: undefined,
-        originalValue: undefined,
-        value: undefined
-      },
       dialogLogout: false,
-      dialogLogouttit: '提示',
-      textMap: {
-        update: '编辑标签',
-        create: '新增标签',
-        lock: '解锁',
-        unlock: '锁定'
-      },
       rules: {
         // column: [{ required: true, message: '请选择文章所属栏目', trigger: 'change' }],
         email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
@@ -300,46 +145,94 @@ export default {
       },
       rules2: {
         price: [
-          { required: true, message: '请输入价格', trigger: 'blur' }
-          // { required: true, validator: isMoney, message: '格式错误，只能输入小数点后两位', trigger: 'blur' }
+          { required: true, message: '请输入价格', trigger: 'blur' },
+          { required: true, validator: isMoney, message: '货币格式错误', trigger: 'blur' }
         ]
       },
-      categorylist: [],
-      newsbanWords: '',
-      value1: '',
-      orderVisible: false
+      orderVisible: false,
+      tableDatas: [],
+      tableData: [],
+      promotionInUseVOList: []
     }
   },
   computed: {
-    ...mapState({
-      loading: state => state.loading.effects['tradeOrder/orderList']
-    })
   },
   created() {
-    getUser().then(res => {
-      res.permissions.map(v => {
-        if (v.indexOf('changeprice') !== Number(-1)) {
-          this.orderVisible = true
-        }
-      })
-      res.roles.map(i => {
-        if (i === '超级管理员') {
-          this.orderVisible = true
-        }
-      })
+  },
+  mounted() {
+    this.$store.getters.user.permissions.map((v) => {
+      if (v.indexOf('changeprice') !== Number(-1)) {
+        this.orderVisible = true
+      }
     })
-    this.getList()
+    this.$store.getters.user.roles.map((i) => {
+      if (i === '超级管理员') {
+        this.orderVisible = true
+      }
+    })
   },
   methods: {
-    getList() {
-      // const str = this.getUrlparam(this.listQuery)
-      if (JSON.stringify(this.resetListquery) === '{}') {
-        this.resetListquery = this.listQuery
-      }
-      this.$store.dispatch('tradeOrder/orderList', this.listQuery).then(res => {
-        res.data.list.map(row => {
-          if (row.supProductClass) {
-            // const supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
+    handleTabClick(tab, event) {
+      console.log(tab, event)
+    },
+    getDetail(buyOrderCode) {
+      this.$store
+        .dispatch('tradeOrder/orderDetail', { buyOrderCode: buyOrderCode })
+        .then((res) => {
+          if (!res.data.orderHolder) {
+            res.data.orderHolder = res.data.agentCode
+          }
+          res.data.orderStatusa =
+            res.data.orderStatus === '1'
+              ? '待支付'
+              : res.data.orderStatus === '2'
+                ? '支付中'
+                : res.data.orderStatus === '3'
+                  ? '已取消'
+                  : res.data.orderStatus === '4'
+                    ? '已支付'
+                    : '支付失败'
+          if (res.data.orderStatus === '1' || res.data.orderStatus === '2') {
+            if (Date.parse(res.data.payDeadline) - Date.parse(new Date()) > 0) {
+              res.data.payDeadTime = this.formatDuring(
+                Date.parse(res.data.payDeadline) - Date.parse(new Date())
+              )
+            }
+          }
+          res.data.businessTypes =
+            res.data.businessType === 'N'
+              ? '新开'
+              : res.data.businessType === 'R'
+                ? '续费'
+                : res.data.businessType === 'U'
+                  ? '升级'
+                  : ''
+          res.data.goodsPaytypes =
+            res.data.goodsPaytype === '01' ? '包年包月' : '单次'
+          // res.data.buyTimeLimits = res.data.bodys[0].
+          let buyTimeLimits = res.data.bodys[0].buyTimeLimit.substr(
+            res.data.bodys[0].buyTimeLimit.length - 1,
+            1
+          )
+          buyTimeLimits =
+            buyTimeLimits === 'M'
+              ? '月'
+              : buyTimeLimits === 'Y'
+                ? '年'
+                : buyTimeLimits === 'D'
+                  ? '日'
+                  : ''
+          const buyTime = res.data.bodys[0].buyTimeLimit.substr(
+            0,
+            res.data.bodys[0].buyTimeLimit.length - 1
+          )
+          res.data.buyTimeLimits = buyTime + buyTimeLimits
+          res.data.bodys.forEach((row) => {
+            if (row.tradingPrice) {
+              row.tradingPrice = '￥' + this.shuzi(row.tradingPrice.toFixed(2))
+            }
+            row.orderStatusa = res.data.orderStatusa
+            // row.supProductClass = row.supProductClass.substring(row.supProductClass.lastIndexOf('_') + 1)
             if (row.supProductClass === 'D') {
               row.supProductClassa = '域名'
             } else if (row.supProductClass === 'V') {
@@ -361,39 +254,133 @@ export default {
             } else if (row.supProductClass === 'C') {
               row.supProductClassa = '云产品(老)'
             }
+          })
+          let cou1 = 0
+          let cou2 = 0
+          let cou3 = 0
+          let cou4 = 0
+          let cou5 = 0
+          let cou6 = 0
+          let cou7 = 0
+          if (res.data.promotionInUseVOList) {
+            res.data.promotionInUseVOList.forEach((row) => {
+              if (row.preType === 'ACTIVITY_BUY_PRESENT') {
+                res.data.promotionInUseVOList[0].preDescs = row.preDesc
+                row.preDescs = row.preDesc
+              }
+              if (row.preType) {
+                row.coupon01 = 0
+                row.coupon02 = 0
+                row.coupon03 = 0
+                row.coupon04 = 0
+                row.coupon05 = 0
+                row.coupon06 = 0
+                row.coupon07 = 0
+                if (!row.preMoney) {
+                  row.preMoney = 0
+                }
+                console.log(
+                  row.preType === 'ACTIVITY_FULL_DISCOUNT',
+                  row.preType === 'PRICE_CHANGE',
+                  'row.preType'
+                )
+                if (row.preType === 'COUPON_ORDER') {
+                  cou6 = row.preMoney
+                  row.coupon06 = row.preMoney
+                } else if (row.preType === 'COUPON_PRODUCT') {
+                  cou5 = row.preMoney
+                  row.coupon05 = row.preMoney
+                } else if (row.preType === 'ACTIVITY_YEARS') {
+                  cou2 = row.preMoney
+                  row.coupon02 = row.preMoney
+                } else if (row.preType === 'BATCH_PURCHASE') {
+                  cou4 = row.preMoney
+                  row.coupon04 = row.preMoney
+                } else if (row.preType === 'GOODS_COMBINATION') {
+                  cou3 = row.preMoney
+                  row.coupon03 = row.preMoney
+                } else if (row.preType === 'ACTIVITY_FULL_DISCOUNT') {
+                  cou1 = row.preMoney
+                  row.coupon01 = row.preMoney
+                } else if (row.preType === 'PRICE_CHANGE') {
+                  cou7 = row.preMoney
+                  row.coupon07 = row.preMoney
+                }
+                row.couponprice =
+                  row.coupon01 +
+                  row.coupon02 +
+                  row.coupon03 +
+                  row.coupon04 +
+                  row.coupon05 +
+                  row.coupon06 +
+                  row.coupon07
+              }
+            })
           }
-          if (row.businessType) {
-            row.businessTypes = row.businessType === 'N' ? '新开' : row.businessType === 'R' ? '续费' : row.businessType === 'U' ? '升级' : ''
+          const a = []
+          a[0] = res.data
+          this.tableDatas = a
+          console.log('====================')
+          console.log(this.tableDatas)
+          console.log('====================')
+
+          if (this.tableDatas[0].payDateString) {
+            this.tableDatas[0].updateDateString = ' — —'
           }
-          if (row.goodsPaytype) {
-            row.goodsPaytypes = row.goodsPaytype === '01' ? '包年包月' : '单次'
+          if (this.tableDatas[0].payDeadTime === undefined) {
+            this.tableDatas[0].payDeadTime = ' — —'
           }
-          if (row.orderStatus) {
-            if (row.orderStatus === '1') {
-              row.orderStatusa = '待支付'
-            } else if (row.orderStatus === '2') {
-              row.orderStatusa = '支付中'
-            } else if (row.orderStatus === '3') {
-              row.orderStatusa = '已取消'
-            } else if (row.orderStatus === '4') {
-              row.orderStatusa = '已支付'
-            } else if (row.orderStatus === '5') {
-              row.orderStatusa = '支付失败'
+          if (this.tableDatas[0].payDateString === undefined) {
+            this.tableDatas[0].payDateString = ' — —'
+          }
+          if (this.tableDatas[0].updateDateString === undefined) {
+            this.tableDatas[0].updateDateString = ' — —'
+          }
+          if (res.data.orderStatus === '2') {
+            this.tableDatas[0].payDateString = res.data.updateDateString
+            this.tableDatas[0].updateDateString = ' — —'
+          }
+          this.tableData = res.data.bodys
+          if (res.data.promotionInUseVOList) {
+            res.data.promotionInUseVOList[0].coupon01 =
+              cou1 !== 0 ? '￥' + this.shuzi(cou1.toFixed(2)) : 0
+            res.data.promotionInUseVOList[0].coupon02 =
+              cou2 !== 0 ? '￥' + this.shuzi(cou2.toFixed(2)) : 0
+            res.data.promotionInUseVOList[0].coupon03 =
+              cou3 !== 0 ? '￥' + this.shuzi(cou3.toFixed(2)) : 0
+            res.data.promotionInUseVOList[0].coupon04 =
+              cou4 !== 0 ? '￥' + this.shuzi(cou4.toFixed(2)) : 0
+            res.data.promotionInUseVOList[0].coupon05 =
+              cou5 !== 0 ? '￥' + this.shuzi(cou5.toFixed(2)) : 0
+            res.data.promotionInUseVOList[0].coupon06 =
+              cou6 !== 0 ? '￥' + this.shuzi(cou6.toFixed(2)) : 0
+            res.data.promotionInUseVOList[0].coupon07 =
+              cou7 !== 0 ? '￥' + this.shuzi(cou7.toFixed(2)) : 0
+            const totalprice = cou1 + cou2 + cou3 + cou4 + cou5 + cou6 + cou7
+            res.data.promotionInUseVOList[0].couponprice =
+              totalprice !== 0 ? '￥' + this.shuzi(totalprice.toFixed(2)) : 0
+            if (!res.data.promotionInUseVOList[0].preDescs) {
+              res.data.promotionInUseVOList[0].preDescs = '暂无数据'
             }
+            this.promotionInUseVOList = [res.data.promotionInUseVOList[0]]
+          } else {
+            const promotionInUseVOList = {}
+            promotionInUseVOList.coupon01 = 0
+            promotionInUseVOList.coupon02 = 0
+            promotionInUseVOList.coupon03 = 0
+            promotionInUseVOList.coupon04 = 0
+            promotionInUseVOList.coupon05 = 0
+            promotionInUseVOList.coupon06 = 0
+            promotionInUseVOList.coupon07 = 0
+            promotionInUseVOList.couponprice = 0
+            promotionInUseVOList.preDescs = '暂无数据'
+            this.promotionInUseVOList = [promotionInUseVOList]
           }
-          if (row.totalOriginalPrice) {
-            row.totalOriginalPrices = this.shuzi(row.totalOriginalPrice.toFixed(2))
-          }
-          if (row.totalTradingPrice || row.totalTradingPrice === 0) {
-            row.totalTradingPrices = this.shuzi(row.totalTradingPrice.toFixed(2))
-          }
-          row.link = `/order-detail/index?id=${row.buyOrderCode}&showLayout=false`
         })
-        this.list = res.data.list
-        this.total = res.data.total
-      }).catch(error => {
-        console.log(error)
-      })
+        .catch((error) => {
+          console.log(error)
+        })
+      this.showDetail = true
     },
     orderModify(row) {
       this.row = row
@@ -404,59 +391,46 @@ export default {
       }
       this.dialogOrderPriceShow = true
     },
-    shuzi(num) {
-      var reg = /\d(?=(?:\d{3})+\b)/g
-      return String(num).replace(reg, '$&,')
-    },
-    handlePrice() {
-      console.log(this.form.price, isMoney.test(this.form.price), 'pppric')
-    },
-    changeOrders() {
-      const orderType = this.listQuery.orderType
-      this.resetModal()
-      this.listQuery.orderType = orderType
-    },
-    resetModal() {
-      this.value1 = ''
-      this.listQuery = {
-        pageNum: 1,
-        pageSize: 10,
-        // sort: '+id',
-        buyOrderCode: undefined,
-        businessType: undefined,
-        superProductClassCode: undefined,
-        title: undefined,
-        classId: undefined,
-        auditState: undefined,
-        publishState: undefined,
-        startTime: undefined,
-        endTime: undefined,
-        orderStatus: undefined,
-        orderType: 'HY',
-        // orderType: '0',
-        agentCode: undefined,
-        serviceCode: undefined
-      }
-    },
-    handleDownload() {
-      // const str = this.getUrlparam(this.listQuery)
-      this.$store.dispatch('tradeOrder/orderList', this.listQuery).then(res => {
-        if (res.data.list.length) {
-          if (res.data.total < 600000) {
-            const str = this.getUrlparam(this.listQuery)
-
-            window.open(window.location.origin + '/boss/tradeOrder/exportExecl?' + str)
-          } else {
-            this.dialogLogout = true
-            this.shows = 'len'
+    dialogOrderPriceSubmit() {
+      this.loadingBtn = true
+      this.$refs.formChangePrice.validate((valid) => {
+        if (valid) {
+          const query = {
+            buyOrderCode: this.row.buyOrderCode,
+            price: this.form.price
           }
+          this.$store
+            .dispatch('tradeOrder/changeOrderPrice', query)
+            .then((res) => {
+              if (res.code === '0') {
+                this.$message({
+                  message: '改价成功',
+                  type: 'success'
+                })
+                if (this.activeName === 'hy') {
+                  this.$refs.listhy.handleFilter()
+                } else {
+                  this.$refs.listagent.handleFilter()
+                }
+                this.dialogOrderPriceShow = false
+              } else {
+                this.loadingBtn = false
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error'
+                })
+              }
+            })
+            .catch((error) => {
+              console.log(error)
+            })
         } else {
-          this.dialogLogout = true
-          this.shows = 'length'
+          this.loadingBtn = false
         }
-      }).catch(error => {
-        console.log(error)
       })
+    },
+    handleBack() {
+      this.showDetail = false
     },
     getUrlparam(obj) {
       let c = ''
@@ -468,134 +442,70 @@ export default {
       c = c.substring(c.length - 1, 0)
       return c
     },
-    handlePhone() {
-      var myreg = /^[1][3,4,5,7,8,9][0-9]{9}$/
-      if (!myreg.test(this.temp.phone)) {
-        this.handleReset(this.temp.phones, this.temp.phone, $('#samePhone'))
-        $('#rightPhone').show()
-      } else {
-        this.handleReset(this.temp.phones, this.temp.phone, $('#samePhone'))
-        $('#rightPhone').hide()
-      }
+    handleDownload(query) {
+      this.downloadLoading = true
+      this.$store
+        .dispatch('tradeOrder/orderList', query)
+        .then((res) => {
+          this.downloadLoading = false
+          if (res.data.list.length) {
+            if (res.data.total < 60000) {
+              const str = this.getUrlparam(query)
+              window.open(
+                window.location.origin + '/boss/tradeOrder/exportExecl?' + str
+              )
+            } else {
+              this.dialogLogout = true
+              this.shows = 60000
+            }
+          } else {
+            this.dialogLogout = true
+            this.shows = 0
+          }
+        })
+        .catch((error) => {
+          this.downloadLoading = false
+          console.log(error)
+        })
     },
-    handleEmail() {
-      var myreg = /^([A-Za-z0-9_+-.])+@([A-Za-z0-9\-.])+\.([A-Za-z]{2,22})$/
-      if (!myreg.test(this.temp.email)) {
-        this.handleReset(this.temp.emails, this.temp.email, $('#sameEmail'))
-        $('#rightEmail').show()
-      } else {
-        this.handleReset(this.temp.emails, this.temp.email, $('#sameEmail'))
-        $('#rightEmail').hide()
-      }
+    shuzi(num) {
+      var reg = /\d(?=(?:\d{3})+\b)/g
+      return String(num).replace(reg, '$&,')
     },
-    handleReset(a, b, c) {
-      if (a === b) {
-        c.show()
-      } else {
-        c.hide()
-      }
-    },
-    handleFilter() {
-      if (this.value1) {
-        this.listQuery.startTime = this.value1[0]
-        this.listQuery.endTime = this.value1[1]
-      } else {
-        this.listQuery.startTime = undefined
-        this.listQuery.endTime = undefined
-      }
-      this.listQuery.pageNum = 1
-      this.resetListquery = this.listQuery
-      this.getList()
-    },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
-      }
-    },
-    changeOrderid() {
-      const buyorder = this.listQuery.buyOrderCode.replace(/^\.+|[^\d]/g, '')
-      if (buyorder.length <= 30) {
-        this.orderhao = buyorder
-        this.listQuery.buyOrderCode = buyorder
-      } else {
-        this.listQuery.buyOrderCode = this.orderhao
-      }
-    },
-    changeAgentCode() {
-      const agent = this.listQuery.agentCode.replace(/^\.+|[^\da-zA-Z]/g, '')
-      if (agent.length <= 30) {
-        this.zhanghao = agent
-        this.listQuery.agentCode = agent
-      } else {
-        this.listQuery.agentCode = this.zhanghao
-      }
-    },
-    changeServiceCode() {
-      const service = this.listQuery.serviceCode.replace(/^\.+|[^\da-zA-Z]/g, '')
-      if (service.length <= 30) {
-        this.servicehao = service
-        this.listQuery.serviceCode = service
-      } else {
-        this.listQuery.serviceCode = this.servicehao
-      }
-    },
-    changeOrderType() {
-      const a = this.listQuery.orderType
-      this.resetModal()
-      this.listQuery.orderType = a
-    },
-    dialogOrderPriceSubmit() {
-      const query = {
-        buyOrderCode: this.row.buyOrderCode,
-        price: this.form.price
-      }
-      // tradeOrder/changeOrderPrice
-      this.$store.dispatch('tradeOrder/changeOrderPrice', query).then(res => {
-        if (res.code === '0') {
-          this.$message({
-            message: '改价成功',
-            type: 'success'
-          })
-          this.getList()
-          this.dialogOrderPriceShow = false
-        } else {
-          this.$message({
-            message: res.data.msg,
-            type: 'error'
-          })
-        }
-      }).catch(error => {
-        console.log(error)
-      })
+    formatDuring(mss) {
+      var days = parseInt(mss / (1000 * 60 * 60 * 24))
+      var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60))
+      // var seconds = ((mss % (1000 * 60)) / 1000).toFixed(0)
+      // return days + " 天 " + hours + " 时 " + minutes + " 分 " + seconds + " 秒 "
+      return days + ' 天 ' + hours + ' 时 ' + minutes + ' 分 '
     }
   }
 }
 </script>
 
 <style>
-.sortable-ghost{
-  opacity: .8;
-  color: #fff!important;
-  background: #42b983!important;
+.sortable-ghost {
+  opacity: 0.8;
+  color: #fff !important;
+  background: #42b983 !important;
 }
 </style>
 
 <style scoped>
-.icon-star{
-  margin-right:2px;
+.order-form{
+  padding-left: 0px;
+  padding-right: 0px;
 }
-.drag-handler{
+.icon-star {
+  margin-right: 2px;
+}
+.drag-handler {
   width: 20px;
   height: 20px;
   cursor: pointer;
 }
-.clored{
+.clored {
   color: rgb(255, 0, 0);
   font-size: 12px;
   margin: 0px 5px;
@@ -603,5 +513,60 @@ export default {
   width: 165px;
   left: 4px;
   top: 30px;
+}
+.order-detail .btnBack {
+  background: #f3f7fa;
+  height: 50px;
+  line-height: 50px;
+  font-size: 14px;
+  padding: 0 20px;
+}
+.order-detail .contop,
+.contable {
+  background: #fff;
+  color: #333;
+  margin-bottom: 20px;
+}
+.order-detail .contop-con {
+  padding: 11px 30px 38px 30px;
+  box-sizing: border-box;
+}
+.order-detail .contop-con > p {
+  font-size: 12px;
+  width: 100%;
+  height: 49px;
+  line-height: 49px;
+}
+.order-detail .contop-con > p > span {
+  display: inline-block;
+  width: 24%;
+}
+.order-detail .tit {
+  height: 51px;
+  font-size: 14px;
+  /* line-height: 51px; */
+  /* border-left: solid 2px #6282a9; */
+  border-bottom: solid 1px #e5e5e5;
+  margin: 0;
+  display: flex;
+}
+.order-detail .tit span {
+  display: inline-block;
+  height: 20px;
+  width: 4px;
+  margin-top: 17px;
+  margin-right: 15px;
+  background: #6282a9;
+}
+.order-detail .tit p {
+  height: 20px;
+  line-break: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 20px 0 0 0;
+}
+.order-detail .contables {
+  padding: 20px 20px 57px 20px;
+  box-sizing: border-box;
 }
 </style>

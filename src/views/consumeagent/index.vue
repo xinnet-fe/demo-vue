@@ -94,11 +94,11 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="originalPrice"
+          prop="price"
           label="交易金额（元）"
         />
         <el-table-column
-          prop="price"
+          prop="originalPrice"
           label="成本价（元）"
         />
         <el-table-column label="方式">
@@ -230,8 +230,8 @@ export default {
       ],
       isReturns: [
         { label: '全部', value: '' },
-        { label: '已退费', value: '02' },
-        { label: '未退费', value: '01' }
+        { label: '已退费', value: '01' },
+        { label: '未退费', value: '02' }
       ],
       list: [],
       page: {
