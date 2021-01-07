@@ -51,6 +51,9 @@
           :clearable="false"
           :editable="false"
         />
+        <el-tooltip class="item" effect="dark" content="查询时间范围仅限90天" placement="top">
+          <i class="el-icon-warning" style="position:absolute;top:50%;left:100%;margin-left: 3px;margin-top: -7px;color:#e6a23c;" />
+        </el-tooltip>
       </el-form-item>
       <el-form-item label="商品类别">
         <el-select

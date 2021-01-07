@@ -402,7 +402,8 @@ export default {
           this.$store
             .dispatch('tradeOrder/changeOrderPrice', query)
             .then((res) => {
-              if (res.code === '0') {
+              this.loadingBtn = false
+              if (res.code === '0' && res.data.code === 200) {
                 this.$message({
                   message: '改价成功',
                   type: 'success'
@@ -414,7 +415,6 @@ export default {
                 }
                 this.dialogOrderPriceShow = false
               } else {
-                this.loadingBtn = false
                 this.$message({
                   message: res.data.msg,
                   type: 'error'
@@ -422,6 +422,7 @@ export default {
               }
             })
             .catch((error) => {
+              this.loadingBtn = false
               console.log(error)
             })
         } else {
