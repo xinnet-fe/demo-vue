@@ -286,7 +286,7 @@ export default {
             { required: true, message: '请输入实际退费价格', trigger: 'blur' },
             { validator: (rule, value, callback) => {
               if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
-                callback(new Error('实际退费价格不能大于建议退费价格'))
+                callback(new Error('实际退费价格不能大于实际花费总金额')) // 建议退费价格  就是  实际花费金额
               } else if (this.instanceRefund_Dialog.transMoney_Inp <= 0) {
                 callback(new Error('实际退费价格必须大于零'))
               } else if (Number(this.instanceRefund_Dialog.transMoney_Inp) !== parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
