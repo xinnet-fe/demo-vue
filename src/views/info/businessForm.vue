@@ -116,6 +116,8 @@ export default {
               this.$message.success('修改成功!')
               this.closeModal()
               this.$parent.onSearch()
+            } else {
+              this.$message.error(res.msg)
             }
           }).catch(error => {
             console.log(error)
