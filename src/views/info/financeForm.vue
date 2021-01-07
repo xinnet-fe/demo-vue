@@ -67,7 +67,6 @@ export default {
     ...mapActions('userManager', ['batchUpdateFinance']),
     onSubmit() {
       this.$refs.form.validate((valid) => {
-        console.log(valid)
         if (valid) {
           console.log(this.form)
           // 列表中选中行数据
