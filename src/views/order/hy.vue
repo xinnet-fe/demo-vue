@@ -94,6 +94,7 @@
         <el-button
           type="primary"
           size="medium"
+          :loading="loading"
           @click="handleFilter"
         >查询</el-button>
         <el-button size="medium" @click="resetModal">重置</el-button>
@@ -235,7 +236,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import waves from '@/directive/demos/waves' // waves directive
 import Pagination from '@/components/demos/Pagination' // secondary package based on el-pagination
 import clearFormDate from '@/utils/clearFormData'
@@ -310,7 +311,7 @@ export default {
         { name: '云产品(老)', num: 'C' }
       ],
       value1: '',
-      orderVisible: false,
+      // orderVisible: false,
       choiceDate: '',
       pickerOptions: {
         onPick: ({ maxDate, minDate }) => {
@@ -333,23 +334,31 @@ export default {
   computed: {
     ...mapState({
       loading: (state) => state.loading.effects['tradeOrder/orderList']
-    })
+    }),
+    ...mapGetters([
+      'user'
+    ]),
+    orderVisible(state) {
+      let flag = false
+      this.user.permissions.map((v) => {
+        if (v.indexOf('changeprice') !== Number(-1)) {
+          flag = true
+        }
+      })
+      this.user.roles.map((i) => {
+        if (i === '超级管理员') {
+          flag = true
+        }
+      })
+      return flag
+    }
   },
   created() {
     this.resetDate()
     this.handleFilter()
   },
   mounted() {
-    this.$store.getters.user.permissions.map((v) => {
-      if (v.indexOf('changeprice') !== Number(-1)) {
-        this.orderVisible = true
-      }
-    })
-    this.$store.getters.user.roles.map((i) => {
-      if (i === '超级管理员') {
-        this.orderVisible = true
-      }
-    })
+
   },
   methods: {
     resetDate() {
