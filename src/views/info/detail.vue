@@ -29,17 +29,19 @@
                 />
                 <br>
                 <el-row :gutter="10">
-                  <el-col
-                    class="col-img"
-                    v-for="(val, key, i) in realNameImg"
-                    :key="key"
-                    :span="8"
-                    v-if="val"
-                  >
-                    <el-card :body-style="{ padding:'0px' }">
-                      <img width="100%" :src="val" class="image">
-                    </el-card>
-                  </el-col>
+                  <template v-for="(val, key) in realNameImg">
+                    <el-col
+                      v-if="val"
+                      class="col-img"
+                      :key="key"
+                      :span="8"
+                    >
+                      <el-card :body-style="{ padding:'0px' }">
+                        <img width="100%" :src="val" class="image">
+                      </el-card>
+                    </el-col>
+                  </template>
+
                 </el-row>
               </template>
             </el-tab-pane>
@@ -187,13 +189,15 @@ export default {
           this.realNameImg.grantCertPath = res.data.grantCertPath
           this.type = 'C'
         }
+        console.log("=================")
         console.log(this.realNameImg)
+        console.log("=================")
         let params = {
           agentCode: this.row.agentCode,
           imgUrl: this.realNameImg.authPersonCardPath
         }
         for (let key in this.realNameImg) {
-          if (this.realNameImg[key].length) {
+          if (this.realNameImg[key] && this.realNameImg[key].length) {
             this.realNameImg[key] = `/userManager/echoImage?agentCode=${this.row.agentCode}&imgUrl=${this.realNameImg[key]}`
           }
         }
