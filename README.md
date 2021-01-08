@@ -2,6 +2,14 @@
 
 boss.xinnet.com
 
+获取 xbtoken
+
+修改 settings.js
+
+修改 hosts
+
+代理营销
+
 ```
 nvm use 10.17.0
 ```
