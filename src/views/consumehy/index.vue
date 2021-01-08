@@ -302,16 +302,22 @@ export default {
       this.form.userCode = v[1] ? `${v[1]}` : ''
     },
     value: function(val) {
-      const v = ['', []]
-      if (val && val[0] && val[0].length) {
-        v[0] = val[0][0]
-        v[1] = []
+      console.log(val)
+      const v = [[], []]
+      if (val.length) {
         val.forEach((v2) => {
-          v[1].push(v2[1])
+          // 查重
+          if (v[0].indexOf(v2[0]) < 0) {
+            v[0].push(v2[0])
+          }
+          //
+          if (v2[1]) {
+            v[1].push(v2[1])
+          }
         })
       }
 
-      this.form.supProductClass = v[0] ? v[0] : ''
+      this.form.supProductClass = v[0].length ? v[0].join(',') : ''
       this.form.productClass = v[1].length ? v[1].join(',') : ''
     }
   },
@@ -337,29 +343,29 @@ export default {
     },
     changeLabel(val) {
       // 是否与上次的类型相同
-      let changeFlag = false
-      let changeItem = null
-      if (this.shareScopeEnd.length === 0) {
-        this.value = val
-      } else {
-        // 与原数组比对
-        this.value.forEach((item) => {
-          if (item[0] !== this.shareScopeEnd[0][0]) { // 一级标签不同
-            changeFlag = true
-            changeItem = item
-          } else if ((!item[1] && this.shareScopeEnd[0][1]) || (item[1] && !this.shareScopeEnd[0][1])) { // 一级标签相同但是二级标签不同
-            changeFlag = true
-            changeItem = item
-          }
-        })
-      }
-      if (changeFlag) {
-        this.value = []
-        this.value.push(changeItem)
-      }
-      this.shareScopeEnd = this.value
-      console.log('==================')
-      console.log(this.shareScopeEnd)
+      // let changeFlag = false
+      // let changeItem = null
+      // if (this.shareScopeEnd.length === 0) {
+      //   this.value = val
+      // } else {
+      //   // 与原数组比对
+      //   this.value.forEach((item) => {
+      //     if (item[0] !== this.shareScopeEnd[0][0]) { // 一级标签不同
+      //       changeFlag = true
+      //       changeItem = item
+      //     } else if ((!item[1] && this.shareScopeEnd[0][1]) || (item[1] && !this.shareScopeEnd[0][1])) { // 一级标签相同但是二级标签不同
+      //       changeFlag = true
+      //       changeItem = item
+      //     }
+      //   })
+      // }
+      // if (changeFlag) {
+      //   this.value = []
+      //   this.value.push(changeItem)
+      // }
+      // this.shareScopeEnd = this.value
+      // console.log('==================')
+      // console.log(this.shareScopeEnd)
     },
     handleSelectChange(v) {
       console.log(v)
