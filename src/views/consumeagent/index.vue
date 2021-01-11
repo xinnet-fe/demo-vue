@@ -319,7 +319,7 @@ export default {
         })
       }
 
-      this.form.supProductClass = v[0].length ? v[0].join(',') : ''
+      // this.form.supProductClass = v[0].length ? v[0].join(',') : ''
       this.form.productClass = v[1].length ? v[1].join(',') : ''
     }
   },

@@ -85,7 +85,7 @@
       </el-form-item>
       <el-form-item label="商品内容">
         <el-input
-          v-model="listQuery.productContent"
+          v-model="listQuery.goodsContent"
           placeholder="请输入商品内容"
           maxlength="10"
         />
@@ -281,7 +281,7 @@ export default {
         orderType: 'HY',
         agentCode: undefined,
         serviceCode: undefined,
-        productContent: ''
+        goodsContent: ''
       },
       orderStatus: [
         { name: '全部', num: '' },
