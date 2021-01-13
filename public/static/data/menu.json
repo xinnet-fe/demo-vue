@@ -1,46 +1,35 @@
 [
     {
-        "code": "agent-client-app",
+        "code": "realname",
         "parentCode": null,
         "children": [{
-            "code": "agent-client",
-            "parentCode": "agent-client-app",
+            "code": "realname-info",
+            "parentCode": "realname",
             "icon": "",
-            "text": "专区首页",
+            "text": "信息查询",
             "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        }, {
-            "code": "agent-client-mgmt",
-            "parentCode": "agent-client-app",
+            "target": "tab"
+        }],
+        "icon": "applicationCenter",
+        "text": "实名认证管理",
+        "url": "",
+        "target": ""
+    },
+    {
+        "code": "userCenter",
+        "parentCode": null,
+        "children": [{
+            "code": "userCenter-info",
+            "parentCode": "userCenter",
             "icon": "",
-            "text": "客户管理",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        },{
-            "code": "agent-client-order",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "客户订单",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        },{
-            "code": "agent-client-prod-open",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "商品开通",
+            "text": "用户信息管理",
             "url": "",
             "target": "tab",
             "hidden": false,
             "param": ""
         }],
-        "icon": "applicationCenter",
-        "text": "代理专区",
+        "icon": "memberCenter",
+        "text": "用户中心",
         "url": "",
         "target": "",
         "hidden": false,

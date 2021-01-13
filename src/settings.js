@@ -1,7 +1,7 @@
 const webpackConfig = require('./webpackConfig.js')
 
 module.exports = {
-  title: '代理管理平台',
+  title: '实名认证管理平台',
 
   /**
    * @type {boolean} true | false
@@ -45,7 +45,7 @@ module.exports = {
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: '2j5MPq9I0LGzpEIFrvu',
+  xbtoken: 'Ob25ggpNkvw83td7JNo',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 

@@ -459,6 +459,37 @@ export const constantRoutes = [
       }
     ]
   },
+  // {
+  //   path: '/userCenter-infoDetail/:id(\\d+)',
+  //   component: Layout,
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: '',
+  //       component: () => import('@/views/userCenter-infoDetail/index')
+  //     }
+  //   ]
+  // },
+  {
+    path: '/userCenter/userCenter-info',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '',
+        name: 'userCenter-info',
+        component: () => import('@/views/userCenter-info/index'),
+        meta: { title: '用户信息管理', icon: 'home' }
+      },
+      {
+        // path: '/boss-nav-tradingcenter-orderdetail/:id(\\d+)',
+        path: '/userCenter-infoDetail/id',
+        component: () => import('@/views/userCenter-infoDetail/index'),
+        name: 'infoDetail',
+        meta: { title: '用户详情', noCache: true, activeMenu: '/userCenter-infoDetail', type: 'demo' }
+      }
+    ]
+  },
   {
     path: '/404',
     component: Layout,

@@ -16,8 +16,16 @@ const customWebpackConfig = defaultSettings.webpackConfig
 
 // merge proxy
 const defaultProxy = {
-  '/portal': {
-    target: 'http://119.10.116.247:8082',
+  '/employee': {
+    target: 'http://usermanage.xinnet.com:8081',
+    changeOrigin: true
+  },
+  '/realnamequery': {
+    target: 'http://usermanage.xinnet.com:8081',
+    changeOrigin: true
+  },
+  '/usermanage': {
+    target: 'http://usermanage.xinnet.com:8081',
     changeOrigin: true
   }
 }
