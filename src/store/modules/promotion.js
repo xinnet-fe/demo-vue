@@ -63,7 +63,12 @@ const state = {
   // 获取所有级别名称
   queryAllGrade: {},
   // 获取所有关联活动
-  queryAllAgentPromotion: {},
+  queryAllAgentPromotion: {
+    data: {
+      list: [], // 列表
+      count: 0 // 总数
+    }
+  },
   // 查询活动条件// 该条件的任意属性更新，都意味着重新获取列表
   levelQueryWhere: {
     pageNum: 1, // 页码 默认1

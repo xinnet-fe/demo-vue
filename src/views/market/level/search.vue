@@ -69,7 +69,8 @@ export default {
         activity: ''
       },
       gradeCode: '',
-      promotionCode: ''
+      promotionCode: '',
+      timer: null
     }
   },
   computed: {
@@ -85,7 +86,7 @@ export default {
     // 获取所有级别名称
     this.$store.dispatch('promotion/queryAllGrade', {})
     // 获取所有关联活动
-    this.$store.dispatch('promotion/queryAllAgentPromotion', {})
+    //this.$store.dispatch('promotion/queryAllAgentPromotion', {})
   },
   methods: {
     // 级别名称，（返回建议内容）
@@ -134,6 +135,31 @@ export default {
     // 关联活动，（返回建议内容）
     querySearch_activity(qs, cb) {
       var results
+      if (qs) {
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          //console.log('fetch')
+          // 获取输入的对应的关联活动
+          this.$store.dispatch('promotion/queryAllAgentPromotion', {promotionName: qs}).then(res => {
+            //console.log('res=', this.queryAllAgentPromotion)
+            results = this.queryAllAgentPromotion.data.list.map((item) => ({
+              value: item.promotionName,
+              code: item.promotionCode
+            }))
+            // 调用 callback 返回建议列表的数据
+            cb(results)
+          }).catch(() => {
+            console.error('queryAllAgentPromotion接口错误')
+          })
+        }, 500)
+      } else {
+        results = []
+        cb(results)
+      }
+    },
+    /*
+    querySearch_activity(qs, cb) {
+      var results
       // console.log('this.queryAllAgentPromotion=', this.queryAllAgentPromotion)
       if (qs === '') {
         results = this.queryAllAgentPromotion.data.map((item) => ({
@@ -149,10 +175,11 @@ export default {
       // 调用 callback 返回建议列表的数据
       cb(results)
     },
+    */
     // 关联活动
     handleBlur_activity() {
       const activity = this.searchForm.activity
-      const queryAllAgentPromotionData = this.queryAllAgentPromotion.data
+      const queryAllAgentPromotionData = this.queryAllAgentPromotion.data.list
       // console.log('activity = ', activity)
       // console.log('queryAllAgentPromotionData = ', queryAllAgentPromotionData)
       const ind = queryAllAgentPromotionData.findIndex(item => item.promotionName === activity)
