@@ -97,7 +97,7 @@
       :visible.sync="dialogOrderPriceShow"
       width="500px"
     >
-      <el-form ref="formChangePrice" :model="form" :rules="rules2" label-width="120px">
+      <el-form v-if="dialogOrderPriceShow" ref="formChangePrice" :model="form" :rules="rules2" label-width="120px">
         <el-form-item label="订单原价:">
           ￥ {{ row.totalTradingPrices }}
         </el-form-item>
