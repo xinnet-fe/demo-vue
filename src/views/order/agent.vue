@@ -185,7 +185,7 @@
 
       <el-table-column label="订单类型">
         <template slot-scope="{ row }">
-          <span>{{ row.businessTypes }}</span>
+          <span>{{ row.businessType }}</span>
         </template>
       </el-table-column>
 
@@ -355,10 +355,11 @@ export default {
   },
   created() {
     this.resetDate()
-    this.handleFilter()
   },
   mounted() {
-
+    this.$nextTick(() => {
+      this.handleFilter()
+    })
   },
   methods: {
     resetDate() {

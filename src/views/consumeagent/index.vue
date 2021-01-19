@@ -101,11 +101,10 @@
           prop="originalPrice"
           label="成本价（元）"
         />
-        <el-table-column label="方式">
-          <template v-slot="scope">
-            {{ getBillLineType(scope.row.billLineType) }}
-          </template>
-        </el-table-column>
+        <el-table-column
+          prop="billLineType"
+          label="方式"
+        />
         <el-table-column
           prop="agentCode"
           label="代理编号"
