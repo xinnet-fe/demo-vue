@@ -174,7 +174,7 @@ export default {
                 }
               }
               if (type === '立减') {
-                if (!(value > 0 && value <= 9999)) {
+                if (!(value >= -99999 && value <= 99999)) {
                   callback(new Error('输入格式不正确'))
                 }
                 if (!(len >= 1 && len <= 7)) {
@@ -208,7 +208,7 @@ export default {
                 }
               }
               if (type === '立减') {
-                if (!(value > 0 && value <= 9999)) {
+                if (!(value >= -99999 && value <= 99999)) {
                   callback(new Error('输入格式不正确'))
                 }
                 if (!(len >= 1 && len <= 7)) {
@@ -299,7 +299,7 @@ export default {
         this.tooltip = '0(不含)-1(含)之间的两位小数,75折则填写0.75'
         this.promotionRuleOptions = this.promotionRuleOptions1
       } else if (val === '立减') {
-        this.tooltip = '0(不含)-9999(含)之间的数,保留2位小数'
+        this.tooltip = '-99999(含)-99999(含)之间的数,保留2位小数'
         this.promotionRuleOptions = this.promotionRuleOptions2
       }
     }

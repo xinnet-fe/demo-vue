@@ -46,7 +46,7 @@
         label="截止时间"
       />
       <el-table-column
-        prop="createPerson"
+        prop="creatorName"
         label="创建人"
       />
       <el-table-column
@@ -195,6 +195,11 @@
             <el-input v-model.number="marketGoodsList[scope.$index].newValue" size="mini" :class="marketGoodsList[scope.$index].marketingPrice===marketGoodsList[scope.$index].newValue?'notChanged':'modified'" @blur="update_price(marketGoodsList[scope.$index])" />
           </template>
         </el-table-column>
+        <el-table-column label="促销续费价格" width="100">
+          <template v-slot="scope">
+            <el-input v-model.number="marketGoodsList[scope.$index].newRenewValue" size="mini" :class="marketGoodsList[scope.$index].marketingRenewPrice===marketGoodsList[scope.$index].newRenewValue?'notChanged':'modified'" @blur="update_renew_price(marketGoodsList[scope.$index])" />
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="80">
           <template v-slot="scope">
             <el-button
@@ -305,6 +310,13 @@ export default {
       if (row.limitPrice > row.newValue) {
         this.$alert('促销价格不能小于最低限价！', { callback: () => {} })
         row.newValue = row.marketingPrice
+      }
+    },
+    // 修改商品价格，不能小于最低限价
+    update_renew_price(row) {
+      if (row.limitPrice > row.newRenewValue) {
+        this.$alert('促销续费价格不能小于最低限价！', { callback: () => {} })
+        row.newRenewValue = row.marketingRenewPrice
       }
     },
     // 添加促销，检查是否存在
@@ -466,10 +478,11 @@ export default {
     },
     // 商品
     modifyGoodsPrice() {
-      const requestJson = this.marketGoodsList.filter(item => item.marketingPrice !== item.newValue).map(item => ({
+      const requestJson = this.marketGoodsList.filter(item => (item.marketingPrice !== item.newValue || item.marketingRenewPrice !== item.newRenewValue)).map(item => ({
         'agentCode': this.currentMarket.agentCode,
         'priceCode': item.priceCode,
-        'marketingPrice': item.newValue
+        'marketingPrice': item.newValue,
+        'marketingRenewPrice': item.newRenewValue
       }))
       // 修改商品价格
       this.$store.dispatch('market/modifyGoodsPrice', {

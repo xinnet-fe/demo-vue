@@ -56,6 +56,7 @@ const mutations = {
   GetMarketingPrice: (state, res) => {
     state.marketGoodsList = res.data.map(item => {
       item.newValue = item.marketingPrice // 修改时
+      item.newRenewValue = item.marketingRenewPrice
       return item
     })
   },

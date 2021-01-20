@@ -36,13 +36,14 @@
             <el-autocomplete
               ref="activity"
               v-model="searchForm.activity"
-              popper-class="my-autocomplete"
+              popper-class="my-autocomplete-multiple"
               :fetch-suggestions="querySearch_activity"
               placeholder="请输入关联活动"
               :clearable="true"
               @select="handleSelect_activity"
               @blur="handleBlur_activity"
               @clear="handleBlur_activity"
+              :debounce="1000"
             >
               <i
                 slot="suffix"
@@ -300,7 +301,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.my-autocomplete {
+.my-autocomplete,
+.my-autocomplete-multiple {
   li {
     line-height: normal;
     padding: 7px;
@@ -309,6 +311,10 @@ export default {
       overflow: hidden;
     }
   }
+}
+
+.el-autocomplete /deep/ input[popperclass="my-autocomplete-multiple"] {
+  width: 350px !important;
 }
 
 .widthcss{

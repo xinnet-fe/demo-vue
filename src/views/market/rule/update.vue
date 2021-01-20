@@ -85,6 +85,7 @@ export default {
     return {
       current_form: {
         time: [],
+        preferentialForm: '',
         newDiscountValue: 0,
         renewalDiscountValue: 0
       },
@@ -96,7 +97,74 @@ export default {
             message: '请选择活动时间',
             trigger: 'change'
           }
-        ]
+        ],
+        newDiscountValue: [
+          {
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              const type = this.current_form.preferentialForm
+              if (value === '') {
+                callback()
+              }
+              const len = ('' + value).length
+              if (Number(value) !== parseFloat(value)) {
+                callback(new Error('输入格式不正确'))
+              }
+              value = value * 1
+              if (type === '1') {
+                if (!(value > 0 && value <= 1)) {
+                  callback(new Error('输入格式不正确'))
+                }
+                if (!(len >= 1 && len <= 4)) {
+                  callback(new Error('输入格式不正确'))
+                }
+              }
+              if (type === '2') {
+                if (!(value >= -99999 && value <= 99999)) {
+                  callback(new Error('输入格式不正确'))
+                }
+                if (!(len >= 1 && len <= 7)) {
+                  callback(new Error('输入格式不正确'))
+                }
+              }
+              callback()
+              
+            }
+          }
+        ],
+        renewalDiscountValue: [
+          {
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              const type = this.current_form.preferentialForm
+              if (value === '') {
+                callback()
+              }
+              const len = ('' + value).length
+              if (Number(value) !== parseFloat(value)) {
+                callback(new Error('输入格式不正确'))
+              }
+              value = value * 1
+              if (type === '1') {
+                if (!(value > 0 && value <= 1)) {
+                  callback(new Error('输入格式不正确'))
+                }
+                if (!(len >= 1 && len <= 4)) {
+                  callback(new Error('输入格式不正确'))
+                }
+              }
+              if (type === '2') {
+                if (!(value >= -99999 && value <= 99999)) {
+                  callback(new Error('输入格式不正确'))
+                }
+                if (!(len >= 1 && len <= 7)) {
+                  callback(new Error('输入格式不正确'))
+                }
+              }
+              callback()
+            }
+          }
+        ],
       }
     }
   },
@@ -111,7 +179,7 @@ export default {
           this.tooltip = '0(不含)-1(含)之间的两位小数,75折则填写0.75'
           return '折扣'
         } else if (v === '2') {
-          this.tooltip = '0(不含)-9999(含)之间的数,保留2位小数'
+          this.tooltip = '-99999(含)-99999(含)之间的数,保留2位小数'
           return '立减'
         } else {
           return v

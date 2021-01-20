@@ -19,11 +19,13 @@ module.exports = {
   proxy: {
     '/marketing': {
       target: 'https://agentmkmanage.xinnet.com',
-      changeOrigin: true
+      changeOrigin: true,
+      secure: false
     },
     '/promotion': {
       target: 'https://agentmkmanage.xinnet.com',
-      changeOrigin: true
+      changeOrigin: true,
+      secure: false
     }
   },
 
