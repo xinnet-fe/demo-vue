@@ -123,7 +123,9 @@ export default {
                 if (!(value >= -99999 && value <= 99999)) {
                   callback(new Error('输入格式不正确'))
                 }
-                if (!(len >= 1 && len <= 7)) {
+                // 负数最大长度9，正数8
+                const maxLen = value < 0 ? 9 : 8
+                if (!(len >= 1 && len <= maxLen)) {
                   callback(new Error('输入格式不正确'))
                 }
               }
@@ -157,7 +159,9 @@ export default {
                 if (!(value >= -99999 && value <= 99999)) {
                   callback(new Error('输入格式不正确'))
                 }
-                if (!(len >= 1 && len <= 7)) {
+                // 负数最大长度9，正数8
+                const maxLen = value < 0 ? 9 : 8
+                if (!(len >= 1 && len <= maxLen)) {
                   callback(new Error('输入格式不正确'))
                 }
               }
