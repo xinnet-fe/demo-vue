@@ -11,9 +11,9 @@
           <el-tooltip v-model="capsTooltip" content="大写开启" placement="right" manual>
             <el-form-item ref="password" label="登录密码" prop="password">
               <el-input :key="passwordType" v-model="ruleForm.password" :type="passwordType" auto-complete="off" @keyup.native="checkCapslock" @blur="handleBlur('pw')" />
-              <span class="show-pwd" @click="showPwd">
+              <!-- <span class="show-pwd" @click="showPwd">
                 <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-              </span>
+              </span> -->
             </el-form-item>
           </el-tooltip>
           <el-form-item ref="repassword" label="确认密码" prop="repassword">
