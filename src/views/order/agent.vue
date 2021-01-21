@@ -87,7 +87,7 @@
         <el-input
           v-model="listQuery.goodsContent"
           placeholder="请输入商品内容"
-          maxlength="10"
+          maxlength="30"
         />
       </el-form-item>
       <el-form-item>
