@@ -140,35 +140,41 @@
                 <el-row class="order-num">
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-1 clearfix">
-                      <span class="img">
-                        <img src="/agent/static/img/home/img_03.png" alt="" srcset="">
-                      </span>
-                      <div class="info">
-                        <span>客户</span>
-                        <em>{{ dlCustomerNum }}</em>
-                      </div>
+                      <a href="https://console.xinnet.com/agent/index.html#/agent-mgmt/index" target="_blank" rel="noopener noreferrer">
+                        <span class="img">
+                          <img src="/agent/static/img/home/img_03.png" alt="" srcset="">
+                        </span>
+                        <div class="info">
+                          <span>客户</span>
+                          <em>{{ dlCustomerNum }}</em>
+                        </div>
+                      </a>
                     </div>
                   </el-col>
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-2 clearfix">
-                      <span class="img">
-                        <img src="/agent/static/img/home/img_04.png" alt="" srcset="">
-                      </span>
-                      <div class="info">
-                        <span>待支付订单</span>
-                        <em>{{ tradeOrderNum.all }}</em>
-                      </div>
+                      <a href="https://console.xinnet.com/order/index.html/#/list" target="_blank" rel="noopener noreferrer">
+                        <span class="img">
+                          <img src="/agent/static/img/home/img_04.png" alt="" srcset="">
+                        </span>
+                        <div class="info">
+                          <span>待支付订单</span>
+                          <em>{{ tradeOrderNum.all }}</em>
+                        </div>
+                      </a>
                     </div>
                   </el-col>
                   <el-col :span="8">
                     <div class="grid-content grid-content-order-3 clearfix">
-                      <span class="img">
-                        <img src="/agent/static/img/home/img_05.png" alt="" srcset="">
-                      </span>
-                      <div class="info">
-                        <span>待支付客户订单</span>
-                        <em>{{ tradeOrderNum.others }}</em>
-                      </div>
+                      <a href="https://console.xinnet.com/order/index.html/#/list" target="_blank" rel="noopener noreferrer">
+                        <span class="img">
+                          <img src="/agent/static/img/home/img_05.png" alt="" srcset="">
+                        </span>
+                        <div class="info">
+                          <span>待支付客户订单</span>
+                          <em>{{ tradeOrderNum.others }}</em>
+                        </div>
+                      </a>
                     </div>
                   </el-col>
                 </el-row>
