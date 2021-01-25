@@ -15,25 +15,25 @@ const dialogRouter = {
     {
       path: 'index',
       component: () => import('@/views/demos/dialog/index'),
-      name: 'base',
+      name: 'dialogBase',
       meta: { title: '基础弹窗', type: 'demo' }
     },
     {
       path: 'form',
       component: () => import('@/views/demos/dialog/form'),
-      name: 'form',
+      name: 'dialogForm',
       meta: { title: '表单弹窗', type: 'demo' }
     },
     {
       path: 'table',
       component: () => import('@/views/demos/dialog/table'),
-      name: 'table',
+      name: 'dialogTable',
       meta: { title: '表格弹窗', type: 'demo' }
     },
     {
       path: 'tab',
       component: () => import('@/views/demos/dialog/tab'),
-      name: 'tab',
+      name: 'dialogTab',
       meta: { title: '页签弹窗', type: 'demo' }
     }
   ]

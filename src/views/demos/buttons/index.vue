@@ -45,11 +45,11 @@
 </template>
 
 <script>
-import Chart from '@/components/demos/Charts/LineMarker'
+// import Chart from '@/components/demos/Charts/LineMarker'
 
 export default {
-  name: 'LineChart',
-  components: { Chart }
+  name: 'LineChart'
+  // components: { Chart }
 }
 </script>
 

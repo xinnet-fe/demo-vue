@@ -1,6 +1,5 @@
 <template>
   <div class="order-form">
-    <el-button @click="cl">click</el-button>
     <!-- search -->
     <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
       <el-form-item label="页面名称" prop="name">
@@ -142,7 +141,7 @@
             plugins-path="/static/kindeditor/plugins/"
             upload-json="/order/upload/"
             :items="editorItems"
-            :content="form.editorText"
+            :content="editorText"
             :load-style-mode="false"
             @on-content-change="handleContentChange"
           />
@@ -160,12 +159,12 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
-import Pagination from '@/components/Pagination'
+// import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'CmsNavManage',
+  name: 'CmsSinglePageManage',
   components: {
-    Pagination
+    // Pagination
   },
   data() {
     return {
@@ -215,7 +214,7 @@ export default {
         pageSize: 30
       },
       // 模板内容
-      editorText: '',
+      editorText: '<p style="font-size: 16px;padding-top: 8px;padding-bottom: 8px;color: black;line-height: 26px;"><span style="letter-spacing: 0px;">切图仔，是大多数前端用来自嘲的称呼。相信很多人平时写页面的时候，大部分时间是在切图和排图，如此往复。这里并不是要否定切图本身，而是在质疑：一直切图到底对自己的功力增长有何好处？想想UI丢给你一套好看的界面，你却只需一个img标签，或者一个background-image属性即可搞定了它，但日后某个地方需要调整某些外观（颜色、文字等），你还不是会让UI再修改之前的素材，然后替换上去完事？这样就完全受制于UI，而无法发挥自己的能动性。</span><br></p>',
       editorItems: [
         'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
         'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
@@ -304,6 +303,9 @@ export default {
     },
     closeTemplateModal() {
       this.showTemplate = false
+    },
+    submitTemplate() {
+
     },
     beforeTemplateClose(done) {
       done()

@@ -467,7 +467,7 @@ export const constantRoutes = [
       {
         path: 'id',
         component: () => import('@/views/index'),
-        name: 'Home',
+        name: 'UserCenterHome',
         hidden: true,
         meta: { title: 'Home', icon: 'home', affix: true }
       }
