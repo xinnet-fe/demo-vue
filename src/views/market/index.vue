@@ -89,7 +89,7 @@
         </el-form-item>
         <el-form-item label="设置有效期" prop="time">
           <el-col>
-            <el-date-picker style="width: 60%;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="time_change" />
+            <el-date-picker style="width: 60%;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" @change="time_change" />
           </el-col>
         </el-form-item>
       </el-form>
@@ -363,58 +363,60 @@ export default {
     },
     // 修改商品价格，不能小于最低限价
     update_price(row) {
+      const initVal = parseFloat(row.marketingPrice) || row.limitPrice
       if (row.limitPrice > row.newValue) {
         this.$alert('促销价格不能小于最低限价！', { callback: () => {} })
-        row.newValue = parseFloat(row.marketingPrice)
+        row.newValue = initVal
       }
       const value = parseFloat(row.newValue)
       const len = ('' + value).length
       if (Number(row.newValue) !== parseFloat(row.newValue)) {
         this.$alert('输入格式不正确', { callback: () => {} })
-        row.newValue = parseFloat(row.marketingPrice)
+        row.newValue = initVal
       }
       if (value > 999999999) {
         this.$alert('输入格式不正确', { callback: () => {} })
-        row.newValue = parseFloat(row.marketingPrice)
+        row.newValue = initVal
       }
       // 最大9.9亿加小数点三位12位
       const maxLen = 12
       if (!(len >= 1 && len <= maxLen)) {
         this.$alert('输入格式不正确', { callback: () => {} })
-        row.newValue = parseFloat(row.marketingPrice)
+        row.newValue = initVal
       }
       const end = ('' + value).split('.')
       if (end.length > 1 && end[1].length > 2) {
         this.$alert('输入格式不正确', { callback: () => {} })
-        row.newValue = parseFloat(row.marketingPrice)
+        row.newValue = initVal
       }
     },
     // 修改商品价格，不能小于最低限价
     update_renew_price(row) {
+      const initVal = parseFloat(row.marketingRenewPrice) || row.limitPrice
       if (row.limitPrice > row.newRenewValue) {
         this.$alert('促销续费价格不能小于最低限价！', { callback: () => {} })
-        row.newRenewValue = parseFloat(row.marketingRenewPrice)
+        row.newRenewValue = initVal
       }
       const value = parseFloat(row.newRenewValue)
       const len = ('' + value).length
       if (Number(row.newRenewValue) !== parseFloat(row.newRenewValue)) {
         this.$alert('输入格式不正确', { callback: () => {} })
-        row.newRenewValue = parseFloat(row.marketingRenewPrice)
+        row.newRenewValue = initVal
       }
       if (value > 999999999) {
         this.$alert('输入格式不正确', { callback: () => {} })
-        row.newRenewValue = parseFloat(row.marketingRenewPrice)
+        row.newRenewValue = initVal
       }
       // 最大9.9亿加小数点三位12位
       const maxLen = 12
       if (!(len >= 1 && len <= maxLen)) {
         this.$alert('输入格式不正确', { callback: () => {} })
-        row.newRenewValue = parseFloat(row.marketingRenewPrice)
+        row.newRenewValue = initVal
       }
       const end = ('' + value).split('.')
       if (end.length > 1 && end[1].length > 2) {
         this.$alert('输入格式不正确', { callback: () => {} })
-        row.newRenewValue = parseFloat(row.marketingRenewPrice)
+        row.newRenewValue = initVal
       }
     },
     // 添加促销，检查是否存在
