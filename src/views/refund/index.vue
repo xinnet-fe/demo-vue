@@ -285,9 +285,11 @@ export default {
           transMoney_Inp: [
             { required: true, message: '请输入实际退费价格', trigger: 'blur' },
             { validator: (rule, value, callback) => {
-              if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
+              // if (this.instanceRefund_Dialog.transMoney_Inp > this.instanceRefund_Dialog.shouldRefund) {
+              // console.log(Number(this.instanceRefund_Dialog.transMoney_Inp) , Number(this.instanceRefund_Dialog.maxRefund))
+              if (Number(this.instanceRefund_Dialog.transMoney_Inp) > Number(this.instanceRefund_Dialog.maxRefund)) {
                 callback(new Error('实际退费价格不能大于实际花费总金额')) // 建议退费价格  就是  实际花费金额
-              } else if (this.instanceRefund_Dialog.transMoney_Inp <= 0) {
+              } else if (Number(this.instanceRefund_Dialog.transMoney_Inp) <= 0) {
                 callback(new Error('实际退费价格必须大于零'))
               } else if (Number(this.instanceRefund_Dialog.transMoney_Inp) !== parseFloat(this.instanceRefund_Dialog.transMoney_Inp)) {
                 callback(new Error('请输入数字'))
@@ -519,6 +521,7 @@ export default {
           this.instanceRefund_Dialog.shouldRefund = this.instance_Refund_Money.data.shouldRefund
           this.instanceRefund_Dialog.transMoney = this.instance_Refund_Money.data.transMoney
           this.instanceRefund_Dialog.transMoney_Inp = this.instance_Refund_Money.data.transMoney
+          this.instanceRefund_Dialog.maxRefund = this.instance_Refund_Money.data.maxRefund
         } else {
           this.refundError_Dialog.visible = true
           this.refundError_Dialog.text = res.message
