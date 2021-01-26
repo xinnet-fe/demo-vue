@@ -6,7 +6,7 @@
         <el-input v-model="searchForm.agentCode" />
       </el-form-item>
       <el-form-item label="截止时间" prop="time">
-        <el-date-picker v-model="searchForm.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+        <el-date-picker v-model="searchForm.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />
       </el-form-item>
       
       <el-form-item>
@@ -83,13 +83,13 @@
       <el-form ref="form" :model="form" label-width="100px" :rules="formRules">
         <el-form-item label="代理商编号" prop="agentCode">
           <el-col>
-            <el-input v-model="form.agentCode" :disabled="agentCode_disabled" style="width:350px" @blur="agentCode_blur" />
+            <el-input v-model="form.agentCode" :disabled="agentCode_disabled" style="width: 60%" @blur="agentCode_blur" />
             <span :class="tip_css">{{ agentCode_tip }}</span>
           </el-col>
         </el-form-item>
         <el-form-item label="设置有效期" prop="time">
           <el-col>
-            <el-date-picker v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="time_change" />
+            <el-date-picker style="width: 60%;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="time_change" />
           </el-col>
         </el-form-item>
       </el-form>
@@ -190,14 +190,22 @@
           </template>
         </el-table-column>
         <el-table-column prop="limitPrice" label="最低限价" width="70" />
-        <el-table-column label="促销价格" width="100">
+        <el-table-column label="促销价格" width="110">
           <template v-slot="scope">
-            <el-input v-model.number="marketGoodsList[scope.$index].newValue" size="mini" :class="marketGoodsList[scope.$index].marketingPrice===marketGoodsList[scope.$index].newValue?'notChanged':'modified'" @blur="update_price(marketGoodsList[scope.$index])" />
+            <el-form class="table-in-form" :model="scope.row" :rules="marketGoodsRules">
+              <el-form-item prop="marketingPrice">
+                <el-input v-model="scope.row.marketingPrice" size="mini" :class="marketGoodsList[scope.$index].marketingPrice===marketGoodsList[scope.$index].newValue?'notChanged':'modified'" @blur="update_price(marketGoodsList[scope.$index])" />
+              </el-form-item>
+            </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="促销续费价格" width="100">
+        <el-table-column label="促销续费价格" width="110">
           <template v-slot="scope">
-            <el-input v-model.number="marketGoodsList[scope.$index].newRenewValue" size="mini" :class="marketGoodsList[scope.$index].marketingRenewPrice===marketGoodsList[scope.$index].newRenewValue?'notChanged':'modified'" @blur="update_renew_price(marketGoodsList[scope.$index])" />
+            <el-form class="table-in-form" :model="scope.row" :rules="marketGoodsRules">
+              <el-form-item prop="marketingRenewPrice">
+                <el-input v-model="scope.row.marketingRenewPrice" size="mini" :class="marketGoodsList[scope.$index].marketingRenewPrice===marketGoodsList[scope.$index].newRenewValue?'notChanged':'modified'" @blur="update_renew_price(marketGoodsList[scope.$index])" />
+              </el-form-item>
+            </el-form>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="80">
@@ -265,6 +273,62 @@ export default {
           { required: true, message: '请选择日期', trigger: 'change' }
         ]
       },
+      marketGoodsRules: {
+        marketingPrice: [
+          {
+            trigger: 'change',
+            validator: (rule, value, callback) => {
+              if (value === '') {
+                callback()
+              }
+              const len = ('' + value).length
+              if (Number(value) !== parseFloat(value)) {
+                callback(new Error('输入格式不正确'))
+              }
+              if (value > 999999999) {
+                callback(new Error('输入格式不正确'))
+              }
+              // 最大9.9亿加小数点三位12位
+              const maxLen = 12
+              if (!(len >= 1 && len <= maxLen)) {
+                callback(new Error('输入格式不正确'))
+              }
+              const end = ('' + value).split('.')
+              if (end.length > 1 && end[1].length > 2) {
+                callback(new Error('输入格式不正确'))
+              }
+              callback()
+            }
+          }
+        ],
+        marketingRenewPrice: [
+          {
+            trigger: 'change',
+            validator: (rule, value, callback) => {
+              if (value === '') {
+                callback()
+              }
+              const len = ('' + value).length
+              if (Number(value) !== parseFloat(value)) {
+                callback(new Error('输入格式不正确'))
+              }
+              if (value > 999999999) {
+                callback(new Error('输入格式不正确'))
+              }
+              // 最大9.9亿加小数点三位12位
+              const maxLen = 12
+              if (!(len >= 1 && len <= maxLen)) {
+                callback(new Error('输入格式不正确'))
+              }
+              const end = ('' + value).split('.')
+              if (end.length > 1 && end[1].length > 2) {
+                callback(new Error('输入格式不正确'))
+              }
+              callback()
+            }
+          }
+        ]
+      },
       // 促销商品浮层
       goodsVisible: false,
       // 促销商品 -> 添加商品 浮层
@@ -311,12 +375,46 @@ export default {
         this.$alert('促销价格不能小于最低限价！', { callback: () => {} })
         row.newValue = row.marketingPrice
       }
+      const value = row.marketingPrice
+      const len = ('' + value).length
+      if (Number(value) !== parseFloat(value)) {
+        this.$alert('输入格式不正确', { callback: () => {} })
+      }
+      if (value > 999999999) {
+        this.$alert('输入格式不正确', { callback: () => {} })
+      }
+      // 最大9.9亿加小数点三位12位
+      const maxLen = 12
+      if (!(len >= 1 && len <= maxLen)) {
+        this.$alert('输入格式不正确', { callback: () => {} })
+      }
+      const end = ('' + value).split('.')
+      if (end.length > 1 && end[1].length > 2) {
+        this.$alert('输入格式不正确', { callback: () => {} })
+      }
     },
     // 修改商品价格，不能小于最低限价
     update_renew_price(row) {
       if (row.limitPrice > row.newRenewValue) {
         this.$alert('促销续费价格不能小于最低限价！', { callback: () => {} })
         row.newRenewValue = row.marketingRenewPrice
+      }
+      const value = row.marketingRenewPrice
+      const len = ('' + value).length
+      if (Number(value) !== parseFloat(value)) {
+        this.$alert('输入格式不正确', { callback: () => {} })
+      }
+      if (value > 999999999) {
+        this.$alert('输入格式不正确', { callback: () => {} })
+      }
+      // 最大9.9亿加小数点三位12位
+      const maxLen = 12
+      if (!(len >= 1 && len <= maxLen)) {
+        this.$alert('输入格式不正确', { callback: () => {} })
+      }
+      const end = ('' + value).split('.')
+      if (end.length > 1 && end[1].length > 2) {
+        this.$alert('输入格式不正确', { callback: () => {} })
       }
     },
     // 添加促销，检查是否存在
@@ -594,6 +692,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.table-in-form /deep/ .el-form-item {
+  margin-bottom: 0;
+}
 .market-form {
   margin: 20px;
   overflow: hidden;
