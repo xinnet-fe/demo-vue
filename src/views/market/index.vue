@@ -191,21 +191,13 @@
         </el-table-column>
         <el-table-column prop="limitPrice" label="最低限价" width="70" />
         <el-table-column label="促销价格" width="110">
-          <template v-slot="scope">
-            <el-form class="table-in-form" :model="scope.row" :rules="marketGoodsRules">
-              <el-form-item prop="marketingPrice">
-                <el-input v-model="scope.row.marketingPrice" size="mini" :class="marketGoodsList[scope.$index].marketingPrice===marketGoodsList[scope.$index].newValue?'notChanged':'modified'" @blur="update_price(marketGoodsList[scope.$index])" />
-              </el-form-item>
-            </el-form>
+          <template v-slot="{row}">
+            <el-input v-model="row.newValue" size="mini" :class="row.marketingPrice == row.newValue ? 'notChanged' : 'modified'" @blur="update_price(row)" />
           </template>
         </el-table-column>
         <el-table-column label="促销续费价格" width="110">
-          <template v-slot="scope">
-            <el-form class="table-in-form" :model="scope.row" :rules="marketGoodsRules">
-              <el-form-item prop="marketingRenewPrice">
-                <el-input v-model="scope.row.marketingRenewPrice" size="mini" :class="marketGoodsList[scope.$index].marketingRenewPrice===marketGoodsList[scope.$index].newRenewValue?'notChanged':'modified'" @blur="update_renew_price(marketGoodsList[scope.$index])" />
-              </el-form-item>
-            </el-form>
+          <template v-slot="{row}">
+            <el-input v-model="row.newRenewValue" size="mini" :class="row.marketingRenewPrice == row.newRenewValue ? 'notChanged' : 'modified'" @blur="update_renew_price(row)" />
           </template>
         </el-table-column>
         <el-table-column label="操作" width="80">
@@ -373,48 +365,56 @@ export default {
     update_price(row) {
       if (row.limitPrice > row.newValue) {
         this.$alert('促销价格不能小于最低限价！', { callback: () => {} })
-        row.newValue = row.marketingPrice
+        row.newValue = parseFloat(row.marketingPrice)
       }
-      const value = row.marketingPrice
+      const value = parseFloat(row.newValue)
       const len = ('' + value).length
-      if (Number(value) !== parseFloat(value)) {
+      if (Number(row.newValue) !== parseFloat(row.newValue)) {
         this.$alert('输入格式不正确', { callback: () => {} })
+        row.newValue = parseFloat(row.marketingPrice)
       }
       if (value > 999999999) {
         this.$alert('输入格式不正确', { callback: () => {} })
+        row.newValue = parseFloat(row.marketingPrice)
       }
       // 最大9.9亿加小数点三位12位
       const maxLen = 12
       if (!(len >= 1 && len <= maxLen)) {
         this.$alert('输入格式不正确', { callback: () => {} })
+        row.newValue = parseFloat(row.marketingPrice)
       }
       const end = ('' + value).split('.')
       if (end.length > 1 && end[1].length > 2) {
         this.$alert('输入格式不正确', { callback: () => {} })
+        row.newValue = parseFloat(row.marketingPrice)
       }
     },
     // 修改商品价格，不能小于最低限价
     update_renew_price(row) {
       if (row.limitPrice > row.newRenewValue) {
         this.$alert('促销续费价格不能小于最低限价！', { callback: () => {} })
-        row.newRenewValue = row.marketingRenewPrice
+        row.newRenewValue = parseFloat(row.marketingRenewPrice)
       }
-      const value = row.marketingRenewPrice
+      const value = parseFloat(row.newRenewValue)
       const len = ('' + value).length
-      if (Number(value) !== parseFloat(value)) {
+      if (Number(row.newRenewValue) !== parseFloat(row.newRenewValue)) {
         this.$alert('输入格式不正确', { callback: () => {} })
+        row.newRenewValue = parseFloat(row.marketingRenewPrice)
       }
       if (value > 999999999) {
         this.$alert('输入格式不正确', { callback: () => {} })
+        row.newRenewValue = parseFloat(row.marketingRenewPrice)
       }
       // 最大9.9亿加小数点三位12位
       const maxLen = 12
       if (!(len >= 1 && len <= maxLen)) {
         this.$alert('输入格式不正确', { callback: () => {} })
+        row.newRenewValue = parseFloat(row.marketingRenewPrice)
       }
       const end = ('' + value).split('.')
       if (end.length > 1 && end[1].length > 2) {
         this.$alert('输入格式不正确', { callback: () => {} })
+        row.newRenewValue = parseFloat(row.marketingRenewPrice)
       }
     },
     // 添加促销，检查是否存在
@@ -576,7 +576,7 @@ export default {
     },
     // 商品
     modifyGoodsPrice() {
-      const requestJson = this.marketGoodsList.filter(item => (item.marketingPrice !== item.newValue || item.marketingRenewPrice !== item.newRenewValue)).map(item => ({
+      const requestJson = this.marketGoodsList.filter(item => (item.marketingPrice != item.newValue || item.marketingRenewPrice != item.newRenewValue)).map(item => ({
         'agentCode': this.currentMarket.agentCode,
         'priceCode': item.priceCode,
         'marketingPrice': item.newValue,
