@@ -7,5 +7,14 @@
         "text": "账单流水查询",
         "hidden": false,
         "target": "tab"
+    },
+    {
+        "parentCode": null,
+        "icon": "applicationCenter",
+        "url": "",
+        "code": "recharge",
+        "text": "充值记录查询",
+        "hidden": false,
+        "target": "tab"
     }
 ]
