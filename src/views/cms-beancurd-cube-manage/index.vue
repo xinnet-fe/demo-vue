@@ -294,8 +294,6 @@ export default {
       if (typeof data.extra === 'object') {
         extra = JSON.stringify(data.extra)
       }
-      console.log(typeof extra)
-
       if (id) {
         formData.append('code', this.oldCode)
         formData.append('newCode', data.code)

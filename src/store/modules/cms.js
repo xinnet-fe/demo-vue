@@ -44,7 +44,11 @@ import {
   addSinglePage,
   updateSinglePage,
   destroySinglePage,
-  searchSinglePage
+  searchSinglePage,
+  mkHtml,
+  searchTemplate,
+  editTemplate,
+  singlePageTypeMapping
 } from '@/api/cms'
 import map from 'lodash/map'
 
@@ -73,7 +77,9 @@ const state = {
   // 豆腐块-轮播状态
   widgetStatus: [],
   // 豆腐块-分类
-  widgetType: []
+  widgetType: [],
+  // 单页面-类型
+  singlePageType: []
 }
 
 const mutations = {
@@ -119,6 +125,10 @@ const mutations = {
     const { list } = res.data
     const result = deepProcessCollectionData(list)
     state.widgetType = result
+  },
+  SINGLE_PAGE_TYPE_MAPPING: (state, res) => {
+    const { list } = res.data
+    state.singlePageType = list
   }
 }
 
@@ -344,13 +354,7 @@ const actions = {
   },
   // 单页面
   singlePageList(_, query) {
-    return singlePageList(query).then(res => {
-      const { data } = res
-      if (data && data.listTree) {
-        return deepProcessListData(data.listTree)
-      }
-      return []
-    })
+    return singlePageList(query).then(processListData)
   },
   addSinglePage(_, query) {
     return addSinglePage(query)
@@ -371,6 +375,18 @@ const actions = {
       }
       return res
     })
+  },
+  mkHtml(_, query) {
+    return mkHtml(query)
+  },
+  searchTemplate(_, query) {
+    return searchTemplate(query)
+  },
+  editTemplate(_, query) {
+    return editTemplate(query)
+  },
+  singlePageTypeMapping({ commit }, query) {
+    return singlePageTypeMapping(query).then(res => commit('SINGLE_PAGE_TYPE_MAPPING', res))
   }
 }
 

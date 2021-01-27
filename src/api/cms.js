@@ -331,15 +331,15 @@ export function widgetStatusMapping(params) {
 // 单页面
 export function singlePageList(query) {
   return request({
-    url: '/admin/navigation/list',
-    method: 'get',
+    url: '/admin/page/list',
+    method: 'post',
     params: query
   })
 }
 
 export function addSinglePage(data) {
   return request({
-    url: '/admin/navigation/add',
+    url: '/admin/page/add',
     method: 'post',
     data
   })
@@ -347,24 +347,52 @@ export function addSinglePage(data) {
 
 export function updateSinglePage(data) {
   return request({
-    url: '/admin/navigation/edit',
+    url: '/admin/page/edit',
     method: 'post',
     data
   })
 }
 
-export function destroySinglePage(data) {
+export function destroySinglePage(id) {
   return request({
-    url: '/admin/navigation/del',
-    method: 'post',
-    data
+    url: `/admin/page/del?id=${id}`,
+    method: 'post'
   })
 }
 
-// 详情
 export function searchSinglePage(params) {
   return request({
-    url: '/admin/navigation/search',
+    url: '/admin/page/search',
+    method: 'post',
+    params
+  })
+}
+
+export function mkHtml(id) {
+  return request({
+    url: `/admin/page/mkHtml?id=${id}`,
+    method: 'post'
+  })
+}
+
+export function searchTemplate(id) {
+  return request({
+    url: `/admin/page/searchTemplate?id=${id}`,
+    method: 'post'
+  })
+}
+
+export function editTemplate(data) {
+  return request({
+    url: '/admin/page/editTemplate',
+    method: 'post',
+    data
+  })
+}
+
+export function singlePageTypeMapping(params) {
+  return request({
+    url: '/admin/page/typeMapping',
     method: 'get',
     params
   })

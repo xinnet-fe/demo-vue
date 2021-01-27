@@ -7,11 +7,14 @@
       </el-form-item>
       <el-form-item label="类型">
         <el-select v-model="searchForm.type" placeholder="请选择类型">
-          <el-option v-for="item in types" :key="item.value" :label="item.key" :value="item.value" />
+          <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
         </el-select>
       </el-form-item>
       <el-form-item label="页面URL" prop="url">
         <el-input v-model="searchForm.url" placeholder="请输入页面URL" clearable />
+      </el-form-item>
+      <el-form-item>
+        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -47,7 +50,7 @@
         label="类型"
       />
       <el-table-column
-        prop="url"
+        prop="linkUrl"
         label="页面URL"
       />
       <el-table-column
@@ -55,25 +58,25 @@
         label="创建时间"
       />
       <el-table-column
-        prop="updateTime"
+        prop="modifyTime"
         label="操作时间"
       />
       <el-table-column label="操作" fixed="right" width="260">
         <template v-slot="{ row }">
           <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
           <el-button type="text" size="medium" @click="showTemplateModal(row)">模板管理</el-button>
-          <el-button type="text" size="medium">预发</el-button>
-          <el-button type="text" size="medium">预览</el-button>
+          <el-button type="text" size="medium" @click="preRelease(row)">预发</el-button>
+          <el-button type="text" size="medium" @click="preview(row)">预览</el-button>
           <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- <pagination
+    <pagination
       :total="page.count"
       :page.sync="page.pageNum"
       :limit.sync="page.pageSize"
       @pagination="getList"
-    /> -->
+    />
     <!-- table -->
 
     <!-- form -->
@@ -82,14 +85,10 @@
         <el-form-item label="页面名称" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="类型">
-          <el-cascader
-            v-model="form.parentId"
-            :options="navType"
-            placeholder="作为顶级分类"
-            filterable
-            change-on-select
-          />
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="form.type" placeholder="请选择类型">
+            <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="序号" prop="sortIndex">
           <el-input-number v-model="form.sortIndex" />
@@ -100,17 +99,17 @@
         <el-form-item label="页面描述（D）" prop="desc">
           <el-input v-model="form.desc" :rows="3" type="textarea" />
         </el-form-item>
-        <el-form-item label="页面关键词（T）" prop="keywords">
+        <el-form-item label="页面关键词（K）" prop="keywords">
           <el-input v-model="form.keywords" :rows="3" type="textarea" />
         </el-form-item>
-        <el-form-item label="页面URL" prop="url">
-          <el-input v-model="form.url" />
+        <el-form-item label="页面URL" prop="linkUrl">
+          <el-input v-model="form.linkUrl" />
         </el-form-item>
-        <el-form-item label="路径别名" prop="alias">
-          <el-input v-model="form.alias" />
+        <el-form-item label="路径别名" prop="linkUrlAlias">
+          <el-input v-model="form.linkUrlAlias" />
         </el-form-item>
-        <el-form-item label="模板文件地址" prop="address">
-          <el-input v-model="form.address" />
+        <el-form-item label="模板文件地址" prop="templateFile">
+          <el-input v-model="form.templateFile" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -159,12 +158,12 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
-// import Pagination from '@/components/Pagination'
+import Pagination from '@/components/Pagination'
 
 export default {
   name: 'CmsSinglePageManage',
   components: {
-    // Pagination
+    Pagination
   },
   data() {
     return {
@@ -184,24 +183,24 @@ export default {
       // 弹框表单数据
       form: {
         name: '',
-        parentId: '0',
-        code: '',
+        type: '',
         sortIndex: '',
         title: '',
         desc: '',
         keywords: '',
-        url: '',
-        alias: '',
-        address: ''
+        linkUrl: '',
+        linkUrlAlias: '',
+        templateFile: ''
       },
       // 修改时传递的旧code
       oldCode: '',
       // 弹框表单规则
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        type: [{ required: true, message: '请输入类型', trigger: 'blur' }],
         sortIndex: [{ required: true, message: '请输入序号', trigger: 'blur' }],
-        url: [{ required: true, message: '请输入页面URL', trigger: 'blur' }],
-        address: [{ required: true, message: '请输入模板文件地址', trigger: 'blur' }]
+        linkUrl: [{ required: true, message: '请输入页面URL', trigger: 'blur' }],
+        templateFile: [{ required: true, message: '请输入模板文件地址', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
@@ -213,8 +212,10 @@ export default {
         pageNum: 1,
         pageSize: 30
       },
+      // 临时row数据
+      row: {},
       // 模板内容
-      editorText: '<p style="font-size: 16px;padding-top: 8px;padding-bottom: 8px;color: black;line-height: 26px;"><span style="letter-spacing: 0px;">切图仔，是大多数前端用来自嘲的称呼。相信很多人平时写页面的时候，大部分时间是在切图和排图，如此往复。这里并不是要否定切图本身，而是在质疑：一直切图到底对自己的功力增长有何好处？想想UI丢给你一套好看的界面，你却只需一个img标签，或者一个background-image属性即可搞定了它，但日后某个地方需要调整某些外观（颜色、文字等），你还不是会让UI再修改之前的素材，然后替换上去完事？这样就完全受制于UI，而无法发挥自己的能动性。</span><br></p>',
+      editorText: '',
       editorItems: [
         'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
         'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
@@ -225,11 +226,11 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.loading.global,
-      openMode: state => state.cms.navOpenMode,
-      navType: state => state.cms.navType
+      singlePageTypes: state => state.cms.singlePageType
     })
   },
   created() {
+    this.singlePageTypeMapping()
     this.onSearch()
   },
   methods: {
@@ -243,36 +244,35 @@ export default {
       update: 'cms/updateSinglePage',
       destroyData: 'cms/destroySinglePage',
       searchSinglePage: 'cms/searchSinglePage',
-      // 待修改确认，暂用导航的
-      getParentIdMapping: 'cms/navParentIdMapping',
-      updateStatus: 'cms/navStatusSwitch'
+      singlePageTypeMapping: 'cms/singlePageTypeMapping',
+      mkHtml: 'cms/mkHtml',
+      searchTemplate: 'cms/searchTemplate',
+      editTemplate: 'cms/editTemplate'
     }),
     showModal(row = {}) {
-      this.getParentIdMapping().then(() => {
-        if (row.id) {
-          const query = { id: row.id }
-          this.searchSinglePage(query).then(res => {
-            const { navigation: nav } = res.data
-            forEach(this.form, (v, k, o) => {
-              this.form[k] = nav[k] || ''
-            })
-            this.form.id = nav.id
-            this.oldCode = nav.code
-            let tag = ''
-            if (nav.hotStatus === '1') {
-              tag = '1'
-            }
-            if (nav.newStatus === '1') {
-              tag = '2'
-            }
-            this.form.tag = tag
+      if (row.id) {
+        const query = { id: row.id }
+        this.searchSinglePage(query).then(res => {
+          const { page } = res.data
+          forEach(this.form, (v, k, o) => {
+            this.form[k] = page[k] || ''
           })
-          this.modalTitle = '编辑'
-        } else {
-          delete this.form.id
-          this.modalTitle = '新增'
-        }
-      })
+          this.form.id = page.id
+          this.oldCode = page.code
+          let tag = ''
+          if (page.hotStatus === '1') {
+            tag = '1'
+          }
+          if (page.newStatus === '1') {
+            tag = '2'
+          }
+          this.form.tag = tag
+        })
+        this.modalTitle = '编辑'
+      } else {
+        delete this.form.id
+        this.modalTitle = '新增'
+      }
       this.show = true
     },
     closeModal() {
@@ -299,23 +299,52 @@ export default {
       done()
     },
     showTemplateModal(row) {
-      this.showTemplate = true
+      this.row = row
+      this.searchTemplate(row.id).then(res => {
+        const { data } = res
+        if (data && data.content) {
+          this.editorText = data.content
+        }
+        this.showTemplate = true
+      })
+    },
+    preRelease(row) {
+      this.mkHtml(row.id).then(res => {
+        this.$message.success(res.data.msg)
+      })
+    },
+    preview(row) {
+      window.open('http://xcms.xinnet.com' + row.linkUrl)
     },
     closeTemplateModal() {
       this.showTemplate = false
+      this.resetTemplateData()
+    },
+    resetTemplateData() {
+      this.row = {}
+      this.editorText = ''
     },
     submitTemplate() {
-
+      const formData = new FormData()
+      formData.append('id', this.row.id)
+      formData.append('content', this.editorText)
+      this.editTemplate(formData).then(res => {
+        this.$message.success(res.data.msg)
+        this.showTemplate = false
+        this.resetTemplateData()
+      })
     },
     beforeTemplateClose(done) {
+      this.resetTemplateData()
       done()
     },
     getList(query = {}) {
       const { name } = this.searchForm
       query.name = name
-      return this.getData(query).then(list => {
+      return this.getData(query).then(res => {
+        const { list, page } = res
         this.list = list
-        this.page = list ? list.page : {}
+        this.page = page
       })
     },
     onSearch() {
@@ -326,23 +355,16 @@ export default {
     getParams(id) {
       const formData = new FormData()
       const data = this.form
-      const parentId = data.parentId && data.parentId.length ? String(data.parentId[data.parentId.length - 1]) : '0'
 
-      if (id) {
-        formData.append('code', this.oldCode)
-        formData.append('newCode', data.code)
-      } else {
-        formData.append('code', data.code)
-      }
       formData.append('name', data.name)
-      formData.append('parentId', parentId)
-      formData.append('sortIndex', data.sortIndex)
+      formData.append('type', data.type)
       formData.append('title', data.title)
       formData.append('desc', data.desc)
       formData.append('keywords', data.keywords)
-      formData.append('url', data.url)
-      formData.append('alias', data.imgUrl)
-      formData.append('address', data.address)
+      formData.append('linkUrl', data.linkUrl)
+      formData.append('linkUrlAlias', data.linkUrlAlias)
+      formData.append('templateFile', data.templateFile)
+      formData.append('sortIndex', data.sortIndex)
       return formData
     },
     submit() {
@@ -369,14 +391,11 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      this.destroyData({ id }).then(res => {
+      this.destroyData(id).then(res => {
         this.closeTipsModal()
         this.onSearch()
         delete this.form.id
       })
-    },
-    switchChange(row) {
-      this.updateStatus({ id: row.id }).then(this.onSearch)
     },
     sortChildren(data, order) {
       if (!(data && data.length > 1)) {
