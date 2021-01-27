@@ -88,6 +88,7 @@ service.interceptors.response.use(
     if (code === 'error') {
       const message = res.data.msg
       errorMessage(message)
+      initLoading()
       return Promise.reject(new Error(message))
     }
 

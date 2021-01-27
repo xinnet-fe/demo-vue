@@ -268,7 +268,7 @@ export function navStatusSwitch(data) {
 // 豆腐块
 export function beancurdCubeList(query) {
   return request({
-    url: '/admin/navigation/list',
+    url: '/admin/widget/list',
     method: 'get',
     params: query
   })
@@ -276,7 +276,7 @@ export function beancurdCubeList(query) {
 
 export function addBeancurdCube(data) {
   return request({
-    url: '/admin/navigation/add',
+    url: '/admin/widget/add',
     method: 'post',
     data
   })
@@ -284,24 +284,45 @@ export function addBeancurdCube(data) {
 
 export function updateBeancurdCube(data) {
   return request({
-    url: '/admin/navigation/edit',
+    url: '/admin/widget/edit',
     method: 'post',
     data
   })
 }
 
-export function destroyBeancurdCube(data) {
+export function destroyBeancurdCube(id) {
   return request({
-    url: '/admin/navigation/del',
-    method: 'post',
-    data
+    url: `/admin/widget/del?id=${id}`,
+    method: 'post'
   })
 }
 
-// 详情
+export function widgetStatusSwitch(id) {
+  return request({
+    url: `/admin/widget/statusSwitch?id=${id}`,
+    method: 'post'
+  })
+}
+
 export function searchBeancurdCube(params) {
   return request({
-    url: '/admin/navigation/search',
+    url: '/admin/widget/search',
+    method: 'post',
+    params
+  })
+}
+
+export function widgetParentIdMapping(params) {
+  return request({
+    url: '/admin/widget/parentIdMapping',
+    method: 'get',
+    params
+  })
+}
+
+export function widgetStatusMapping(params) {
+  return request({
+    url: '/admin/widget/statusMapping',
     method: 'get',
     params
   })

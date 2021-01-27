@@ -36,6 +36,9 @@ import {
   updateBeancurdCube,
   destroyBeancurdCube,
   searchBeancurdCube,
+  widgetStatusSwitch,
+  widgetParentIdMapping,
+  widgetStatusMapping,
   // 单页面
   singlePageList,
   addSinglePage,
@@ -66,7 +69,11 @@ const state = {
   // 导航-打开方式
   navOpenMode: [],
   // 导航-分类
-  navType: []
+  navType: [],
+  // 豆腐块-轮播状态
+  widgetStatus: [],
+  // 豆腐块-分类
+  widgetType: []
 }
 
 const mutations = {
@@ -103,6 +110,15 @@ const mutations = {
     const { list } = res.data
     const result = deepProcessCollectionData(list)
     state.navType = result
+  },
+  WIDGET_STATUS_MAPPING: (state, res) => {
+    const { list } = res.data
+    state.widgetStatus = list
+  },
+  WIDGET_PARENT_ID_MAPPING: (state, res) => {
+    const { list } = res.data
+    const result = deepProcessCollectionData(list)
+    state.widgetType = result
   }
 }
 
@@ -309,13 +325,22 @@ const actions = {
   searchBeancurdCube(_, query) {
     return searchBeancurdCube(query).then(res => {
       if (res && res.data) {
-        const { navigation } = res.data
-        if (navigation && navigation.extra) {
-          navigation.extra = JSON.parse(navigation.extra)
+        const { widget } = res.data
+        if (widget && widget.extra) {
+          widget.extra = JSON.parse(widget.extra)
         }
       }
       return res
     })
+  },
+  widgetStatusSwitch(_, data) {
+    return widgetStatusSwitch(data)
+  },
+  widgetParentIdMapping({ commit }, query) {
+    return widgetParentIdMapping(query).then(res => commit('WIDGET_PARENT_ID_MAPPING', res))
+  },
+  widgetStatusMapping({ commit }, query) {
+    return widgetStatusMapping(query).then(res => commit('WIDGET_STATUS_MAPPING', res))
   },
   // 单页面
   singlePageList(_, query) {

@@ -7,7 +7,7 @@
       </el-form-item>
       <el-form-item label="状态" prop="state">
         <el-select v-model="searchForm.state" placeholder="请选择状态">
-          <el-option v-for="item in status" :key="item.value" :label="item.key" :value="item.value" />
+          <el-option v-for="({ value, key }) in states" :key="value" :label="key" :value="value" />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
@@ -95,7 +95,7 @@
         <el-form-item label="所属分类">
           <el-cascader
             v-model="form.parentId"
-            :options="navType"
+            :options="types"
             placeholder="作为顶级分类"
             filterable
             change-on-select
@@ -153,7 +153,7 @@ import forEach from 'lodash/forEach'
 import JsonEditor from '@/components/JsonEditor'
 
 export default {
-  name: 'CmsNavManage',
+  name: 'CmsBeancurdCubeManage',
   components: {
     JsonEditor
   },
@@ -192,24 +192,20 @@ export default {
       showTips: false,
       // 表格的数据
       list: [],
-      // 全部状态
-      status: [{
-        key: '显示',
-        value: 1
-      }, {
-        key: '隐藏',
-        value: 0
-      }]
+      // 默认打开方式
+      formTarget: ''
     }
   },
   computed: {
     ...mapState({
       loading: state => state.loading.global,
-      openMode: state => state.cms.navOpenMode,
-      navType: state => state.cms.navType
+      types: state => state.cms.widgetType,
+      states: state => state.cms.widgetStatus
     })
   },
   created() {
+    this.widgetParentIdMapping()
+    this.widgetStatusMapping()
     this.onSearch()
   },
   methods: {
@@ -219,26 +215,26 @@ export default {
       update: 'cms/updateBeancurdCube',
       destroyData: 'cms/destroyBeancurdCube',
       searchBeancurdCube: 'cms/searchBeancurdCube',
-      // 待修改确认，暂用导航的
-      getParentIdMapping: 'cms/navParentIdMapping',
-      updateStatus: 'cms/navStatusSwitch'
+      updateStatus: 'cms/widgetStatusSwitch',
+      widgetParentIdMapping: 'cms/widgetParentIdMapping',
+      widgetStatusMapping: 'cms/widgetStatusMapping'
     }),
     showModal(row = {}) {
-      this.getParentIdMapping().then(() => {
+      this.widgetParentIdMapping().then(() => {
         if (row.id) {
           const query = { id: row.id }
           this.searchBeancurdCube(query).then(res => {
-            const { navigation: nav } = res.data
+            const { widget: cube } = res.data
             forEach(this.form, (v, k, o) => {
-              this.form[k] = nav[k] || ''
+              this.form[k] = cube[k] || ''
             })
-            this.form.id = nav.id
-            this.oldCode = nav.code
+            this.form.id = cube.id
+            this.oldCode = cube.code
             let tag = ''
-            if (nav.hotStatus === '1') {
+            if (cube.hotStatus === '1') {
               tag = '1'
             }
-            if (nav.newStatus === '1') {
+            if (cube.newStatus === '1') {
               tag = '2'
             }
             this.form.tag = tag
@@ -288,7 +284,17 @@ export default {
     getParams(id) {
       const formData = new FormData()
       const data = this.form
-      const parentId = data.parentId && data.parentId.length ? String(data.parentId[data.parentId.length - 1]) : '0'
+      let parentId = '0'
+      if (data.parentId && data.parentId.length) {
+        parentId = String(data.parentId[data.parentId.length - 1])
+      } else if (data.parentId && data.parentId >= 0) {
+        parentId = data.parentId
+      }
+      let extra = data.extra
+      if (typeof data.extra === 'object') {
+        extra = JSON.stringify(data.extra)
+      }
+      console.log(typeof extra)
 
       if (id) {
         formData.append('code', this.oldCode)
@@ -303,7 +309,7 @@ export default {
       formData.append('target', data.target)
       formData.append('sortIndex', data.sortIndex)
       formData.append('status', data.status)
-      formData.append('extra', data.extra)
+      formData.append('extra', extra)
       formData.append('content', data.content)
       return formData
     },
@@ -331,14 +337,14 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      this.destroyData({ id }).then(res => {
+      this.destroyData(id).then(res => {
         this.closeTipsModal()
         this.onSearch()
         delete this.form.id
       })
     },
     switchChange(row) {
-      this.updateStatus({ id: row.id }).then(this.onSearch)
+      this.updateStatus(row.id).then(this.onSearch)
     },
     sortChildren(data, order) {
       if (!(data && data.length > 1)) {
