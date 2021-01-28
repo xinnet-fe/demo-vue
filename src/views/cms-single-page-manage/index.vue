@@ -65,7 +65,7 @@
         <template v-slot="{ row }">
           <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
           <el-button type="text" size="medium" @click="showTemplateModal(row)">模板管理</el-button>
-          <el-button type="text" size="medium" @click="preRelease(row)">预发</el-button>
+          <el-button type="text" size="medium" @click="showPreReleaseModal(row)">预发</el-button>
           <el-button type="text" size="medium" @click="preview(row)">预览</el-button>
           <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
         </template>
@@ -129,6 +129,16 @@
     </el-dialog>
     <!-- 删除提示 -->
 
+    <!-- 预发提示 -->
+    <el-dialog width="400px" title="提示" :visible.sync="showPreRelease" :before-close="beforeClosePreReleaseModal">
+      <p>是否确认预发所选条目？</p>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="closePreReleaseModal">取消</el-button>
+        <el-button size="medium" type="primary" @click="preRelease">确认</el-button>
+      </div>
+    </el-dialog>
+    <!-- 预发提示 -->
+
     <!-- 模板管理 -->
     <el-dialog width="800px" :before-close="beforeTemplateClose" destroy-on-close title="模板管理" :visible.sync="showTemplate">
       <el-form ref="templateForm">
@@ -179,6 +189,8 @@ export default {
       show: false,
       // 模板弹框
       showTemplate: false,
+      // 预发提示弹框
+      showPreRelease: false,
       modalTitle: '新增',
       // 弹框表单数据
       form: {
@@ -220,7 +232,8 @@ export default {
         'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
         'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
         'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'pagebreak', 'anchor', 'link', 'unlink'
-      ]
+      ],
+      preReleaseRow: {}
     }
   },
   computed: {
@@ -308,9 +321,23 @@ export default {
         this.showTemplate = true
       })
     },
-    preRelease(row) {
+    showPreReleaseModal(row) {
+      this.showPreRelease = true
+      this.preReleaseRow = row
+    },
+    closePreReleaseModal() {
+      this.showPreRelease = false
+      this.preReleaseRow = {}
+    },
+    beforeClosePreReleaseModal(done) {
+      this.closePreReleaseModal()
+      done()
+    },
+    preRelease() {
+      const row = this.preReleaseRow
       this.mkHtml(row.id).then(res => {
         this.$message.success(res.data.msg)
+        this.closePreReleaseModal()
       })
     },
     preview(row) {

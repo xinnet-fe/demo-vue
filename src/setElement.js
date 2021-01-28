@@ -30,6 +30,7 @@ import {
   OptionGroup,
   Button,
   ButtonGroup,
+  Popconfirm,
   Table,
   TableColumn,
   DatePicker,
@@ -124,6 +125,7 @@ Vue.use(Button, options)
 Vue.use(ButtonGroup, options)
 Vue.use(Table, options)
 Vue.use(TableColumn, options)
+Vue.use(Popconfirm, options)
 Vue.use(DatePicker, options)
 Vue.use(TimeSelect, options)
 Vue.use(TimePicker, options)
