@@ -578,29 +578,46 @@ export default {
     },
     // 商品
     modifyGoodsPrice() {
-      const requestJson = this.marketGoodsList.filter(item => (item.marketingPrice != item.newValue || item.marketingRenewPrice != item.newRenewValue)).map(item => ({
-        'agentCode': this.currentMarket.agentCode,
-        'priceCode': item.priceCode,
-        'marketingPrice': item.newValue,
-        'marketingRenewPrice': item.newRenewValue
-      }))
-      // 修改商品价格
-      this.$store.dispatch('market/modifyGoodsPrice', {
-        agentCode: this.currentMarket.agentCode,
-        requestJson: JSON.stringify(requestJson)
-      }).then(_ => {
-        if (this.modifyGoodsPriceRes.code) {
-          this.$alert(this.modifyGoodsPriceRes.msg, { callback: () => {} })
-        } else {
-          if (this.modifyGoodsPriceRes.data.isSuccess === '1') {
-            this.$alert('操作成功', { callback: () => {} })
-          } else {
-            this.$alert('操作失败', { callback: () => {} })
-          }
+      // const requestJson = this.marketGoodsList.filter(item => (item.marketingPrice != item.newValue || item.marketingRenewPrice != item.newRenewValue)).map(item => ({
+      //   'agentCode': this.currentMarket.agentCode,
+      //   'priceCode': item.priceCode,
+      //   'marketingPrice': item.newValue,
+      //   'marketingRenewPrice': item.newRenewValue
+      // }))
+      const totalLen = this.marketGoodsList.length
+      const requestJson = this.marketGoodsList.reduce((res, row) => {
+        if (row.newValue !== null && row.newValue >= row.limitPrice && row.newRenewValue !== null && row.newRenewValue >= row.limitPrice) {
+          res.push({
+            'agentCode': this.currentMarket.agentCode,
+            'priceCode': row.priceCode,
+            'marketingPrice': row.newValue,
+            'marketingRenewPrice': row.newRenewValue
+          })
         }
-      })
-      // 关闭窗口
-      this.closeGoods()
+        return res
+      }, [])
+      const payloadLen = requestJson.length
+      // 修改商品价格
+      if (payloadLen === totalLen) {
+        this.$store.dispatch('market/modifyGoodsPrice', {
+          agentCode: this.currentMarket.agentCode,
+          requestJson: JSON.stringify(requestJson)
+        }).then(_ => {
+          if (this.modifyGoodsPriceRes.code) {
+            this.$alert(this.modifyGoodsPriceRes.msg, { callback: () => {} })
+          } else {
+            if (this.modifyGoodsPriceRes.data.isSuccess === '1') {
+              this.$alert('操作成功', { callback: () => {} })
+            } else {
+              this.$alert('操作失败', { callback: () => {} })
+            }
+          }
+        })
+        // 关闭窗口
+        this.closeGoods()
+      } else {
+        this.$alert('请填写商品促销价格和促销续费价格！', { callback: () => {} })
+      }
     },
     closeGoods() {
       this.goodsVisible = false
