@@ -90,7 +90,7 @@
         />
         <el-table-column label="规格">
           <template v-slot="scope">
-            {{ scope.row.timeAmount }}{{ scope.row.timeUnit === 'M' ? '月' : '年' }}
+            {{ scope.row.timeAmount }}{{ scope.row.timeUnit === 'M' ? '月' : (scope.row.timeUnit === 'Y' ? '年' : '天') }}
           </template>
         </el-table-column>
         <el-table-column
@@ -195,8 +195,8 @@ export default {
       shareScopeEnd: [],
       value: [],
       props: {
-        multiple: true,
-        checkStrictly: true
+        multiple: true
+        // checkStrictly: true
       },
       organSaleList: [],
       options: [],
@@ -316,7 +316,7 @@ export default {
         })
       }
 
-      // this.form.supProductClass = v[0].length ? v[0].join(',') : ''
+      this.form.supProductClass = v[0].length ? v[0].join(',') : ''
       this.form.productClass = v[1].length ? v[1].join(',') : ''
     }
   },
