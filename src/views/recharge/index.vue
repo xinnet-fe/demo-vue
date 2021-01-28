@@ -6,22 +6,22 @@
         <el-input v-model="form.agentCode" placeholder="" :clearable="true" />
       </el-form-item>
       <el-form-item label="用户类型">
-        <el-select v-model="form.transactionType">
-          <el-option v-for="item in transactionType" :key="item.transactionType" :label="item.transactionName" :value="item.transactionType" />
+        <el-select v-model="form.consumerType">
+          <el-option v-for="item in consumerTypeList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="复核状态">
-        <el-select v-model="form.transactionType">
+        <el-select v-model="form.checkState">
           <el-option v-for="item in transactionType" :key="item.transactionType" :label="item.transactionName" :value="item.transactionType" />
         </el-select>
       </el-form-item>
       <el-form-item label="收款方式">
-        <el-select v-model="form.transactionType">
+        <el-select v-model="form.gatheringModeCode">
           <el-option v-for="item in transactionType" :key="item.transactionType" :label="item.transactionName" :value="item.transactionType" />
         </el-select>
       </el-form-item>
       <el-form-item label="交易号">
-        <el-input v-model="form.agentCode" placeholder="" :clearable="true" />
+        <el-input v-model="form.billNumber" placeholder="" :clearable="true" />
       </el-form-item>
       <el-form-item label="充值日期">
         <el-date-picker
@@ -122,10 +122,13 @@ export default {
       date: '',
       form: {
         agentCode: '',
+        consumerType: '',
+        checkState: '',
+        gatheringModeCode: '',
+        billNumber: '',
         startDate: '',
         endDate: '',
-        transactionType: '',
-        pageSkip: 1,
+        ipage: 1,
         pageSize: 20
       },
       listTable: [],
@@ -139,12 +142,18 @@ export default {
           transactionName: '全部',
           transactionType: ''
         }
+      ],
+      consumerTypeList: [
+        {
+          label: '全部',
+          value: ''
+        }
       ]
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['accountDetail/list']
+      loading: state => state.loading.effects['recharge/gatheringDetailPage']
     })
   },
   watch: {
@@ -155,17 +164,10 @@ export default {
     }
   },
   mounted() {
-    this.getTransactionType().then(res => {
-      if (!res.code) {
-        this.transactionType = this.transactionType.concat(res)
-      }
-    }).catch(error => {
-      console.log(error)
-    })
     // this.onSearch()
   },
   methods: {
-    ...mapActions('accountDetail', ['list', 'getTransactionType']),
+    ...mapActions('recharge', ['gatheringDetailPage']),
     handleSelectChange(v) {
       console.log(v)
     },

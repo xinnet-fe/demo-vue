@@ -41,6 +41,11 @@ module.exports = {
       target: 'https://expense-boss.xinnet.com',
       secure: false,
       changeOrigin: true
+    },
+    '/recharge': {
+      target: 'https://expense-boss.xinnet.com',
+      secure: false,
+      changeOrigin: true
     }
   },
 
