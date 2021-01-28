@@ -17,6 +17,15 @@ const actions = {
         reject(error)
       })
     })
+  },
+  getGatheringModes({ commit, state }, query) {
+    return new Promise((resolve, reject) => {
+      api.getGatheringModes(query).then(res => {
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 
