@@ -621,8 +621,10 @@ export default {
     },
     closeGoods() {
       this.goodsVisible = false
+      this.$store.commit('market/ResetMarketingPrice')
     },
     beforeCloseGoods(done) {
+      this.closeGoods()
       done()
     },
     beforeCloseGoodsInner(done) {
