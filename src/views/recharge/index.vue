@@ -31,6 +31,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           value-format="yyyy-MM-dd"
+          :picker-options="pickerOptions"
         />
       </el-form-item>
       <el-form-item>
@@ -74,7 +75,11 @@
         <el-table-column
           prop="pay"
           label="金额"
-        />
+        >
+          <template v-slot="scope">
+            {{ scope.row.pay.toFixed(2) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="orgName"
           label="收款公司"
@@ -168,15 +173,15 @@ export default {
           value: ''
         },
         {
-          label: '未审核',
+          label: '未复核',
           value: '01'
         },
         {
-          label: '审核通过',
+          label: '复核通过',
           value: '02'
         },
         {
-          label: '审核未通过',
+          label: '复核未通过',
           value: '03'
         }
       ],
@@ -185,7 +190,24 @@ export default {
           label: '全部',
           value: ''
         }
-      ]
+      ],
+      choiceDate: '',
+      pickerOptions: {
+        onPick: ({ maxDate, minDate }) => {
+          this.choiceDate = minDate.getTime();
+          if (maxDate) {
+            this.choiceDate = "";
+          }
+        },
+        disabledDate: (time) => {
+          if (this.choiceDate !== "") {
+            let one = 90 * 24 * 3600 * 1000;
+            const minTime = this.choiceDate - one;
+            const maxTime = this.choiceDate + one;
+            return time.getTime() < minTime || time.getTime() > maxTime;
+          }
+        },
+      }
     }
   },
   computed: {
