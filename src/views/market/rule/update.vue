@@ -103,9 +103,9 @@ export default {
             trigger: 'blur',
             validator: (rule, value, callback) => {
               const type = this.current_form.preferentialForm
-              if (type === '2' && value === '') {
+              if (type === '2' && (value === '' || value === null || value === 'null')) {
                 callback()
-              } else if (type === '1' && value === '') {
+              } else if (type === '1' && (value === '' || value === null || value === 'null')) {
                 callback('请填写新开折扣')
               }
               const len = ('' + value).length
@@ -141,9 +141,9 @@ export default {
             trigger: 'blur',
             validator: (rule, value, callback) => {
               const type = this.current_form.preferentialForm
-              if (type === '2' && value === '') {
+              if (type === '2' && (value === '' || value === null || value === 'null')) {
                 callback()
-              } else if (type === '1' && value === '') {
+              } else if (type === '1' && (value === '' || value === null || value === 'null')) {
                 callback('请填写续费折扣')
               }
               const len = ('' + value).length
