@@ -100,6 +100,11 @@ export default {
         ],
         newDiscountValue: [
           {
+            required: true,
+            message: '请填写新开折扣',
+            trigger: 'blur'
+          },
+          {
             trigger: 'blur',
             validator: (rule, value, callback) => {
               const type = this.current_form.preferentialForm
@@ -135,6 +140,11 @@ export default {
           }
         ],
         renewalDiscountValue: [
+          {
+            required: true,
+            message: '请填写续费折扣',
+            trigger: 'blur'
+          },
           {
             trigger: 'blur',
             validator: (rule, value, callback) => {
