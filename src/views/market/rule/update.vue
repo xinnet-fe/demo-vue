@@ -100,16 +100,13 @@ export default {
         ],
         newDiscountValue: [
           {
-            required: true,
-            message: '请填写新开折扣',
-            trigger: 'blur'
-          },
-          {
             trigger: 'blur',
             validator: (rule, value, callback) => {
               const type = this.current_form.preferentialForm
-              if (value === '') {
+              if (type === '2' && value === '') {
                 callback()
+              } else if (type === '1' && value === '') {
+                callback('请填写新开折扣')
               }
               const len = ('' + value).length
               if (Number(value) !== parseFloat(value)) {
@@ -141,16 +138,13 @@ export default {
         ],
         renewalDiscountValue: [
           {
-            required: true,
-            message: '请填写续费折扣',
-            trigger: 'blur'
-          },
-          {
             trigger: 'blur',
             validator: (rule, value, callback) => {
               const type = this.current_form.preferentialForm
-              if (value === '') {
+              if (type === '2' && value === '') {
                 callback()
+              } else if (type === '1' && value === '') {
+                callback('请填写续费折扣')
               }
               const len = ('' + value).length
               if (Number(value) !== parseFloat(value)) {
