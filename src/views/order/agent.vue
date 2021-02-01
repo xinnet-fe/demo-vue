@@ -288,8 +288,9 @@ export default {
         { name: '待支付', num: '1' },
         { name: '支付中', num: '2' },
         { name: '已取消', num: '3' },
-        { name: '已支付', num: '4' },
-        { name: '支付失败', num: '5' }
+        { name: '支付成功', num: '4' },
+        { name: '支付失败', num: '5' },
+        { name: '已支付', num: '6' }
       ],
       businessType: [
         { name: '全部', num: '' },
@@ -426,9 +427,11 @@ export default {
               } else if (row.orderStatus === '3') {
                 row.orderStatusa = '已取消'
               } else if (row.orderStatus === '4') {
-                row.orderStatusa = '已支付'
+                row.orderStatusa = '支付成功'
               } else if (row.orderStatus === '5') {
-                row.orderStatusa = '支付失败'
+                row.orderStatusa = '支付失败"'
+              } else if (row.orderStatus === '6') {
+                row.orderStatusa = '已支付'
               }
             }
             if (row.totalOriginalPrice) {
