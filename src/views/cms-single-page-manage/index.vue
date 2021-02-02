@@ -5,7 +5,7 @@
       <el-form-item label="页面名称" prop="name">
         <el-input v-model="searchForm.name" placeholder="请输入页面名称" clearable />
       </el-form-item>
-      <el-form-item label="类型">
+      <el-form-item label="类型" prop="type">
         <el-select v-model="searchForm.type" placeholder="请选择类型">
           <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
         </el-select>
@@ -15,6 +15,7 @@
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
+        <el-button @click="resetModal">重 置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -86,7 +87,7 @@
           <el-input v-model="form.name" />
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择类型">
+          <el-select v-model="form.type" :allow-create="action == 'add'" :filterable="action == 'add'" placeholder="请选择类型">
             <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
@@ -233,7 +234,8 @@ export default {
         'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
         'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'pagebreak', 'anchor', 'link', 'unlink'
       ],
-      preReleaseRow: {}
+      preReleaseRow: {},
+      action: ''
     }
   },
   computed: {
@@ -247,10 +249,6 @@ export default {
     this.onSearch()
   },
   methods: {
-    cl() {
-      // this.$router.push('/home?showLayout=false')
-      this.$router.push('/userCenter-infoDetail/id?id=hy5192345&showLayout=false')
-    },
     ...mapActions({
       getData: 'cms/singlePageList',
       add: 'cms/addSinglePage',
@@ -281,8 +279,10 @@ export default {
           }
           this.form.tag = tag
         })
+        this.action = 'modify'
         this.modalTitle = '编辑'
       } else {
+        this.action = 'add'
         delete this.form.id
         this.modalTitle = '新增'
       }
@@ -366,8 +366,16 @@ export default {
       done()
     },
     getList(query = {}) {
-      const { name } = this.searchForm
-      query.name = name
+      const { name, type, url } = this.searchForm
+      if (name) {
+        query.name = name
+      }
+      if (type) {
+        query.type = type
+      }
+      if (url) {
+        query.url = url
+      }
       return this.getData(query).then(res => {
         const { list, page } = res
         this.list = list
@@ -378,6 +386,9 @@ export default {
       const { pageNum, pageSize } = this.page
       const query = { pageNum, pageSize }
       this.getList(query)
+    },
+    resetModal() {
+      this.$refs.searchForm.resetFields()
     },
     getParams(id) {
       const formData = new FormData()
@@ -405,12 +416,14 @@ export default {
             this.update(formData).then(res => {
               this.closeModal()
               this.onSearch()
+              this.singlePageTypeMapping()
             })
           // 新增
           } else {
             this.add(formData).then(res => {
               this.closeModal()
               this.onSearch()
+              this.singlePageTypeMapping()
             })
           }
         }

@@ -21,6 +21,7 @@
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
+        <el-button @click="resetModal">重 置</el-button>
       </el-form-item>
     </el-form>
     <!-- search -->
@@ -62,7 +63,7 @@
         label="创建时间"
       />
       <el-table-column
-        prop="updateTime"
+        prop="modifyTime"
         label="操作时间"
       />
       <el-table-column
@@ -260,6 +261,9 @@ export default {
       this.oldCode = ''
       delete this.form.id
     },
+    resetModal() {
+      this.$refs.searchForm.resetFields()
+    },
     showTipsModal(row) {
       this.form.id = row.id
       this.showTips = true
@@ -272,8 +276,17 @@ export default {
       done()
     },
     getList(query = {}) {
-      const { name } = this.searchForm
-      query.name = name
+      const { name, state, createTime } = this.searchForm
+      if (name) {
+        query.name = name
+      }
+      if (state) {
+        query.status = state
+      }
+      if (createTime) {
+        query.startTime = createTime[0]
+        query.endTime = createTime[1]
+      }
       return this.getData(query).then(list => {
         this.list = list
       })
@@ -294,12 +307,7 @@ export default {
       if (typeof data.extra === 'object') {
         extra = JSON.stringify(data.extra)
       }
-      if (id) {
-        formData.append('code', this.oldCode)
-        formData.append('newCode', data.code)
-      } else {
-        formData.append('code', data.code)
-      }
+      formData.append('code', data.code)
       formData.append('name', data.name)
       formData.append('parentId', parentId)
       formData.append('desc', data.desc)
