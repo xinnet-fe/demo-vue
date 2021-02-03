@@ -513,6 +513,7 @@ export default {
     resetForm() {
       clearFormDate(this.form)
       this.date = ''
+      this.form.consumerType = 'HY'
     },
     // 单独处理时间的函数
     dealDisabledDate(time) {
