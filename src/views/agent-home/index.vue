@@ -461,7 +461,7 @@ export default {
   methods: {
     queryDomains() {
       if (this.queryDomain !== '') {
-        window.open(`http://www.xinnet.com/domain/domainQueryResult.html?prefix=${this.queryDomain}`)
+        window.open(`http://domain.xinnet.com/index.html#/domainRegistration?prefix=${this.queryDomain}`)
       } else {
         this.$message.error('请输入您想注册的域名，如：xinnet')
       }
