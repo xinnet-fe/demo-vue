@@ -13,6 +13,9 @@ export default {
   components: {
     Detail
   },
+  props: {
+    a: String
+  },
   data() {
     return {
 

@@ -29,47 +29,47 @@ export function getChannel(query) {
 }
 
 // 编辑手机号、邮箱 usermanage/user/modify
-export function getUserModify(query) {
+export function getUserModify(data) {
   return request({
     url: '/usermanage/user/modify',
-    method: 'get',
-    params: query
+    method: 'post',
+    data
   })
 }
 
 // 用户锁定  /usermanage/user/lock
-export function getUserLock(query) {
+export function getUserLock(data) {
   return request({
     url: '/usermanage/user/lock',
-    method: 'get',
-    params: query
+    method: 'post',
+    data
   })
 }
 
 // 用户解锁  usermanage/user/unlock
-export function getUserUnlock(query) {
+export function getUserUnlock(data) {
   return request({
     url: '/usermanage/user/unlock',
-    method: 'get',
-    params: query
+    method: 'post',
+    data
   })
 }
 
 // 取消用户口令  /usermanage/user/cancelDynamicCode
-export function getUserCancelDynamicCode(query) {
+export function getUserCancelDynamicCode(data) {
   return request({
     url: '/usermanage/user/cancelDynamicCode',
-    method: 'get',
-    params: query
+    method: 'post',
+    data
   })
 }
 
 // 注销用户  /usermanage/user/cancelAccount
-export function getUserCancelAccount(query) {
+export function getUserCancelAccount(data) {
   return request({
     url: '/usermanage/user/cancelAccount',
-    method: 'get',
-    params: query
+    method: 'post',
+    data
   })
 }
 

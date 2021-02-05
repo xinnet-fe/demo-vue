@@ -17,17 +17,7 @@
 export default {
   name: 'Box',
   props: {
-    handleToBack: {
-      type: Function
-    },
-    showLeft: {
-      type: Boolean,
-      default: true
-    },
-    showRight: {
-      type: Boolean,
-      default: true
-    }
+    a: String
   },
   computed: {
     num: function() {

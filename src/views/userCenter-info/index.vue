@@ -66,25 +66,25 @@
           </template>
         </el-table-column> -->
 
-        <el-table-column align="center" width="80" label="注册渠道">
+        <el-table-column width="80" label="注册渠道">
           <template slot-scope="{row}">
             <span>{{ row.registerChannel }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" width="100" label="用户编号">
+        <el-table-column width="100" label="用户编号">
           <template slot-scope="{row}">
             <span style="color:#0069ff;cursor:pointer;" @click="userLink(row.agentCode)">{{ row.agentCode }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column class-name="status-col" label="用户类型">
+        <el-table-column label="用户类型">
           <template slot-scope="{row}">
             <span>{{ row.userType }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" width="140" label="注册日期">
+        <el-table-column width="140" label="注册日期">
           <template slot-scope="{row}">
             <span>{{ row.registerDate }}</span>
             <!-- <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> -->
@@ -121,30 +121,27 @@
           </template>
         </el-table-column>
 
-        <el-table-column width="155" label="账号绑定邮箱" align="center">
+        <el-table-column width="155" label="账号绑定邮箱">
           <template slot-scope="{row}">
             <span>{{ row.bindEmail }}</span>
             <!-- <span style="color:#0069ff;cursor:pointer;" @click="userLink(row.id)">hy123</span> -->
           </template>
         </el-table-column>
 
-        <el-table-column label="账号状态" align="center" width="80">
+        <el-table-column label="账号状态" width="80">
           <template slot-scope="{row}">
             <span>{{ row.accountStates }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="center" width="180">
+        <el-table-column label="操作" width="180">
           <template slot-scope="{row}">
-            <span style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">编辑</span>
+            <span v-if="row.accountState !== '04'" style="color:#0069ff;cursor:pointer;" @click="handleAudit(row)">编辑</span>
             <span v-if="row.accountStates === '锁定' && row.accountState !== '04'" style="color:#0069ff;cursor:pointer;" @click="handleUnlock('unlock', row)">解锁</span>
             <span v-if="row.accountStates !== '锁定' && row.accountState !== '04'" style="color:#0069ff;cursor:pointer;" @click="handleUnlock('lock', row)">锁定</span>
-            <span v-if="row.accountState === '04'" style="color:#606266;cursor:pointer;">锁定</span>
-            <span v-if="row.verification === '' && row.isverification === ''" style="color:#606266;cursor:pointer;">解除动态口令</span>
-            <span v-else style="color:#0069ff;cursor:pointer;" @click="handleRelieve(row)">解除动态口令</span>
-            <span v-if="row.accountState === '04'" style="color:#606266;cursor:pointer;">注销</span>
+            <!-- <span v-if="row.verification === '' && row.isverification === ''" style="color:#606266;cursor:pointer;" /> -->
+            <span v-if="row.verification !== '' && row.isverification === 'Y'" style="color:#0069ff;cursor:pointer;" @click="handleRelieve(row)">解除动态口令</span>
             <span v-if="row.accountState !== '04'" style="color:#0069ff;cursor:pointer;" @click="handleLogout(row)">注销</span>
-            <!-- accountState -->
           </template>
         </el-table-column>
       </el-table>
@@ -178,7 +175,7 @@
       </div>
     </el-dialog>
     <el-dialog :title="textMap[dialogUnlocktit]" :visible.sync="dialogUnlock">
-      <p v-if="dialogUnlocktit==='lock'">确定要解锁该账号，解锁后该账号将继续可登录</p>
+      <p v-if="dialogUnlocktit==='unlock'">确定要解锁该账号，解锁后该账号将继续可登录</p>
       <p v-else>确定要锁定该账号，锁定后该账号将不可登录</p>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogUnlock = false">取消</el-button>
@@ -194,6 +191,7 @@
     </el-dialog>
     <el-dialog :title="dialogLogouttit" :visible.sync="dialogLogout">
       <p>确定要注销该账号，注销后该账号将不可登录</p>
+      <p style="color:#f00">请人工校验是否存在有效期的产品，若有，不能注销！</p>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogLogout = false">取消</el-button>
         <el-button type="primary" @click="handleLogouts()">确定</el-button>
@@ -245,7 +243,7 @@ export default {
       dialogRelieve: false,
       dialogLogout: false,
       Looktitle: '编辑',
-      dialogUnlocktit: 'unlock',
+      dialogUnlocktit: 'lock',
       dialogRelievetit: '移除动态口令',
       dialogLogouttit: '注销',
       rules: {
@@ -267,8 +265,8 @@ export default {
       textMap: {
         update: '编辑标签',
         create: '新增标签',
-        lock: '解锁',
-        unlock: '锁定'
+        lock: '锁定',
+        unlock: '解锁'
       }
     }
   },
@@ -314,7 +312,7 @@ export default {
           v.realNameStates = v.realNameState === '0' || v.realNameState === '4' ? '审核中' : v.realNameState === '1' ? '已实名' : v.realNameState === '2' ? '审核失败' : v.realNameState === '3' ? '已取消' : '未实名'
         })
         this.list = res.data
-        this.total = res.page.total_pages
+        this.total = res.page.total_count
         this.listLoading = false
         this.oldList = this.list.map(v => v.id)
       })
@@ -439,33 +437,50 @@ export default {
     //   })
     },
     handleUpdate() {
-      if (this.temp.bindEmail === this.temp.bindEmails || this.temp.phoneNumber === this.temp.phoneNumbers) {
-        if (this.temp.bindEmail === this.temp.bindEmails) {
-          $('#sameEmail').show()
-        } else {
-          $('#sameEmail').hide()
-        }
-        if (this.temp.phoneNumber === this.temp.phoneNumbers) {
-          $('#samePhone').show()
-        } else {
-          $('#samePhone').hide()
-        }
-      }
-      if ($('#samePhone').is(':hidden') && $('#rightPhone').is(':hidden') && $('#noPhone').is(':hidden') && $('#rightEmail').is(':hidden') && $('#sameEmail').is(':hidden') && $('#noEmail').is(':hidden') && this.temp.bindEmail !== '' && this.temp.phoneNumber !== '') {
-        getUserModify({ agentCode: this.temp.agentCode, phoneNum: this.temp.phoneNumber, email: this.temp.bindEmail }).then(res => {
-          this.dialogAudit = false
-          this.$notify({
-            title: 'Success',
-            message: '用户修改信息成功',
-            type: 'success',
-            duration: 2000
+      if (this.temp.bindEmail === this.temp.bindEmails && this.temp.phoneNumber === this.temp.phoneNumbers) {
+        this.dialogAudit = false
+        // this.$message({
+        //   type: 'success',
+        //   message: '用户信息修改成功'
+        // })
+      } else {
+        // if ($('#samePhone').is(':hidden') && $('#rightPhone').is(':hidden') && $('#noPhone').is(':hidden') && $('#rightEmail').is(':hidden') && $('#sameEmail').is(':hidden') && $('#noEmail').is(':hidden') && this.temp.bindEmail !== '' && this.temp.phoneNumber !== '') {
+        console.log($('#rightPhone').is(':hidden') && $('#noPhone').is(':hidden') && $('#rightEmail').is(':hidden') && $('#noEmail').is(':hidden') && this.temp.bindEmail !== '' && this.temp.phoneNumber !== '')
+        console.log($('#noPhone').is(':hidden'), 'no')
+        if ($('#rightPhone').is(':hidden') && $('#noPhone').is(':hidden') && $('#rightEmail').is(':hidden') && $('#noEmail').is(':hidden') && this.temp.bindEmail !== '' && this.temp.phoneNumber !== '') {
+          const form = new FormData()
+          form.append('agentCode', this.temp.agentCode)
+          form.append('phoneNum', this.temp.phoneNumber)
+          form.append('email', this.temp.bindEmail)
+          getUserIfExistPhoneNum({ phoneNum: this.temp.phoneNumber }).then(res => {
+            if (res.success === true) {
+              getUserModify(form).then(res => {
+                this.dialogAudit = false
+                this.$message({
+                  type: 'success',
+                  message: '用户信息修改成功'
+                })
+                this.getList()
+              })
+            } else {
+              if (this.temp.bindEmail !== this.temp.bindEmails) {
+                getUserModify(form).then(res => {
+                  this.dialogAudit = false
+                  this.$message({
+                    type: 'success',
+                    message: '用户信息修改成功'
+                  })
+                  this.getList()
+                })
+              }
+            }
           })
-          this.getList()
-        })
+        }
       }
     },
     handlePhone() {
-      var myreg = /^[1][3,4,5,7,8,9][0-9]{9}$/
+      this.temp.phoneNumber = this.temp.phoneNumber.replace(/\s+/g, '')
+      var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/
       if (!myreg.test(this.temp.phoneNumber)) {
         this.handleReset(this.temp.phoneNumbers, this.temp.phoneNumber, $('#samePhone'), $('#rightPhone'), $('#noPhone'))
         if (this.temp.phoneNumber) {
@@ -495,6 +510,7 @@ export default {
       }
     },
     handleEmail() {
+      this.temp.bindEmail = this.temp.bindEmail.replace(/\s+/g, '')
       var myreg = /^([A-Za-z0-9_+-.])+@([A-Za-z0-9\-.])+\.([A-Za-z]{2,22})$/
       if (!myreg.test(this.temp.bindEmail)) {
         this.handleReset(this.temp.bindEmails, this.temp.bindEmail, $('#sameEmail'), $('#rightEmail'), $('#noEmail'))
@@ -534,51 +550,62 @@ export default {
     },
     handleLocks(a) {
       if (a === 'unlock') {
-        getUserUnlock({ agentCode: this.temp.agentCode }).then(res => {
+        const form = new FormData()
+        form.append('agentCode', this.temp.agentCode)
+        getUserUnlock(form).then(res => {
           this.dialogUnlock = false
-          this.$notify({
-            title: 'Success',
-            message: '解锁成功',
+          this.$message({
             type: 'success',
-            duration: 2000
+            message: '解锁成功'
           })
           this.getList()
+          this.getUserGetAccountStateList()
         })
       } else if (a === 'lock') {
-        getUserLock({ agentCode: this.temp.agentCode }).then(res => {
+        const form = new FormData()
+        form.append('agentCode', this.temp.agentCode)
+        getUserLock(form).then(res => {
           this.dialogUnlock = false
-          this.$notify({
-            title: 'Success',
-            message: '锁定成功',
+          this.$message({
             type: 'success',
-            duration: 2000
+            message: '锁定成功'
           })
           this.getList()
+          this.getUserGetAccountStateList()
         })
       }
     },
     handleRelieves() {
-      getUserCancelDynamicCode({ agentCode: this.temp.agentCode }).then(res => {
+      const form = new FormData()
+      form.append('agentCode', this.temp.agentCode)
+      getUserCancelDynamicCode(form).then(res => {
         this.dialogRelieve = false
-        this.$notify({
-          title: 'Success',
-          message: '移除动态口令成功',
+        this.$message({
           type: 'success',
-          duration: 2000
+          message: '移除动态口令成功'
         })
         this.getList()
       })
     },
     handleLogouts() {
-      getUserCancelAccount({ agentCode: this.temp.agentCode }).then(res => {
-        this.dialogLogout = false
-        this.$notify({
-          title: 'Success',
-          message: '注销成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.getList()
+      const form = new FormData()
+      form.append('agentCode', this.temp.agentCode)
+      getUserCancelAccount(form).then(res => {
+        if (res.success0) {
+          this.dialogLogout = false
+          this.$message({
+            type: 'success',
+            message: '注销成功'
+          })
+          this.getList()
+        } else {
+          this.dialogLogout = false
+          this.$message({
+            type: 'warning',
+            message: res.msg
+          })
+          this.getList()
+        }
       })
     }
   }
