@@ -25,6 +25,97 @@
         </div> -->
       </template>
 
+      <el-dropdown class="right-menu-item hover-effect" trigger="click">
+        <el-badge :value="12" class="badge-item">
+          <svg-icon icon-class="naoling" />
+        </el-badge>
+        <el-dropdown-menu slot="dropdown" style="width:350px;padding: 20px;" class="dropdown-msg">
+          <b class="title">消息通知</b>
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="全部" name="first">
+              <table>
+                <tr>
+                  <td class="col1">
+                    <img src="static/img/xls.png" alt="">
+                  </td>
+                  <td class="col2">
+                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
+                    <p class="time">2020-02-02 12:12:12</p>
+                  </td>
+                  <td class="col3">
+                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
+                    <span class="invalid">已失效</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col1">
+                    <img src="static/img/xls.png" alt="">
+                  </td>
+                  <td class="col2">
+                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
+                    <p class="time">2020-02-02 12:12:12</p>
+                  </td>
+                  <td class="col3">
+                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
+                    <span class="invalid">已失效</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col1">
+                    <img src="static/img/xls.png" alt="">
+                  </td>
+                  <td class="col2">
+                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
+                    <p class="time">2020-02-02 12:12:12</p>
+                  </td>
+                  <td class="col3">
+                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
+                    <span class="invalid">已失效</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col1">
+                    <img src="static/img/xls.png" alt="">
+                  </td>
+                  <td class="col2">
+                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
+                    <p class="time">2020-02-02 12:12:12</p>
+                  </td>
+                  <td class="col3">
+                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
+                    <span class="invalid">已失效</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col1">
+                    <img src="static/img/xls.png" alt="">
+                  </td>
+                  <td class="col2">
+                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
+                    <p class="time">2020-02-02 12:12:12</p>
+                  </td>
+                  <td class="col3">
+                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
+                    <span class="invalid">已失效</span>
+                  </td>
+                </tr>
+              </table>
+              <div class="tool">
+                <el-link type="primary" href="javascript:;" class="clear">清空</el-link>
+                <el-link type="primary" href="http://" target="_blank" class="more">查看更多</el-link>
+              </div>
+              <div class="null">
+                <img src="static/img/null.png" alt="">
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="导出" name="second">
+              <div class="null">
+                <img src="static/img/null.png" alt="">
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <svg-icon icon-class="touxiang" class="user-avatar" />
@@ -64,7 +155,8 @@ export default {
   data() {
     return {
       username: '管理员',
-      resetPwdFormVisible: false
+      resetPwdFormVisible: false,
+      activeName: 'first'
     }
   },
   computed: {
@@ -76,6 +168,9 @@ export default {
     ])
   },
   methods: {
+    handleClick() {
+
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
@@ -93,7 +188,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/styles/variables.scss';
 
 .navbar {
@@ -191,5 +286,76 @@ export default {
       }
     }
   }
+}
+.dropdown-msg .el-tabs__active-bar{
+  width: 24px!important;
+}
+.dropdown-msg .el-tabs__content{
+  padding: 0px;
+}
+.dropdown-msg b{
+  font-weight: normal;
+}
+.dropdown-msg .title{
+  display: block;
+  margin-bottom: 10px;
+}
+.dropdown-msg .el-tabs__item{
+  height: 36px;
+  line-height: 36px;
+  font-size: 12px;
+}
+.dropdown-msg table{
+  width: 100%;
+  font-size: 12px;
+}
+.dropdown-msg table td{
+  color: #333;
+  padding: 10px 0;
+  border-bottom: 1px solid #ededed;
+}
+.dropdown-msg table td a{
+  font-size: 12px;
+  display: inline-block;
+}
+.dropdown-msg table .col1{
+  width: 38px;
+  text-align: center;
+}
+.dropdown-msg table .col3{
+  width: 60px;
+  padding-right: 10px;
+  text-align: right;
+}
+.dropdown-msg table td p{
+  margin: 0px;
+  width: 200px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+}
+.dropdown-msg table td .time,
+.dropdown-msg table .col3 .invalid{
+  color: #999999;
+}
+.dropdown-msg table td .title{
+  margin-bottom: 3px!important;
+}
+.dropdown-msg .tool{
+  overflow: hidden;
+  padding: 10px;
+}
+.dropdown-msg .tool .clear{
+  float: left;
+  font-size: 12px;
+}
+.dropdown-msg .tool .more{
+  float: right;
+  font-size: 12px;
+}
+.dropdown-msg .null{
+  text-align: center;
+  padding: 35px 0;
 }
 </style>
