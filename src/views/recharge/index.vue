@@ -299,7 +299,7 @@ export default {
     },
     resetForm() {
       clearFormDate(this.form)
-      this.date = ''
+      this.resetDate()
     },
     handleDownload() {
       // this.downloadLoading = true
