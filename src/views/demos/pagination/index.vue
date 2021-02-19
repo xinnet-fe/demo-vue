@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="demo-container" style="padding: 20px;">
     <div class="block">
-      <h2 class="demonstration">显示总数</h2>
+      <el-divider content-position="left">显示总数</el-divider>
       <el-pagination
         :current-page.sync="currentPage1"
         :page-size="100"
@@ -12,10 +12,10 @@
       />
     </div>
     <div class="block">
-      <h2 class="demonstration">调整每页显示条数</h2>
+      <el-divider content-position="left">调整每页显示条数</el-divider>
       <el-pagination
         :current-page.sync="currentPage2"
-        :page-sizes="[100, 200, 300, 400]"
+        :page-sizes="[10, 20, 30, 40, 50]"
         :page-size="100"
         layout="sizes, prev, pager, next"
         :total="1000"
@@ -24,7 +24,7 @@
       />
     </div>
     <div class="block">
-      <h2 class="demonstration">直接前往</h2>
+      <el-divider content-position="left">直接前往</el-divider>
       <el-pagination
         :current-page.sync="currentPage3"
         :page-size="100"
@@ -35,11 +35,11 @@
       />
     </div>
     <div class="block">
-      <h2 class="demonstration">完整功能</h2>
+      <el-divider content-position="left">完整功能</el-divider>
       <el-pagination
         background
         :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
+        :page-sizes="[10, 20, 30, 40, 50]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
         :total="400"

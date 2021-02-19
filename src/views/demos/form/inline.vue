@@ -1,6 +1,6 @@
 <template>
-  <div class="demo-container">
-    <h3>行内表单</h3>
+  <div class="demo-container" style="padding: 20px;">
+    <el-divider content-position="left">行内表单</el-divider>
     <el-form :inline="true">
       <el-form-item label="文本框">
         <el-input v-model="form.name" />
@@ -159,11 +159,6 @@ export default {
       console.log('reset!')
     },
     handleChange() {
-    }
-  },
-  methods: {
-    onSubmit() {
-      console.log('submit!')
     }
   }
 }
