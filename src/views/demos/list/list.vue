@@ -1,20 +1,20 @@
 <template>
-  <div class="demo-container">
-    <h3>样式1</h3>
+  <div class="demo-container" style="padding:20px;">
+    <el-divider content-position="left">样式1</el-divider>
     <ul class="el-list">
       <li v-for="(item, i) in tableData" :key="i" class="el-list-item">
         <strong class="tit"><a href="">{{ item.address }}</a></strong>
         <p class="desc">{{ item.date }}</p>
       </li>
     </ul>
-    <h3>样式2</h3>
+    <el-divider content-position="left">样式2</el-divider>
     <ul class="el-list el-list-style2">
       <li v-for="(item, i) in tableData" :key="i" class="el-list-item clearfix">
         <strong class="tit"><a href="">{{ item.address }}<br>{{ item.address }}</a></strong>
         <p class="desc">{{ item.date }}</p>
       </li>
     </ul>
-    <h3>样式3</h3>
+    <el-divider content-position="left">样式3</el-divider>
     <ul class="el-list el-list-style3 clearfix">
       <li v-for="(item, i) in tableData" :key="i" class="el-list-item clearfix">
         <strong class="tit"><a href="">{{ item.address }}</a></strong>

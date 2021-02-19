@@ -1,5 +1,5 @@
 <template>
-  <div class="demo-container">
+  <div class="demo-container" style="padding: 20px;">
     <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
 
     <el-dialog title="提示" :visible.sync="dialogVisible" width="800px" :before-close="handleClose">

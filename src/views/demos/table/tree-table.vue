@@ -1,33 +1,35 @@
 <template>
-  <el-table
-    :data="tableData"
-    row-key="id"
-    default-expand-all
-    :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-  >
-
-    <el-table-column
-      prop="date"
-      label="日期"
-      sortable
-      width="180"
-    />
-    <el-table-column
-      prop="id"
-      label="序号"
-      width="100"
-    />
-    <el-table-column
-      prop="name"
-      label="姓名"
-      sortable
-      width="180"
-    />
-    <el-table-column
-      prop="address"
-      label="地址"
-    />
-  </el-table>
+  <div class="demo-container" style="padding: 20px;">
+    <el-divider content-position="left">树形表格</el-divider>
+    <el-table
+      :data="tableData"
+      row-key="id"
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+    >
+      <el-table-column
+        prop="date"
+        label="日期"
+        sortable
+        width="180"
+      />
+      <el-table-column
+        prop="id"
+        label="序号"
+        width="100"
+      />
+      <el-table-column
+        prop="name"
+        label="姓名"
+        sortable
+        width="180"
+      />
+      <el-table-column
+        prop="address"
+        label="地址"
+      />
+    </el-table>
+  </div>
 </template>
 
 <script>
