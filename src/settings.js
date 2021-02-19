@@ -1,7 +1,7 @@
 const webpackConfig = require('./webpackConfig.js')
 
 module.exports = {
-  title: '代理管理平台',
+  title: '销售管理',
 
   /**
    * @type {boolean} true | false

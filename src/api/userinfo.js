@@ -2,8 +2,8 @@ import request from '@/utils/request'
 
 export function getUser(query) {
   return request({
-    // url: '/employee/getEmployeeInfo',
-    url: 'static/data/account.json',
+    url: '/employee/getEmployeeInfo',
+    // url: 'static/data/account.json',
     method: 'get',
     params: query
   })
