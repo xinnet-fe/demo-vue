@@ -9,9 +9,8 @@ import Layout from '@/layout'
 
 /* Router Modules */
 import componentsRouter from './demos/components'
-// import chartsRouter from './demos/charts'
 import tableRouter from './demos/table'
-// import nestedRouter from './demos/nested'
+import nestedRouter from './demos/nested'
 import formRouter from './demos/form'
 import orderRouter from './demos/order'
 import dialogRouter from './demos/dialog'
@@ -115,21 +114,6 @@ const demosConstantRoutes = hasDevelopment ? [
   dialogRouter,
   detailRouter,
   {
-    path: '/dashboard',
-    component: Layout,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', type: 'demo' }
-      }
-    ]
-  },
-  {
     path: '/guide',
     component: Layout,
     meta: {
@@ -141,24 +125,7 @@ const demosConstantRoutes = hasDevelopment ? [
         path: 'index',
         component: () => import('@/views/demos/guide/index'),
         name: 'Guide',
-        meta: { title: 'Guide', icon: 'guide', noCache: true, type: 'demo' }
-      }
-    ]
-  },
-  {
-    path: '/profile',
-    component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
-    meta: {
-      type: 'demo'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/demos/profile/index'),
-        name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true, type: 'demo' }
+        meta: { title: '引导', icon: 'guide', noCache: true, type: 'demo' }
       }
     ]
   },
@@ -170,7 +137,7 @@ const demosConstantRoutes = hasDevelopment ? [
   {
     path: '/auth-redirect',
     component: () => import('@/views/demos/login/auth-redirect'),
-    hidden: true
+    hidden: false
   },
   {
     path: '/permission',
@@ -179,7 +146,7 @@ const demosConstantRoutes = hasDevelopment ? [
     alwaysShow: true, // will always show the root menu
     name: 'Permission',
     meta: {
-      title: 'Permission',
+      title: '权限',
       icon: 'lock',
       type: 'demo',
       roles: ['admin', 'editor'] // you can set roles in root nav
@@ -230,205 +197,79 @@ const demosConstantRoutes = hasDevelopment ? [
         path: 'index',
         component: () => import('@/views/demos/clipboard/index'),
         name: 'ClipboardDemo',
-        meta: { title: 'Clipboard', icon: 'clipboard', type: 'demo' }
+        meta: { title: '复制黏贴', icon: 'clipboard', type: 'demo' }
+      }
+    ]
+  },
+  nestedRouter,
+  {
+    path: '/error',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'ErrorPages',
+    meta: {
+      title: '错误页面',
+      type: 'demo',
+      icon: '404'
+    },
+    children: [
+      {
+        path: '401',
+        component: () => import('@/views/errorPage/401'),
+        name: 'Page401',
+        meta: { title: '401', noCache: true, type: 'demo' }
+      },
+      {
+        path: '404',
+        component: () => import('@/views/errorPage/404'),
+        name: 'Page404',
+        meta: { title: '404', noCache: true, type: 'demo' }
+      },
+      {
+        path: '403',
+        component: () => import('@/views/errorPage/403'),
+        name: 'Page403',
+        meta: { title: '403', noCache: true, type: 'demo' }
+      },
+      {
+        path: '500',
+        component: () => import('@/views/errorPage/500'),
+        name: 'Page500',
+        meta: { title: '500', noCache: true, type: 'demo' }
+      }
+    ]
+  },
+  {
+    path: '/pdf',
+    component: Layout,
+    redirect: '/pdf/index',
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/pdf/index'),
+        name: 'PDF',
+        meta: { title: 'PDF', icon: 'pdf', type: 'demo' }
+      }
+    ]
+  },
+  {
+    path: '/theme',
+    component: Layout,
+    meta: {
+      type: 'demo'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/demos/theme/index'),
+        name: 'Theme',
+        meta: { title: '主题切换', icon: 'theme', type: 'demo' }
       }
     ]
   }
-  // chartsRouter,
-  // nestedRouter,
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/list',
-  //   name: 'Example',
-  //   meta: {
-  //     title: 'Example',
-  //     type: 'demo',
-  //     icon: 'example'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'create',
-  //       component: () => import('@/views/demos/example/create'),
-  //       name: 'CreateArticle',
-  //       meta: { title: 'Create Article', icon: 'edit', type: 'demo' }
-  //     },
-  //     {
-  //       path: 'edit/:id(\\d+)',
-  //       component: () => import('@/views/demos/example/edit'),
-  //       name: 'EditArticle',
-  //       meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list', type: 'demo' },
-  //       hidden: true
-  //     },
-  //     {
-  //       path: 'list',
-  //       component: () => import('@/views/demos/example/list'),
-  //       name: 'ArticleList',
-  //       meta: { title: 'Article List', icon: 'list', type: 'demo' }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/error',
-  //   component: Layout,
-  //   redirect: 'noRedirect',
-  //   name: 'ErrorPages',
-  //   meta: {
-  //     title: 'Error Pages',
-  //     type: 'demo',
-  //     icon: '404'
-  //   },
-  //   children: [
-  //     {
-  //       path: '401',
-  //       component: () => import('@/views/errorPage/401'),
-  //       name: 'Page401',
-  //       meta: { title: '401', noCache: true, type: 'demo' }
-  //     },
-  //     {
-  //       path: '404',
-  //       component: () => import('@/views/errorPage/404'),
-  //       name: 'Page404',
-  //       meta: { title: '404', noCache: true, type: 'demo' }
-  //     },
-  //     {
-  //       path: '403',
-  //       component: () => import('@/views/errorPage/403'),
-  //       name: 'Page403',
-  //       meta: { title: '403', noCache: true, type: 'demo' }
-  //     },
-  //     {
-  //       path: '500',
-  //       component: () => import('@/views/errorPage/500'),
-  //       name: 'Page500',
-  //       meta: { title: '500', noCache: true, type: 'demo' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/error-log',
-  //   component: Layout,
-  //   meta: {
-  //     type: 'demo'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'log',
-  //       component: () => import('@/views/demos/error-log/index'),
-  //       name: 'ErrorLog',
-  //       meta: { title: 'Error Log', icon: 'bug', type: 'demo' }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/excel',
-  //   component: Layout,
-  //   redirect: '/excel/export-excel',
-  //   name: 'Excel',
-  //   meta: {
-  //     title: 'Excel',
-  //     type: 'demo',
-  //     icon: 'excel'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'export-excel',
-  //       component: () => import('@/views/demos/excel/export-excel'),
-  //       name: 'ExportExcel',
-  //       meta: { title: 'Export Excel', type: 'demo' }
-  //     },
-  //     {
-  //       path: 'export-selected-excel',
-  //       component: () => import('@/views/demos/excel/select-excel'),
-  //       name: 'SelectExcel',
-  //       meta: { title: 'Export Selected', type: 'demo' }
-  //     },
-  //     {
-  //       path: 'export-merge-header',
-  //       component: () => import('@/views/demos/excel/merge-header'),
-  //       name: 'MergeHeader',
-  //       meta: { title: 'Merge Header', type: 'demo' }
-  //     },
-  //     {
-  //       path: 'upload-excel',
-  //       component: () => import('@/views/demos/excel/upload-excel'),
-  //       name: 'UploadExcel',
-  //       meta: { title: 'Upload Excel', type: 'demo' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/zip',
-  //   component: Layout,
-  //   redirect: '/zip/download',
-  //   alwaysShow: true,
-  //   name: 'Zip',
-  //   meta: { title: 'Zip', icon: 'zip', type: 'demo' },
-  //   children: [
-  //     {
-  //       path: 'download',
-  //       component: () => import('@/views/demos/zip/index'),
-  //       name: 'ExportZip',
-  //       meta: { title: 'Export Zip', type: 'demo' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/pdf',
-  //   component: Layout,
-  //   redirect: '/pdf/index',
-  //   meta: {
-  //     type: 'demo'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/demos/pdf/index'),
-  //       name: 'PDF',
-  //       meta: { title: 'PDF', icon: 'pdf', type: 'demo' }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/pdf/download',
-  //   component: () => import('@/views/demos/pdf/download'),
-  //   meta: {
-  //     type: 'demo'
-  //   },
-  //   hidden: true
-  // },
-
-  // {
-  //   path: '/theme',
-  //   component: Layout,
-  //   meta: {
-  //     type: 'demo'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/demos/theme/index'),
-  //       name: 'Theme',
-  //       meta: { title: 'Theme', icon: 'theme', type: 'demo' }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   meta: {
-  //     type: 'demo'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'https://github.com/PanJiaChen/vue-element-admin',
-  //       meta: { title: 'External Link', icon: 'link', type: 'demo' }
-  //     }
-  //   ]
-  // }
 ] : []
 
 export const constantRoutes = [

@@ -8,17 +8,11 @@ const componentsRouter = {
   redirect: 'noRedirect',
   name: 'ComponentDemo',
   meta: {
-    title: 'Components',
+    title: '小工具',
     type: 'demo',
     icon: 'component'
   },
   children: [
-    {
-      path: 'tinymce',
-      component: () => import('@/views/demos/components-demo/tinymce'),
-      name: 'TinymceDemo',
-      meta: { title: 'Tinymce', type: 'demo' }
-    },
     {
       path: 'markdown',
       component: () => import('@/views/demos/components-demo/markdown'),
@@ -38,46 +32,16 @@ const componentsRouter = {
       meta: { title: 'SplitPane', type: 'demo' }
     },
     {
-      path: 'avatar-upload',
-      component: () => import('@/views/demos/components-demo/avatar-upload'),
-      name: 'AvatarUploadDemo',
-      meta: { title: 'Upload', type: 'demo' }
-    },
-    {
       path: 'dropzone',
       component: () => import('@/views/demos/components-demo/dropzone'),
       name: 'DropzoneDemo',
       meta: { title: 'Dropzone', type: 'demo' }
     },
     {
-      path: 'sticky',
-      component: () => import('@/views/demos/components-demo/sticky'),
-      name: 'StickyDemo',
-      meta: { title: 'Sticky', type: 'demo' }
-    },
-    {
       path: 'count-to',
       component: () => import('@/views/demos/components-demo/count-to'),
       name: 'CountToDemo',
       meta: { title: 'Count To', type: 'demo' }
-    },
-    {
-      path: 'mixin',
-      component: () => import('@/views/demos/components-demo/mixin'),
-      name: 'ComponentMixinDemo',
-      meta: { title: 'Component Mixin', type: 'demo' }
-    },
-    {
-      path: 'back-to-top',
-      component: () => import('@/views/demos/components-demo/back-to-top'),
-      name: 'BackToTopDemo',
-      meta: { title: 'Back To Top', type: 'demo' }
-    },
-    {
-      path: 'drag-dialog',
-      component: () => import('@/views/demos/components-demo/drag-dialog'),
-      name: 'DragDialogDemo',
-      meta: { title: 'Drag Dialog', type: 'demo' }
     },
     {
       path: 'drag-select',

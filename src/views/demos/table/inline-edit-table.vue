@@ -1,5 +1,6 @@
 <template>
-  <div class="app-container">
+  <div class="demo-container" style="padding: 20px;">
+    <el-divider content-position="left">行内编辑表格</el-divider>
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="80">
         <template slot-scope="{row}">

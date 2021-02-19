@@ -1,11 +1,12 @@
 <template>
-  <div class="app-container">
-    <div style="margin:0 0 5px 20px">
+  <div class="demo-container" style="padding: 20px;">
+    <el-divider content-position="left">动态表格</el-divider>
+    <div style="margin: 20px 0;">
       Fixed header, sorted by header order,
     </div>
     <fixed-thead />
 
-    <div style="margin:30px 0 5px 20px">
+    <div style="margin: 20px 0;">
       Not fixed header, sorted by click order
     </div>
     <unfixed-thead />
