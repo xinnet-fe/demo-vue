@@ -207,6 +207,7 @@
             v-model="form2.salesmagFirst"
             placeholder="请选择"
             clearable
+            @focus="handleFocus(1)"
           >
             <el-option
               v-for="item in saleNameList"
@@ -216,7 +217,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form2.salesmagFirst && form2.salesmagFirst.length" label="备注:" prop="salesmagRemarkFirst">
+        <el-form-item v-if="mark1" label="备注:" prop="salesmagRemarkFirst">
           <el-input v-model="form2.salesmagRemarkFirst" maxlength="30" />
           <span class="operateUser">操作人：{{ name }}</span>
         </el-form-item>
@@ -225,6 +226,7 @@
             v-model="form2.businessType"
             placeholder="请选择"
             clearable
+            @focus="handleFocus(2)"
           >
             <el-option
               v-for="item in businessTypeList"
@@ -234,7 +236,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form2.businessType && form2.businessType.length" label="备注:" prop="businessTypeRemark">
+        <el-form-item v-if="mark2" label="备注:" prop="businessTypeRemark">
           <el-input v-model="form2.businessTypeRemark" maxlength="30" />
           <span class="operateUser">操作人：{{ name }}</span>
         </el-form-item>
@@ -243,6 +245,7 @@
             v-model="form2.salesmagSecond"
             placeholder="请选择"
             clearable
+            @focus="handleFocus(3)"
           >
             <el-option
               v-for="item in saleNameList"
@@ -252,7 +255,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form2.salesmagSecond && form2.salesmagSecond.length" label="备注:" prop="salesmagRemarkSecond">
+        <el-form-item v-if="mark3" label="备注:" prop="salesmagRemarkSecond">
           <el-input v-model="form2.salesmagRemarkSecond" maxlength="30" />
           <span class="operateUser">操作人：{{ name }}</span>
         </el-form-item>
@@ -261,6 +264,7 @@
             v-model="form2.orderType"
             placeholder="请选择"
             clearable
+            @focus="handleFocus(4)"
           >
             <el-option
               v-for="item in orderTypeList"
@@ -270,7 +274,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form2.orderType && form2.orderType.length" label="备注:" prop="orderTypeRemark">
+        <el-form-item v-if="mark4" label="备注:" prop="orderTypeRemark">
           <el-input v-model="form2.orderTypeRemark" maxlength="30" />
           <span class="operateUser">操作人：{{ name }}</span>
         </el-form-item>
@@ -401,7 +405,11 @@ export default {
       ],
       productType: [],
       saleName: [],
-      company: []
+      company: [],
+      mark1: false,
+      mark2: false,
+      mark3: false,
+      mark4: false
     }
   },
   computed: {
@@ -440,6 +448,9 @@ export default {
   methods: {
     ...mapActions('performance', ['queryHyDlSalePerformanceData']),
     checkPermission,
+    handleFocus(v) {
+      this['mark' + v] = true
+    },
     resetDate() {
       const dt1 = new Date()
       dt1.setDate(dt1.getDate() - 90) // 默认为最近90天
@@ -532,10 +543,10 @@ export default {
       this.form2.salesmagSecond = row.salesmagSecond
       this.form2.orderType = row.orderType
 
-      this.form2.salesmagRemarkFirst = row.salesmagRemarkFirst
-      this.form2.salesmagRemarkSecond = row.salesmagRemarkSecond
-      this.form2.businessTypeRemark = row.businessTypeRemark
-      this.form2.orderTypeRemark = row.orderTypeRemark
+      // this.form2.salesmagRemarkFirst = row.salesmagRemarkFirst
+      // this.form2.salesmagRemarkSecond = row.salesmagRemarkSecond
+      // this.form2.businessTypeRemark = row.businessTypeRemark
+      // this.form2.orderTypeRemark = row.orderTypeRemark
     }
   }
 }
