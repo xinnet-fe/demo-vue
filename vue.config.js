@@ -17,7 +17,11 @@ const customWebpackConfig = defaultSettings.webpackConfig
 // merge proxy
 const defaultProxy = {
   '/portal': {
-    target: 'http://119.10.116.247:8082',
+    target: 'http://172.22.132.17:8086',
+    changeOrigin: true
+  },
+  '/performance': {
+    target: 'http://172.22.132.17:8086',
     changeOrigin: true
   }
 }

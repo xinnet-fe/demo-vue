@@ -5,11 +5,11 @@
       style="padding: 0 20px;"
       @tab-click="handleTabClick"
     >
-      <el-tab-pane label="会员" name="hy">
-        <order-hy ref="listhy" @download="handleDownload" />
+      <el-tab-pane v-if="checkPermission(['1'])" label="会员" name="hy">
+        <order-hy ref="listhy" :product-type-list="productTypeList" :sale-name-list="saleNameList" :company-list="companyList" :service-status-list="serviceStatusList" :business-type-list="businessTypeList" />
       </el-tab-pane>
-      <el-tab-pane label="代理" name="agent">
-        <order-agent ref="listagent" @download="handleDownload" />
+      <el-tab-pane v-if="checkPermission(['2'])" label="代理" name="agent">
+        <order-agent ref="listagent" :product-type-list="productTypeList" :sale-name-list="saleNameList" :company-list="companyList" :service-status-list="serviceStatusList" :business-type-list="businessTypeList" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -18,6 +18,7 @@
 <script>
 import orderHy from './hy.vue'
 import orderAgent from './agent.vue'
+import checkPermission from '@/utils/demos/permission' // 权限判断函数
 export default {
   name: 'Order',
   components: { orderHy, orderAgent },
@@ -26,12 +27,68 @@ export default {
       activeName: 'hy',
       row: {},
       loadingBtn: false,
-      downloadLoading: false
+      productTypeList: [
+        {
+          label: '全部',
+          value: ''
+        }
+      ],
+      saleNameList: [
+      ],
+      companyList: [
+        {
+          label: '全部',
+          value: ''
+        }
+      ],
+      serviceStatusList: [
+        {
+          label: '全部',
+          value: ''
+        },
+        {
+          label: '未开通',
+          value: '01'
+        },
+        {
+          label: '已开通',
+          value: '02'
+        },
+        {
+          label: '开通失败',
+          value: '03'
+        }
+      ],
+      businessTypeList: [
+        {
+          label: '新开',
+          value: '新开'
+        },
+        {
+          label: '续费',
+          value: '续费'
+        },
+        {
+          label: '升级',
+          value: '升级'
+        },
+        {
+          label: '升级新开',
+          value: '升级新开'
+        },
+        {
+          label: '升级退费',
+          value: '升级退费'
+        }
+      ]
     }
   },
   computed: {
   },
   created() {
+    this.queryProductTypeList()
+    this.querySaleNameList()
+    this.queryCompanyList()
   },
   mounted() {
     // this.$store.getters.user.permissions.map((v) => {
@@ -46,37 +103,51 @@ export default {
     // })
   },
   methods: {
+    checkPermission,
     handleTabClick(tab, event) {
       console.log(tab, event)
     },
-    handleBack() {
-      this.showDetail = false
-    },
-    handleDownload(query) {
-      this.downloadLoading = true
-      this.$store
-        .dispatch('tradeOrder/orderList', query)
-        .then((res) => {
-          this.downloadLoading = false
-          if (res.data.list.length) {
-            if (res.data.total < 60000) {
-              const str = this.getUrlparam(query)
-              window.open(
-                window.location.origin + '/boss/tradeOrder/exportExecl?' + str
-              )
-            } else {
-              this.dialogLogout = true
-              this.shows = 60000
+    queryProductTypeList() {
+      this.$store.dispatch('performance/queryProductTypeList', {}).then((res) => {
+        res.data.map((v) => {
+          this.productTypeList.push(
+            {
+              label: v,
+              value: v
             }
-          } else {
-            this.dialogLogout = true
-            this.shows = 0
-          }
+          )
         })
-        .catch((error) => {
-          this.downloadLoading = false
-          console.log(error)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    querySaleNameList() {
+      this.$store.dispatch('performance/querySaleNameList', {}).then((res) => {
+        res.data.map((v) => {
+          this.saleNameList.push(
+            {
+              label: v.salesmagFirst,
+              value: v.salesmagFirst
+            }
+          )
         })
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    queryCompanyList() {
+      this.$store.dispatch('performance/queryCompanyList', {}).then((res) => {
+        res.data.map((v) => {
+          this.companyList.push(
+            {
+              label: v.salesmagCompanyFirst,
+              value: v.salesmagCompanyFirst
+            }
+          )
+        })
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   }
 }

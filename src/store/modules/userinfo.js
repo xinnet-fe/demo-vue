@@ -2,7 +2,10 @@ import { getUser, getSidebarMenus, changePwd } from '@/api/userinfo'
 import { setStore, removeStore } from '@/utils/auth'
 
 const state = {
-  user: {},
+  user: {
+    roles: [],
+    permissions: []
+  },
   menus: [],
   form: {
     oldpassword: '',
