@@ -3,10 +3,10 @@
         "code": "agent-client-app",
         "parentCode": null,
         "children": [{
-          "code": "refund",
+          "code": "webInfo",
           "parentCode": "agent-client-app",
           "icon": "",
-          "text": "退费",
+          "text": "网站信息查询",
           "url": "",
           "target": "tab",
           "hidden": false,
