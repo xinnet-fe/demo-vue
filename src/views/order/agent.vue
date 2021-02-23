@@ -429,7 +429,7 @@ export default {
               } else if (row.orderStatus === '4') {
                 row.orderStatusa = '支付成功'
               } else if (row.orderStatus === '5') {
-                row.orderStatusa = '支付失败"'
+                row.orderStatusa = '支付失败'
               } else if (row.orderStatus === '6') {
                 row.orderStatusa = '已支付'
               }
