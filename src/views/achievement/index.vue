@@ -5,10 +5,10 @@
       style="padding: 0 20px;"
       @tab-click="handleTabClick"
     >
-      <el-tab-pane v-if="checkPermission(['1'])" label="会员" name="hy">
+      <el-tab-pane v-if="checkPermission(['Sales-Performmance-hy'])" label="会员" name="hy">
         <order-hy ref="listhy" :product-type-list="productTypeList" :sale-name-list="saleNameList" :company-list="companyList" :service-status-list="serviceStatusList" :business-type-list="businessTypeList" />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['2'])" label="代理" name="agent">
+      <el-tab-pane v-if="checkPermission(['Sales-Performmance-dl'])" label="代理" name="agent">
         <order-agent ref="listagent" :product-type-list="productTypeList" :sale-name-list="saleNameList" :company-list="companyList" :service-status-list="serviceStatusList" :business-type-list="businessTypeList" />
       </el-tab-pane>
     </el-tabs>

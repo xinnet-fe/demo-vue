@@ -182,6 +182,7 @@
       >
         <template slot-scope="{ row }">
           <el-button
+            v-if="checkPermission(['Sales-Performmance-edit'])"
             type="text"
             size="small"
             @click="handleEdit(row)"
@@ -215,7 +216,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form2.salesmagFirst.length" label="备注:" prop="salesmagRemarkFirst">
+        <el-form-item v-if="form2.salesmagFirst && form2.salesmagFirst.length" label="备注:" prop="salesmagRemarkFirst">
           <el-input v-model="form2.salesmagRemarkFirst" maxlength="30" />
           <span class="operateUser">操作人：{{ name }}</span>
         </el-form-item>
@@ -233,7 +234,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form2.businessType.length" label="备注:" prop="businessTypeRemark">
+        <el-form-item v-if="form2.businessType && form2.businessType.length" label="备注:" prop="businessTypeRemark">
           <el-input v-model="form2.businessTypeRemark" maxlength="30" />
           <span class="operateUser">操作人：{{ name }}</span>
         </el-form-item>
@@ -251,7 +252,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form2.salesmagSecond.length" label="备注:" prop="salesmagRemarkSecond">
+        <el-form-item v-if="form2.salesmagSecond && form2.salesmagSecond.length" label="备注:" prop="salesmagRemarkSecond">
           <el-input v-model="form2.salesmagRemarkSecond" maxlength="30" />
           <span class="operateUser">操作人：{{ name }}</span>
         </el-form-item>
@@ -269,7 +270,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form2.orderType.length" label="备注:" prop="orderTypeRemark">
+        <el-form-item v-if="form2.orderType && form2.orderType.length" label="备注:" prop="orderTypeRemark">
           <el-input v-model="form2.orderTypeRemark" maxlength="30" />
           <span class="operateUser">操作人：{{ name }}</span>
         </el-form-item>
@@ -290,6 +291,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Pagination from '@/components/demos/Pagination' // secondary package based on el-pagination
 import clearFormDate from '@/utils/clearFormData'
+import checkPermission from '@/utils/demos/permission' // 权限判断函数
 export default {
   name: 'AchievementHy',
   components: { Pagination },
@@ -437,6 +439,7 @@ export default {
   },
   methods: {
     ...mapActions('performance', ['queryHyDlSalePerformanceData']),
+    checkPermission,
     resetDate() {
       const dt1 = new Date()
       dt1.setDate(dt1.getDate() - 90) // 默认为最近90天

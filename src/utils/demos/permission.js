@@ -14,7 +14,7 @@ export default function checkPermission(value) {
     const hasPermission = roles.some(role => {
       return ['超级管理员'].includes(role)
     }) || permissions.some(permission => {
-      return permissionRoles.includes(permission)
+      return permission.indexOf(permissionRoles) >= 0
     })
 
     if (!hasPermission) {
