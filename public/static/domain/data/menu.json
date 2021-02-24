@@ -1,5 +1,15 @@
 [
   {
+    "code": "violate-domain",
+    "parentCode": "",
+    "icon": "",
+    "text": "全部域名违规清单",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
     "code": "refund",
     "parentCode": "",
     "icon": "",
