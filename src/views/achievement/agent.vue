@@ -143,7 +143,7 @@
       </el-table-column>
       <el-table-column label="订单方式">
         <template slot-scope="{ row }">
-          <span>￥{{ row.businessType }}</span>
+          <span>{{ row.businessType }}</span>
         </template>
       </el-table-column>
 
