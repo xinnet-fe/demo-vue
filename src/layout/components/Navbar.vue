@@ -26,93 +26,41 @@
       </template>
 
       <el-dropdown class="right-menu-item hover-effect" trigger="click">
-        <el-badge :value="12" class="badge-item">
+        <el-badge :value="unreadMsgCount" class="badge-item">
           <svg-icon icon-class="naoling" />
         </el-badge>
         <el-dropdown-menu slot="dropdown" style="width:350px;padding: 20px;" class="dropdown-msg">
           <b class="title">消息通知</b>
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="全部" name="first">
-              <table>
-                <tr>
+              <table v-if="listMsg.length">
+                <tr v-for="(item, idx) in listMsg" :key="idx">
                   <td class="col1">
                     <img src="static/img/xls.png" alt="">
                   </td>
                   <td class="col2">
-                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
-                    <p class="time">2020-02-02 12:12:12</p>
+                    <p class="title">{{ item.fileName }}</p>
+                    <p class="time">{{ item.createTime }}</p>
                   </td>
                   <td class="col3">
-                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
-                    <span class="invalid">已失效</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col1">
-                    <img src="static/img/xls.png" alt="">
-                  </td>
-                  <td class="col2">
-                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
-                    <p class="time">2020-02-02 12:12:12</p>
-                  </td>
-                  <td class="col3">
-                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
-                    <span class="invalid">已失效</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col1">
-                    <img src="static/img/xls.png" alt="">
-                  </td>
-                  <td class="col2">
-                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
-                    <p class="time">2020-02-02 12:12:12</p>
-                  </td>
-                  <td class="col3">
-                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
-                    <span class="invalid">已失效</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col1">
-                    <img src="static/img/xls.png" alt="">
-                  </td>
-                  <td class="col2">
-                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
-                    <p class="time">2020-02-02 12:12:12</p>
-                  </td>
-                  <td class="col3">
-                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
-                    <span class="invalid">已失效</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col1">
-                    <img src="static/img/xls.png" alt="">
-                  </td>
-                  <td class="col2">
-                    <p class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</p>
-                    <p class="time">2020-02-02 12:12:12</p>
-                  </td>
-                  <td class="col3">
-                    <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
-                    <span class="invalid">已失效</span>
+                    <el-link v-if="(item.status!=='03' && item.downloadUrl && item.downloadUrl.length)" type="primary" :href="item.downloadUrl" target="_blank">点击下载</el-link>
+                    <span v-if="item.status==='03'" class="invalid">已失效</span>
                   </td>
                 </tr>
               </table>
-              <div class="tool">
-                <el-link type="primary" href="javascript:;" class="clear">清空</el-link>
-                <el-link type="primary" href="http://" target="_blank" class="more">查看更多</el-link>
+              <div v-if="listMsg.length" class="tool">
+                <el-link type="primary" href="javascript:;" class="clear" @click.native="updateStatus">清空</el-link>
+                <el-link type="primary" href="#/boss-nav-messagemanage/index" class="more">查看更多</el-link>
               </div>
-              <div class="null">
+              <div v-if="!listMsg.length" class="null">
                 <img src="static/img/null.png" alt="">
               </div>
             </el-tab-pane>
-            <el-tab-pane label="导出" name="second">
+            <!-- <el-tab-pane label="导出" name="second">
               <div class="null">
                 <img src="static/img/null.png" alt="">
               </div>
-            </el-tab-pane>
+            </el-tab-pane> -->
           </el-tabs>
         </el-dropdown-menu>
       </el-dropdown>
@@ -156,7 +104,8 @@ export default {
     return {
       username: '管理员',
       resetPwdFormVisible: false,
-      activeName: 'first'
+      activeName: 'first',
+      listMsg: []
     }
   },
   computed: {
@@ -164,8 +113,16 @@ export default {
       'sidebar',
       'avatar',
       'device',
-      'user'
+      'user',
+      'unreadMsgCount'
     ])
+  },
+  mounted() {
+    this.getUnreadMsgCount()
+    setInterval(() => {
+      this.getUnreadMsgCount()
+    }, 60000)
+    this.getList()
   },
   methods: {
     handleClick() {
@@ -173,6 +130,47 @@ export default {
     },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
+    },
+    getUnreadMsgCount() {
+      this.$store.dispatch('msg/unreadMsgCount').then((res) => {
+        console.log(res)
+        // this.countMsg = res.count
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    getList() {
+      const query = {
+        msgType: '',
+        isShow: '01',
+        pageNum: 1,
+        pageSize: 6
+      }
+      this.$store.dispatch('msg/list', query).then((res) => {
+        this.listMsg = res.list
+      }).catch((error) => {
+        // this.$message.error('加载失败，请稍后再试或减少查询数据量')
+        console.log(error)
+      })
+    },
+    updateStatus() {
+      // alert(1)
+      const query = {
+        ids: this.listMsg.map((v) => {
+          return v.id
+        }).join(','),
+        updateType: '3'
+      }
+      this.$store.dispatch('msg/updateStatus', query).then((res) => {
+        if (res.isSuccess === 1) {
+          this.listMsg = []
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch((error) => {
+        // this.$message.error('加载失败，请稍后再试或减少查询数据量')
+        console.log(error)
+      })
     },
     async logout() {
       console.log('env：' + process.env.NODE_ENV)

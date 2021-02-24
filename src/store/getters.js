@@ -16,6 +16,7 @@ const getters = {
   main_permission_routes: state => state.permission.mainRoutes,
   main_sidebar: state => state.permission.sidebar,
   errorLogs: state => state.errorLog.logs,
-  loading: state => state.loading
+  loading: state => state.loading,
+  unreadMsgCount: state => state.msg.unreadMsgCount
 }
 export default getters

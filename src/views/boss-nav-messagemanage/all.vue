@@ -1,32 +1,21 @@
 <template>
   <div>
-    <table>
-      <tr>
+    <table v-if="listMsg.length">
+      <tr v-for="(item, idx) in listMsg" :key="idx" @click="updateStatus(item.id, '1')">
         <td class="col1">
-          <i class="dot" />
+          <i :class="'dot' + (item.status === '01' ? ' unread' : '')" />
           <img src="static/img/xls.png" alt="">
-          <span class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</span>
+          <span class="title">{{ item.name }}</span>
         </td>
-        <td class="col2">2020-02-02 12:12:12</td>
+        <td class="col2">{{ item.createTime }}</td>
         <td class="col3">
-          <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
-          <span class="invalid">已失效</span>
-        </td>
-      </tr>
-      <tr>
-        <td class="col1">
-          <i class="dot" />
-          <img src="static/img/xls.png" alt="">
-          <span class="title">爱上对方就流口水大解放路口撒地方撒大家分开来说</span>
-        </td>
-        <td class="col2">2020-02-02 12:12:12</td>
-        <td class="col3">
-          <el-link type="primary" href="http://" target="_blank">点击下载</el-link>
-          <span class="invalid">已失效</span>
+
+          <el-link v-if="(item.status!=='03' && item.downloadUrl && item.downloadUrl.length)" type="primary" :href="item.downloadUrl" target="_blank" @click.native="updateStatus(item.id, '1')">点击下载</el-link>
+          <span v-if="item.status==='03'" class="invalid">已失效</span>
         </td>
       </tr>
     </table>
-    <div class="null">
+    <div v-else class="null">
       <img src="static/img/null.png" alt="">
     </div>
     <pagination
@@ -39,7 +28,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
 export default {
   components: {
@@ -47,21 +36,74 @@ export default {
   },
   data() {
     return {
+      listMsg: [],
       page: {
-        total: 100,
-        limit: 10
+        total: 0,
+        limit: 30,
+        page: 1
       }
     }
   },
   computed: {
-    ...mapGetters([
-    ])
+    ...mapState({
+      loading: (state) => state.loading.effects['msg/list']
+    })
   },
   watch: {
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
-    getList() {
-      alert('all')
+    ...mapActions('msg', ['list']),
+    getList(page) {
+      const query = {
+        msgType: '',
+        isShow: '',
+        pageNum: 1,
+        pageSize: 30
+      }
+      if (page) {
+        query.pageNum = page.page
+        query.pageSize = page.limit
+      } else {
+        query.pageNum = 1
+        query.pageSize = this.page.limit
+        this.page.page = 1
+        // this.page.limit = 20;
+      }
+      this.list(query).then((res) => {
+        this.listMsg = res.list
+        this.page.total = res.count
+      }).catch((error) => {
+        // this.$message.error('加载失败，请稍后再试或减少查询数据量')
+        console.log(error)
+      })
+    },
+    updateStatus(ids, type) {
+      const query = {
+        ids: ids,
+        updateType: type
+      }
+      this.$store.dispatch('msg/updateStatus', query).then((res) => {
+        if (res.isSuccess === 1) {
+          if (ids.length) {
+            this.listMsg.map((v) => {
+              if (v.id === ids) {
+                v.status = '02'
+              }
+            })
+          } else {
+            this.$emit('loadingFalse')
+            this.getList()
+          }
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch((error) => {
+        // this.$message.error('加载失败，请稍后再试或减少查询数据量')
+        console.log(error)
+      })
     }
   }
 }
@@ -85,6 +127,9 @@ export default {
   border-radius: 100%;
   background: #ebebeb;
   margin: 0 10px;
+}
+.container-msg table td .dot.unread{
+  background: #f00;
 }
 .container-msg table td img{
   display: inline-block;
