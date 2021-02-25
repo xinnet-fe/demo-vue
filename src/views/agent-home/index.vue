@@ -85,7 +85,7 @@
                         <a target="_blank" href="http://www.xinnet.com/domain/wtgm.html">委托购买</a>
                         <a target="_blank" href="http://www.xinnet.com/domain/domainIn.html">域名转入</a>
                         <a target="_blank" href="http://www.xinnet.com/domain/domainIntelligentRecommendation.html">域名推荐</a>
-                        <a target="_blank" href="http://www.xinnet.com/domain/price.html">域名价格总览</a>
+                        <a target="_blank" href="http://domain.xinnet.com/index.html#/domainRegistration/overview">域名价格总览</a>
                       </div>
                     </div>
                   </el-tab-pane>
