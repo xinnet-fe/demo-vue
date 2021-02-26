@@ -12,7 +12,7 @@ export default {
       if (route.query.showLayout === 'false') {
         this.showLayout = false
       } else {
-        this.showLayout = true// true
+        this.showLayout = false// true
       }
     }
   }

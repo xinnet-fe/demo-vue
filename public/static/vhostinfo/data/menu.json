@@ -1,0 +1,22 @@
+[
+    {
+        "code": "agent-client-app",
+        "parentCode": null,
+        "children": [{
+          "code": "webInfo",
+          "parentCode": "agent-client-app",
+          "icon": "",
+          "text": "网站信息查询",
+          "url": "",
+          "target": "tab",
+          "hidden": false,
+          "param": ""
+        }],
+        "icon": "applicationCenter",
+        "text": "虚机",
+        "url": "",
+        "target": "",
+        "hidden": false,
+        "param": ""
+    }
+]
