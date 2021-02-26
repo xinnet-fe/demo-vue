@@ -16,6 +16,10 @@ const customWebpackConfig = defaultSettings.webpackConfig
 
 // merge proxy
 const defaultProxy = {
+  '/getinfo': {
+    target: 'http://host.xinnet.com',  // 虚机 （测试环境）
+    changeOrigin: true
+  },
   '/refundProduct': {
     target: 'https://host.xinnet.com',
     //target: 'https://stage.host.xinnet.com', // 虚机 驰云 
@@ -65,8 +69,8 @@ const configureWebpack = merge(defaultConfigureWebpack, customWebpackConfig.conf
 // merge root
 const defaultRootConfig = {
   publicPath: '/',
-  outputDir: 'dist',
-  assetsDir: 'static/ec',
+  outputDir: 'dist/ecinfo',
+  assetsDir: 'static/ecinfo',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false
 }
