@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <div class="filter-container">
       <el-checkbox-group v-model="formThead">
         <el-checkbox label="apple">
