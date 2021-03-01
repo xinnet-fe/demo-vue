@@ -1,73 +1,70 @@
 <template>
   <div class="order-form">
-    <!-- search -->
-    <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-      <el-form-item label="名称" prop="name">
-        <el-input v-model="searchForm.name" placeholder="请输入分类名称" clearable />
-      </el-form-item>
-      <el-form-item>
-        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
-      </el-form-item>
-    </el-form>
-    <!-- search -->
+    <template v-if="!home">
+      <!-- search -->
+      <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="searchForm.name" placeholder="请输入分类名称" clearable />
+        </el-form-item>
+        <el-form-item>
+          <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- search -->
 
-    <div class="operate-form">
-      <el-button size="mini" @click="showModal()">新增导航</el-button>
-    </div>
+      <div class="operate-form">
+        <el-button size="mini" @click="goInto()">新增导航</el-button>
+      </div>
 
-    <!-- table -->
-    <el-table
-      ref="table"
-      v-loading="loading"
-      row-key="id"
-      :tree-props="{children: 'children'}"
-      :data="list"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="name"
-        label="名称"
-      />
-      <el-table-column
-        ref="sortIndex"
-        prop="sortIndex"
-        label="序号"
-        sortable
-        :sort-method="sortByNumber"
-      />
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-      />
-      <el-table-column
-        label="显示状态"
+      <!-- table -->
+      <el-table
+        ref="table"
+        v-loading="loading"
+        row-key="id"
+        :tree-props="{children: 'children'}"
+        :data="list"
+        style="width: 100%"
       >
-        <template v-slot="{ row }">
-          <el-switch
-            v-model="row.status"
-            active-value="1"
-            inactive-value="0"
-            @change="switchChange(row)"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" fixed="right">
-        <template v-slot="{ row }">
-          <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
-          <el-button v-if="!(row.children && row.children.length)" type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- <pagination
-      :total="page.count"
-      :page.sync="page.pageNum"
-      :limit.sync="page.pageSize"
-      @pagination="getList"
-    /> -->
-    <!-- table -->
+        <el-table-column
+          prop="name"
+          label="名称"
+        />
+        <el-table-column
+          ref="sortIndex"
+          prop="sortIndex"
+          label="序号"
+          sortable
+          :sort-method="sortByNumber"
+        />
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+        />
+        <el-table-column
+          label="显示状态"
+        >
+          <template v-slot="{ row }">
+            <el-switch
+              v-model="row.status"
+              active-value="1"
+              inactive-value="0"
+              @change="switchChange(row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right">
+          <template v-slot="{ row }">
+            <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
+            <el-button v-if="!(row.children && row.children.length)" type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- table -->
+    </template>
 
     <!-- form -->
-    <el-dialog width="800px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
+    <div v-if="home">
+      <page-header :go-back="goBack" :title="modalTitle" />
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本属性" name="basis">
           <template v-slot:default>
@@ -164,11 +161,11 @@
           </template>
         </el-tab-pane>
       </el-tabs>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="closeModal">取消</el-button>
+      <div slot="footer" class="new-page-footer">
+        <el-button size="medium" @click="goBack">取消</el-button>
         <el-button size="medium" type="primary" @click="submit">保存</el-button>
       </div>
-    </el-dialog>
+    </div>
     <!-- form -->
 
     <!-- 删除提示 -->
@@ -204,12 +201,13 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
-// import Pagination from '@/components/Pagination'
+import PageHeader from '@/components/PageHeader'
 import JsonEditor from '@/components/JsonEditor'
 
 export default {
   name: 'CmsNavManage',
   components: {
+    PageHeader,
     JsonEditor
   },
   data() {
@@ -221,7 +219,7 @@ export default {
         name: ''
       },
       // 弹框
-      show: false,
+      home: false,
       modalTitle: '新增',
       // 弹框表单数据
       form: {
@@ -258,11 +256,6 @@ export default {
       showTips: false,
       // 表格的数据
       list: [],
-      // page: {
-      //   count: 0,
-      //   pageNum: 1,
-      //   pageSize: 30
-      // },
       // 上传附件列表
       fileList: [],
       // 文件管理器页面显示
@@ -306,8 +299,6 @@ export default {
       if (this.uploadImageAddress === '1') {
         this.$refs.upload.$el.click()
       } else {
-        console.log(this.showIframeModal)
-        // this.$refs.elfinder.contentWindow.showIframeModal = true
         this.showIframeModal = true
       }
     },
@@ -319,7 +310,7 @@ export default {
       }
       this.fileList = [file]
     },
-    showModal(row = {}) {
+    goInto(row = {}) {
       this.getParentIdMapping().then(() => {
         if (row.id) {
           const query = { id: row.id }
@@ -348,10 +339,10 @@ export default {
         }
       })
       this.form.target = this.formTarget
-      this.show = true
+      this.home = true
     },
-    closeModal() {
-      this.show = false
+    goBack() {
+      this.home = false
       forEach(this.form, (v, k, o) => {
         if (k === 'parentId') {
           o[k] = '0'
@@ -375,24 +366,14 @@ export default {
     closeTipsModal() {
       this.showTips = false
     },
-    beforeClose(done) {
-      this.closeModal()
-      this.$nextTick(() => {
-        this.activeName = 'basis'
-        done()
-      })
-    },
     getList(query = {}) {
       const { name } = this.searchForm
       query.name = name
       return this.getData(query).then(list => {
         this.list = list
-        // this.page = page
       })
     },
     onSearch() {
-      // const { pageNum, pageSize } = this.page
-      // const query = { pageNum, pageSize }
       this.getList()
     },
     getParams(id) {
@@ -446,13 +427,13 @@ export default {
           if (id) {
             formData.append('id', id)
             this.update(formData).then(res => {
-              this.closeModal()
+              this.goBack()
               this.onSearch()
             })
           // 新增
           } else {
             this.add(formData).then(res => {
-              this.closeModal()
+              this.goBack()
               this.onSearch()
             })
           }
@@ -533,5 +514,8 @@ export default {
   right: 0;
   z-index: 9992;
   cursor: pointer;
+}
+.new-page-footer {
+  margin-left: 100px;
 }
 </style>
