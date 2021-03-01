@@ -35,6 +35,12 @@ const dialogRouter = {
       component: () => import('@/views/demos/dialog/tab'),
       name: 'dialogTab',
       meta: { title: '页签弹窗', type: 'demo' }
+    },
+    {
+      path: 'drag-dialog',
+      component: () => import('@/views/demos/dialog/drag-dialog'),
+      name: 'drag-dialog',
+      meta: { title: '拖拽弹窗', type: 'demo' }
     }
   ]
 }

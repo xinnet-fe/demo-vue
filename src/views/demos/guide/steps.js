@@ -16,22 +16,6 @@ const steps = [
     }
   },
   {
-    element: '#header-search',
-    popover: {
-      title: 'Page Search',
-      description: 'Page search, quick navigation',
-      position: 'left'
-    }
-  },
-  {
-    element: '#screenfull',
-    popover: {
-      title: 'Screenfull',
-      description: 'Set the page into fullscreen',
-      position: 'left'
-    }
-  },
-  {
     element: '#size-select',
     popover: {
       title: 'Switch Size',
