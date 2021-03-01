@@ -5,19 +5,19 @@
       <!---->
       <div class="box-form order-form">
         <el-form ref="searchForm" :model="searchForm" class="search-form" :inline="true" :rules="searchForm.rules" style="line-height:400%;">
-          <el-form-item label="分类" prop="type">
-            <el-select v-model="searchForm.type" placeholder="请选择">
-              <el-option
-                v-for="item in searchForm.typeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
+          <el-form-item label="搜索" prop="type">
 
-          <el-form-item label="搜索" prop="word">
-            <el-input v-model="searchForm.word" placeholder="请输入关键字" />
+            <el-input v-model="searchForm.word" class="input-with-aaa" placeholder="请输入关键字">
+              <el-select slot="prepend" v-model="searchForm.type" class="input-with-bbb" placeholder="请选择">
+                <el-option
+                  v-for="item in searchForm.typeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-input>
+
           </el-form-item>
 
           <el-form-item label="添加时间" label-width="100px" prop="time">
@@ -387,12 +387,6 @@ export default {
           }, {
             'label': '操作人',
             'value': '4'
-          }, {
-            'label': '违规信息来源',
-            'value': '5'
-          }, {
-            'label': '违规原因',
-            'value': '6'
           }
         ],
         word: '',
@@ -651,6 +645,21 @@ export default {
   .el-form .el-textarea__inner {
     min-height: 54px !important;
   }
+  .input-with-aaa {
+    input{
+      width: 200px !important;
+    }
+    .input-with-bbb {
+      width: 100px !important;
+      .el-input{
+        width: 100% !important;
+        input{
+          width: 100% !important;
+        }
+      }
+    }
+  }
+
 }
 .violate{
   .el-dialog{
