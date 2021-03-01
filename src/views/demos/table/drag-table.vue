@@ -79,8 +79,8 @@ export default {
   },
   data() {
     return {
-      list: null,
-      total: null,
+      list: [],
+      total: [],
       listLoading: true,
       listQuery: {
         page: 1,

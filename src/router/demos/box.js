@@ -3,7 +3,7 @@ import Layout from '@/layout'
 const boxRouter = {
   path: '/box',
   component: Layout,
-  name: 'Table',
+  name: 'BoxTable',
   meta: {
     title: '盒子容器',
     type: 'demo',
