@@ -27,25 +27,19 @@ const tableRouter = {
       path: 'dynamic-table',
       component: () => import('@/views/demos/table/dynamic-table/index'),
       name: 'DynamicTable',
-      meta: { title: 'Dynamic Table', type: 'demo' }
+      meta: { title: '动态表格', type: 'demo' }
     },
     {
       path: 'drag-table',
       component: () => import('@/views/demos/table/drag-table'),
       name: 'DragTable',
-      meta: { title: 'Drag Table', type: 'demo' }
+      meta: { title: '拖拽表格', type: 'demo' }
     },
     {
       path: 'inline-edit-table',
       component: () => import('@/views/demos/table/inline-edit-table'),
       name: 'InlineEditTable',
-      meta: { title: 'Inline Edit', type: 'demo' }
-    },
-    {
-      path: 'complex-table',
-      component: () => import('@/views/demos/table/complex-table'),
-      name: 'ComplexTable',
-      meta: { title: 'Complex Table', type: 'demo' }
+      meta: { title: '行内编辑表格', type: 'demo' }
     }
   ]
 }

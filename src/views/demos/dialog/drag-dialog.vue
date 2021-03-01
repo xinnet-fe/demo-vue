@@ -1,6 +1,6 @@
 <template>
-  <div class="components-container">
-    <el-button type="primary" @click="dialogTableVisible = true">
+  <div class="demo-container" style="padding: 20px;">s
+    <el-button type="text" @click="dialogTableVisible = true">
       open a Drag Dialog
     </el-button>
     <el-dialog v-el-drag-dialog :visible.sync="dialogTableVisible" title="Shipping address" @dragDialog="handleDrag">

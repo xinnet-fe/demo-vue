@@ -84,6 +84,7 @@ import {
   Message,
   Notification,
   Scrollbar,
+  Popconfirm,
   InfiniteScroll
 } from 'element-ui'
 import './styles/element-variables.scss'
@@ -173,6 +174,7 @@ Vue.use(PageHeader, options)
 Vue.use(CascaderPanel, options)
 Vue.use(loadingDirective, options)
 Vue.use(Scrollbar, options)
+Vue.use(Popconfirm, options)
 Vue.use(InfiniteScroll, options)
 
 Vue.prototype.$loading = loadingService

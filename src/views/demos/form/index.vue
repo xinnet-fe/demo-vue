@@ -1,6 +1,6 @@
 <template>
-  <div class="demo-container">
-    <h3>典型表单</h3>
+  <div class="demo-container" style="padding: 20px;">
+    <el-divider content-position="left">典型表单</el-divider>
     <el-form ref="form" :model="form" label-width="120px">
       <el-form-item label="文本框">
         <el-input v-model="form.name" />
