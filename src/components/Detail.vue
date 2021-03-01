@@ -18,7 +18,8 @@ export default {
   name: 'Box',
   props: {
     handleToBack: {
-      type: Function
+      type: Function,
+      default: () => {}
     },
     showLeft: {
       type: Boolean,
