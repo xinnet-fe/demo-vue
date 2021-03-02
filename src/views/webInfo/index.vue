@@ -3,20 +3,24 @@
     <div class="box-form">
       <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
 
-        <el-form-item label="用户编号" prop="agentCode">
-          <el-input v-model="form.agentCode" placeholder="请输入用户编号" />
+        <el-form-item label="用户ID" prop="agentCode">
+          <el-input v-model="form.agentCode" placeholder="请输入用户ID" />
         </el-form-item>
 
         <el-form-item label="域名" prop="domainName">
           <el-input v-model="form.domainName" placeholder="请输入域名" />
         </el-form-item>
 
+        <el-form-item label="站点名称" prop="siteName">
+          <el-input v-model="form.siteName" placeholder="请输入站点名称" />
+        </el-form-item>
+
         <el-form-item label="服务编号" prop="serviceCode">
           <el-input v-model="form.serviceCode" placeholder="请输入服务编号" />
         </el-form-item>
 
-        <el-form-item label="站点名称" prop="siteName">
-          <el-input v-model="form.siteName" placeholder="请输入站点名称" />
+        <el-form-item label="IP" prop="IpAddress">
+          <el-input v-model="form.IpAddress" placeholder="请输入IP" />
         </el-form-item>
 
         <el-form-item>
@@ -28,9 +32,9 @@
     <div class="box-list">
       <el-table v-loading="loading" :data="listdata" style="width:100%">
 
-        <el-table-column label="用户ID" width="150">
+        <el-table-column label="服务编号" width="200">
           <template slot-scope="scope">
-            {{ scope.row.agentCode }}
+            {{ scope.row.serviceCode }}
           </template>
         </el-table-column>
 
@@ -40,9 +44,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="服务编号" width="200">
+        <el-table-column label="用户ID" width="150">
           <template slot-scope="scope">
-            {{ scope.row.serviceCode }}
+            {{ scope.row.agentCode }}
           </template>
         </el-table-column>
 
@@ -66,13 +70,14 @@
 
       </el-table>
     </div>
-
+    <!--
     <pagination
       :total="page.total"
       :page.sync="page.page"
       :limit.sync="page.limit"
       @pagination="onSubmit"
     />
+    -->
 
     <el-dialog title="" custom-class="customWidthWebInfoDialog" :visible.sync="dialogDetail.visible">
       <div v-if="dialogDetail.loading" class="detailLoading">
@@ -81,78 +86,75 @@
       <div v-if="!dialogDetail.loading" class="detailContent">
         <table>
           <tr>
-            <td>域名：</td>
-            <td> {{ dialogDetail.res.domainName }}</td>
-          </tr>
-          <tr>
-            <td>服务编号：</td>
-            <td> {{ dialogDetail.res.serviceCode }}</td>
-          </tr>
-          <tr>
-            <td>所属会员号：</td>
-            <td> {{ dialogDetail.res.agentCode }}</td>
-          </tr>
-          <tr>
-            <td>商品名称：</td>
+            <td>产品型号：</td>
             <td> {{ dialogDetail.res.goodsName }}</td>
+            <td>状态：</td>
+            <td> {{ dialogDetail.res.hmpStatus }}</td>
           </tr>
           <tr>
             <td>站点名称：</td>
             <td> {{ dialogDetail.res.siteName }}</td>
+            <td>机房：</td>
+            <td> {{ dialogDetail.res.room }}</td>
           </tr>
-          <tr>
-            <td>网站空间大小：</td>
-            <td> {{ dialogDetail.res.webQuota }}</td>
-          </tr>
-          <tr>
-            <td>网站开通日期：</td>
-            <td> {{ dialogDetail.res.beginTime }}</td>
-          </tr>
-          <tr>
-            <td>网站到期日期：</td>
-            <td> {{ dialogDetail.res.endTime }}</td>
-          </tr>
-          <template v-for="(item, index) in dialogDetail.res.databases">
-            <tr :key="'a'+index">
-              <td>数据库大小{{ index+1 }}：</td>
-              <td> {{ item.dbQuota }}</td>
-            </tr>
-            <tr :key="'b'+index">
-              <td>数据库类型{{ index+1 }}：</td>
-              <td> {{ item.dbType }}</td>
-            </tr>
-            <tr :key="'c'+index">
-              <td>数据库地址{{ index+1 }}：</td>
-              <td> {{ item.dbAddress }}</td>
-            </tr>
-            <tr :key="'d'+index">
-              <td>数据库名称{{ index+1 }}：</td>
-              <td> {{ item.dbName }}</td>
-            </tr>
-          </template>
           <tr>
             <td>可绑域名数量：</td>
             <td> {{ dialogDetail.res.maxBindDomain }}</td>
+            <td>IP：</td>
+            <td> {{ dialogDetail.res.IpAddress }}</td>
+          </tr>
+          <tr>
+            <td>域名：</td>
+            <td colspan="3"> {{ dialogDetail.res.domainName }}</td>
           </tr>
           <tr>
             <td>FTP专用地址：</td>
             <td> {{ dialogDetail.res.FtpAddress }}</td>
-          </tr>
-          <tr>
             <td>解析专用地址：</td>
             <td> {{ dialogDetail.res.domainAlias }}</td>
           </tr>
           <tr>
-            <td>网站当前状态：</td>
-            <td> {{ dialogDetail.res.hmpStatus }}</td>
+            <td>网站空间大小：</td>
+            <td> {{ dialogDetail.res.webQuota }}</td>
+            <td>数据库空间大小：</td>
+            <td v-if="Array.isArray(dialogDetail.res.databases) && dialogDetail.res.databases.length>0"> {{ dialogDetail.res.databases[0].dbQuota }}</td>
+            <td v-else>0</td>
           </tr>
           <tr>
-            <td>网站寄存当前状态：</td>
-            <td> {{ dialogDetail.res.hostStatus }}</td>
+            <td>数据库名称1：</td>
+            <td v-if="Array.isArray(dialogDetail.res.databases) && dialogDetail.res.databases.length>0"> {{ dialogDetail.res.databases[0].dbName }}</td>
+            <td v-else />
+            <td>数据库名称2：</td>
+            <td v-if="Array.isArray(dialogDetail.res.databases) && dialogDetail.res.databases.length>1"> {{ dialogDetail.res.databases[1].dbName }}</td>
+            <td v-else />
           </tr>
           <tr>
-            <td>所属机房：</td>
-            <td> {{ dialogDetail.res.room }}</td>
+            <td>数据库地址1：</td>
+            <td v-if="Array.isArray(dialogDetail.res.databases) && dialogDetail.res.databases.length>0"> {{ dialogDetail.res.databases[0].dbAddress }}</td>
+            <td v-else />
+            <td>数据库地址2：</td>
+            <td v-if="Array.isArray(dialogDetail.res.databases) && dialogDetail.res.databases.length>1"> {{ dialogDetail.res.databases[1].dbAddress }}</td>
+            <td v-else />
+          </tr>
+          <tr>
+            <td>数据库类型1：</td>
+            <td v-if="Array.isArray(dialogDetail.res.databases) && dialogDetail.res.databases.length>0"> {{ dialogDetail.res.databases[0].dbType }}</td>
+            <td v-else />
+            <td>数据库类型2：</td>
+            <td v-if="Array.isArray(dialogDetail.res.databases) && dialogDetail.res.databases.length>1"> {{ dialogDetail.res.databases[1].dbType }}</td>
+            <td v-else />
+          </tr>
+          <tr>
+            <td>开通日期：</td>
+            <td> {{ dialogDetail.res.beginTime }}</td>
+            <td>到期日期：</td>
+            <td> {{ dialogDetail.res.endTime }}</td>
+          </tr>
+          <tr>
+            <td>用户ID</td>
+            <td> {{ dialogDetail.res.agentCode }}</td>
+            <td>服务编号：</td>
+            <td> {{ dialogDetail.res.serviceCode }}</td>
           </tr>
         </table>
 
@@ -166,7 +168,7 @@
 </template>
 
 <script>
-import Pagination from '@/components/Pagination'
+// import Pagination from '@/components/Pagination'
 // import formatTime from '@/utils/formatTime.js'
 import { mapState } from 'vuex'
 import { Message } from 'element-ui'
@@ -179,7 +181,7 @@ function msgError(message) {
 }
 export default {
   components: {
-    Pagination
+    // Pagination
   },
   data() {
     var validateAlphanumeric = (rule, value, callback) => {
@@ -196,7 +198,8 @@ export default {
         agentCode: '', // agent35132
         domainName: '',
         serviceCode: '', // V40531431833643
-        siteName: ''
+        siteName: '',
+        IpAddress: ''
       },
       rules: {
         agentCode: [
@@ -211,7 +214,7 @@ export default {
       page: {
         total: 0,
         page: 1,
-        limit: 20
+        limit: 100
       },
       dialogDetail: {
         visible: false,
@@ -228,10 +231,11 @@ export default {
   },
   methods: {
     onSubmit(formName) {
-      if (this.form.agentCode || this.form.domainName || this.form.serviceCode || this.form.siteName) {
+      if (this.form.agentCode || this.form.domainName || this.form.serviceCode || this.form.siteName || this.form.IpAddress) {
+        this.page.page = 1
         this.GetList()
       } else {
-        msgError('注意：用户编号、域名、服务编号、站点名称至少要有一个属性不为空')
+        msgError('注意：用户编号、域名、服务编号、站点名称、IP至少要有一个属性不为空')
       }
     },
     GetList() {
@@ -320,9 +324,17 @@ export default {
     td{
       padding: 5px;
     }
-    td:nth-child(1){
+    td:nth-child(1),td:nth-child(3){
       text-align: right;
       font-weight: bold;
+      width: 130px;
+      min-width: 130px;
+    }
+    td:nth-child(2),td:nth-child(4){
+      width: 40%;
+      word-wrap:break-word;
+      word-break:break-all;
+      overflow: hidden;
     }
   }
 }
