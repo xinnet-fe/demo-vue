@@ -71,7 +71,7 @@
       :total="page.total"
       :page.sync="page.page"
       :limit.sync="page.limit"
-      @pagination="onSubmit"
+      @pagination="GetList"
     />
 
     <el-dialog title="" custom-class="customWidthWebInfoDialog" :visible.sync="dialogDetail.visible">
@@ -195,7 +195,7 @@ export default {
     }
     return {
       form: {
-        agentCode: 'agent35132',
+        agentCode: '', // agent35132
         domainName: '',
         serviceCode: '', // V40531431833643
         siteName: ''
@@ -231,6 +231,7 @@ export default {
   methods: {
     onSubmit(formName) {
       if (this.form.agentCode || this.form.domainName || this.form.serviceCode || this.form.siteName) {
+        this.page.page = 1
         this.GetList()
       } else {
         msgError('注意：用户编号、域名、服务编号、站点名称至少要有一个属性不为空')
