@@ -1,16 +1,16 @@
 <template>
-  <div class="box-container">
+  <div class="order-form">
     <div v-if="showBillList_Dialog.visible === false">
-      <div class="box-form">
-        <el-form ref="form" :inline="true" :model="form" :rules="rules" style="line-height:400%;">
-          <el-form-item label="用户ID" prop="agentCode">
+      <div>
+        <el-form ref="form" :inline="true" :model="form" :rules="rules" class="search-form" style="line-height:400%;">
+          <el-form-item label="用户ID" label-width="100px" prop="agentCode">
             <el-input v-model="form.agentCode" placeholder="请输入用户ID" />
           </el-form-item>
 
-          <el-form-item label="服务编号" prop="serviceCode">
+          <el-form-item label="服务编号" label-width="100px" prop="serviceCode">
             <el-input v-model="form.serviceCode" placeholder="请输入商品服务编号" />
           </el-form-item>
-          <el-form-item label="服务开通日期" label-width="100px" prop="opentime">
+          <el-form-item label="服务开通日期" label-width="100px" prop="opentime" class="refund">
             <el-date-picker
               v-model="form.opentime"
               type="daterange"
@@ -19,7 +19,7 @@
               end-placeholder="结束日期"
             />
           </el-form-item>
-          <el-form-item label="服务状态" prop="businessState">
+          <el-form-item label="服务状态" label-width="100px" prop="businessState">
             <el-select v-model="form.serviceState" placeholder="请选择服务状态">
               <el-option label="全部" value="" />
               <el-option label="正常" value="2" />
@@ -30,7 +30,7 @@
               <el-option label="开通失败" value="256" />
             </el-select>
           </el-form-item>
-          <el-form-item label="商品分类" prop="productType">
+          <el-form-item label="商品分类" label-width="100px" prop="productType">
             <el-select v-model="form.productType" placeholder="请选择商品分类">
               <el-option label="云主机" value="ARROW" />
               <el-option label="云数据库" value="MYSQL" />
@@ -41,14 +41,14 @@
               <el-option label="RabbitMQ" value="RABBITMQ" />
             </el-select>
           </el-form-item>
-          <el-form-item>
-            <el-button size="medium" @click="onReset('form')">重置</el-button>
-            <el-button type="primary" size="medium" @click="onSubmit('form')">查询</el-button>
+          <el-form-item class="form-btn">
+            <span class="form-btnleft"><el-button size="medium" @click="onReset('form')">重置</el-button></span>
+            <span class="form-btnright"><el-button type="primary" size="medium" @click="onSubmit('form')">查询</el-button></span>
           </el-form-item>
         </el-form>
       </div>
       <div class="box-list">
-        <el-table v-loading="loading" :data="listdata" style="width: 100%">
+        <el-table v-loading="loading" :data="listdata" style="width: 100%; margin-top:20px">
           <el-table-column prop="serviceCode" label="服务编号" width="150" />
           <el-table-column prop="agentCode" label="用户ID" width="180" />
           <el-table-column label="商品分类" width="110">
@@ -80,7 +80,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="box-page">
+      <div class="box-page" style="margin-top:20px">
         <el-pagination
           background
           :current-page="page.currentPage"
@@ -588,20 +588,40 @@ export default {
 .box-container{
   border-bottom: 20px solid #f3f7fa;
   padding: 20px 0px;
-
   .box-list{
     margin: 0px 20px 20px 20px;
   }
   .box-page{
     margin: 0px 20px;
   }
-  .dz{
-    font-size: 18px;
-    font-weight: bold;
+}
+
+.dz{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.form-btn{
+  .form-btnleft{
+    display:inline-block;
+    width: 100px;
+    box-sizing: border-box;
+    text-align: right;
+    padding-right: 10px;
+    float: none !important;
+  }
+  .form-btnright{
+    display:inline-block;
   }
 }
+
 </style>
 <style lang="scss">
+.refund{
+  .el-range-editor {
+    width: 435px !important;
+  }
+}
 .box-form{
   .el-range-separator{
     font-size: 12px !important;
