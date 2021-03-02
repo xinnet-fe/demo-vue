@@ -142,10 +142,16 @@
             prop="coupon07"
             label="订单改价"
           />
-          <el-table-column
+          <!-- <el-table-column
             prop="couponprice"
             label="总优惠金额"
-          />
+          /> -->
+          <el-table-column label="总优惠金额">
+            <template slot-scope="{ row }">
+              <span v-if="(row.couponprice * 1) < 0">0</span>
+              <span else>{{ row.couponprice }}</span>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <div class="contables conmiddle-table">
