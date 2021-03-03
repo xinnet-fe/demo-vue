@@ -17,11 +17,11 @@ const customWebpackConfig = defaultSettings.webpackConfig
 // merge proxy
 const defaultProxy = {
   '/portal': {
-    target: 'https://performanceboss.xinnet.com',
+    target: 'https://performance-boss.xinnet.com',
     changeOrigin: true
   },
-  '/performance': {
-    target: 'https://performanceboss.xinnet.com',
+  '/ui': {
+    target: 'https://performance-boss.xinnet.com',
     changeOrigin: true
   }
 }

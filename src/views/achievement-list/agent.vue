@@ -96,7 +96,7 @@
           type="primary"
           size="medium"
           :loading="loading"
-          @click="getList"
+          @click="getList()"
         >查询</el-button>
         <el-button size="medium" @click="resetModal">重置</el-button>
       </el-form-item>
@@ -123,7 +123,7 @@
       <el-table-column label="用户ID" prop="agentCode" width="100" />
       <el-table-column label="商品名称" prop="goodsName" />
       <el-table-column label="服务编号" prop="serviceCode" />
-      <el-table-column label="订单号" prop="buyOrderCode" />
+      <el-table-column label="订单号" prop="orderCode" />
       <el-table-column label="商品类型">
         <template slot-scope="{ row }">
           {{ row.goodsType === '01' ? '主产品': '附属产品' }}
@@ -169,11 +169,11 @@
       <el-table-column label="销售负责人2" prop="salesmagSecond" />
       <el-table-column label="负责人2所属分公司" prop="salesmagCompanySecond" />
       <el-table-column label="商品状态" prop="serviceStatus" />
-      <el-table-column label="成单类型">
+      <!-- <el-table-column label="成单类型">
         <template slot-scope="{ row }">
           <span>{{ row.orderType }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         label="操作"
         align="center"
@@ -196,90 +196,19 @@
       :limit.sync="page.limit"
       @pagination="getList"
     />
-    <el-dialog
-      title="编辑"
-      :visible.sync="dialogEditShow"
-      width="500px"
-    >
-      <el-form v-if="dialogEditShow" ref="formEdit" :model="form2" :rules="rules" label-width="120px">
-        <el-form-item label="销售负责人1:" prop="salesmagFirst">
-          <el-select
-            v-model="form2.salesmagFirst"
-            placeholder="请选择"
-            clearable
-            @focus="handleFocus(1)"
-          >
-            <el-option
-              v-for="item in saleNameList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="mark1" label="备注:" prop="salesmagRemarkFirst">
-          <el-input v-model="form2.salesmagRemarkFirst" maxlength="30" />
-          <span class="operateUser">操作人：{{ name }}</span>
-        </el-form-item>
-        <el-form-item label="订单方式:" prop="businessType">
-          <el-select
-            v-model="form2.businessType"
-            placeholder="请选择"
-            clearable
-            @focus="handleFocus(2)"
-          >
-            <el-option
-              v-for="item in businessTypeList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="mark2" label="备注:" prop="businessTypeRemark">
-          <el-input v-model="form2.businessTypeRemark" maxlength="30" />
-          <span class="operateUser">操作人：{{ name }}</span>
-        </el-form-item>
-        <el-form-item label="销售负责人2:" prop="salesmagSecond">
-          <el-select
-            v-model="form2.salesmagSecond"
-            placeholder="请选择"
-            clearable
-            @focus="handleFocus(3)"
-          >
-            <el-option
-              v-for="item in saleNameList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="mark3" label="备注:" prop="salesmagRemarkSecond">
-          <el-input v-model="form2.salesmagRemarkSecond" maxlength="30" />
-          <span class="operateUser">操作人：{{ name }}</span>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogEditShow = false">取 消</el-button>
-        <el-button
-          type="primary"
-          :loading="loadingBtn"
-          @click="dialogSubmit()"
-        >确定</el-button>
-      </span>
-    </el-dialog>
+    <dialog-dl-edit v-if="dialogEditShow" :visible.sync="dialogEditShow" :row.sync="row" :sale-name-list="saleNameList" :business-type-list="businessTypeList" @getList="getList" />
   </div>
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/demos/Pagination' // secondary package based on el-pagination
 import clearFormDate from '@/utils/clearFormData'
 import checkPermission from '@/utils/demos/permission' // 权限判断函数
+import DialogDlEdit from './dialogDlEdit'
 export default {
   name: 'AchievementHy',
-  components: { Pagination },
+  components: { Pagination, DialogDlEdit },
   filters: {
   },
   props: {
@@ -322,17 +251,6 @@ export default {
         pageNum: 1,
         pageSize: 30
       },
-      form2: {
-        id: '',
-        salesmagFirst: '',
-        salesmagRemarkFirst: '',
-        businessType: '',
-        salesmagSecond: '',
-        salesmagRemarkSecond: '',
-        businessTypeRemark: '',
-        orderType: '',
-        orderTypeRemark: ''
-      },
       list: [],
       page: {
         total: 0,
@@ -364,27 +282,15 @@ export default {
         }
       },
       dialogEditShow: false,
-      rules: {
-        salesmagFirst: [{ required: true, message: '请选择', trigger: 'change' }],
-        businessType: [{ required: true, message: '请选择', trigger: 'change' }],
-        salesmagSecond: [{ required: true, message: '请选择', trigger: 'change' }],
-        salesmagRemarkFirst: [{ required: true, message: '请输入', trigger: 'blur' }],
-        salesmagRemarkSecond: [{ required: true, message: '请输入', trigger: 'blur' }],
-        businessTypeRemark: [{ required: true, message: '请输入', trigger: 'blur' }]
-      },
       productType: [],
       saleName: [],
-      company: [],
-      mark1: false,
-      mark2: false,
-      mark3: false
+      company: []
     }
   },
   computed: {
     ...mapState({
       loading: (state) => state.loading.effects['performance/queryHyDlSalePerformanceData']
-    }),
-    ...mapGetters(['name'])
+    })
   },
   watch: {
     date: function(val) {
@@ -416,9 +322,6 @@ export default {
   methods: {
     ...mapActions('performance', ['queryHyDlSalePerformanceData']),
     checkPermission,
-    handleFocus(v) {
-      this['mark' + v] = true
-    },
     resetDate() {
       const dt1 = new Date()
       dt1.setDate(dt1.getDate() - 90) // 默认为最近90天
@@ -438,7 +341,7 @@ export default {
         query.pageSize = page.limit
       } else {
         query.pageNum = 1
-        // query.pageSize = 20;
+        query.pageSize = this.page.limit
         this.page.page = 1
         // this.page.limit = 20;
       }
@@ -454,6 +357,9 @@ export default {
       clearFormDate(this.form)
       this.resetDate()
       this.productType = []
+      this.saleName = []
+      this.company = []
+      this.form.performanceType = 'DL'
     },
     handleDownload() {
       this.downloadLoading = true
@@ -473,46 +379,9 @@ export default {
         console.log(error)
       })
     },
-    dialogSubmit() {
-      this.$refs.formEdit.validate((valid) => {
-        if (valid) {
-          this.loadingBtn = true
-          const query = {
-            ...this.form2
-          }
-          query.id = this.row.id
-          console.log(query)
-          this.$store.dispatch('performance/updatePerformance', query).then((res) => {
-            this.loadingBtn = false
-            if (res.code === 200) {
-              this.$message.success('操作成功！')
-              this.closeDialog()
-              this.getList()
-            } else {
-              this.$message.error(res.msg)
-            }
-          }).catch((error) => {
-            this.loadingBtn = false
-            console.log(error)
-          })
-        } else {
-          console.log(2)
-        }
-      })
-    },
-    closeDialog() {
-      this.dialogEditShow = false
-    },
     handleEdit(row) {
       this.dialogEditShow = true
       this.row = row
-      this.form2.salesmagFirst = row.salesmagFirst
-      this.form2.businessType = row.businessType
-      this.form2.salesmagSecond = row.salesmagSecond
-
-      // this.form2.salesmagRemarkFirst = row.salesmagRemarkFirst
-      // this.form2.salesmagRemarkSecond = row.salesmagRemarkSecond
-      // this.form2.businessTypeRemark = row.businessTypeRemark
     }
   }
 }

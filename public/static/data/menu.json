@@ -2,11 +2,33 @@
     {
         "code": "achievement",
         "parentCode": "",
-        "icon": "",
-        "text": "业绩明细",
+        "icon": "boss-navigation-financeservice",
+        "text": "业绩",
         "url": "",
         "target": "tab",
         "hidden": false,
-        "param": ""
+        "param": "",
+        "children": [
+            {
+                "code": "achievement-list",
+                "parentCode": "achievement",
+                "icon": "",
+                "text": "业绩明细",
+                "url": "",
+                "target": "tab",
+                "hidden": false,
+                "param": ""
+            },
+            {
+                "code": "achievement-area",
+                "parentCode": "achievement",
+                "icon": "",
+                "text": "业绩区域管理",
+                "url": "",
+                "target": "tab",
+                "hidden": false,
+                "param": ""
+            }
+        ]
     }
 ]
