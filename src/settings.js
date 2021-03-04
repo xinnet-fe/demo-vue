@@ -1,7 +1,7 @@
 const webpackConfig = require('./webpackConfig.js')
 
 module.exports = {
-  title: '代理管理平台',
+  title: '运营系统',
 
   /**
    * @type {boolean} true | false
@@ -45,7 +45,7 @@ module.exports = {
   hasDevelopment: process.env.NODE_ENV === 'development',
 
   // 研发环境token，要每天登录测试环境从浏览器cookie中获取
-  xbtoken: '2j5MPq9I0LGzpEIFrvu',
+  xbtoken: 'AAVSHkUSxJQpPHvjq5CrB',
 
   xbTokenKey: process.env.NODE_ENV === 'development' ? 'xbtoken' : 'xbtoken_id',
 

@@ -276,7 +276,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/home',
+    redirect: '/agent-client-app/operation-system/see-through', // '/home',
     hidden: true,
     children: [
       {
