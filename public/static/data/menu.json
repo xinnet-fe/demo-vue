@@ -2,50 +2,26 @@
     {
         "code": "cms-manage",
         "parentCode": null,
-        "text": "CMS管理",
+        "text": "CMS系统",
         "icon": "",
         "url": "",
         "target": "",
         "children": [
             {
-                "code": "cms-file-manage",
+                "code": "cms-nav-manage",
                 "parentCode": "cms-manage",
-                "text": "文件管理器",
+                "text": "导航管理",
                 "icon": "",
                 "url": "",
-                "target": ""
+                "target": "tab"
             },
             {
-                "code": "cms-component-manage",
+                "code": "cms-carousel-manage",
                 "parentCode": "cms-manage",
-                "text": "组件管理",
+                "text": "轮播管理",
                 "icon": "",
                 "url": "",
-                "target": "",
-                "children": [{
-                    "code": "cms-carousel-manage",
-                    "parentCode": "cms-component-manage",
-                    "text": "轮播管理",
-                    "icon": "",
-                    "url": "",
-                    "target": "tab"
-                },
-                {
-                    "code": "cms-nav-manage",
-                    "parentCode": "cms-component-manage",
-                    "text": "导航管理",
-                    "icon": "",
-                    "url": "",
-                    "target": "tab"
-                },
-                {
-                    "code": "cms-beancurd-cube-manage",
-                    "parentCode": "cms-component-manage",
-                    "text": "豆腐块管理",
-                    "icon": "",
-                    "url": "",
-                    "target": "tab"
-                }]
+                "target": "tab"
             },
             {
                 "code": "cms-page-manage",
@@ -55,13 +31,53 @@
                 "url": "",
                 "target": "",
                 "children": [{
-                    "code": "cms-single-page-manage",
+                    "code": "cms-page-list",
                     "parentCode": "cms-page-manage",
-                    "text": "单页面管理",
+                    "text": "页面列表",
                     "icon": "",
                     "url": "",
                     "target": "tab"
                 }]
+            },
+            {
+                "code": "cms-column-manage",
+                "parentCode": "cms-manage",
+                "text": "栏目管理",
+                "icon": "",
+                "url": "",
+                "target": "tab"
+            },
+            {
+                "code": "cms-content-manage",
+                "parentCode": "cms-manage",
+                "text": "内容管理",
+                "icon": "",
+                "url": "",
+                "target": "tab"
+            },
+            {
+                "code": "cms-system-setting",
+                "parentCode": "cms-manage",
+                "text": "系统设置",
+                "icon": "",
+                "url": "",
+                "target": "",
+                "children": [{
+                    "code": "cms-material-manage",
+                    "parentCode": "cms-system-setting",
+                    "text": "资料管理",
+                    "icon": "",
+                    "url": "",
+                    "target": "tab"
+                }]
+            },
+            {
+                "code": "cms-component-manage",
+                "parentCode": "cms-manage",
+                "text": "组件管理",
+                "icon": "",
+                "url": "",
+                "target": "tab"
             }
         ]
     }

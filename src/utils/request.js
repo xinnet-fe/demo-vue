@@ -130,15 +130,15 @@ function isNull(v) {
 
 // 注销登录到登录页
 function logoutToLogin(message) {
-  store.dispatch('user/resetToken')
   errorMessage(message)
-
-  const { $router, $route } = app
-  if (hasDevelopment) {
-    $router.push(`/login?redirect=${$route.fullPath}`)
-  } else {
-    global.location = logoutApi
-  }
+  store.dispatch('user/resetToken').then(() => {
+    const { $router, $route } = app
+    if (hasDevelopment) {
+      $router.push(`/login?redirect=${$route.fullPath}`)
+    } else {
+      global.location = logoutApi
+    }
+  })
 }
 
 // 显示错误提示，return reject

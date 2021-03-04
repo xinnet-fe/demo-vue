@@ -6,13 +6,14 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="searchForm.name" placeholder="请输入名称" clearable />
         </el-form-item>
-        <el-form-item label="状态" prop="website">
+        <el-form-item label="状态" prop="status">
           <el-select v-model="searchForm.status">
             <el-option v-for="({ value, key }) in states" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
+          <el-button @click="resetModal">重置</el-button>
         </el-form-item>
       </el-form>
       <!-- search -->
@@ -74,116 +75,109 @@
     <!-- form -->
     <div v-if="home">
       <page-header :go-back="goBack" :title="modalTitle" />
-      <el-tabs v-model="activeName">
-        <el-tab-pane label="基本属性" name="basis">
-          <template v-slot:default>
-            <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-              <el-form-item label="名称" prop="name">
-                <el-input v-model="form.name" />
-              </el-form-item>
-              <el-form-item label="轮播code" prop="code">
-                <el-input v-model="form.code" />
-              </el-form-item>
-              <el-form-item label="轮播树级" prop="parentId">
-                <el-cascader
-                  v-model="form.parentId"
-                  :options="types"
-                  placeholder="默认为一级"
-                  filterable
-                  change-on-select
-                />
-              </el-form-item>
-              <el-form-item label="描述" prop="desc">
-                <el-input v-model="form.desc" :rows="3" type="textarea" />
-              </el-form-item>
-              <el-form-item label="图片地址" prop="imgUrl">
-                <el-col :span="24">
-                  <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
-                </el-col>
-                <el-col :span="24">
-                  <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
-                    <el-option label="本地上传" value="1" />
-                    <el-option label="文件服务器" value="2" />
-                  </el-select>
-                </el-col>
-                <el-upload
-                  style="display: none;"
-                  class="local-upload"
-                  action="/"
-                  :limit="1"
-                  :auto-upload="false"
-                  :on-change="selectedFile"
-                  :file-list="fileList"
-                >
-                  <el-button ref="upload" size="small" type="primary">点击上传</el-button>
-                </el-upload>
-              </el-form-item>
-              <el-form-item label="链接" prop="url">
-                <el-input v-model="form.url" />
-              </el-form-item>
-              <el-form-item label="打开方式">
-                <el-select v-model="form.target">
-                  <el-option v-for="({ value, key }) in openMode" :key="value" :label="key" :value="value" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="序号" prop="sortIndex">
-                <el-input-number v-model="form.sortIndex" />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <el-switch
-                  v-model="form.status"
-                  active-value="1"
-                  inactive-value="0"
-                />
-              </el-form-item>
-              <el-form-item label="tag">
-                <el-radio-group v-model="form.tag">
-                  <el-radio label="1">hot</el-radio>
-                  <el-radio label="2">new</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="发布时间" prop="startTime">
-                <el-date-picker
-                  v-model="form.startTime"
-                  type="datetime"
-                  placeholder="选择开始日期"
-                />
-              </el-form-item>
-              <el-form-item label="结束日期" prop="endTime">
-                <el-date-picker
-                  v-model="form.endTime"
-                  type="datetime"
-                  placeholder="选择结束日期"
-                />
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-tab-pane>
-        <el-tab-pane label="高级属性" name="senior">
-          <template v-slot:default>
-            <el-form ref="seniorForm" :model="form" label-width="100px">
-              <el-form-item label="点击事件">
-                <el-input v-model="form.click" />
-              </el-form-item>
-              <el-form-item label="css样式">
-                <el-input v-model="form.cssStyle" :rows="3" type="textarea" />
-              </el-form-item>
-              <el-form-item label="class">
-                <el-input v-model="form.cssClass" :rows="3" type="textarea" />
-              </el-form-item>
-              <el-form-item label="提示">
-                <el-input v-model="form.alt" :rows="3" type="textarea" />
-              </el-form-item>
-              <el-form-item label="扩展" prop="extra">
-                <json-editor v-if="activeName === 'senior'" ref="jsonEditor" v-model="form.extra" width="600" />
-              </el-form-item>
-              <el-form-item label="内容">
-                <el-input v-model="form.content" :rows="3" type="textarea" />
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-tab-pane>
-      </el-tabs>
+      <el-form ref="form" :model="form" label-width="100px" :rules="rules">
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="form.name" />
+        </el-form-item>
+        <el-form-item label="轮播code" prop="code">
+          <el-input v-model="form.code" />
+        </el-form-item>
+        <el-form-item label="轮播树级" prop="parentId">
+          <el-cascader
+            v-model="form.parentId"
+            :options="types"
+            placeholder="默认为一级"
+            filterable
+            change-on-select
+          />
+        </el-form-item>
+        <el-form-item label="描述" prop="desc">
+          <el-input v-model="form.desc" :rows="3" type="textarea" />
+        </el-form-item>
+        <el-form-item label="图片地址" prop="imgUrl">
+          <el-col :span="24">
+            <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
+          </el-col>
+          <el-col :span="24">
+            <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
+              <el-option label="本地上传" value="1" />
+              <el-option label="文件服务器" value="2" />
+            </el-select>
+          </el-col>
+          <el-upload
+            style="display: none;"
+            class="local-upload"
+            action="/"
+            :limit="1"
+            :auto-upload="false"
+            :on-change="selectedFile"
+            :file-list="fileList"
+          >
+            <el-button ref="upload" size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="链接" prop="url">
+          <el-input v-model="form.url" />
+        </el-form-item>
+        <el-form-item label="打开方式">
+          <el-select v-model="form.target">
+            <el-option v-for="({ value, key }) in openMode" :key="value" :label="key" :value="value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="序号" prop="sortIndex">
+          <el-input-number v-model="form.sortIndex" />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-switch
+            v-model="form.status"
+            active-value="1"
+            inactive-value="0"
+          />
+        </el-form-item>
+        <el-form-item label="tag">
+          <el-radio-group v-model="form.tag">
+            <el-radio label="1">hot</el-radio>
+            <el-radio label="2">new</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="发布时间" prop="startTime">
+          <el-date-picker
+            v-model="form.startTime"
+            type="datetime"
+            placeholder="选择开始日期"
+          />
+        </el-form-item>
+        <el-form-item label="结束日期" prop="endTime">
+          <el-date-picker
+            v-model="form.endTime"
+            type="datetime"
+            placeholder="选择结束日期"
+          />
+        </el-form-item>
+      </el-form>
+      <collapse title="高级属性">
+        <el-form ref="seniorForm" :model="form" label-width="100px">
+          <el-form-item label="点击事件">
+            <el-input v-model="form.click" />
+          </el-form-item>
+          <el-form-item label="css样式">
+            <el-input v-model="form.cssStyle" :rows="3" type="textarea" />
+          </el-form-item>
+          <el-form-item label="class">
+            <el-input v-model="form.cssClass" :rows="3" type="textarea" />
+          </el-form-item>
+          <el-form-item label="提示">
+            <el-input v-model="form.alt" :rows="3" type="textarea" />
+          </el-form-item>
+          <el-form-item label="扩展" prop="extra">
+            <json-editor ref="jsonEditor" v-model="form.extra" width="600" />
+          </el-form-item>
+          <el-form-item label="内容">
+            <el-input v-model="form.content" :rows="3" type="textarea" />
+          </el-form-item>
+        </el-form>
+      </collapse>
+
       <div slot="footer" class="new-page-footer">
         <el-button size="medium" @click="goBack">取消</el-button>
         <el-button size="medium" type="primary" @click="submit">保存</el-button>
@@ -208,19 +202,20 @@ import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
 import JsonEditor from '@/components/JsonEditor'
 import PageHeader from '@/components/PageHeader'
+import Collapse from '@/components/Collapse'
 import formatTime from '@/utils/formatTime'
 import isDate from '@/utils/isDate'
 
 export default {
   name: 'CmsCarouselManage',
+  cname: '轮播管理',
   components: {
     PageHeader,
-    JsonEditor
+    JsonEditor,
+    Collapse
   },
   data() {
     return {
-      // tabs
-      activeName: 'basis',
       // 搜索框
       searchForm: {
         name: '',
@@ -228,7 +223,7 @@ export default {
       },
       // 显示添加修改表单
       home: false,
-      modalTitle: '新增',
+      modalTitle: '添加',
       // 弹框表单数据
       form: {
         id: '',
@@ -306,6 +301,9 @@ export default {
       // 轮播状态
       getSlideshowStatus: 'cms/statusMapping'
     }),
+    resetModal() {
+      this.$refs.searchForm.resetFields()
+    },
     goInto(row = {}) {
       this.getSlideshowType().then(() => {
         if (row.id) {
@@ -329,7 +327,7 @@ export default {
           })
           this.modalTitle = '编辑'
         } else {
-          this.modalTitle = '新增'
+          this.modalTitle = '添加'
         }
       })
       this.form.target = this.formTarget
@@ -348,9 +346,6 @@ export default {
       this.oldCode = ''
       this.uploadImageAddress = ''
       this.fileList = []
-      this.$nextTick(() => {
-        this.activeName = 'basis'
-      })
     },
     showTipsModal(row) {
       this.form.id = row.id
@@ -440,20 +435,6 @@ export default {
               this.goBack()
               this.onSearch()
             })
-          }
-        } else {
-          if (this.activeName === 'senior') {
-            let message = ''
-            if (!this.form.name) {
-              message = '请输入名称'
-              this.$message.error(message)
-              return
-            }
-            if (!this.form.sortIndex) {
-              message = '请输入序号'
-              this.$message.error(message)
-              return
-            }
           }
         }
       })

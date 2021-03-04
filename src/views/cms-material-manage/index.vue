@@ -1,123 +1,170 @@
 <template>
   <div class="order-form">
-    <!-- search -->
-    <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-      <el-form-item label="页面名称" prop="name">
-        <el-input v-model="searchForm.name" placeholder="请输入页面名称" clearable />
-      </el-form-item>
-      <el-form-item label="类型" prop="type">
-        <el-select v-model="searchForm.type" placeholder="请选择类型">
-          <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="页面URL" prop="url">
-        <el-input v-model="searchForm.url" placeholder="请输入页面URL" clearable />
-      </el-form-item>
-      <el-form-item>
-        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
-        <el-button @click="resetModal">重 置</el-button>
-      </el-form-item>
-    </el-form>
-    <!-- search -->
+    <template v-if="!home">
+      <!-- search -->
+      <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="searchForm.title" placeholder="请输入标题" clearable />
+        </el-form-item>
+        <el-form-item label="业务类型" prop="businessType">
+          <el-select v-model="searchForm.businessType" placeholder="请输入业务类型">
+            <el-option v-for="(value, key) in businessTypes" :key="value" :label="key" :value="value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="资料类型" prop="materialType">
+          <el-select v-model="searchForm.materialType" placeholder="请输入资料类型">
+            <el-option v-for="(value, key) in materialTypes" :key="value" :label="key" :value="value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
+          <el-button @click="resetModal">重置</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- search -->
 
-    <div class="operate-form">
-      <el-button size="mini" @click="showModal()">新增</el-button>
-    </div>
+      <div class="operate-form">
+        <el-button size="mini" @click="goInto()">添加</el-button>
+      </div>
 
-    <!-- table -->
-    <el-table
-      ref="table"
-      v-loading="loading"
-      :data="list"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="id"
-        label="ID"
-      />
-      <el-table-column
-        ref="sortIndex"
-        prop="sortIndex"
-        label="序号"
-        sortable
-        :sort-method="sortByNumber"
-      />
-      <el-table-column
-        prop="name"
-        label="页面名称"
-      />
-      <el-table-column
-        prop="type"
-        label="类型"
-      />
-      <el-table-column
-        prop="linkUrl"
-        label="页面URL"
-      />
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-      />
-      <el-table-column
-        prop="modifyTime"
-        label="操作时间"
-      />
-      <el-table-column label="操作" fixed="right" width="260">
-        <template v-slot="{ row }">
-          <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
-          <el-button type="text" size="medium" @click="showTemplateModal(row)">模板管理</el-button>
-          <el-button type="text" size="medium" @click="showPreReleaseModal(row)">预发</el-button>
-          <el-button type="text" size="medium" @click="preview(row)">预览</el-button>
-          <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
+      <!-- table -->
+      <el-table
+        ref="table"
+        v-loading="loading"
+        :data="list"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="60"
+        />
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="80"
+        />
+        <el-table-column
+          prop="title"
+          label="标题"
+        />
+        <el-table-column
+          ref="sortIndex"
+          prop="sortIndex"
+          label="序号"
+          sortable
+          width="80"
+          :sort-method="sortByNumber"
+        />
+        <el-table-column
+          prop="businessType"
+          label="业务类型"
+        />
+        <el-table-column
+          prop="materialType"
+          label="资料类型"
+        />
+        <el-table-column
+          prop="issuer"
+          label="发布者"
+        />
+        <el-table-column
+          prop="department"
+          label="部门"
+        />
+        <el-table-column
+          prop="modifyTime"
+          label="操作时间"
+        />
+        <el-table-column label="操作" fixed="right" width="210">
+          <template v-slot="{ row }">
+            <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
+            <el-button type="text" size="mini" @click="preview(row)">预览文件</el-button>
+            <el-button type="text" size="mini" @click="preview(row)">下载</el-button>
+            <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
+          </template>
+        </el-table-column>
+        <template v-slot:append>
+          <div class="table-footer">
+            <div class="table-operation">
+              <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
+              <el-button size="mini">删除</el-button>
+            </div>
+            <pagination
+              :total="page.count"
+              :page.sync="page.pageNum"
+              :limit.sync="page.pageSize"
+              @pagination="getList"
+            />
+          </div>
         </template>
-      </el-table-column>
-    </el-table>
-    <pagination
-      :total="page.count"
-      :page.sync="page.pageNum"
-      :limit.sync="page.pageSize"
-      @pagination="getList"
-    />
+      </el-table>
+    </template>
     <!-- table -->
 
     <!-- form -->
-    <el-dialog width="800px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
+    <div v-if="home">
+      <page-header :go-back="goBack" :title="modalTitle" />
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="页面名称" prop="name">
-          <el-input v-model="form.name" />
+        <el-form-item label="资料标题" prop="title">
+          <el-input v-model="form.title" placeholder="请输入，必填" />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" :allow-create="action == 'add'" :filterable="action == 'add'" placeholder="请选择类型">
-            <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
-          </el-select>
+        <el-form-item label="业务类型">
+          <el-checkbox-group v-model="form.businessTypes">
+            <el-checkbox v-for="(value, key) in businessTypes" :key="value" :label="key" />
+          </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="序号" prop="sortIndex">
-          <el-input-number v-model="form.sortIndex" />
+        <el-form-item label="资料类型">
+          <el-radio-group v-model="form.materialType">
+            <el-radio v-for="value in materialTypes" :key="value" :label="value" />
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="页面标题（T）" prop="title">
-          <el-input v-model="form.title" :rows="3" type="textarea" />
+        <el-form-item label="行业标签">
+          <el-checkbox-group v-model="form.labels" @change="checkLabels">
+            <el-checkbox v-for="(value, key) in labels" :key="value" :label="key" />
+            <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="checkAllLabels">选择全部</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="页面描述（D）" prop="desc">
-          <el-input v-model="form.desc" :rows="3" type="textarea" />
+        <el-form-item label="所在地区" prop="provinceCity">
+          <el-cascader
+            v-model="form.provinceCity"
+            :options="form.options"
+            @change="handleChange"
+          />
         </el-form-item>
-        <el-form-item label="页面关键词（K）" prop="keywords">
-          <el-input v-model="form.keywords" :rows="3" type="textarea" />
+        <el-form-item label="选用产品">
+          <el-input v-model="form.products" type="textarea" />
+          <div class="tips">多个产品名称用“空格”区分。</div>
         </el-form-item>
-        <el-form-item label="页面URL" prop="linkUrl">
-          <el-input v-model="form.linkUrl" />
-        </el-form-item>
-        <el-form-item label="路径别名" prop="linkUrlAlias">
-          <el-input v-model="form.linkUrlAlias" />
-        </el-form-item>
-        <el-form-item label="模板文件地址" prop="templateFile">
-          <el-input v-model="form.templateFile" />
+        <el-form-item label="图片地址" prop="imgUrl">
+          <el-col :span="24">
+            <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
+          </el-col>
+          <el-col :span="24">
+            <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
+              <el-option label="本地上传" value="1" />
+              <el-option label="文件服务器" value="2" />
+            </el-select>
+          </el-col>
+          <el-upload
+            style="display: none;"
+            class="local-upload"
+            action="/"
+            :limit="1"
+            :auto-upload="false"
+            :on-change="selectedFile"
+            :file-list="fileList"
+          >
+            <el-button ref="upload" size="small" type="primary">点击上传</el-button>
+          </el-upload>
+          <div class="tips">文件扩展名仅支持 .PDF 格式；</div>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="closeModal">取消</el-button>
+      <div slot="footer" class="new-page-footer">
+        <el-button size="medium" @click="goBack">取消</el-button>
         <el-button size="medium" type="primary" @click="submit">保存</el-button>
       </div>
-    </el-dialog>
+    </div>
     <!-- form -->
 
     <!-- 删除提示 -->
@@ -169,51 +216,58 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
+import PageHeader from '@/components/PageHeader'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'CmsSinglePageManage',
+  name: 'CmsMaterialManage',
+  cname: '资料管理',
   components: {
+    PageHeader,
     Pagination
   },
   data() {
     return {
       // 搜索框
       searchForm: {
-        name: '',
-        type: '',
-        url: ''
+        title: '',
+        buniesslType: '',
+        materialType: ''
       },
-      // 全部类型
-      types: [],
-      // 弹框
-      show: false,
+      // 一级页面
+      home: false,
       // 模板弹框
       showTemplate: false,
       // 预发提示弹框
       showPreRelease: false,
-      modalTitle: '新增',
+      modalTitle: '添加',
       // 弹框表单数据
       form: {
-        name: '',
-        type: '',
-        sortIndex: '',
         title: '',
-        desc: '',
-        keywords: '',
-        linkUrl: '',
-        linkUrlAlias: '',
-        templateFile: ''
+        businessTypes: [],
+        materialType: 'file',
+        labels: [],
+        provinceCity: '',
+        products: '',
+        imgUrl: '',
+        options: [{
+          value: 'beijing',
+          label: '北京',
+          children: [{
+            value: 'daxing',
+            label: '大兴区'
+          }, {
+            value: 'tongzhou',
+            label: '通州区'
+          }]
+        }]
       },
       // 修改时传递的旧code
       oldCode: '',
       // 弹框表单规则
       rules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        type: [{ required: true, message: '请输入类型', trigger: 'blur' }],
-        sortIndex: [{ required: true, message: '请输入序号', trigger: 'blur' }],
-        linkUrl: [{ required: true, message: '请输入页面URL', trigger: 'blur' }],
-        templateFile: [{ required: true, message: '请输入模板文件地址', trigger: 'blur' }]
+        title: [{ required: true, message: '请输入资料标题', trigger: 'blur' }],
+        provinceCity: [{ required: true, message: '请选择所在地区', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
@@ -235,13 +289,42 @@ export default {
         'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'pagebreak', 'anchor', 'link', 'unlink'
       ],
       preReleaseRow: {},
-      action: ''
+      action: '',
+      singlePageTypes: {
+        'PC': 'PC',
+        'M站': 'M站'
+      },
+      businessTypes: {
+        'toB': 'toB',
+        'toC': 'toC'
+      },
+      materialTypes: {
+        '公共文件': 'file',
+        '解决方案': 'scheme'
+      },
+      labels: {
+        '机械制造': '1',
+        '医疗器械': '2',
+        '人工智能': '3',
+        '仪器仪表': '4',
+        '新能源': '5',
+        '五金配件': '6'
+      },
+      // 上传图片下拉框值
+      uploadImageAddress: '',
+      // 上传附件列表
+      fileList: [],
+      // 表单-选择全部标签状态
+      checkAll: false,
+      // 表单-选择全部标签不确定状态
+      isIndeterminate: false,
+      multipleSelection: []
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.global,
-      singlePageTypes: state => state.cms.singlePageType
+      loading: state => state.loading.global
+      // singlePageTypes: state => state.cms.singlePageType
     })
   },
   created() {
@@ -260,7 +343,38 @@ export default {
       searchTemplate: 'cms/searchTemplate',
       editTemplate: 'cms/editTemplate'
     }),
-    showModal(row = {}) {
+    // 下拉框选择本地上传
+    localUpload() {
+      if (this.uploadImageAddress === '1') {
+        this.$refs.upload.$el.click()
+      }
+    },
+    // 点击选择图片
+    selectedFile(file) {
+      // 修改时imgUrl有值使用新上传文件替换
+      if (this.form.imgUrl) {
+        this.form.imgUrl = ''
+      }
+      this.fileList = [file]
+    },
+    checkLabels(val) {
+      const labelLen = Object.keys(this.labels).length
+      const checkedCount = val.length
+      this.checkAll = checkedCount === labelLen
+      this.isIndeterminate = checkedCount > 0 && checkedCount < labelLen
+    },
+    checkAllLabels(val) {
+      if (val) {
+        const labels = Object.keys(this.labels)
+        labels.forEach(label => {
+          this.form.labels.push(label)
+        })
+      } else {
+        this.form.labels = []
+      }
+      this.isIndeterminate = false
+    },
+    goInto(row = {}) {
       if (row.id) {
         const query = { id: row.id }
         this.searchSinglePage(query).then(res => {
@@ -284,12 +398,27 @@ export default {
       } else {
         this.action = 'add'
         delete this.form.id
-        this.modalTitle = '新增'
+        this.modalTitle = '添加'
       }
-      this.show = true
+      this.home = true
     },
-    closeModal() {
-      this.show = false
+    handleChange() {},
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    handleSelectionChangeAll() {
+      const { $refs, list, multipleSelection } = this
+      const { clearSelection, toggleRowSelection } = $refs.table
+      if (multipleSelection.length) {
+        clearSelection()
+      } else {
+        list.forEach(row => {
+          toggleRowSelection(row, true)
+        })
+      }
+    },
+    goBack() {
+      this.home = false
       forEach(this.form, (v, k, o) => {
         if (k === 'parentId') {
           o[k] = '0'
@@ -306,10 +435,6 @@ export default {
     },
     closeTipsModal() {
       this.showTips = false
-    },
-    beforeClose(done) {
-      this.closeModal()
-      done()
     },
     showTemplateModal(row) {
       this.row = row
@@ -414,14 +539,14 @@ export default {
           if (id) {
             formData.append('id', id)
             this.update(formData).then(res => {
-              this.closeModal()
+              this.goBack()
               this.onSearch()
               this.singlePageTypeMapping()
             })
           // 新增
           } else {
             this.add(formData).then(res => {
-              this.closeModal()
+              this.goBack()
               this.onSearch()
               this.singlePageTypeMapping()
             })
@@ -475,7 +600,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .elfinder {
   position: fixed;
   top: 0;
@@ -489,5 +614,36 @@ export default {
   right: 0;
   z-index: 9992;
   cursor: pointer;
+}
+.el-dropdown-link {
+  cursor: pointer;
+  color: #0180cd;
+  font-size: 12px;
+  margin-left: 10px;
+  letter-spacing: normal;
+}
+.new-page-footer {
+  margin-left: 100px;
+}
+.table-footer {
+  position: relative;
+}
+.table-operation {
+  position: absolute;
+  left: 0;
+  top: 30px;
+}
+.tips {
+  font-size: 12px;
+  color: #606266;
+}
+.column-table-dropdown >>> .el-button--text {
+  color: #606266;
+}
+.column-table-dropdown >>> .el-button--text:hover,
+.column-table-dropdown >>> .el-button--text:focus {
+  color: #3499d7;
+  border-color: transparent;
+  background-color: transparent;
 }
 </style>

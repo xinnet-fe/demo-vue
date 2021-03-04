@@ -1,94 +1,97 @@
 <template>
   <div class="order-form">
-    <!-- search -->
-    <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-      <el-form-item label="名称" prop="name">
-        <el-input v-model="searchForm.name" placeholder="请输入名称" clearable />
-      </el-form-item>
-      <el-form-item label="状态" prop="state">
-        <el-select v-model="searchForm.state" placeholder="请选择状态">
-          <el-option v-for="({ value, key }) in states" :key="value" :label="key" :value="value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="searchForm.createTime"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
-        <el-button @click="resetModal">重 置</el-button>
-      </el-form-item>
-    </el-form>
-    <!-- search -->
-
-    <div class="operate-form">
-      <el-button size="mini" @click="showModal()">新增</el-button>
-    </div>
-
-    <!-- table -->
-    <el-table
-      ref="table"
-      v-loading="loading"
-      row-key="id"
-      :tree-props="{children: 'children'}"
-      :data="list"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="name"
-        label="名称"
-      />
-      <el-table-column
-        ref="sortIndex"
-        prop="sortIndex"
-        label="序号"
-        sortable
-        :sort-method="sortByNumber"
-      />
-      <el-table-column
-        prop="code"
-        label="code"
-      />
-      <el-table-column
-        prop="desc"
-        label="描述"
-      />
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-      />
-      <el-table-column
-        prop="modifyTime"
-        label="操作时间"
-      />
-      <el-table-column
-        label="显示状态"
-      >
-        <template v-slot="{ row }">
-          <el-switch
-            v-model="row.status"
-            active-value="1"
-            inactive-value="0"
-            @change="switchChange(row)"
+    <template v-if="!home">
+      <!-- search -->
+      <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="searchForm.name" placeholder="请输入名称" clearable />
+        </el-form-item>
+        <el-form-item label="状态" prop="state">
+          <el-select v-model="searchForm.state" placeholder="请选择状态">
+            <el-option v-for="({ value, key }) in states" :key="value" :label="key" :value="value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="创建时间" prop="createTime">
+          <el-date-picker
+            v-model="searchForm.createTime"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" fixed="right">
-        <template v-slot="{ row }">
-          <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
-          <el-button v-if="!(row.children && row.children.length)" type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- table -->
+        </el-form-item>
+        <el-form-item>
+          <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
+          <el-button @click="resetModal">重置</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- search -->
+
+      <div class="operate-form">
+        <el-button size="mini" @click="showModal()">添加</el-button>
+      </div>
+
+      <!-- table -->
+      <el-table
+        ref="table"
+        v-loading="loading"
+        row-key="id"
+        :tree-props="{children: 'children'}"
+        :data="list"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="name"
+          label="名称"
+        />
+        <el-table-column
+          ref="sortIndex"
+          prop="sortIndex"
+          label="序号"
+          sortable
+          :sort-method="sortByNumber"
+        />
+        <el-table-column
+          prop="code"
+          label="code"
+        />
+        <el-table-column
+          prop="desc"
+          label="描述"
+        />
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+        />
+        <el-table-column
+          prop="modifyTime"
+          label="操作时间"
+        />
+        <el-table-column
+          label="显示状态"
+        >
+          <template v-slot="{ row }">
+            <el-switch
+              v-model="row.status"
+              active-value="1"
+              inactive-value="0"
+              @change="switchChange(row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right">
+          <template v-slot="{ row }">
+            <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
+            <el-button v-if="!(row.children && row.children.length)" type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- table -->
+    </template>
 
     <!-- form -->
-    <el-dialog width="800px" :before-close="beforeClose" destroy-on-close :title="modalTitle" :visible.sync="show">
+    <div v-if="home">
+      <page-header :go-back="goBack" :title="modalTitle" />
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" />
@@ -128,11 +131,11 @@
           <json-editor ref="jsonEditor" v-model="form.extra" width="600" />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="closeModal">取消</el-button>
+      <div slot="footer" class="new-page-footer">
+        <el-button size="medium" @click="goBack">取消</el-button>
         <el-button size="medium" type="primary" @click="submit">保存</el-button>
       </div>
-    </el-dialog>
+    </div>
     <!-- form -->
 
     <!-- 删除提示 -->
@@ -150,12 +153,14 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
-// import Pagination from '@/components/Pagination'
+import PageHeader from '@/components/PageHeader'
 import JsonEditor from '@/components/JsonEditor'
 
 export default {
   name: 'CmsBeancurdCubeManage',
+  cname: '组件管理（原豆腐块管理）',
   components: {
+    PageHeader,
     JsonEditor
   },
   data() {
@@ -166,9 +171,8 @@ export default {
         state: '',
         createTime: ''
       },
-      // 弹框
-      show: false,
-      modalTitle: '新增',
+      home: false,
+      modalTitle: '添加',
       // 弹框表单数据
       form: {
         name: '',
@@ -243,14 +247,14 @@ export default {
           this.modalTitle = '编辑'
         } else {
           delete this.form.id
-          this.modalTitle = '新增'
+          this.modalTitle = '添加'
           this.form.extra = ''
         }
       })
-      this.show = true
+      this.home = true
     },
-    closeModal() {
-      this.show = false
+    goBack() {
+      this.home = false
       forEach(this.form, (v, k, o) => {
         if (k === 'parentId') {
           o[k] = '0'
@@ -270,10 +274,6 @@ export default {
     },
     closeTipsModal() {
       this.showTips = false
-    },
-    beforeClose(done) {
-      this.closeModal()
-      done()
     },
     getList(query = {}) {
       const { name, state, createTime } = this.searchForm
@@ -328,13 +328,13 @@ export default {
           if (id) {
             formData.append('id', id)
             this.update(formData).then(res => {
-              this.closeModal()
+              this.goBack()
               this.onSearch()
             })
-          // 新增
+          // 添加
           } else {
             this.add(formData).then(res => {
-              this.closeModal()
+              this.goBack()
               this.onSearch()
             })
           }
@@ -398,5 +398,8 @@ export default {
   right: 0;
   z-index: 9992;
   cursor: pointer;
+}
+.new-page-footer {
+  margin-left: 100px;
 }
 </style>
