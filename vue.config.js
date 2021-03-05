@@ -44,6 +44,13 @@ const defaultProxy = {
       '^/api': ''
     },
     changeOrigin: true
+  },
+  '/violateDomain': {
+    target: 'http://domainboss.xinnet.com',
+    pathRewrite: {
+      // '^/api': ''
+    },
+    changeOrigin: true
   }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
