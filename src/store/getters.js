@@ -17,6 +17,7 @@ const getters = {
   main_sidebar: state => state.permission.sidebar,
   errorLogs: state => state.errorLog.logs,
   loading: state => state.loading,
-  unreadMsgCount: state => state.msg.unreadMsgCount
+  unreadMsgCount: state => state.msg.unreadMsgCount,
+  msgList: state => state.msg.msgList
 }
 export default getters

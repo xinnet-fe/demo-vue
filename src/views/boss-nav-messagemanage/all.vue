@@ -87,13 +87,13 @@ export default {
       }
       this.$store.dispatch('msg/updateStatus', query).then((res) => {
         if (res.isSuccess === 1) {
-          if (ids.length) {
+          if (ids.length) { // 单条数据更新
             this.listMsg.map((v) => {
               if (v.id === ids) {
                 v.status = '02'
               }
             })
-          } else {
+          } else { // 全部更新
             this.$emit('loadingFalse')
             this.getList()
           }
