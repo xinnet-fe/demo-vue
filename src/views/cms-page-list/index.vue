@@ -11,7 +11,7 @@
         </el-form-item>
         <el-form-item label="站点类型" prop="type">
           <el-select v-model="searchForm.type" placeholder="请选择站点类型">
-            <el-option v-for="(value, key) in singlePageTypes" :key="value" :label="key" :value="value" />
+            <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -126,7 +126,7 @@
         </el-form-item>
         <el-form-item label="站点类型" prop="type">
           <el-select v-model="form.type" placeholder="请选择站点类型">
-            <el-option v-for="(value, key) in singlePageTypes" :key="value" :label="key" :value="value" />
+            <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item label="页面标题（T）" prop="title">
@@ -274,10 +274,16 @@ export default {
       ],
       preReleaseRow: {},
       action: '',
-      singlePageTypes: {
-        'PC': 'PC',
-        'M站': 'M站'
-      }
+      singlePageTypes: [
+        {
+          key: 'PC',
+          value: 'PC'
+        },
+        {
+          key: 'M站',
+          value: 'M站'
+        }
+      ]
     }
   },
   computed: {

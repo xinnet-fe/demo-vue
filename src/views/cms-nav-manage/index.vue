@@ -143,12 +143,11 @@
             inactive-value="0"
           />
         </el-form-item>
-        <el-form-item label="tag">
+        <!-- <el-form-item label="tag">
           <el-radio-group v-model="form.tag">
-            <el-radio label="1">hot</el-radio>
-            <el-radio label="2">new</el-radio>
+            <el-radio v-for="({ value, key }) in tags" :key="value" :label="value">{{ key }}</el-radio>
           </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <collapse title="高级属性">
         <el-form ref="seniorForm" class="el-form" :model="form" label-width="100px">
@@ -280,7 +279,17 @@ export default {
       // 文件管理器页面显示
       showIframeModal: false,
       // 文件资源管理器高度
-      height: '800px'
+      height: '800px',
+      tags: [
+        {
+          key: 'hot',
+          value: '1'
+        },
+        {
+          key: 'new',
+          value: '2'
+        }
+      ]
     }
   },
   computed: {

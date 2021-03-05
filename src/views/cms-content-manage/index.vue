@@ -8,12 +8,12 @@
         </el-form-item>
         <el-form-item label="业务类型" prop="businessType">
           <el-select v-model="searchForm.businessType" placeholder="请输入业务类型">
-            <el-option v-for="(value, key) in businessTypes" :key="value" :label="key" :value="value" />
+            <el-option v-for="({ value, key }) in businessTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item label="资料类型" prop="materialType">
           <el-select v-model="searchForm.materialType" placeholder="请输入资料类型">
-            <el-option v-for="(value, key) in materialTypes" :key="value" :label="key" :value="value" />
+            <el-option v-for="({ value, key }) in materialTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -25,80 +25,177 @@
 
       <div class="operate-form">
         <el-button size="mini" @click="goInto()">添加</el-button>
+        <!-- <el-upload
+          class="local-upload"
+          action="/"
+          :limit="1"
+          :auto-upload="false"
+          :on-change="operSelectedFile"
+          :file-list="operFileList"
+        >
+          <el-button size="mini">
+            <i class="el-icon-upload2" /> 违禁词
+          </el-button>
+        </el-upload> -->
       </div>
 
       <!-- table -->
-      <el-table
-        ref="table"
-        v-loading="loading"
-        :data="list"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          width="60"
-        />
-        <el-table-column
-          prop="id"
-          label="ID"
-          width="80"
-        />
-        <el-table-column
-          prop="title"
-          label="标题"
-        />
-        <el-table-column
-          ref="sortIndex"
-          prop="sortIndex"
-          label="序号"
-          sortable
-          width="80"
-          :sort-method="sortByNumber"
-        />
-        <el-table-column
-          prop="businessType"
-          label="业务类型"
-        />
-        <el-table-column
-          prop="materialType"
-          label="资料类型"
-        />
-        <el-table-column
-          prop="issuer"
-          label="发布者"
-        />
-        <el-table-column
-          prop="department"
-          label="部门"
-        />
-        <el-table-column
-          prop="modifyTime"
-          label="操作时间"
-        />
-        <el-table-column label="操作" fixed="right" width="210">
-          <template v-slot="{ row }">
-            <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
-            <el-button type="text" size="mini" @click="preview(row)">预览文件</el-button>
-            <el-button type="text" size="mini" @click="preview(row)">下载</el-button>
-            <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
-          </template>
-        </el-table-column>
-        <template v-slot:append>
-          <div class="table-footer">
-            <div class="table-operation">
-              <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
-              <el-button size="mini">删除</el-button>
-            </div>
-            <pagination
-              :total="page.count"
-              :page.sync="page.pageNum"
-              :limit.sync="page.pageSize"
-              @pagination="getList"
+      <el-tabs v-model="activeName" @tab-click="handleClickTabs">
+        <el-tab-pane :label="publishedLabel" name="published">
+          <el-table
+            ref="table"
+            v-loading="loading"
+            :data="list"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+              type="selection"
+              width="60"
             />
-          </div>
-        </template>
-      </el-table>
+            <el-table-column
+              prop="id"
+              label="ID"
+              width="80"
+            />
+            <el-table-column
+              prop="title"
+              label="标题"
+            />
+            <el-table-column
+              prop="category"
+              label="分类"
+            />
+            <el-table-column
+              ref="sortIndex"
+              prop="sortIndex"
+              label="序号"
+              sortable
+              width="80"
+              :sort-method="sortByNumber"
+            />
+            <el-table-column
+              prop="prohibitedWords"
+              label="违禁词"
+            />
+            <el-table-column
+              prop="issuer"
+              label="发布者"
+            />
+            <el-table-column
+              prop="department"
+              label="部门"
+            />
+            <el-table-column
+              prop="auditState"
+              label="审核状态"
+            />
+            <el-table-column
+              prop="modifyTime"
+              label="操作时间"
+            />
+            <el-table-column label="操作" fixed="right" width="210">
+              <template v-slot="{ row }">
+                <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
+                <el-button type="text" size="mini" @click="preview(row)">重置审核</el-button>
+                <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
+                <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
+              </template>
+            </el-table-column>
+            <template v-if="list.length" v-slot:append>
+              <div class="table-footer">
+                <div class="table-operation">
+                  <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
+                  <el-button size="mini">删除</el-button>
+                </div>
+                <pagination
+                  :total="page.count"
+                  :page.sync="page.pageNum"
+                  :limit.sync="page.pageSize"
+                  @pagination="getList"
+                />
+              </div>
+            </template>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane :label="auditLabel" name="audit">
+          <el-table
+            ref="table"
+            v-loading="loading"
+            :data="list"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+              type="selection"
+              width="60"
+            />
+            <el-table-column
+              prop="id"
+              label="ID"
+              width="80"
+            />
+            <el-table-column
+              prop="title"
+              label="标题"
+            />
+            <el-table-column
+              prop="category"
+              label="分类"
+            />
+            <el-table-column
+              ref="sortIndex"
+              prop="sortIndex"
+              label="序号"
+              sortable
+              width="80"
+              :sort-method="sortByNumber"
+            />
+            <el-table-column
+              prop="prohibitedWords"
+              label="违禁词"
+            />
+            <el-table-column
+              prop="issuer"
+              label="发布者"
+            />
+            <el-table-column
+              prop="department"
+              label="部门"
+            />
+            <el-table-column
+              prop="auditState"
+              label="审核状态"
+            />
+            <el-table-column
+              prop="modifyTime"
+              label="操作时间"
+            />
+            <el-table-column label="操作" fixed="right" width="210">
+              <template v-slot="{ row }">
+                <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
+                <el-button type="text" size="mini" @click="preview(row)">审核</el-button>
+                <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
+                <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
+              </template>
+            </el-table-column>
+            <template v-if="list.length" v-slot:append>
+              <div class="table-footer">
+                <div class="table-operation">
+                  <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
+                  <el-button size="mini">删除</el-button>
+                </div>
+                <pagination
+                  :total="page.count"
+                  :page.sync="page.pageNum"
+                  :limit.sync="page.pageSize"
+                  @pagination="getList"
+                />
+              </div>
+            </template>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
     </template>
     <!-- table -->
 
@@ -106,58 +203,89 @@
     <div v-if="home">
       <page-header :go-back="goBack" :title="modalTitle" />
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-        <el-form-item label="资料标题" prop="title">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入，必填" />
-        </el-form-item>
-        <el-form-item label="业务类型">
-          <el-checkbox-group v-model="form.businessTypes">
-            <el-checkbox v-for="(value, key) in businessTypes" :key="value" :label="key" />
+          <el-checkbox-group v-model="form.titleTags" class="input-checkbox-group" fill="#ff0ff0">
+            <el-checkbox v-for="({ value, key }) in titleTags" :key="value" :label="key" fill="#ff0ff0" />
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="资料类型">
-          <el-radio-group v-model="form.materialType">
-            <el-radio v-for="value in materialTypes" :key="value" :label="value" />
+        <el-form-item label="关键词">
+          <el-input v-model="form.cKeywords" type="textarea" placeholder="填写关键词" />
+          <div class="tips">多个关键词用","号隔开</div>
+        </el-form-item>
+        <el-form-item label="序号" prop="sortIndex">
+          <el-input-number v-model="form.sortIndex" placeholder="请输入，默认100" />
+        </el-form-item>
+        <el-form-item label="内容类型">
+          <el-radio-group v-model="form.contentType">
+            <el-radio v-for="({ value, key }) in contentTypes" :key="value" :label="value">{{ key }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="行业标签">
-          <el-checkbox-group v-model="form.labels" @change="checkLabels">
-            <el-checkbox v-for="(value, key) in labels" :key="value" :label="key" />
-            <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="checkAllLabels">选择全部</el-checkbox>
+        <!-- 显示内容取决于内容类型 -->
+        <template v-if="form.contentType === 'image'">
+          <el-form-item label="图片地址" prop="imgUrl">
+            <el-col :span="24">
+              <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
+            </el-col>
+            <el-col :span="24">
+              <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
+                <el-option label="本地上传" value="1" />
+                <el-option label="文件服务器" value="2" />
+              </el-select>
+            </el-col>
+            <el-upload
+              style="display: none;"
+              class="local-upload"
+              action="/"
+              :limit="1"
+              :auto-upload="false"
+              :on-change="selectedFile"
+              :file-list="fileList"
+            >
+              <el-button ref="upload" size="small" type="primary">点击上传</el-button>
+            </el-upload>
+            <div class="tips">支持扩展名：.png .jpg .svg</div>
+          </el-form-item>
+        </template>
+        <template v-else-if="form.contentType === 'video'">
+          <el-form-item label="预览视频" prop="video">
+            <el-input v-model="form.video" placeholder="请填写视频链接地址" />
+          </el-form-item>
+        </template>
+        <el-form-item label="置顶">
+          <el-checkbox-group v-model="form.topStates" @change="checkLabels">
+            <el-checkbox v-for="({ value, key }) in topStates" :key="value" :label="key" />
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="所在地区" prop="provinceCity">
-          <el-cascader
-            v-model="form.provinceCity"
-            :options="form.options"
-            @change="handleChange"
+        <el-form-item label="内容简介">
+          <el-input v-model="form.desc" type="textarea" placeholder="填写简介，限定300字以内。" />
+        </el-form-item>
+        <el-form-item label="Keywords">
+          <el-input v-model="form.keywords" type="textarea" placeholder="请输入" />
+          <div class="tips">Keywords一般不超过3个关键词，每个关键词之间使用英文逗号分隔，保证页面内容的K密度10%内，且可读性。</div>
+        </el-form-item>
+        <el-form-item label="Description">
+          <el-input v-model="form.description" type="textarea" />
+          <div class="tips">Description字数应界于50~150个汉字之间，推荐50~80字。</div>
+        </el-form-item>
+        <el-form-item label="作者">
+          <el-input v-model="form.author" placeholder="请填写作者" />
+        </el-form-item>
+        <el-form-item label="预设点击量">
+          <el-input-number v-model="form.click" placeholder="请输入，默认0" />
+        </el-form-item>
+        <el-form-item label="正文内容" prop="textContent">
+          <editor
+            id="editor_id"
+            width="760px"
+            height="560px"
+            plugins-path="/static/kindeditor/plugins/"
+            upload-json="/order/upload/"
+            :items="editorItems"
+            :content="editorText"
+            :load-style-mode="false"
+            @on-content-change="handleContentChange"
           />
-        </el-form-item>
-        <el-form-item label="选用产品">
-          <el-input v-model="form.products" type="textarea" />
-          <div class="tips">多个产品名称用“空格”区分。</div>
-        </el-form-item>
-        <el-form-item label="图片地址" prop="imgUrl">
-          <el-col :span="24">
-            <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
-          </el-col>
-          <el-col :span="24">
-            <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
-              <el-option label="本地上传" value="1" />
-              <el-option label="文件服务器" value="2" />
-            </el-select>
-          </el-col>
-          <el-upload
-            style="display: none;"
-            class="local-upload"
-            action="/"
-            :limit="1"
-            :auto-upload="false"
-            :on-change="selectedFile"
-            :file-list="fileList"
-          >
-            <el-button ref="upload" size="small" type="primary">点击上传</el-button>
-          </el-upload>
-          <div class="tips">文件扩展名仅支持 .PDF 格式；</div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="new-page-footer">
@@ -169,7 +297,7 @@
 
     <!-- 删除提示 -->
     <el-dialog width="400px" title="提示" :visible.sync="showTips">
-      <p>删除后前台展示页面也会删除，是否确认删除所选条目？</p>
+      <p>删除后前台展示页面也会删除，是否确认删除所选内容？</p>
       <div slot="footer" class="dialog-footer">
         <el-button size="medium" @click="closeTipsModal">取消</el-button>
         <el-button size="medium" type="primary" @click="destroy">确认</el-button>
@@ -186,30 +314,6 @@
       </div>
     </el-dialog>
     <!-- 预发提示 -->
-
-    <!-- 模板管理 -->
-    <el-dialog width="800px" :before-close="beforeTemplateClose" destroy-on-close title="模板管理" :visible.sync="showTemplate">
-      <el-form ref="templateForm">
-        <el-form-item>
-          <editor
-            id="editor_id"
-            width="760px"
-            height="560px"
-            plugins-path="/static/kindeditor/plugins/"
-            upload-json="/order/upload/"
-            :items="editorItems"
-            :content="editorText"
-            :load-style-mode="false"
-            @on-content-change="handleContentChange"
-          />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="closeTemplateModal">取消</el-button>
-        <el-button size="medium" type="primary" @click="submitTemplate">保存</el-button>
-      </div>
-    </el-dialog>
-    <!-- 模板管理 -->
   </div>
 </template>
 
@@ -221,13 +325,17 @@ import Pagination from '@/components/Pagination'
 
 export default {
   name: 'CmsContentManage',
-  cname: '资料管理',
+  cname: '内容管理',
   components: {
     PageHeader,
     Pagination
   },
   data() {
     return {
+      // tab选中名称
+      activeName: 'published',
+      publishedLabel: '已发布',
+      auditLabel: '待审核',
       // 搜索框
       searchForm: {
         title: '',
@@ -244,30 +352,27 @@ export default {
       // 弹框表单数据
       form: {
         title: '',
-        businessTypes: [],
+        titleTags: [],
+        cKeywords: '',
+        sortIndex: 0,
+        contentType: 'image',
         materialType: 'file',
-        labels: [],
-        provinceCity: '',
-        products: '',
         imgUrl: '',
-        options: [{
-          value: 'beijing',
-          label: '北京',
-          children: [{
-            value: 'daxing',
-            label: '大兴区'
-          }, {
-            value: 'tongzhou',
-            label: '通州区'
-          }]
-        }]
+        video: '',
+        topStates: [],
+        desc: '',
+        keywords: '',
+        description: '',
+        author: '',
+        click: 100,
+        textContent: ''
       },
+      operImgUrl: '',
       // 修改时传递的旧code
       oldCode: '',
       // 弹框表单规则
       rules: {
-        title: [{ required: true, message: '请输入资料标题', trigger: 'blur' }],
-        provinceCity: [{ required: true, message: '请选择所在地区', trigger: 'blur' }]
+        title: [{ required: true, message: '请输入标题', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
@@ -290,30 +395,98 @@ export default {
       ],
       preReleaseRow: {},
       action: '',
-      singlePageTypes: {
-        'PC': 'PC',
-        'M站': 'M站'
-      },
-      businessTypes: {
-        'toB': 'toB',
-        'toC': 'toC'
-      },
-      materialTypes: {
-        '公共文件': 'file',
-        '解决方案': 'scheme'
-      },
-      labels: {
-        '机械制造': '1',
-        '医疗器械': '2',
-        '人工智能': '3',
-        '仪器仪表': '4',
-        '新能源': '5',
-        '五金配件': '6'
-      },
+      singlePageTypes: [
+        {
+          key: 'PC',
+          value: 'PC'
+        },
+        {
+          key: 'M站',
+          value: 'M站'
+        }
+      ],
+      businessTypes: [
+        {
+          key: 'toB',
+          value: 'toB'
+        },
+        {
+          key: 'toC',
+          value: 'toC'
+        }
+      ],
+      materialTypes: [
+        {
+          key: '公共文件',
+          value: 'file'
+        },
+        {
+          key: '解决方案',
+          value: 'scheme'
+        }
+      ],
+      labels: [
+        {
+          key: '机械制造',
+          value: '1'
+        },
+        {
+          key: '医疗器械',
+          value: '2'
+        },
+        {
+          key: '人工智能',
+          value: '3'
+        },
+        {
+          key: '仪器仪表',
+          value: '4'
+        },
+        {
+          key: '新能源',
+          value: '5'
+        },
+        {
+          key: '五金配件',
+          value: '6'
+        }
+      ],
+      titleTags: [
+        {
+          key: 'HOT',
+          value: 'hot'
+        },
+        {
+          key: 'NEW',
+          value: 'new'
+        }
+      ],
+      contentTypes: [
+        {
+          key: '图片',
+          value: 'image'
+        },
+        {
+          key: '视频',
+          value: 'video'
+        }
+      ],
+      topStates: [
+        {
+          key: '分类下置顶',
+          value: 'part'
+        },
+        {
+          key: '全局置顶',
+          value: 'global'
+        }
+      ],
       // 上传图片下拉框值
       uploadImageAddress: '',
       // 上传附件列表
       fileList: [],
+      // 筛选项中上传附件列表
+      operFileList: [],
       // 表单-选择全部标签状态
       checkAll: false,
       // 表单-选择全部标签不确定状态
@@ -357,15 +530,22 @@ export default {
       }
       this.fileList = [file]
     },
+    // 筛选项中点击选择图片
+    operSelectedFile(file) {
+      if (this.operImgUrl) {
+        this.operImgUrl = ''
+      }
+      this.operFileList = [file]
+    },
     checkLabels(val) {
-      const labelLen = Object.keys(this.labels).length
+      const labelLen = this.labels.length
       const checkedCount = val.length
       this.checkAll = checkedCount === labelLen
       this.isIndeterminate = checkedCount > 0 && checkedCount < labelLen
     },
     checkAllLabels(val) {
       if (val) {
-        const labels = Object.keys(this.labels)
+        const labels = this.labels
         labels.forEach(label => {
           this.form.labels.push(label)
         })
@@ -403,6 +583,9 @@ export default {
       this.home = true
     },
     handleChange() {},
+    handleClickTabs(tab) {
+      this.onSearch(tab.name)
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
@@ -507,9 +690,9 @@ export default {
         this.page = page
       })
     },
-    onSearch() {
+    onSearch(tabName) {
       const { pageNum, pageSize } = this.page
-      const query = { pageNum, pageSize }
+      const query = { pageNum, pageSize, tabName }
       this.getList(query)
     },
     resetModal() {
@@ -636,6 +819,14 @@ export default {
 .tips {
   font-size: 12px;
   color: #606266;
+}
+.operate-form .local-upload {
+  display: inline-block;
+  margin-left: 10px;
+}
+.input-checkbox-group {
+  display: inline-block;
+  margin-left: 10px;
 }
 .column-table-dropdown >>> .el-button--text {
   color: #606266;

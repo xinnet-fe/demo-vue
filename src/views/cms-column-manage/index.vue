@@ -132,8 +132,7 @@
         </el-form-item>
         <el-form-item label="栏目类型" prop="type">
           <el-radio-group v-model="form.type">
-            <el-radio label="1">容器栏目</el-radio>
-            <el-radio label="2">叶子栏目</el-radio>
+            <el-radio v-for="({ value, key }) in columnTypes" :key="value" :label="value">{{ key }}</el-radio>
           </el-radio-group>
           <div class="tips">提示：容器栏目不支持添加内容</div>
         </el-form-item>
@@ -238,7 +237,17 @@ export default {
       // 上传附件列表
       fileList: [],
       // 删除所需当前行
-      row: {}
+      row: {},
+      columnTypes: [
+        {
+          key: '容器栏目',
+          value: '1'
+        },
+        {
+          key: '叶子栏目',
+          value: '2'
+        }
+      ]
     }
   },
   computed: {

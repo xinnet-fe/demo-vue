@@ -19,7 +19,7 @@
       <!-- search -->
 
       <div class="operate-form">
-        <el-button size="mini" @click="goInto()">新增轮播</el-button>
+        <el-button size="mini" @click="goInto()">添加</el-button>
       </div>
 
       <!-- table -->
@@ -134,12 +134,11 @@
             inactive-value="0"
           />
         </el-form-item>
-        <el-form-item label="tag">
+        <!-- <el-form-item label="tag">
           <el-radio-group v-model="form.tag">
-            <el-radio label="1">hot</el-radio>
-            <el-radio label="2">new</el-radio>
+            <el-radio v-for="({ value, key }) in tags" :key="value" :label="value">{{ key }}</el-radio>
           </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="发布时间" prop="startTime">
           <el-date-picker
             v-model="form.startTime"
@@ -263,7 +262,17 @@ export default {
       // 表格的数据
       list: [],
       // 上传附件列表
-      fileList: []
+      fileList: [],
+      tags: [
+        {
+          key: 'hot',
+          value: '1'
+        },
+        {
+          key: 'new',
+          value: '2'
+        }
+      ]
     }
   },
   computed: {

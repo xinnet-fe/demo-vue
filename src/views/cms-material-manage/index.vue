@@ -8,12 +8,12 @@
         </el-form-item>
         <el-form-item label="业务类型" prop="businessType">
           <el-select v-model="searchForm.businessType" placeholder="请输入业务类型">
-            <el-option v-for="(value, key) in businessTypes" :key="value" :label="key" :value="value" />
+            <el-option v-for="({ value, key }) in businessTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item label="资料类型" prop="materialType">
           <el-select v-model="searchForm.materialType" placeholder="请输入资料类型">
-            <el-option v-for="(value, key) in materialTypes" :key="value" :label="key" :value="value" />
+            <el-option v-for="({ value, key }) in materialTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -84,7 +84,7 @@
             <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
           </template>
         </el-table-column>
-        <template v-slot:append>
+        <template v-if="list.length" v-slot:append>
           <div class="table-footer">
             <div class="table-operation">
               <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
@@ -109,19 +109,19 @@
         <el-form-item label="资料标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入，必填" />
         </el-form-item>
-        <el-form-item label="业务类型">
-          <el-checkbox-group v-model="form.businessTypes">
-            <el-checkbox v-for="(value, key) in businessTypes" :key="value" :label="key" />
-          </el-checkbox-group>
-        </el-form-item>
         <el-form-item label="资料类型">
           <el-radio-group v-model="form.materialType">
-            <el-radio v-for="value in materialTypes" :key="value" :label="value" />
+            <el-radio v-for="({ value, key }) in materialTypes" :key="value" :label="value">{{ key }}</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="form.materialType === 'scheme'" label="业务类型">
+          <el-checkbox-group v-model="form.businessTypes">
+            <el-checkbox v-for="({ value, key }) in businessTypes" :key="value" :label="key" />
+          </el-checkbox-group>
         </el-form-item>
         <el-form-item label="行业标签">
           <el-checkbox-group v-model="form.labels" @change="checkLabels">
-            <el-checkbox v-for="(value, key) in labels" :key="value" :label="key" />
+            <el-checkbox v-for="({ value, key }) in labels" :key="value" :label="key" />
             <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="checkAllLabels">选择全部</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -132,10 +132,10 @@
             @change="handleChange"
           />
         </el-form-item>
-        <el-form-item label="选用产品">
+        <!-- <el-form-item label="选用产品">
           <el-input v-model="form.products" type="textarea" />
           <div class="tips">多个产品名称用“空格”区分。</div>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="图片地址" prop="imgUrl">
           <el-col :span="24">
             <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
@@ -290,26 +290,62 @@ export default {
       ],
       preReleaseRow: {},
       action: '',
-      singlePageTypes: {
-        'PC': 'PC',
-        'M站': 'M站'
-      },
-      businessTypes: {
-        'toB': 'toB',
-        'toC': 'toC'
-      },
-      materialTypes: {
-        '公共文件': 'file',
-        '解决方案': 'scheme'
-      },
-      labels: {
-        '机械制造': '1',
-        '医疗器械': '2',
-        '人工智能': '3',
-        '仪器仪表': '4',
-        '新能源': '5',
-        '五金配件': '6'
-      },
+      singlePageTypes: [
+        {
+          key: 'PC',
+          value: 'PC'
+        },
+        {
+          key: 'M站',
+          value: 'M站'
+        }
+      ],
+      businessTypes: [
+        {
+          key: 'toB',
+          value: 'toB'
+        },
+        {
+          key: 'toC',
+          value: 'toC'
+        }
+      ],
+      materialTypes: [
+        {
+          key: '公共文件',
+          value: 'file'
+        },
+        {
+          key: '解决方案',
+          value: 'scheme'
+        }
+      ],
+      labels: [
+        {
+          key: '机械制造',
+          value: '1'
+        },
+        {
+          key: '医疗器械',
+          value: '2'
+        },
+        {
+          key: '人工智能',
+          value: '3'
+        },
+        {
+          key: '仪器仪表',
+          value: '4'
+        },
+        {
+          key: '新能源',
+          value: '5'
+        },
+        {
+          key: '五金配件',
+          value: '6'
+        }
+      ],
       // 上传图片下拉框值
       uploadImageAddress: '',
       // 上传附件列表
