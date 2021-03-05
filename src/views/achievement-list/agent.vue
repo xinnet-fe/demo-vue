@@ -162,6 +162,7 @@
           <span v-if="row.timeUnit === 'Y'">年</span>
           <span v-if="row.timeUnit === 'M'">月</span>
           <span v-if="row.timeUnit === 'D'">天</span>
+          <span v-if="row.timeUnit === 'C'">次</span>
         </template>
       </el-table-column>
       <el-table-column label="销售负责人1" prop="salesmagFirst" />
