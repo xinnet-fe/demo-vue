@@ -8,7 +8,23 @@
       <el-form-item label="渠道名称">
         <el-input v-model="searchForm.organizeNameCn" placeholder="请输入" :clearable="true" />
       </el-form-item>
-      <el-form-item label="开通时间" prop="date">
+      <el-form-item label="省市">
+        <el-cascader
+          v-model="city"
+          :clearable="true"
+          :change-on-select="true"
+          :options="cityList"
+        />
+      </el-form-item>
+      <el-form-item label="区域">
+        <el-cascader
+          v-model="area"
+          :clearable="true"
+          :change-on-select="true"
+          :options="areaList"
+        />
+      </el-form-item>
+      <el-form-item label="开通时间">
         <el-date-picker
           v-model="searchForm.date"
           type="daterange"
@@ -23,7 +39,7 @@
           <el-option v-for="item in stateType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属分公司" prop="organCode">
+      <el-form-item label="所属分公司">
         <el-cascader
           v-model="searchForm.selectedOptions"
           :clearable="true"
@@ -31,12 +47,12 @@
           :options="queryOrganSaleList"
         />
       </el-form-item>
-      <el-form-item label="财务归属" prop="financeCode">
+      <el-form-item label="财务归属">
         <el-select v-model="searchForm.financeCode">
           <el-option v-for="item in queryFinanclAttrList" :key="item.financeCode" :label="item.financeName" :value="item.financeCode" />
         </el-select>
       </el-form-item>
-      <el-form-item label="级别" prop="gradeCode">
+      <el-form-item label="级别">
         <el-select v-model="searchForm.gradeCode">
           <el-option v-for="item in allGrade" :key="item.id" :label="item.gradeName" :value="(item.id + '')" />
         </el-select>
@@ -53,6 +69,7 @@
         <el-button type="default" size="mini" @click="showModal('businessModalVisible')">业务归属</el-button>
         <el-button type="default" size="mini" @click="showModal('financeModalVisible')">财务归属</el-button>
         <el-button type="default" size="mini" @click="showModal('levelModalVisible')">修改级别</el-button>
+        <el-button type="default" size="mini" @click="showModal('areaModalVisible')">业绩区域</el-button>
       </el-form-item>
     </el-form>
     <!-- operate -->
@@ -88,9 +105,24 @@
           label="财务归属"
           show-overflow-tooltip
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="saleName"
           label="绑定销售"
+          show-overflow-tooltip
+        /> -->
+        <el-table-column
+          prop="publicProvinceCn"
+          label="省份"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="publicCityCn"
+          label="城市"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="regionName"
+          label="区域"
           show-overflow-tooltip
         />
         <el-table-column
@@ -135,6 +167,7 @@
     <dialog-business-form v-if="businessModalVisible" :visible.sync="businessModalVisible" :selected="multipleSelection" />
     <dialog-finance-form v-if="financeModalVisible" :visible.sync="financeModalVisible" :selected="multipleSelection" />
     <dialog-level-form v-if="levelModalVisible" :visible.sync="levelModalVisible" :selected="multipleSelection" />
+    <dialog-area-form v-if="areaModalVisible" :visible.sync="areaModalVisible" :selected="multipleSelection" :areaList="areaList" />
     <dialog-account-form v-if="accountModalVisible" :visible.sync="accountModalVisible" :row.sync="row" @onSearch="onSearch" />
   </div>
 </template>
@@ -146,6 +179,7 @@ import DialogBusinessForm from './businessForm'
 import DialogFinanceForm from './financeForm'
 import DialogLevelForm from './levelForm'
 import DialogAccountForm from './accountForm'
+import DialogAreaForm from './areaForm'
 import Pagination from '@/components/Pagination'
 import clearFormData from '@/utils/clearFormData.js'
 export default {
@@ -156,6 +190,7 @@ export default {
     DialogFinanceForm,
     DialogLevelForm,
     DialogAccountForm,
+    DialogAreaForm,
     Pagination
   },
   data() {
@@ -165,9 +200,14 @@ export default {
       financeModalVisible: false,
       levelModalVisible: false,
       accountModalVisible: false,
+      areaModalVisible:false,
       row: {},
       // table中复选框选中值
       multipleSelection: [],
+      city: [],
+      area: [],
+      cityList: [],
+      areaList: [],
       searchForm: {
         agentCode: '',
         organizeNameCn: '',
@@ -177,7 +217,11 @@ export default {
         state: '',
         selectedOptions: [],
         financeCode: '',
-        gradeCode: ''
+        gradeCode: '',
+        regionId: '',
+        parentRegionId: '',
+        publicCityUk: '',
+        publicProvinceUk: ''
       },
       list: [],
       page: {
@@ -229,9 +273,30 @@ export default {
       }
     })
   },
+  watch: {
+    city: {
+      handler(newVal) {
+        console.log(newVal)
+        this.searchForm.publicProvinceUk = newVal[0]
+        this.searchForm.publicCityUk = newVal[1] ? newVal[1] : ''
+      },
+      immediate: true
+    },
+    area: {
+      handler(newVal) {
+        console.log(newVal)
+        this.searchForm.parentRegionId = newVal[0]
+        this.searchForm.regionId = newVal[1] ? newVal[1] : ''
+      },
+      immediate: true
+    }
+  },
   mounted() {
-    this.onSearch()
-    // 获取级别数据
+    this.getCoreProvice()
+    this.selectRegionHierarchical()
+    this.$nextTick(() => {
+      this.onSearch()
+    });
   },
   methods: {
     ...mapActions('userManager', ['findDlInfo', 'breakInfomation']),
@@ -246,7 +311,11 @@ export default {
         gradeCode: this.searchForm.gradeCode,
         startDate: this.searchForm.date && this.searchForm.date[0] ? `${this.searchForm.date[0]} 00.00.00` : '',
         endDate: this.searchForm.date && this.searchForm.date[1] ? `${this.searchForm.date[1]} 23.59.59` : '',
-        state: this.searchForm.state
+        state: this.searchForm.state,
+        publicCityUk: this.searchForm.publicCityUk,
+        publicProvinceUk: this.searchForm.publicProvinceUk,
+        parentRegionId: this.searchForm.parentRegionId,
+        regionId: this.searchForm.regionId
       }
       if (page) {
         query.pageNum = page.page
@@ -312,6 +381,43 @@ export default {
       } else {
         this.$message.warning('请选择代理商！')
       }
+    },
+    getCoreProvice() {
+      this.$store.dispatch('agent/getCoreProvice', {}).then(res => {
+        this.cityList = res.data.map((v)=>{
+          if (v.children.length) {
+            v.children.map((v2)=>{
+              v2.label = v2.name
+              v2.value = v2.code
+            })
+          }
+          return v
+        })
+        console.log(this.cityList)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    selectRegionHierarchical() {
+      this.$store.dispatch('agent/selectRegionHierarchical', {}).then(res => {
+        this.areaList = res.data.map((v)=>{
+          v.label = v.regionName
+          v.value = v.id
+          v.children = []
+          if (v.childrens.length) {
+            v.childrens.map((v2)=>{
+              v.children.push({
+                label: v2.regionName,
+                value: v2.id
+              })
+
+            })
+          }
+          return v
+        })
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }

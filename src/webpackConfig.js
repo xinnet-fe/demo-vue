@@ -41,6 +41,11 @@ module.exports = {
       target: 'https://expense-boss.xinnet.com',
       secure: false,
       changeOrigin: true
+    },
+    '/agent': {
+      target: 'https://agentmanagement.xinnet.com',
+      secure: false,
+      changeOrigin: true
     }
   },
 
