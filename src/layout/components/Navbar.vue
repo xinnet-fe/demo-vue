@@ -173,7 +173,8 @@ export default {
       }
       this.$store.dispatch('msg/updateStatus', query).then((res) => {
         if (res.isSuccess === 1) {
-          this.listMsg = []
+          // context.commit('SET_MSG_LIST', res.list)
+          this.$store.commit('msg/SET_MSG_LIST', [])
         } else {
           this.$message.error(res.msg)
         }
