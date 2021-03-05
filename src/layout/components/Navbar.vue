@@ -42,7 +42,7 @@
                     <img src="static/img/xls.png" alt="">
                   </td>
                   <td class="col2">
-                    <p class="title">{{ item.fileName }}</p>
+                    <p class="title">{{ item.name }}</p>
                     <p class="time">{{ item.createTime }}</p>
                   </td>
                   <td class="col3">
@@ -53,7 +53,7 @@
               </table>
               <div v-if="msgList.length" class="tool">
                 <el-link type="primary" href="javascript:;" class="clear" @click.native="updateStatus">清空</el-link>
-                <el-link type="primary" href="#/boss-nav-messagemanage/index" class="more">查看更多</el-link>
+                <el-link type="primary" href="#/boss-nav-messagemanage/index" class="more" @click.native="msgshow=false">查看更多</el-link>
               </div>
               <div v-if="!msgList.length" class="null">
                 <img src="static/img/null.png" alt="">
