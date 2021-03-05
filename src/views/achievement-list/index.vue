@@ -20,11 +20,11 @@ import orderHy from './hy.vue'
 import orderAgent from './agent.vue'
 import checkPermission from '@/utils/demos/permission' // 权限判断函数
 export default {
-  name: 'Order',
+  name: 'AchievementList',
   components: { orderHy, orderAgent },
   data() {
     return {
-      activeName: 'hy',
+      activeName: checkPermission(['Sales-Performmance-hy']) ? 'hy' : 'agent',
       row: {},
       loadingBtn: false,
       productTypeList: [

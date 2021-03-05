@@ -18,7 +18,7 @@
         </el-select>
       </el-form-item>
       <el-form-item v-if="mark1" label="备注:" prop="salesmagRemarkFirst">
-        <el-input v-model="form2.salesmagRemarkFirst" maxlength="30" placeholder="请输入30个以内的字符" />
+        <el-input v-model="form2.salesmagRemarkFirst" maxlength="30" placeholder="请输入30字以内" />
         <span class="operateUser">操作人：{{ name }}</span>
       </el-form-item>
       <el-form-item label="订单方式:" prop="businessType">
@@ -37,7 +37,7 @@
         </el-select>
       </el-form-item>
       <el-form-item v-if="mark2" label="备注:" prop="businessTypeRemark">
-        <el-input v-model="form2.businessTypeRemark" maxlength="30" placeholder="请输入30个以内的字符" />
+        <el-input v-model="form2.businessTypeRemark" maxlength="30" placeholder="请输入30字以内" />
         <span class="operateUser">操作人：{{ name }}</span>
       </el-form-item>
       <el-form-item label="销售负责人2:" prop="salesmagSecond">
@@ -57,7 +57,7 @@
         </el-select>
       </el-form-item>
       <el-form-item v-if="mark3" label="备注:" prop="salesmagRemarkSecond">
-        <el-input v-model="form2.salesmagRemarkSecond" maxlength="30" placeholder="请输入30个以内的字符" />
+        <el-input v-model="form2.salesmagRemarkSecond" maxlength="30" placeholder="请输入30字以内" />
         <span class="operateUser">操作人：{{ name }}</span>
       </el-form-item>
     </el-form>
