@@ -8,7 +8,7 @@
       style="width: 100%"
     >
       <el-table-column label="负责人" prop="director" />
-      <el-table-column label="所属机构" prop="conpany" />
+      <el-table-column label="所属机构" prop="company" />
       <el-table-column label="变更时间" prop="createTime" />
       <el-table-column label="操作人" prop="operator" />
     </el-table>
