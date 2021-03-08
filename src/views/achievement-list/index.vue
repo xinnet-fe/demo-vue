@@ -16,6 +16,7 @@
 </template>
 
 <script>
+// import { mapState } from 'vuex'
 import orderHy from './hy.vue'
 import orderAgent from './agent.vue'
 import checkPermission from '@/utils/demos/permission' // 权限判断函数
@@ -24,7 +25,7 @@ export default {
   components: { orderHy, orderAgent },
   data() {
     return {
-      activeName: checkPermission(['Sales-Performmance-hy']) ? 'hy' : 'agent',
+      activeName: '',
       row: {},
       loadingBtn: false,
       productTypeList: [
@@ -84,6 +85,12 @@ export default {
     }
   },
   computed: {
+
+  },
+  watch: {
+    '$store.state.userinfo.user.permissions': function(v) {
+      this.activeName = this.checkPermission(['Sales-Performmance-hy']) ? 'hy' : 'agent'
+    }
   },
   created() {
     this.queryProductTypeList()
