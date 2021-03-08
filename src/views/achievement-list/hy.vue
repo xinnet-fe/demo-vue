@@ -47,6 +47,7 @@
           placeholder="请选择"
           clearable
           :multiple="true"
+          collapse-tags
         >
           <el-option
             v-for="item in companyList"
@@ -62,6 +63,7 @@
           placeholder="请选择"
           clearable
           :multiple="true"
+          collapse-tags
         >
           <el-option
             key="全部"
@@ -82,6 +84,7 @@
           placeholder="请选择"
           clearable
           :multiple="true"
+          collapse-tags
         >
           <el-option
             v-for="item in productTypeList"
