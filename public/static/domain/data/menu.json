@@ -10,6 +10,16 @@
     "param": ""
   },
   {
+    "code": "violate-domain-gongan",
+    "parentCode": "",
+    "icon": "",
+    "text": "公安域名违规清单",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
     "code": "refund",
     "parentCode": "",
     "icon": "",
