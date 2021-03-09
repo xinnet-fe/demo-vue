@@ -316,7 +316,7 @@ export function widgetStatusSwitch(id) {
 export function searchBeancurdCube(params) {
   return request({
     url: '/admin/widget/search',
-    method: 'post',
+    method: 'get',
     params
   })
 }
@@ -410,8 +410,26 @@ export function singlePageTypeMapping(params) {
 // 上传图片
 export function uploadFile(data) {
   return request({
-    url: '/upload/img',
+    url: '/admin/upload/img',
     method: 'post',
     data
+  })
+}
+
+// 行政区域
+export function listAreaByParentCode(params) {
+  return request({
+    url: '/admin/area/listAreaByParentCode',
+    method: 'get',
+    params
+  })
+}
+
+// 行业分类
+export function listIndustryCategory(params) {
+  return request({
+    url: '/admin/industryCategory/listIndustryCategory',
+    method: 'get',
+    params
   })
 }

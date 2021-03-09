@@ -3,14 +3,15 @@
 </template>
 
 <script>
-import { hasDevelopment } from '@/settings'
+// import { hasDevelopment } from '@/settings'
 
 export default {
   name: 'CmsFileManage',
   cname: '文件资源管理器',
   data() {
     return {
-      path: hasDevelopment ? '/' : '/xcms/admin/'
+      // path: hasDevelopment ? '/' : '/xcms/admin/'
+      path: '/'
     }
   }
 }

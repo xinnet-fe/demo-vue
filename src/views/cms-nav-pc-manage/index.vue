@@ -95,6 +95,7 @@
             placeholder="作为顶级分类"
             filterable
             change-on-select
+            clearable
           />
         </el-form-item>
         <el-form-item label="code">
@@ -120,7 +121,6 @@
             :limit="1"
             :auto-upload="false"
             :on-change="selectedFile"
-            :file-list="fileList"
           >
             <el-button ref="upload" size="small" type="primary">点击上传</el-button>
           </el-upload>
@@ -274,8 +274,6 @@ export default {
       showTips: false,
       // 表格的数据
       list: [],
-      // 上传附件列表
-      fileList: [],
       // 文件管理器页面显示
       showIframeModal: false,
       // 文件资源管理器高度
@@ -338,12 +336,11 @@ export default {
     selectedFile(file) {
       const formData = new FormData()
       formData.append('file', file.raw)
-      this.uploadFile(formData).then(console.log)
+      this.uploadFile(formData).then(imgUrl => (this.form.imgUrl = imgUrl))
       // 修改时imgUrl有值使用新上传文件替换
       if (this.form.imgUrl) {
         this.form.imgUrl = ''
       }
-      this.fileList = [file]
     },
     goInto(row = {}) {
       this.getParentIdMapping().then(() => {
@@ -352,7 +349,6 @@ export default {
           this.form.id = row.id
           this.searchNav(query).then(res => {
             const { navigation: nav } = res.data
-            this.fileList = nav.file ? [nav.file] : []
             forEach(this.form, (v, k, o) => {
               this.form[k] = nav[k] || ''
             })
@@ -388,7 +384,6 @@ export default {
       this.form.id = ''
       this.oldCode = ''
       this.uploadImageAddress = ''
-      this.fileList = []
       delete this.form.id
     },
     showTipsModal(row) {
@@ -413,12 +408,14 @@ export default {
     getParams(id) {
       const formData = new FormData()
       const data = this.form
-      const file = this.fileList.length ? this.fileList[0].raw : ''
       let parentId = '0'
       if (data.parentId && data.parentId.length) {
         parentId = String(data.parentId[data.parentId.length - 1])
       } else if (data.parentId && data.parentId >= 0) {
         parentId = data.parentId
+      }
+      if (!parentId || !parentId.length) {
+        parentId = '0'
       }
       if (id) {
         formData.append('code', this.oldCode)
@@ -449,7 +446,6 @@ export default {
       formData.append('alt', data.alt)
       formData.append('extra', extra)
       formData.append('content', data.content)
-      formData.append('file', file)
       formData.append('siteType', 'pc')
       return formData
     },
@@ -477,14 +473,18 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      this.destroyData({ id }).then(res => {
+      const formData = new FormData()
+      formData.append('id', id)
+      this.destroyData(formData).then(res => {
         this.closeTipsModal()
         this.onSearch()
         delete this.form.id
       })
     },
     switchChange(row) {
-      this.updateStatus({ id: row.id }).then(this.onSearch)
+      const formData = new FormData()
+      formData.append('id', row.id)
+      this.updateStatus(formData).then(this.onSearch)
     },
     sortChildren(data, order) {
       if (!(data && data.length > 1)) {

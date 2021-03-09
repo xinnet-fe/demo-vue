@@ -153,6 +153,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
+import formatTime from '@/utils/formatTime'
 import PageHeader from '@/components/PageHeader'
 import JsonEditor from '@/components/JsonEditor'
 
@@ -277,15 +278,11 @@ export default {
     },
     getList(query = {}) {
       const { name, state, createTime } = this.searchForm
-      if (name) {
-        query.name = name
-      }
-      if (state) {
-        query.status = state
-      }
+      query.name = name
+      query.status = state
       if (createTime) {
-        query.startTime = createTime[0]
-        query.endTime = createTime[1]
+        query.startTime = formatTime(new Date(createTime[0]).getTime())
+        query.endTime = formatTime(new Date(createTime[1]).getTime())
       }
       return this.getData(query).then(list => {
         this.list = list

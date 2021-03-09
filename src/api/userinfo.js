@@ -10,7 +10,8 @@ export function getUser(query) {
 }
 
 // const sidebarMenusUrl = process.env.NODE_ENV === 'development' ? '/static/data/menu.json' : '/admin/static/data/menu.json'
-const sidebarMenusUrl = '/xcms/admin/static/data/menu.json'
+// const sidebarMenusUrl = '/xcms/admin/static/data/menu.json'
+const sidebarMenusUrl = '/static/data/menu.json'
 export function getSidebarMenus(query) {
   return axios({
     // url: '/portal/navigation/listNavigation',

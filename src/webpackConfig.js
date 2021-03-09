@@ -6,7 +6,8 @@ module.exports = {
   // vue.config根级
   rootConfig: {
     // publicPath: process.env.NODE_ENV === 'development' ? '/' : '/admin/'
-    publicPath: '/xcms/admin'
+    // publicPath: '/xcms/admin'
+    publicPath: '/'
   },
   // configureWebpack
   configureWebpack: {
@@ -20,7 +21,7 @@ module.exports = {
   proxy: {
     '/api': {
       target: 'https://xcms.300.cn',
-      // secure: false,
+      secure: false,
       changeOrigin: true
     }
     // '/normaladv': {

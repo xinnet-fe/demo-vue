@@ -50,7 +50,9 @@ import {
   searchTemplate,
   editTemplate,
   singlePageTypeMapping,
-  uploadFile
+  uploadFile,
+  listAreaByParentCode,
+  listIndustryCategory
 } from '@/api/cms'
 import map from 'lodash/map'
 
@@ -403,7 +405,19 @@ const actions = {
     return singlePageTypeMapping(query).then(res => commit('SINGLE_PAGE_TYPE_MAPPING', res))
   },
   uploadFile(_, query) {
-    return uploadFile(query)
+    return uploadFile(query).then(res => {
+      const { data } = res
+      if (data && data.imgUrl) {
+        return data.imgUrl
+      }
+      return ''
+    })
+  },
+  listAreaByParentCode(_, query) {
+    return listAreaByParentCode(query)
+  },
+  listIndustryCategory(_, query) {
+    return listIndustryCategory(query)
   }
 }
 

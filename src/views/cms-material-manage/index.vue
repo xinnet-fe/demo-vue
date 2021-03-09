@@ -356,7 +356,13 @@ export default {
       checkAll: false,
       // 表单-选择全部标签不确定状态
       isIndeterminate: false,
-      multipleSelection: []
+      multipleSelection: [],
+      // 区域
+      province: [],
+      // 市
+      city: [],
+      // 行业
+      industries: []
     }
   },
   computed: {
@@ -368,6 +374,12 @@ export default {
   created() {
     this.singlePageTypeMapping()
     this.onSearch()
+    this.listAreaByParentCode().then(res => {
+      this.province = res.data
+    })
+    this.listIndustryCategory().then(res => {
+      this.industries = res.data
+    })
   },
   methods: {
     ...mapActions({
@@ -379,7 +391,9 @@ export default {
       singlePageTypeMapping: 'cms/singlePageTypeMapping',
       mkHtml: 'cms/mkHtml',
       searchTemplate: 'cms/searchTemplate',
-      editTemplate: 'cms/editTemplate'
+      editTemplate: 'cms/editTemplate',
+      listAreaByParentCode: 'cms/listAreaByParentCode',
+      listIndustryCategory: 'cms/listIndustryCategory'
     }),
     // 下拉框选择本地上传
     localUpload() {

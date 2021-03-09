@@ -205,12 +205,27 @@
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入，必填" />
-          <el-checkbox-group v-model="form.titleTags" class="input-checkbox-group" fill="#ff0ff0">
-            <el-checkbox v-for="({ value, key }) in titleTags" :key="value" :label="key" fill="#ff0ff0" />
+          <el-checkbox-group v-model="form.titleTags" class="input-checkbox-group">
+            <el-checkbox v-for="({ value, key }) in titleTags" :key="value" :label="value">
+              {{ key }}
+            </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="关键词">
-          <el-input v-model="form.cKeywords" type="textarea" placeholder="填写关键词" />
+          <el-checkbox-group
+            v-model="form.cKeywords"
+            class="input-checkbox-group"
+            :max="5"
+            @change="changeKeywords"
+          >
+            <el-checkbox v-for="({ value, key }) in cKeywords" :key="value" :label="value">
+              {{ key }}
+            </el-checkbox>
+            <!-- 选中其他显示自定义输入框 -->
+            <el-form-item prop="otherValue" class="other-value">
+              <el-input v-if="form.cKeywords.indexOf('other') !== -1" v-model="form.otherValue" placeholder="请输入来源名称" />
+            </el-form-item>
+          </el-checkbox-group>
           <div class="tips">多个关键词用","号隔开</div>
         </el-form-item>
         <el-form-item label="序号" prop="sortIndex">
@@ -254,7 +269,9 @@
         </template>
         <el-form-item label="置顶">
           <el-checkbox-group v-model="form.topStates" @change="checkLabels">
-            <el-checkbox v-for="({ value, key }) in topStates" :key="value" :label="key" />
+            <el-checkbox v-for="({ value, key }) in topStates" :key="value" :label="value">
+              {{ key }}
+            </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="内容简介">
@@ -357,7 +374,7 @@ export default {
       form: {
         title: '',
         titleTags: [],
-        cKeywords: '',
+        cKeywords: [],
         sortIndex: 0,
         contentType: 'image',
         materialType: 'file',
@@ -370,7 +387,8 @@ export default {
         author: '',
         click: 100,
         textContent: '',
-        copyright: ''
+        copyright: '',
+        otherValue: ''
       },
       operImgUrl: '',
       // 修改时传递的旧code
@@ -378,7 +396,8 @@ export default {
       // 弹框表单规则
       rules: {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-        copyright: [{ required: true, message: '请输入版权信息', trigger: 'blur' }]
+        copyright: [{ required: true, message: '请输入版权信息', trigger: 'blur' }],
+        otherValue: [{ required: true, message: '请输入来源名称', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
@@ -487,6 +506,68 @@ export default {
           value: 'global'
         }
       ],
+      cKeywords: [
+        {
+          key: '全网门户',
+          value: 'qwmh'
+        },
+        {
+          key: '速成建站',
+          value: 'scjz'
+        },
+        {
+          key: '全网SEO',
+          value: 'qwseo'
+        },
+        {
+          key: '移动商城',
+          value: 'ydsc'
+        },
+        {
+          key: '全网商城',
+          value: 'qwsc'
+        },
+        {
+          key: 'Google海外推广',
+          value: 'ghwtg'
+        },
+        {
+          key: '大客户高端定制',
+          value: 'dkhgddz'
+        },
+        {
+          key: '成功案例',
+          value: 'cgal'
+        },
+        {
+          key: '产品动态',
+          value: 'cpdt'
+        },
+        {
+          key: '行业资讯',
+          value: 'hyzx'
+        },
+        {
+          key: '经验干货',
+          value: 'jygh'
+        },
+        {
+          key: '企业荣誉',
+          value: 'qyry'
+        },
+        {
+          key: '新网公告',
+          value: 'xwgg'
+        },
+        {
+          key: '媒体报道',
+          value: 'mtbd'
+        },
+        {
+          key: '其他',
+          value: 'other'
+        }
+      ],
       // 上传图片下拉框值
       uploadImageAddress: '',
       // 上传附件列表
@@ -522,6 +603,13 @@ export default {
       searchTemplate: 'cms/searchTemplate',
       editTemplate: 'cms/editTemplate'
     }),
+    // 关键词复选框变更
+    changeKeywords(keywords) {
+      if (keywords.indexOf('other') === -1) {
+        this.$refs.form.clearValidate()
+        this.form.otherValue = ''
+      }
+    },
     // 下拉框选择本地上传
     localUpload() {
       if (this.uploadImageAddress === '1') {
@@ -831,6 +919,10 @@ export default {
   margin-left: 10px;
 }
 .input-checkbox-group {
+  display: inline-block;
+  margin-left: 10px;
+}
+.other-value {
   display: inline-block;
   margin-left: 10px;
 }

@@ -111,7 +111,6 @@
             :limit="1"
             :auto-upload="false"
             :on-change="selectedFile"
-            :file-list="fileList"
           >
             <el-button ref="upload" size="small" type="primary">点击上传</el-button>
           </el-upload>
@@ -261,8 +260,6 @@ export default {
       showTips: false,
       // 表格的数据
       list: [],
-      // 上传附件列表
-      fileList: [],
       tags: [
         {
           key: 'hot',
@@ -308,7 +305,8 @@ export default {
       // 轮播类型
       getSlideshowType: 'cms/parentIdMapping',
       // 轮播状态
-      getSlideshowStatus: 'cms/statusMapping'
+      getSlideshowStatus: 'cms/statusMapping',
+      uploadFile: 'cms/uploadFile'
     }),
     resetModal() {
       this.$refs.searchForm.resetFields()
@@ -320,7 +318,6 @@ export default {
           this.form.id = row.id
           this.searchSlideshow(query).then(res => {
             const { slideshow: r } = res.data
-            this.fileList = r.file ? [r.file] : []
             forEach(this.form, (v, k) => {
               this.form[k] = r[k] || ''
             })
@@ -354,7 +351,6 @@ export default {
       this.form.id = ''
       this.oldCode = ''
       this.uploadImageAddress = ''
-      this.fileList = []
     },
     showTipsModal(row) {
       this.form.id = row.id
@@ -376,7 +372,6 @@ export default {
     },
     getParams(data, id) {
       const formData = new FormData()
-      const file = this.fileList.length ? this.fileList[0].raw : ''
       let startTime = ''
       let endTime = ''
       if (data.startTime) {
@@ -398,6 +393,10 @@ export default {
       } else if (data.parentId && data.parentId >= 0) {
         parentId = data.parentId
       }
+      if (!parentId || !parentId.length) {
+        parentId = '0'
+      }
+
       const hotStatus = data.tag === '1' ? '1' : ''
       const newStatus = data.tag === '2' ? '1' : ''
 
@@ -423,7 +422,6 @@ export default {
       formData.append('alt', data.alt)
       formData.append('extra', extra)
       formData.append('content', data.content)
-      formData.append('file', file)
       return formData
     },
     submit() {
@@ -450,14 +448,18 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      this.destroyData({ id }).then(res => {
+      const formData = new FormData()
+      formData.append('id', id)
+      this.destroyData(formData).then(res => {
         this.closeTipsModal()
         this.onSearch()
         delete this.form.id
       })
     },
     switchChange(row) {
-      this.updateStatus({ id: row.id }).then(this.onSearch)
+      const formData = new FormData()
+      formData.append('id', row.id)
+      this.updateStatus(formData).then(this.onSearch)
     },
     // 下拉框选择本地上传
     localUpload() {
@@ -467,11 +469,13 @@ export default {
     },
     // 点击选择图片
     selectedFile(file) {
+      const formData = new FormData()
+      formData.append('file', file.raw)
+      this.uploadFile(formData).then(imgUrl => (this.form.imgUrl = imgUrl))
       // 修改时imgUrl有值使用新上传文件替换
       if (this.form.imgUrl) {
         this.form.imgUrl = ''
       }
-      this.fileList = [file]
     },
     sortChildren(data, order) {
       if (!(data && data.length > 1)) {
