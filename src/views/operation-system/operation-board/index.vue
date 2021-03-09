@@ -3,7 +3,7 @@
     <div class="stat">
       <el-form ref="searchForm" class="form" :model="searchForm" :inline="true">
         <el-form-item label="日期粒度" prop="duration">
-          <el-select v-model="searchForm.duration" clearable>
+          <el-select v-model="searchForm.duration">
             <el-option v-for="(label, val) in duration" :key="val" :label="label" :value="val" />
           </el-select>
         </el-form-item>
@@ -49,8 +49,130 @@
               </div>
             </el-popover>
 
-            <p class="hint1">累计注册用户数</p>
+            <p class="hint1">累计复购的老客总数</p>
             <p class="hint2">{{ overviewSize.sumRegisterNumber | convertSeparator }}人</p>
+            <p class="hint3">
+              <span>环比：<span :class="[getColor(overviewSize.momRegisterNumber)]">{{ overviewSize.momRegisterNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.momRegisterNumber)]" /></span>
+              <span>同比：<span :class="[getColor(overviewSize.yoyRegisterNumber)]">{{ overviewSize.yoyRegisterNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyRegisterNumber)]" /></span>
+            </p>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="block last">
+            <el-popover
+              placement="top"
+              width="320"
+              trigger="hover"
+              class="item"
+            >
+              <div>
+                <p>
+                  按所选时间粒度、时间范围，统计所有支付成功订单的总金额（不含退费金额）。
+                </p>
+                <p>
+                  环比=（所选时间范围的订单数总金额-所选时间范围紧挨的之前时间范围周期的订单总金额）/所选时间范围紧挨的之前时间范围周期的订单总金额*100% 保留两位小数，四舍五入。
+                </p>
+                <p>
+                  同比=（所选时间范围的订单总金额-去年同段时间范围的订单总金额）/去年同段时间范围的订单总金额*100% 保留两位小数，四舍五入。
+                </p>
+              </div>
+              <i slot="reference" class="el-icon-warning-outline" />
+            </el-popover>
+
+            <p class="hint1">累计老客复购的总金额</p>
+            <p class="hint2">{{ overviewSize.sumGmv | convertSeparator }}元</p>
+            <p class="hint3">
+              <span>环比：<span :class="[getColor(overviewSize.momGmv)]">{{ overviewSize.momGmv | convertPercentage }}</span><i :class="[getIcon(overviewSize.momGmv)]" /></span>
+              <span>同比：<span :class="[getColor(overviewSize.yoyGmv)]">{{ overviewSize.yoyGmv | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyGmv)]" /></span>
+            </p>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="block last">
+            <el-popover
+              placement="top"
+              width="320"
+              trigger="hover"
+              class="item"
+            >
+              <div>
+                <p>
+                  按所选时间粒度、时间范围，统计所有支付成功订单的总金额（不含退费金额）。
+                </p>
+                <p>
+                  环比=（所选时间范围的订单数总金额-所选时间范围紧挨的之前时间范围周期的订单总金额）/所选时间范围紧挨的之前时间范围周期的订单总金额*100% 保留两位小数，四舍五入。
+                </p>
+                <p>
+                  同比=（所选时间范围的订单总金额-去年同段时间范围的订单总金额）/去年同段时间范围的订单总金额*100% 保留两位小数，四舍五入。
+                </p>
+              </div>
+              <i slot="reference" class="el-icon-warning-outline" />
+            </el-popover>
+
+            <p class="hint1">累计老客复购的客单价</p>
+            <p class="hint2">{{ overviewSize.sumGmv | convertSeparator }}元</p>
+            <p class="hint3">
+              <span>环比：<span :class="[getColor(overviewSize.momGmv)]">{{ overviewSize.momGmv | convertPercentage }}</span><i :class="[getIcon(overviewSize.momGmv)]" /></span>
+              <span>同比：<span :class="[getColor(overviewSize.yoyGmv)]">{{ overviewSize.yoyGmv | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyGmv)]" /></span>
+            </p>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="block">
+            <el-popover
+              placement="top"
+              width="320"
+              trigger="hover"
+              class="item"
+            >
+              <div>
+                <p>
+                  按所选时间粒度、时间范围，统计所有支付成功的订单用户数总和，用户数按照会员编号去重。
+                </p>
+                <p>
+                  环比=（所选时间范围的订单用户数-所选时间范围紧挨的之前时间范围周期的订单用户数）/所选时间范围紧挨的之前时间范围周期的订单用户数*100% 保留两位小数，四舍五入。
+                </p>
+                <p>
+                  同比=（所选时间范围的订单用户数-去年同段时间范围的订单用户数）/去年同段时间范围的订单用户数*100% 保留两位小数，四舍五入
+                </p>
+              </div>
+              <i slot="reference" class="el-icon-warning-outline" />
+            </el-popover>
+
+            <p class="hint1">累计交叉复购老客总数</p>
+            <p class="hint2">{{ overviewSize.sumOrderUsers | convertSeparator }}人</p>
+            <p class="hint3">
+              <span>环比：<span :class="[getColor(overviewSize.momOrderUsers)]">{{ overviewSize.momOrderUsers | convertPercentage }}</span><i :class="[getIcon(overviewSize.momOrderUsers)]" /></span>
+              <span>同比：<span :class="[getColor(overviewSize.yoyOrderUsers)]">{{ overviewSize.yoyOrderUsers | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyOrderUsers)]" /></span>
+            </p>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <div class="block">
+            <el-popover
+              placement="top"
+              width="320"
+              trigger="hover"
+              class="item"
+            >
+              <i slot="reference" class="el-icon-warning-outline" />
+              <div>
+                <p>
+                  按所选时间粒度、时间范围，统计所有注册渠道的新用户数的总和，按照账户数去重。
+                </p>
+                <p>
+                  环比=（所选时间范围的注册用户数-所选时间范围紧挨的之前时间范围周期的注册用户数）/所选时间范围紧挨的之前时间范围周期的注册用户数*100% 保留两位小数，四舍五入。
+                </p>
+                <p>
+                  同比=（所选时间范围的注册用户数-去年同段时间范围的注册用户数）/去年同段时间范围的注册用户数*100% 保留两位小数，四舍五入。
+                </p>
+              </div>
+            </el-popover>
+
+            <p class="hint1">老客交叉购买率</p>
+            <p class="hint2">{{ overviewSize.sumRegisterNumber | convertSeparator }}%</p>
             <p class="hint3">
               <span>环比：<span :class="[getColor(overviewSize.momRegisterNumber)]">{{ overviewSize.momRegisterNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.momRegisterNumber)]" /></span>
               <span>同比：<span :class="[getColor(overviewSize.yoyRegisterNumber)]">{{ overviewSize.yoyRegisterNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyRegisterNumber)]" /></span>
@@ -79,8 +201,8 @@
               <i slot="reference" class="el-icon-warning-outline" />
             </el-popover>
 
-            <p class="hint1">累计订单用户数</p>
-            <p class="hint2">{{ overviewSize.sumOrderUsers | convertSeparator }}人</p>
+            <p class="hint1">累计老客交叉购买的平均SKU</p>
+            <p class="hint2">{{ overviewSize.sumOrderUsers | convertSeparator }}个</p>
             <p class="hint3">
               <span>环比：<span :class="[getColor(overviewSize.momOrderUsers)]">{{ overviewSize.momOrderUsers | convertPercentage }}</span><i :class="[getIcon(overviewSize.momOrderUsers)]" /></span>
               <span>同比：<span :class="[getColor(overviewSize.yoyOrderUsers)]">{{ overviewSize.yoyOrderUsers | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyOrderUsers)]" /></span>
@@ -109,8 +231,8 @@
               <i slot="reference" class="el-icon-warning-outline" />
             </el-popover>
 
-            <p class="hint1">累计支付成功的订单数</p>
-            <p class="hint2">{{ overviewSize.sumOrderNumber | convertSeparator }}笔</p>
+            <p class="hint1">门户效果平均UV</p>
+            <p class="hint2">{{ overviewSize.sumOrderNumber | convertSeparator }}人</p>
             <p class="hint3">
               <span>环比：<span :class="[getColor(overviewSize.momOrderNumber)]">{{ overviewSize.momOrderNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.momOrderNumber)]" /></span>
               <span>同比：<span :class="[getColor(overviewSize.yoyOrderNumber)]">{{ overviewSize.yoyOrderNumber | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyOrderNumber)]" /></span>
@@ -139,8 +261,8 @@
               <i slot="reference" class="el-icon-warning-outline" />
             </el-popover>
 
-            <p class="hint1">累计实付订单金额（GMV）</p>
-            <p class="hint2">{{ overviewSize.sumGmv | convertSeparator }}元</p>
+            <p class="hint1">门户效果平均线索数</p>
+            <p class="hint2">{{ overviewSize.sumGmv | convertSeparator }}条</p>
             <p class="hint3">
               <span>环比：<span :class="[getColor(overviewSize.momGmv)]">{{ overviewSize.momGmv | convertPercentage }}</span><i :class="[getIcon(overviewSize.momGmv)]" /></span>
               <span>同比：<span :class="[getColor(overviewSize.yoyGmv)]">{{ overviewSize.yoyGmv | convertPercentage }}</span><i :class="[getIcon(overviewSize.yoyGmv)]" /></span>
@@ -225,7 +347,7 @@ export default {
       pickerMaxDate: '',
       pickerOptions: {
         onPick: ({ maxDate, minDate }) => {
-          const oneMonth = (30 - 1) * 24 * 3600 * 1000
+          const oneMonth = (90 - 1) * 24 * 3600 * 1000
           if (minDate === null) {
             const _maxDate = maxDate.getTime()
             this.pickerMinDate = _maxDate - oneMonth
