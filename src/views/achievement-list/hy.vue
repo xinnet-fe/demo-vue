@@ -65,11 +65,11 @@
           :multiple="true"
           collapse-tags
         >
-          <el-option
+          <!-- <el-option
             key="全部"
             label="全部"
             value=""
-          />
+          /> -->
           <el-option
             v-for="item in saleNameList"
             :key="item.value"

@@ -29,18 +29,18 @@ export default {
       row: {},
       loadingBtn: false,
       productTypeList: [
-        {
-          label: '全部',
-          value: ''
-        }
+        // {
+        //   label: '全部',
+        //   value: ''
+        // }
       ],
       saleNameList: [
       ],
       companyList: [
-        {
-          label: '全部',
-          value: ''
-        }
+        // {
+        //   label: '全部',
+        //   value: ''
+        // }
       ],
       serviceStatusList: [
         {
