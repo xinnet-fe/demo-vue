@@ -1,4 +1,9 @@
 // import parseTime, formatTime and set to filter
+import isNumber from 'lodash/isNumber'
+import isUndefined from 'lodash/isUndefined'
+import isNaN from 'lodash/isNaN'
+import isNull from 'lodash/isNull'
+import round from 'lodash/round'
 export { parseTime, formatTime } from '@/utils/processTime'
 
 /**
@@ -65,4 +70,50 @@ export function toThousandFilter(num) {
  */
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+// 转换为百分比
+export function convertPercentage(num) {
+  if (isUndefined(num) || isNaN(num) || !isNumber(num) || parseFloat(num) === 0) {
+    return '--'
+  }
+  return round(num * 100, 2) + '%'
+}
+
+// 1025 => 1,025
+export function convertSeparator(num) {
+  if (isUndefined(num) || isNaN(num) || isNull(num)) {
+    return 0
+  }
+  // 判断是否是小数
+  const n = '' + num
+  let decimal
+  let isDouble = false
+  let integer
+  const dot = n.indexOf('.')
+  if (dot > -1) {
+    isDouble = true
+    integer = n.slice(0, dot)
+    decimal = n.slice(dot)
+  } else {
+    integer = n
+  }
+  if (integer.length < 4) {
+    return n
+  }
+  const arr = integer.split('')
+  const res = arr.reduceRight((r, v, k) => {
+    r.push(v)
+    const start = 0
+    const end = arr.length
+    if (k !== start && k !== end && (end - k) % 3 === 0) {
+      r.push(',')
+    }
+    return r
+  }, [])
+
+  if (!isDouble) {
+    return res.reverse().join('')
+  }
+  return res.reverse().join('') + decimal
 }
