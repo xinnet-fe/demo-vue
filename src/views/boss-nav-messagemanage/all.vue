@@ -112,6 +112,9 @@ export default {
 .container-msg table{
   width: 100%;
 }
+.container-msg table tr:hover td{
+  background: #f5f7fa;
+}
 .container-msg table td{
   font-size: 12px;
   color: #333;
