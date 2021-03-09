@@ -205,6 +205,15 @@ export function navList(query) {
   })
 }
 
+// 站点类型集合
+export function navSiteMapping(params) {
+  return request({
+    url: '/admin/navigation/siteMapping',
+    method: 'get',
+    params
+  })
+}
+
 export function addNav(data) {
   return request({
     url: '/admin/navigation/add',
@@ -395,5 +404,14 @@ export function singlePageTypeMapping(params) {
     url: '/admin/page/typeMapping',
     method: 'get',
     params
+  })
+}
+
+// 上传图片
+export function uploadFile(data) {
+  return request({
+    url: '/upload/img',
+    method: 'post',
+    data
   })
 }

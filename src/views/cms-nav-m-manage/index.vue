@@ -6,8 +6,8 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model.trim="searchForm.name" placeholder="请输入分类名称" clearable />
         </el-form-item>
-        <el-form-item label="状态" prop="state">
-          <el-select v-model="searchForm.state">
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="searchForm.status">
             <el-option v-for="(value, key) in states" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
@@ -228,7 +228,7 @@ export default {
       // 搜索框
       searchForm: {
         name: '',
-        state: ''
+        status: ''
       },
       // 搜索状态
       states: {
@@ -395,11 +395,10 @@ export default {
       this.showTips = false
     },
     getList(query = {}) {
-      const { name, state } = this.searchForm
+      const { name, status } = this.searchForm
       query.name = name
-      if (state || state === 0) {
-        query.state = state
-      }
+      query.status = status
+      query.siteType = 'm'
       return this.getData(query).then(list => {
         this.list = list
       })
@@ -447,6 +446,7 @@ export default {
       formData.append('extra', extra)
       formData.append('content', data.content)
       formData.append('file', file)
+      formData.append('siteType', 'm')
       return formData
     },
     submit() {

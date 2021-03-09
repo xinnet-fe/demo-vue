@@ -7,18 +7,18 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 import { duration as _duration, hasDevelopment, logoutApi } from '@/settings'
 
-const errorCode = {
-  920000: '服务器发生错误',
-  925000: '参数不能为空',
-  925020: '所调用的业务应用服务不在线',
-  925030: '已经存在',
-  925040: '不存在',
-  925050: '参数异常，比如时间格式不正确',
-  925060: '违反约束，比如删除记录的时候，外键违反约束',
-  925070: '存在子内容，比如删除主表记录的时候，还有子表的内容存在',
-  925080: '存在多个值',
-  925090: '不允许的操作'
-}
+// const errorCode = {
+//   920000: '服务器发生错误',
+//   925000: '参数不能为空',
+//   925020: '所调用的业务应用服务不在线',
+//   925030: '已经存在',
+//   925040: '不存在',
+//   925050: '参数异常，比如时间格式不正确',
+//   925060: '违反约束，比如删除记录的时候，外键违反约束',
+//   925070: '存在子内容，比如删除主表记录的时候，还有子表的内容存在',
+//   925080: '存在多个值',
+//   925090: '不允许的操作'
+// }
 
 const demoErrorCode = [60204, 50008]
 const vm = new Vue()
@@ -48,20 +48,9 @@ service.interceptors.response.use(
     // mock必返回code，请求接口错误才返回code
     const code = res.code
 
-    // 925010 访问拒绝
-    if (code && code === 925010) {
-      app.$router.push(`/401`)
+    if (code && code !== '0') {
       initLoading()
-      return errorResult('访问拒绝')
-    } else if (code && code in errorCode) {
-      initLoading()
-      return errorResult(res.msg || errorCode[code])
-    } else if (code && code > 920001 && code < 924999) {
-      initLoading()
-      return errorResult('应用服务定义的自定义异常')
-    } else if (code && code > 925000 && code < 929999) {
-      initLoading()
-      return errorResult('公共异常')
+      return errorResult(res.msg)
     }
 
     // demos
@@ -83,13 +72,6 @@ service.interceptors.response.use(
       }
       initLoading()
       return Promise.reject(new Error(res.message))
-    }
-
-    if (code === 'error') {
-      const message = res.data.msg
-      errorMessage(message)
-      initLoading()
-      return Promise.reject(new Error(message))
     }
 
     return res

@@ -4,6 +4,7 @@ import {
   updateAdvGroup,
   destroyAdvGroup,
   advList,
+  navSiteMapping,
   addAdvList,
   advStatusSwitch,
   updateAdvList,
@@ -48,7 +49,8 @@ import {
   mkHtml,
   searchTemplate,
   editTemplate,
-  singlePageTypeMapping
+  singlePageTypeMapping,
+  uploadFile
 } from '@/api/cms'
 import map from 'lodash/map'
 
@@ -72,6 +74,8 @@ const state = {
   slideshowStatus: [],
   // 导航-打开方式
   navOpenMode: [],
+  // 导航-站点类型
+  navSiteType: [],
   // 导航-分类
   navType: [],
   // 豆腐块-轮播状态
@@ -107,6 +111,10 @@ const mutations = {
   STATUS_MAPPING: (state, res) => {
     const { list } = res.data
     state.slideshowStatus = list
+  },
+  NAV_SITE_MAPPING: (state, res) => {
+    const { list } = res.data
+    state.navSiteType = list
   },
   NAV_TARGET_MAPPING: (state, res) => {
     const { list } = res.data
@@ -281,6 +289,12 @@ const actions = {
       return []
     })
   },
+  navSiteMapping({ commit }, query) {
+    return navSiteMapping(query).then(res => {
+      commit('NAV_SITE_MAPPING', res)
+      return res
+    })
+  },
   addNav(_, query) {
     return addNav(query)
   },
@@ -387,6 +401,9 @@ const actions = {
   },
   singlePageTypeMapping({ commit }, query) {
     return singlePageTypeMapping(query).then(res => commit('SINGLE_PAGE_TYPE_MAPPING', res))
+  },
+  uploadFile(_, query) {
+    return uploadFile(query)
   }
 }
 

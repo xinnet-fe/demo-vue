@@ -19,8 +19,8 @@ module.exports = {
   // devServer proxy
   proxy: {
     '/api': {
-      target: 'https://xcms.xinnet.com',
-      secure: false,
+      target: 'https://xcms.300.cn',
+      // secure: false,
       changeOrigin: true
     }
     // '/normaladv': {

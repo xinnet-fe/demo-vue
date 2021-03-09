@@ -258,14 +258,14 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="内容简介">
-          <el-input v-model="form.desc" type="textarea" placeholder="填写简介，限定300字以内。" />
+          <el-input v-model="form.desc" type="textarea" placeholder="填写简介，限定300字以内。" max-length="300" />
         </el-form-item>
         <el-form-item label="Keywords">
           <el-input v-model="form.keywords" type="textarea" placeholder="请输入" />
           <div class="tips">Keywords一般不超过3个关键词，每个关键词之间使用英文逗号分隔，保证页面内容的K密度10%内，且可读性。</div>
         </el-form-item>
         <el-form-item label="Description">
-          <el-input v-model="form.description" type="textarea" />
+          <el-input v-model="form.description" type="textarea" max-length="150" />
           <div class="tips">Description字数应界于50~150个汉字之间，推荐50~80字。</div>
         </el-form-item>
         <el-form-item label="作者">
@@ -286,6 +286,10 @@
             :load-style-mode="false"
             @on-content-change="handleContentChange"
           />
+        </el-form-item>
+        <el-form-item label="版权信息" prop="copyright">
+          <el-input v-model="form.copyright" placeholder="请输入版权声明内容,限定300字以内。" max-length="300" />
+          <div class="tips">非原创内容示例：文章来源于网络，如有侵权，请联系客服删除处理。</div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="new-page-footer">
@@ -365,14 +369,16 @@ export default {
         description: '',
         author: '',
         click: 100,
-        textContent: ''
+        textContent: '',
+        copyright: ''
       },
       operImgUrl: '',
       // 修改时传递的旧code
       oldCode: '',
       // 弹框表单规则
       rules: {
-        title: [{ required: true, message: '请输入标题', trigger: 'blur' }]
+        title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+        copyright: [{ required: true, message: '请输入版权信息', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,

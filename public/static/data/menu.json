@@ -13,7 +13,25 @@
                 "text": "导航管理",
                 "icon": "",
                 "url": "",
-                "target": "tab"
+                "target": "",
+                "children": [
+                    {
+                        "code": "cms-nav-pc-manage",
+                        "parentCode": "cms-nav-manage",
+                        "text": "PC站导航",
+                        "icon": "",
+                        "url": "",
+                        "target": "tab"
+                    },
+                    {
+                        "code": "cms-nav-m-manage",
+                        "parentCode": "cms-nav-manage",
+                        "text": "M站导航",
+                        "icon": "",
+                        "url": "",
+                        "target": "tab"
+                    }
+                ]
             },
             {
                 "code": "cms-carousel-manage",

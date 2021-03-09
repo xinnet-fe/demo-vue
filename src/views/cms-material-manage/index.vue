@@ -114,24 +114,26 @@
             <el-radio v-for="({ value, key }) in materialTypes" :key="value" :label="value">{{ key }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="form.materialType === 'scheme'" label="业务类型">
-          <el-checkbox-group v-model="form.businessTypes">
-            <el-checkbox v-for="({ value, key }) in businessTypes" :key="value" :label="key" />
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="行业标签">
-          <el-checkbox-group v-model="form.labels" @change="checkLabels">
-            <el-checkbox v-for="({ value, key }) in labels" :key="value" :label="key" />
-            <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="checkAllLabels">选择全部</el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="所在地区" prop="provinceCity">
-          <el-cascader
-            v-model="form.provinceCity"
-            :options="form.options"
-            @change="handleChange"
-          />
-        </el-form-item>
+        <template v-if="form.materialType === 'scheme'">
+          <el-form-item label="业务类型">
+            <el-checkbox-group v-model="form.businessTypes">
+              <el-checkbox v-for="({ value, key }) in businessTypes" :key="value" :label="key" />
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="行业标签">
+            <el-checkbox-group v-model="form.labels" @change="checkLabels">
+              <el-checkbox v-for="({ value, key }) in labels" :key="value" :label="key" />
+              <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="checkAllLabels">选择全部</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="所在地区" prop="provinceCity">
+            <el-cascader
+              v-model="form.provinceCity"
+              :options="form.options"
+              @change="handleChange"
+            />
+          </el-form-item>
+        </template>
         <!-- <el-form-item label="选用产品">
           <el-input v-model="form.products" type="textarea" />
           <div class="tips">多个产品名称用“空格”区分。</div>

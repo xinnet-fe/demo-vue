@@ -127,7 +127,7 @@
           <div class="tips">Keywords一般不超过3个关键词，每个关键词之间使用英文逗号分隔，保证页面内容的K密度10%内，且可读性。</div>
         </el-form-item>
         <el-form-item label="Description">
-          <el-input v-model="form.desc" :rows="3" type="textarea" placeholder="请输入Description" />
+          <el-input v-model="form.desc" :rows="3" type="textarea" placeholder="请输入Description" max-length="150" />
           <div class="tips">Description字数应界于50~150个汉字之间，推荐50~80字。</div>
         </el-form-item>
         <el-form-item label="栏目类型" prop="type">
