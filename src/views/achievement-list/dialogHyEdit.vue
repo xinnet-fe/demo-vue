@@ -81,7 +81,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">关 闭</el-button>
+      <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" :disabled="loading" @click="dialogSubmit">确定</el-button>
     </div>
   </el-dialog>

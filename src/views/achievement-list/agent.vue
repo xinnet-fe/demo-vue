@@ -123,44 +123,44 @@
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column label="用户ID" prop="agentCode" width="100" />
-      <el-table-column label="商品名称" prop="goodsName" />
-      <el-table-column label="服务编号" prop="serviceCode" />
-      <el-table-column label="订单号" prop="orderCode" />
-      <el-table-column label="商品类型">
+      <el-table-column label="用户ID" prop="agentCode" width="100" show-overflow-tooltip />
+      <el-table-column label="商品名称" prop="goodsName" width="200" show-overflow-tooltip />
+      <el-table-column label="服务编号" prop="serviceCode" width="200" show-overflow-tooltip />
+      <el-table-column label="订单号" prop="orderCode" width="200" show-overflow-tooltip />
+      <el-table-column label="商品类型" width="100" show-overflow-tooltip>
         <template slot-scope="{ row }">
           {{ row.goodsType === '01' ? '主产品': '附属产品' }}
         </template>
       </el-table-column>
 
-      <el-table-column label="产品分类">
+      <el-table-column label="产品分类" width="100" show-overflow-tooltip>
         <template slot-scope="{ row }">
           {{ row.productClassName }}
         </template>
       </el-table-column>
 
-      <el-table-column label="商品价格">
+      <el-table-column label="商品价格" width="100" show-overflow-tooltip>
         <template slot-scope="{ row }">
           ￥{{ row.money }}
         </template>
       </el-table-column>
-      <el-table-column label="订单方式">
+      <el-table-column label="订单方式" width="100" show-overflow-tooltip>
         <template slot-scope="{ row }">
           <span>{{ row.businessType }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="支付成功时间" prop="operateTime" />
-      <el-table-column label="是否退费">
+      <el-table-column label="支付成功时间" width="150" prop="operateTime" show-overflow-tooltip />
+      <el-table-column label="是否退费" width="80" show-overflow-tooltip>
         <template slot-scope="{ row }">
           <span v-if="row.isReturns === '01'">已退</span>
           <span v-if="row.isReturns === '02'">未退</span>
           <span v-if="row.isReturns === '03'">不可退</span>
         </template>
       </el-table-column>
-      <el-table-column label="交易类型" prop="tradeType" />
-      <el-table-column label="年限" prop="timeAmount" />
-      <el-table-column label="年限单位">
+      <el-table-column label="交易类型" width="80" prop="tradeType" show-overflow-tooltip />
+      <el-table-column label="年限" width="50" prop="timeAmount" />
+      <el-table-column label="年限单位" width="80">
         <template slot-scope="{ row }">
           <span v-if="row.timeUnit === 'Y'">年</span>
           <span v-if="row.timeUnit === 'M'">月</span>
@@ -168,11 +168,11 @@
           <span v-if="row.timeUnit === 'C'">次</span>
         </template>
       </el-table-column>
-      <el-table-column label="销售负责人1" prop="salesmagFirst" />
-      <el-table-column label="负责人1所属分公司" prop="salesmagCompanyFirst" />
-      <el-table-column label="销售负责人2" prop="salesmagSecond" />
-      <el-table-column label="负责人2所属分公司" prop="salesmagCompanySecond" />
-      <el-table-column label="商品状态" prop="serviceStatus" />
+      <el-table-column label="销售负责人1" prop="salesmagFirst" width="100" show-overflow-tooltip />
+      <el-table-column label="负责人1所属分公司" prop="salesmagCompanyFirst" width="130" show-overflow-tooltip />
+      <el-table-column label="销售负责人2" prop="salesmagSecond" width="100" show-overflow-tooltip />
+      <el-table-column label="负责人2所属分公司" prop="salesmagCompanySecond" width="130" show-overflow-tooltip />
+      <el-table-column label="商品状态" prop="serviceStatus" width="80" show-overflow-tooltip />
       <!-- <el-table-column label="成单类型">
         <template slot-scope="{ row }">
           <span>{{ row.orderType }}</span>
@@ -181,7 +181,7 @@
       <el-table-column
         label="操作"
         align="center"
-        width="100"
+        width="80"
         fixed="right"
       >
         <template slot-scope="{ row }">
