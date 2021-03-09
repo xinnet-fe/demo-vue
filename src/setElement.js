@@ -85,7 +85,8 @@ import {
   Notification,
   Scrollbar,
   Popconfirm,
-  InfiniteScroll
+  InfiniteScroll,
+  Drawer
 } from 'element-ui'
 import './styles/element-variables.scss'
 
@@ -171,6 +172,7 @@ Vue.use(Image, options)
 Vue.use(Calendar, options)
 Vue.use(Backtop, options)
 Vue.use(PageHeader, options)
+Vue.use(Drawer, options)
 Vue.use(CascaderPanel, options)
 Vue.use(loadingDirective, options)
 Vue.use(Scrollbar, options)

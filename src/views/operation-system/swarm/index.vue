@@ -46,6 +46,14 @@
       @pagination="getList"
     />
     <dialogIssue v-if="dialogIssueShow" :visible.sync="dialogIssueShow" :ids.sync="ids" @getList="getList" />
+    <el-drawer
+      title=""
+      size="800px"
+      :visible.sync="drawerShow"
+      :with-header="false"
+    >
+      <detail-operation />
+    </el-drawer>
   </div>
 </template>
 
@@ -55,9 +63,10 @@ import system from './system.vue'
 import custom from './custom.vue'
 import dialogIssue from './dialogIssue.vue'
 import Pagination from '@/components/Pagination'
+import DetailOperation from '@/components/DetailOperation/index'
 export default {
   name: 'AchievementList',
-  components: { Pagination, system, custom, dialogIssue },
+  components: { Pagination, system, custom, dialogIssue, DetailOperation },
   data() {
     return {
       activeName: 'system',
@@ -69,7 +78,8 @@ export default {
         limit: 30
       },
       ids: [],
-      dialogIssueShow: false
+      dialogIssueShow: false,
+      drawerShow: true
     }
   },
   computed: {

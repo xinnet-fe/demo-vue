@@ -1,0 +1,97 @@
+<template>
+  <div class="detail-container">
+    <table>
+      <tr>
+        <td rowspan="3" />
+        <td colspan="4">中地乳业集团有限公司</td>
+      </tr>
+      <tr>
+        <td>客户类型：企业</td>
+        <td>会员code：CEM10147087</td>
+        <td>注册手机：13426168242</td>
+        <td>注册邮箱：renshouyi@sin...</td>
+      </tr>
+      <tr>
+        <td>会员名称：无</td>
+        <td>当前状态：无</td>
+        <td>商务：李四</td>
+        <td>管家：王五</td>
+      </tr>
+    </table>
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="基本信息" name="idx1">
+        <detail-base-info />
+      </el-tab-pane>
+      <el-tab-pane label="行为信息" name="idx2">
+        <detail-action-info />
+      </el-tab-pane>
+      <el-tab-pane label="消费信息" name="idx3">
+        <detail-consume-info />
+      </el-tab-pane>
+      <el-tab-pane label="跟进服务记录" name="idx4">
+        <detail-follow-info />
+      </el-tab-pane>
+      <el-tab-pane label="产品服务信息" name="idx5">
+        <detail-product-info />
+      </el-tab-pane>
+      <el-tab-pane label="产品服务效果" name="idx6">
+        <detail-product-effect />
+      </el-tab-pane>
+      <el-tab-pane label="投诉信息" name="idx7">
+        <detail-complain-info />
+      </el-tab-pane>
+    </el-tabs>
+  </div>
+</template>
+
+<script>
+import DetailBaseInfo from './detailBaseInfo'
+import DetailActionInfo from './detailActionInfo'
+import DetailConsumeInfo from './detailConsumeInfo'
+import DetailFollowInfo from './detailFollowInfo'
+import DetailProductInfo from './detailProductInfo'
+import DetailProductEffect from './detailProductEffect'
+import DetailComplainInfo from './detailComplainInfo'
+export default {
+  name: 'DetailOperation',
+  components: {
+    DetailBaseInfo,
+    DetailActionInfo,
+    DetailConsumeInfo,
+    DetailFollowInfo,
+    DetailProductInfo,
+    DetailProductEffect,
+    DetailComplainInfo
+  },
+  props: {
+    handleToBack: {
+      type: Function
+    },
+    showLeft: {
+      type: Boolean,
+      default: true
+    },
+    showRight: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      activeName: 'idx1'
+    }
+  },
+  computed: {
+  },
+  methods: {
+    handleClick() {
+
+    }
+  }
+}
+</script>
+
+<style scoped>
+.detail-container{
+}
+</style>
