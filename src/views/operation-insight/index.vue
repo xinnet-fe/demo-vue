@@ -1,99 +1,104 @@
 <template>
-  <div class="order-form">
+  <div>
     <!-- search -->
+    <div class="search-form" />
     <!-- search -->
-    <!-- operate -->
-    <el-form ref="operateForm" class="operate-form" :inline="true">
-      <el-form-item>
-        <span class="pageSize">共{{ page.total }}条，已选中{{ ids.length }}条</span>
-      </el-form-item>
-    </el-form>
-    <!-- operate -->
-    <div class="table-section">
-      <el-table
-        ref="table"
-        v-loading="loading"
-        tooltip-effect="dark"
-        style="width: 100%"
-        :data="list"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          width="55"
-        />
-        <el-table-column
-          fixed="left"
-          label="模板名称"
-          width="150"
+    <div class="order-form">
+      <!-- operate -->
+      <el-form ref="operateForm" class="operate-form" :inline="true">
+        <el-form-item>
+          <span class="pageSize">共{{ page.total }}条，已选中{{ ids.length }}条</span>
+        </el-form-item>
+      </el-form>
+      <!-- operate -->
+      <div class="table-section">
+        <el-table
+          ref="table"
+          v-loading="loading"
+          tooltip-effect="dark"
+          style="width: 100%"
+          :data="list"
+          @selection-change="handleSelectionChange"
         >
-          <span @click="handleDetail()">阿萨德加拉时代峻峰</span>
-        </el-table-column>
-        <el-table-column
-          prop="telenumber"
-          label="创建人"
+          <el-table-column
+            type="selection"
+            width="55"
+          />
+          <el-table-column
+            fixed="left"
+            label="模板名称"
+            width="150"
+          >
+            <template slot-scope="scope">
+              <span @click="handleDetail(scope.row)">阿萨德加拉时代峻峰</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="telenumber"
+            label="创建人"
+          />
+          <el-table-column
+            prop="userNameEmail"
+            label="分配人"
+          />
+          <el-table-column
+            prop="organizeNameCn"
+            label="任务下发日期"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="publicProvinceCn"
+            label="下发客户数"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="publicCityCn"
+            label="商务"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="applyDate"
+            label="所属分区"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="applyDate"
+            label="所属分司"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="applyDate"
+            label="所属部门"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="applyDate"
+            label="已跟进客户数"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="applyDate"
+            label="未跟进客户数"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="applyDate"
+            label="成单客户数"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="applyDate"
+            label="成单客户金额（元）"
+            show-overflow-tooltip
+          />
+        </el-table>
+        <pagination
+          :total="page.total"
+          :page.sync="page.page"
+          :limit.sync="page.limit"
+          @pagination="onSearch"
         />
-        <el-table-column
-          prop="userNameEmail"
-          label="分配人"
-        />
-        <el-table-column
-          prop="organizeNameCn"
-          label="任务下发日期"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="publicProvinceCn"
-          label="下发客户数"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="publicCityCn"
-          label="商务"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="applyDate"
-          label="所属分区"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="applyDate"
-          label="所属分司"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="applyDate"
-          label="所属部门"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="applyDate"
-          label="已跟进客户数"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="applyDate"
-          label="未跟进客户数"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="applyDate"
-          label="成单客户数"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="applyDate"
-          label="成单客户金额（元）"
-          show-overflow-tooltip
-        />
-      </el-table>
-      <pagination
-        :total="page.total"
-        :page.sync="page.page"
-        :limit.sync="page.limit"
-        @pagination="onSearch"
-      />
+      </div>
     </div>
     <el-drawer
       title=""
@@ -104,7 +109,7 @@
       :destroy-on-close="true"
     >
       <i class="el-icon-close btn-close" @click="drawerShow=false" />
-      <detail-operation />
+      <detail-operation :row="row" />
     </el-drawer>
   </div>
 </template>
@@ -133,7 +138,7 @@ export default {
         pageNum: 1,
         pageSize: 20
       },
-      list: [{}],
+      list: [{ id: 1 }],
       page: {
         total: 0,
         page: 0,
@@ -216,7 +221,8 @@ export default {
     resetForm() {
       clearFormData(this.form)
     },
-    handleDetail() {
+    handleDetail(row) {
+      this.row = row
       this.drawerShow = true
     }
   }
@@ -224,6 +230,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.search-form{
+  height: 200px;
+  border-bottom: 20px solid #f3f7fa;
+}
+.order-form{
+  padding-top: 0px;
+}
 .pageSize{
   float: left;
   font-size: 12px;

@@ -5,27 +5,27 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="date"
+        prop="categoryName"
         label="产品分类"
       />
       <el-table-column
-        prop="name"
+        prop="productName"
         label="产品名称"
       />
       <el-table-column
-        prop="address"
+        prop="instanceDomain"
         label="产品标识"
       />
       <el-table-column
-        prop="address"
+        prop="beginTimeStr"
         label="开通日期"
       />
       <el-table-column
-        prop="address"
+        prop="endTimeStr"
         label="到期日期"
       />
       <el-table-column
-        prop="address"
+        prop="instanceState"
         label="状态"
       />
     </el-table>
@@ -46,7 +46,10 @@ export default {
     Pagination
   },
   props: {
-
+    row: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
@@ -75,9 +78,20 @@ export default {
     }
   },
   computed: {},
+  mounted() {
+    // this.handleGetList()
+  },
   methods: {
     handleGetList() {
-
+      const query = {
+        custId: this.row.id
+      }
+      this.$store.dispatch('security/getProductsByCustId', query).then((res) => {
+        this.list = res.data.list
+        // this.page.total = res.
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   }
 }

@@ -42,7 +42,10 @@ export default {
     Pagination
   },
   props: {
-
+    row: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {

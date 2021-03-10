@@ -19,6 +19,13 @@ const defaultProxy = {
   '/portal': {
     target: 'http://119.10.116.247:8082',
     changeOrigin: true
+  },
+  '/security': {
+    target: 'http://10.12.52.224:3000/mock/149',
+    changeOrigin: true,
+    // pathRewrite: {
+    //   '^/api': ''
+    // }
   }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)
