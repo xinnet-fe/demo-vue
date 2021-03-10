@@ -1,21 +1,23 @@
 <template>
   <div class="detail-container">
-    <table>
+    <table class="base-info">
       <tr>
-        <td rowspan="3" />
-        <td colspan="4">中地乳业集团有限公司</td>
+        <td rowspan="3" class="td1">
+          <img src="@/assets/img_01.png" alt="">
+        </td>
+        <td colspan="4"><strong>中地乳业集团有限公司</strong></td>
       </tr>
       <tr>
-        <td>客户类型：企业</td>
-        <td>会员code：CEM10147087</td>
-        <td>注册手机：13426168242</td>
-        <td>注册邮箱：renshouyi@sin...</td>
+        <td class="td2">客户类型：企业</td>
+        <td class="td3">会员code：CEM10147087</td>
+        <td class="td4">注册手机：13426168242</td>
+        <td class="td5">注册邮箱：renshouyi@sin...</td>
       </tr>
       <tr>
-        <td>会员名称：无</td>
-        <td>当前状态：无</td>
-        <td>商务：李四</td>
-        <td>管家：王五</td>
+        <td class="td2">会员名称：无</td>
+        <td class="td3">当前状态：无</td>
+        <td class="td4">商务：李四</td>
+        <td class="td5">管家：王五</td>
       </tr>
     </table>
     <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -91,7 +93,24 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .detail-container{
+  padding: 20px;
+  .base-info{
+    font-size: 12px;
+    margin-bottom: 20px;
+    .td1{
+      width: 140px;
+    }
+    .td2,
+    .td3,
+    .td4,
+    .td5{
+      width: 180px;
+    }
+    strong{
+      font-size: 16px;
+    }
+  }
 }
 </style>

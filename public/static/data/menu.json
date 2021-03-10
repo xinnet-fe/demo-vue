@@ -1,76 +1,48 @@
 [
     {
-        "code": "agent-client-app",
-        "parentCode": null,
-        "children": [{
-            "code": "operation-system/see-through",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "客户洞察管理",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        }, {
-            "code": "operation-system/swarm",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "客户分群管理",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        },{
-            "code": "operation-system/effect",
-            "parentCode": "agent-client-app",
-            "icon": "",
-            "text": "客户效果追踪",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        }],
-        "icon": "applicationCenter",
-        "text": "客户运营管理",
+        "code": "operation-system/see-through",
+        "parentCode": "",
+        "icon": "",
+        "text": "客户洞察管理",
         "url": "",
-        "target": "",
+        "target": "tab",
         "hidden": false,
         "param": ""
     },
     {
-        "code": "operation-system/operation-board",
+        "code": "operation-insight",
+        "parentCode": "",
+        "icon": "",
+        "text": "客户洞察管理2",
+        "url": "",
+        "target": "tab",
+        "hidden": false,
+        "param": ""
+    },
+    {
+        "code": "operation-group",
+        "parentCode": "",
+        "icon": "",
+        "text": "客户分群管理",
+        "url": "",
+        "target": "tab",
+        "hidden": false,
+        "param": ""
+    },{
+        "code": "operation-follow",
+        "parentCode": "",
+        "icon": "",
+        "text": "客户效果追踪",
+        "url": "",
+        "target": "tab",
+        "hidden": false,
+        "param": ""
+    },
+    {
+        "code": "operation-board",
         "parentCode": null,
-        "icon": "applicationCenter",
+        "icon": "",
         "text": "运营看板",
-        "url": "",
-        "target": "",
-        "hidden": false,
-        "param": ""
-    },
-    {
-        "code": "agent-client-app3",
-        "parentCode": null,
-        "children": [{
-            "code": "operation-system/customer",
-            "parentCode": "agent-client-app3",
-            "icon": "",
-            "text": "运营客户跟进_非商务",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        }, {
-            "code": "operation-system/customer-business",
-            "parentCode": "agent-client-app3",
-            "icon": "",
-            "text": "运营客户跟进_商务",
-            "url": "",
-            "target": "tab",
-            "hidden": false,
-            "param": ""
-        }],
-        "icon": "applicationCenter",
-        "text": "成交客户",
         "url": "",
         "target": "",
         "hidden": false,
