@@ -185,7 +185,8 @@ const actions = {
       resolve(accessedRoutes)
     })
   },
-  generateMainRoutes({ commit }, menus) {
+  generateMainRoutes(context, menus) {
+    const { commit } = context
     return new Promise(resolve => {
       const routes = getAsyncRoutesByMenus(menus).concat(asyncRoutes)
       commit('SET_MAIN_ROUTES', routes)

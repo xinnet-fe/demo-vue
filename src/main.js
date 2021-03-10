@@ -17,23 +17,11 @@ import Echarts from 'echarts'
 import VueKindEditor from 'vue-kindeditor'
 import 'kindeditor/kindeditor-all-min.js'
 import 'kindeditor/themes/default/default.css'
+import { when } from '@/utils/request'
 
 Vue.use(VueKindEditor)
+Vue.prototype.when = when
 
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
-// if (process.env.NODE_ENV === 'production') {
-//   const { mockXHR } = require('../mock')
-//   mockXHR()
-// }
-
-// register global utility filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })

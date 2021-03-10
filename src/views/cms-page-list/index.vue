@@ -9,9 +9,9 @@
         <el-form-item label="页面URL" prop="url">
           <el-input v-model="searchForm.url" placeholder="请输入页面URL" clearable />
         </el-form-item>
-        <el-form-item label="站点类型" prop="type">
-          <el-select v-model="searchForm.type" placeholder="请选择站点类型">
-            <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
+        <el-form-item label="站点类型" prop="siteType">
+          <el-select v-model="searchForm.siteType" placeholder="请选择站点类型">
+            <el-option v-for="({ value, key }) in siteTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -23,8 +23,8 @@
 
       <div class="operate-form">
         <el-button size="mini" @click="showModal()">添加</el-button>
-        <el-button size="mini" @click="showModal()">同步预发</el-button>
-        <el-button size="mini" @click="showModal()">同步线上</el-button>
+        <el-button size="mini" @click="syncPreRelease">同步预发</el-button>
+        <el-button size="mini" @click="syncOnline">同步线上</el-button>
       </div>
 
       <!-- table -->
@@ -52,7 +52,7 @@
           label="页面名称"
         />
         <el-table-column
-          prop="type"
+          prop="siteType"
           label="站点类型"
         />
         <el-table-column
@@ -68,17 +68,20 @@
           label="操作时间"
         />
         <el-table-column
-          prop="previewTime"
+          prop="lastAdvanceTime"
           label="预发时间"
         />
         <el-table-column
-          prop="publishTime"
+          prop="lastPublishTime"
           label="发布时间"
         />
         <el-table-column
-          prop="previewState"
           label="预发状态"
-        />
+        >
+          <template v-slot="{ row }">
+            {{ advanceStatus[row.advanceStatus] }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" width="160">
           <template v-slot="{ row }">
             <el-button type="text" size="medium" @click="showModal(row)">编辑</el-button>
@@ -89,16 +92,13 @@
               </span>
               <el-dropdown-menu slot="dropdown" class="column-table-dropdown">
                 <el-dropdown-item>
-                  <el-button type="text" size="mini" @click="showTemplateModal(row)">模板管理</el-button>
-                </el-dropdown-item>
-                <el-dropdown-item>
                   <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <el-button type="text" size="mini" @click="showPreReleaseModal(row)">预发</el-button>
                 </el-dropdown-item>
                 <el-dropdown-item>
-                  <el-button type="text" size="mini">发布</el-button>
+                  <el-button type="text" size="mini" @click="showPublishModal(row)">发布</el-button>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -124,9 +124,9 @@
         <el-form-item label="序号" prop="sortIndex">
           <el-input-number v-model="form.sortIndex" />
         </el-form-item>
-        <el-form-item label="站点类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择站点类型">
-            <el-option v-for="({ value, key }) in singlePageTypes" :key="value" :label="key" :value="value" />
+        <el-form-item label="站点类型" prop="siteType">
+          <el-select v-model="form.siteType" placeholder="请选择站点类型">
+            <el-option v-for="({ value, key }) in siteTypes" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
         <el-form-item label="页面标题（T）" prop="title">
@@ -175,29 +175,15 @@
     </el-dialog>
     <!-- 预发提示 -->
 
-    <!-- 模板管理 -->
-    <el-dialog width="800px" :before-close="beforeTemplateClose" destroy-on-close title="模板管理" :visible.sync="showTemplate">
-      <el-form ref="templateForm">
-        <el-form-item>
-          <editor
-            id="editor_id"
-            width="760px"
-            height="560px"
-            plugins-path="/static/kindeditor/plugins/"
-            upload-json="/order/upload/"
-            :items="editorItems"
-            :content="editorText"
-            :load-style-mode="false"
-            @on-content-change="handleContentChange"
-          />
-        </el-form-item>
-      </el-form>
+    <!-- 发布提示 -->
+    <el-dialog width="400px" title="提示" :visible.sync="showPublish" :before-close="beforeClosePublishModal">
+      <p>是否确认发布所选条目？</p>
       <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="closeTemplateModal">取消</el-button>
-        <el-button size="medium" type="primary" @click="submitTemplate">保存</el-button>
+        <el-button size="medium" @click="closePublishModal">取消</el-button>
+        <el-button size="medium" type="primary" @click="toPublish">确认</el-button>
       </div>
     </el-dialog>
-    <!-- 模板管理 -->
+    <!-- 发布提示 -->
   </div>
 </template>
 
@@ -220,27 +206,28 @@ export default {
       searchForm: {
         name: '',
         url: '',
-        type: ''
+        siteType: ''
       },
       // 全部类型
       types: [],
       // 一级页面
       home: false,
-      // 模板弹框
-      showTemplate: false,
+      // 发布弹框
+      showPublish: false,
       // 预发提示弹框
       showPreRelease: false,
       modalTitle: '添加',
       // 弹框表单数据
       form: {
         name: '',
-        type: '',
-        sortIndex: '',
         title: '',
         desc: '',
+        siteType: '',
         keywords: '',
         linkUrl: '',
         linkUrlAlias: '',
+        thumbnail: '',
+        sortIndex: '',
         templateFile: ''
       },
       // 修改时传递的旧code
@@ -248,11 +235,12 @@ export default {
       // 弹框表单规则
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        type: [{ required: true, message: '请输入类型', trigger: 'blur' }],
+        siteType: [{ required: true, message: '请输入类型', trigger: 'blur' }],
         sortIndex: [{ required: true, message: '请输入序号', trigger: 'blur' }],
         linkUrl: [{ required: true, message: '请输入页面URL', trigger: 'blur' }],
         templateFile: [{ required: true, message: '请输入模板文件地址', trigger: 'blur' }]
       },
+      advanceStatus: ['未预发', '已预发'],
       // 删除弹框
       showTips: false,
       // 表格的数据
@@ -265,35 +253,23 @@ export default {
       },
       // 临时row数据
       row: {},
-      // 模板内容
-      editorText: '',
       editorItems: [
         'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
         'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
         'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'pagebreak', 'anchor', 'link', 'unlink'
       ],
       preReleaseRow: {},
-      action: '',
-      singlePageTypes: [
-        {
-          key: 'PC',
-          value: 'PC'
-        },
-        {
-          key: 'M站',
-          value: 'M站'
-        }
-      ]
+      action: ''
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.global
-      // singlePageTypes: state => state.cms.singlePageType
+      loading: state => state.loading.global,
+      siteTypes: state => state.cms.singlePageSiteType
     })
   },
   created() {
-    this.singlePageTypeMapping()
+    this.getSiteTypeMapping()
     this.onSearch()
   },
   methods: {
@@ -303,10 +279,16 @@ export default {
       update: 'cms/updateSinglePage',
       destroyData: 'cms/destroySinglePage',
       searchSinglePage: 'cms/searchSinglePage',
-      singlePageTypeMapping: 'cms/singlePageTypeMapping',
+      // singlePageTypeMapping: 'cms/singlePageTypeMapping',
+      previewPage: 'cms/previewPage',
       mkHtml: 'cms/mkHtml',
-      searchTemplate: 'cms/searchTemplate',
-      editTemplate: 'cms/editTemplate'
+      publish: 'cms/publish',
+      // searchTemplate: 'cms/searchTemplate',
+      editTemplate: 'cms/editTemplate',
+      // 站点类型
+      getSiteTypeMapping: 'cms/singlePageSiteTypeMapping',
+      toSyncPreRelease: 'cms/syncPreRelease',
+      toSyncOnline: 'cms/syncOnline'
     }),
     showModal(row = {}) {
       if (row.id) {
@@ -348,22 +330,20 @@ export default {
       this.oldCode = ''
       delete this.form.id
     },
+    // 同步预发
+    syncPreRelease() {
+      this.toSyncPreRelease()
+    },
+    // 同步线上
+    syncOnline() {
+      this.toSyncOnline()
+    },
     showTipsModal(row) {
       this.form.id = row.id
       this.showTips = true
     },
     closeTipsModal() {
       this.showTips = false
-    },
-    showTemplateModal(row) {
-      this.row = row
-      this.searchTemplate(row.id).then(res => {
-        const { data } = res
-        if (data && data.content) {
-          this.editorText = data.content
-        }
-        this.showTemplate = true
-      })
     },
     showPreReleaseModal(row) {
       this.showPreRelease = true
@@ -380,46 +360,47 @@ export default {
     preRelease() {
       const row = this.preReleaseRow
       this.mkHtml(row.id).then(res => {
-        this.$message.success(res.data.msg)
+        this.$message.success(res.msg)
         this.closePreReleaseModal()
       })
     },
     preview(row) {
-      window.open('http://xcms.xinnet.com' + row.linkUrl)
-    },
-    closeTemplateModal() {
-      this.showTemplate = false
-      this.resetTemplateData()
-    },
-    resetTemplateData() {
-      this.row = {}
-      this.editorText = ''
-    },
-    submitTemplate() {
-      const formData = new FormData()
-      formData.append('id', this.row.id)
-      formData.append('content', this.editorText)
-      this.editTemplate(formData).then(res => {
-        this.$message.success(res.data.msg)
-        this.showTemplate = false
-        this.resetTemplateData()
+      this.previewPage(row.id).then(res => {
+        const { data } = res
+        if (data && data.url) {
+          let prefix = ''
+          if (data.url.indexOf('https') === -1) {
+            prefix = 'https://'
+          }
+          window.open(prefix + data.url)
+        }
       })
     },
-    beforeTemplateClose(done) {
-      this.resetTemplateData()
+    showPublishModal(row) {
+      this.showPublish = true
+      this.row = row
+    },
+    closePublishModal() {
+      this.showPublish = false
+      this.row = {}
+    },
+    beforeClosePublishModal(done) {
+      this.closePublishModal()
       done()
     },
+    toPublish() {
+      this.publish(this.row.id).then(res => {
+        this.$message.success(res.msg)
+        this.closePublishModal()
+      }).catch(() => {
+        this.closePublishModal()
+      })
+    },
     getList(query = {}) {
-      const { name, type, url } = this.searchForm
-      if (name) {
-        query.name = name
-      }
-      if (type) {
-        query.type = type
-      }
-      if (url) {
-        query.url = url
-      }
+      const { name, url, siteType } = this.searchForm
+      query.name = name
+      query.url = url
+      query.siteType = siteType
       return this.getData(query).then(res => {
         const { list, page } = res
         this.list = list
@@ -439,7 +420,7 @@ export default {
       const data = this.form
 
       formData.append('name', data.name)
-      formData.append('type', data.type)
+      formData.append('siteType', data.siteType)
       formData.append('title', data.title)
       formData.append('desc', data.desc)
       formData.append('keywords', data.keywords)
@@ -508,12 +489,6 @@ export default {
       a.children = this.sortChildren(a.children, order)
       b.children = this.sortChildren(b.children, order)
       return res
-    },
-    closeIframe() {
-      this.showIframeModal = false
-    },
-    handleContentChange(val) {
-      this.editorText = val
     }
   }
 }

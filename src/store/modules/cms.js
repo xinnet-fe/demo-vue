@@ -39,20 +39,35 @@ import {
   searchBeancurdCube,
   widgetStatusSwitch,
   widgetParentIdMapping,
-  widgetStatusMapping,
   // 单页面
   singlePageList,
   addSinglePage,
   updateSinglePage,
   destroySinglePage,
   searchSinglePage,
+  singlePageSiteTypeMapping,
   mkHtml,
+  previewPage,
+  publish,
   searchTemplate,
   editTemplate,
   singlePageTypeMapping,
   uploadFile,
   listAreaByParentCode,
-  listIndustryCategory
+  listIndustryCategory,
+  syncPreRelease,
+  syncOnline,
+  // 栏目
+  channelList,
+  searchChannel,
+  addChannel,
+  updateChannel,
+  destroyChannel,
+  previewPcCoverPage,
+  previewPcListPage,
+  previewMCoverPage,
+  previewMListPage,
+  columnParentIdMapping
 } from '@/api/cms'
 import map from 'lodash/map'
 
@@ -82,10 +97,12 @@ const state = {
   navType: [],
   // 豆腐块-轮播状态
   widgetStatus: [],
-  // 豆腐块-分类
-  widgetType: [],
+  // 栏目-分类
+  columnType: [],
   // 单页面-类型
-  singlePageType: []
+  singlePageType: [],
+  // 页面站点类型
+  singlePageSiteType: []
 }
 
 const mutations = {
@@ -131,14 +148,18 @@ const mutations = {
     const { list } = res.data
     state.widgetStatus = list
   },
-  WIDGET_PARENT_ID_MAPPING: (state, res) => {
+  COLUMN_PARENT_ID_MAPPING: (state, res) => {
     const { list } = res.data
     const result = deepProcessCollectionData(list)
-    state.widgetType = result
+    state.columnType = result
   },
   SINGLE_PAGE_TYPE_MAPPING: (state, res) => {
     const { list } = res.data
     state.singlePageType = list
+  },
+  SINGLE_PAGE_SITE_MAPPING: (state, res) => {
+    const { list } = res.data
+    state.singlePageSiteType = list
   }
 }
 
@@ -170,12 +191,12 @@ function deepProcessListData(data) {
 }
 
 // 递归处理集合数据
-function deepProcessCollectionData(data) {
+function deepProcessCollectionData(data, label = 'name', value = 'id') {
   return map(data, o => {
-    o.label = o.name
-    o.value = o.id
+    o.label = o[label]
+    o.value = o[value]
     if (o.childList) {
-      o.children = deepProcessCollectionData(o.childList)
+      o.children = deepProcessCollectionData(o.childList, label = 'name', value = 'id')
     }
     return o
   })
@@ -365,9 +386,6 @@ const actions = {
   widgetParentIdMapping({ commit }, query) {
     return widgetParentIdMapping(query).then(res => commit('WIDGET_PARENT_ID_MAPPING', res))
   },
-  widgetStatusMapping({ commit }, query) {
-    return widgetStatusMapping(query).then(res => commit('WIDGET_STATUS_MAPPING', res))
-  },
   // 单页面
   singlePageList(_, query) {
     return singlePageList(query).then(processListData)
@@ -392,8 +410,21 @@ const actions = {
       return res
     })
   },
+  // 页面站点类型
+  singlePageSiteTypeMapping({ commit }, query) {
+    return singlePageSiteTypeMapping(query).then(res => {
+      commit('SINGLE_PAGE_SITE_MAPPING', res)
+      return res
+    })
+  },
   mkHtml(_, query) {
     return mkHtml(query)
+  },
+  previewPage(_, query) {
+    return previewPage(query)
+  },
+  publish(_, query) {
+    return publish(query)
   },
   searchTemplate(_, query) {
     return searchTemplate(query)
@@ -414,10 +445,53 @@ const actions = {
     })
   },
   listAreaByParentCode(_, query) {
-    return listAreaByParentCode(query)
+    return listAreaByParentCode(query).then(res => res.data)
   },
   listIndustryCategory(_, query) {
-    return listIndustryCategory(query)
+    return listIndustryCategory(query).then(res => res.data)
+  },
+  syncPreRelease(_, query) {
+    return syncPreRelease(query)
+  },
+  syncOnline(_, query) {
+    return syncOnline(query)
+  },
+  // 栏目
+  channelList(_, query) {
+    return channelList(query).then(res => {
+      const { data } = res
+      if (data && data.listTree) {
+        return deepProcessListData(data.listTree)
+      }
+      return []
+    })
+  },
+  searchChannel(_, query) {
+    return searchChannel(query)
+  },
+  addChannel(_, query) {
+    return addChannel(query)
+  },
+  updateChannel(_, query) {
+    return updateChannel(query)
+  },
+  destroyChannel(_, query) {
+    return destroyChannel(query)
+  },
+  previewPcCoverPage(_, query) {
+    return previewPcCoverPage(query)
+  },
+  previewPcListPage(_, query) {
+    return previewPcListPage(query)
+  },
+  previewMCoverPage(_, query) {
+    return previewMCoverPage(query)
+  },
+  previewMListPage(_, query) {
+    return previewMListPage(query)
+  },
+  columnParentIdMapping({ commit }, query) {
+    return columnParentIdMapping(query).then(res => commit('COLUMN_PARENT_ID_MAPPING', res))
   }
 }
 

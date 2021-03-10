@@ -114,23 +114,31 @@
             <el-radio v-for="({ value, key }) in materialTypes" :key="value" :label="value">{{ key }}</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item v-if="form.materialType === 'scheme' || form.materialType === 'productIntroduce'" label="业务类型">
+          <el-checkbox-group v-model="form.businessTypes">
+            <el-checkbox v-for="({ value, key }) in businessTypes" :key="value" :label="key" />
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item v-if="form.materialType === 'productIntroduce'" label="产品标识">
+          <el-select v-model="form.productIdent" placeholder="请选择产品标识" @change="localUpload">
+            <el-option v-for="({ value, key }) in productIndents" :key="value" :label="key" :value="value" />
+          </el-select>
+        </el-form-item>
         <template v-if="form.materialType === 'scheme'">
-          <el-form-item label="业务类型">
-            <el-checkbox-group v-model="form.businessTypes">
-              <el-checkbox v-for="({ value, key }) in businessTypes" :key="value" :label="key" />
-            </el-checkbox-group>
-          </el-form-item>
           <el-form-item label="行业标签">
-            <el-checkbox-group v-model="form.labels" @change="checkLabels">
-              <el-checkbox v-for="({ value, key }) in labels" :key="value" :label="key" />
+            <el-checkbox-group v-model="form.industry" @change="checkLabels">
+              <el-checkbox v-for="({ name, code }) in industries" :key="code" :label="code">
+                {{ name }}
+              </el-checkbox>
               <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="checkAllLabels">选择全部</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="所在地区" prop="provinceCity">
             <el-cascader
-              v-model="form.provinceCity"
-              :options="form.options"
-              @change="handleChange"
+              :props="provinces"
+              collapse-tags
+              clearable
+              @change="changeProvinces"
             />
           </el-form-item>
         </template>
@@ -229,6 +237,7 @@ export default {
     Pagination
   },
   data() {
+    const self = this
     return {
       // 搜索框
       searchForm: {
@@ -248,21 +257,11 @@ export default {
         title: '',
         businessTypes: [],
         materialType: 'file',
-        labels: [],
+        industry: [],
         provinceCity: '',
         products: '',
         imgUrl: '',
-        options: [{
-          value: 'beijing',
-          label: '北京',
-          children: [{
-            value: 'daxing',
-            label: '大兴区'
-          }, {
-            value: 'tongzhou',
-            label: '通州区'
-          }]
-        }]
+        productIndent: ''
       },
       // 修改时传递的旧code
       oldCode: '',
@@ -320,32 +319,16 @@ export default {
         {
           key: '解决方案',
           value: 'scheme'
+        },
+        {
+          key: '产品介绍',
+          value: 'productIntroduce'
         }
       ],
-      labels: [
+      productIndents: [
         {
-          key: '机械制造',
+          key: '标识01',
           value: '1'
-        },
-        {
-          key: '医疗器械',
-          value: '2'
-        },
-        {
-          key: '人工智能',
-          value: '3'
-        },
-        {
-          key: '仪器仪表',
-          value: '4'
-        },
-        {
-          key: '新能源',
-          value: '5'
-        },
-        {
-          key: '五金配件',
-          value: '6'
         }
       ],
       // 上传图片下拉框值
@@ -357,10 +340,26 @@ export default {
       // 表单-选择全部标签不确定状态
       isIndeterminate: false,
       multipleSelection: [],
-      // 区域
-      province: [],
-      // 市
-      city: [],
+      // 区域级联属性
+      provinces: {
+        multiple: true,
+        lazy: true,
+        lazyLoad(node, resolve) {
+          const { level, value: parentCode } = node
+          const params = {}
+          if (level > 0) {
+            params.parentCode = parentCode
+          }
+          self.listAreaByParentCode(params).then(data => {
+            const nodes = data.map(row => ({
+              label: row.name,
+              value: row.code,
+              leaf: level >= 1
+            }))
+            resolve(nodes)
+          })
+        }
+      },
       // 行业
       industries: []
     }
@@ -374,12 +373,8 @@ export default {
   created() {
     this.singlePageTypeMapping()
     this.onSearch()
-    this.listAreaByParentCode().then(res => {
-      this.province = res.data
-    })
-    this.listIndustryCategory().then(res => {
-      this.industries = res.data
-    })
+
+    this.listIndustryCategory().then(data => (this.industries = data))
   },
   methods: {
     ...mapActions({
@@ -410,19 +405,18 @@ export default {
       this.fileList = [file]
     },
     checkLabels(val) {
-      const labelLen = Object.keys(this.labels).length
+      const labelLen = Object.keys(this.industries).length
       const checkedCount = val.length
       this.checkAll = checkedCount === labelLen
       this.isIndeterminate = checkedCount > 0 && checkedCount < labelLen
     },
     checkAllLabels(val) {
       if (val) {
-        const labels = Object.keys(this.labels)
-        labels.forEach(label => {
-          this.form.labels.push(label)
+        this.industries.forEach(item => {
+          this.form.industry.push(item.code)
         })
       } else {
-        this.form.labels = []
+        this.form.industry = []
       }
       this.isIndeterminate = false
     },
@@ -454,7 +448,9 @@ export default {
       }
       this.home = true
     },
-    handleChange() {},
+    changeProvinces(provinceCity) {
+      this.form.provinceCity = provinceCity
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },

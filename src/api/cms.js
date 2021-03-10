@@ -329,19 +329,11 @@ export function widgetParentIdMapping(params) {
   })
 }
 
-export function widgetStatusMapping(params) {
-  return request({
-    url: '/admin/widget/statusMapping',
-    method: 'get',
-    params
-  })
-}
-
 // 单页面
 export function singlePageList(query) {
   return request({
     url: '/admin/page/list',
-    method: 'post',
+    method: 'get',
     params: query
   })
 }
@@ -372,14 +364,31 @@ export function destroySinglePage(id) {
 export function searchSinglePage(params) {
   return request({
     url: '/admin/page/search',
-    method: 'post',
+    method: 'get',
     params
   })
 }
 
+// 页面预发
 export function mkHtml(id) {
   return request({
     url: `/admin/page/mkHtml?id=${id}`,
+    method: 'post'
+  })
+}
+
+// 页面预览
+export function previewPage(id) {
+  return request({
+    url: `/admin/page/previewPage?id=${id}`,
+    method: 'get'
+  })
+}
+
+// 页面发布
+export function publish(id) {
+  return request({
+    url: `/admin/page/publish?id=${id}`,
     method: 'post'
   })
 }
@@ -429,6 +438,114 @@ export function listAreaByParentCode(params) {
 export function listIndustryCategory(params) {
   return request({
     url: '/admin/industryCategory/listIndustryCategory',
+    method: 'get',
+    params
+  })
+}
+
+// 站点类型集合
+export function singlePageSiteTypeMapping(params) {
+  return request({
+    url: '/admin/page/siteTypeMapping',
+    method: 'get',
+    params
+  })
+}
+
+// 同步预发
+export function syncPreRelease(data) {
+  return request({
+    url: '/admin/page/syncPreRelease',
+    method: 'get',
+    data
+  })
+}
+
+// 同步线上
+export function syncOnline(data) {
+  return request({
+    url: '/admin/page/syncOnline',
+    method: 'get',
+    data
+  })
+}
+
+// 栏目
+export function channelList(query) {
+  return request({
+    url: '/admin/channel/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function searchChannel(params) {
+  return request({
+    url: '/admin/channel/search',
+    method: 'get',
+    params
+  })
+}
+
+export function addChannel(data) {
+  return request({
+    url: '/admin/channel/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateChannel(data) {
+  return request({
+    url: '/admin/channel/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function destroyChannel(data) {
+  return request({
+    url: '/admin/channel/del',
+    method: 'post',
+    data
+  })
+}
+
+export function previewPcCoverPage(params) {
+  return request({
+    url: '/admin/channel/previewPcCoverPage',
+    method: 'get',
+    params
+  })
+}
+
+export function previewPcListPage(params) {
+  return request({
+    url: '/admin/channel/previewPcListPage',
+    method: 'get',
+    params
+  })
+}
+
+export function previewMCoverPage(params) {
+  return request({
+    url: '/admin/channel/previewMCoverPage',
+    method: 'get',
+    params
+  })
+}
+
+export function previewMListPage(params) {
+  return request({
+    url: '/admin/channel/previewMListPage',
+    method: 'get',
+    params
+  })
+}
+
+export function columnParentIdMapping(params) {
+  return request({
+    url: '/admin/channel/parentIdMapping',
     method: 'get',
     params
   })

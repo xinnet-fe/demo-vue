@@ -40,7 +40,7 @@
           label="栏目名称"
         />
         <el-table-column
-          prop="code"
+          prop="fullCode"
           label="CODE标识"
         />
         <el-table-column
@@ -65,10 +65,10 @@
               </span>
               <el-dropdown-menu slot="dropdown" class="column-table-dropdown">
                 <el-dropdown-item>
-                  <el-button type="text" size="mini">预览封面</el-button>
+                  <el-button type="text" size="mini" @click="previewCoverPage(row)">预览封面</el-button>
                 </el-dropdown-item>
                 <el-dropdown-item>
-                  <el-button type="text" size="mini">预览列表</el-button>
+                  <el-button type="text" size="mini" @click="previewList(row)">预览列表</el-button>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -94,36 +94,36 @@
             change-on-select
           />
         </el-form-item>
-        <el-form-item label="CODE标识" prop="code">
-          <el-input v-model="form.code" placeholder="请输入人CODE标识" />
+        <el-form-item label="CODE标识" prop="fullCode">
+          <el-input v-model="form.fullCode" placeholder="请输入人CODE标识" />
         </el-form-item>
         <el-form-item label="序号" prop="sortIndex">
           <el-input-number v-model="form.sortIndex" />
         </el-form-item>
         <el-form-item label="PC站封面模板地址">
-          <el-input v-model="form.code" placeholder="请输入pc封面模板地址" />
+          <el-input v-model="form.pcCoverPageTemplateFile" placeholder="请输入pc封面模板地址" />
         </el-form-item>
         <el-form-item label="PC站列表模板地址">
-          <el-input v-model="form.code" placeholder="请输入pc列表模板地址" />
+          <el-input v-model="form.pcListPageTemplateFile" placeholder="请输入pc列表模板地址" />
         </el-form-item>
         <el-form-item label="PC站内容模板地址">
-          <el-input v-model="form.code" placeholder="请输入pc内容模板地址" />
+          <el-input v-model="form.pcContentPageTemplateFile" placeholder="请输入pc内容模板地址" />
         </el-form-item>
         <el-form-item label="M站封面模板地址">
-          <el-input v-model="form.code" placeholder="请输入M站封面模板地址" />
+          <el-input v-model="form.mCoverPageTemplateFile" placeholder="请输入M站封面模板地址" />
         </el-form-item>
         <el-form-item label="M站封面模板地址">
-          <el-input v-model="form.code" placeholder="请输入M站列表模板地址" />
+          <el-input v-model="form.mListPageTemplateFile" placeholder="请输入M站列表模板地址" />
         </el-form-item>
         <el-form-item label="M站封面模板地址">
-          <el-input v-model="form.code" placeholder="请输入M站内容模板地址" />
+          <el-input v-model="form.mContentPageTemplateFile" placeholder="请输入M站内容模板地址" />
         </el-form-item>
         <el-form-item label="Title">
-          <el-input v-model="form.code" :rows="3" type="textarea" placeholder="请输入Title" />
+          <el-input v-model="form.title" :rows="3" type="textarea" placeholder="请输入Title" />
           <div class="tips">Title字数PC页面一般不超过30个字最佳，H5页面一般不超过20个最佳。</div>
         </el-form-item>
         <el-form-item label="Keywords">
-          <el-input v-model="form.code" :rows="3" type="textarea" placeholder="请输入Keywords" />
+          <el-input v-model="form.keywords" :rows="3" type="textarea" placeholder="请输入Keywords" />
           <div class="tips">Keywords一般不超过3个关键词，每个关键词之间使用英文逗号分隔，保证页面内容的K密度10%内，且可读性。</div>
         </el-form-item>
         <el-form-item label="Description">
@@ -136,20 +136,12 @@
           </el-radio-group>
           <div class="tips">提示：容器栏目不支持添加内容</div>
         </el-form-item>
-        <el-form-item label="图片地址" prop="imgUrl">
-          <el-col :span="24">
-            <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
-          </el-col>
-          <el-col :span="24">
-            <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
-              <el-option label="本地上传" value="1" />
-              <el-option label="文件服务器" value="2" />
-            </el-select>
-          </el-col>
+        <el-form-item label="图片地址" prop="thumbnail">
           <el-upload
-            style="display: none;"
+            ref="uploadImg"
             class="local-upload"
-            action="/"
+            action="/api/upload/img"
+            list-type="picture"
             :limit="1"
             :auto-upload="false"
             :on-change="selectedFile"
@@ -181,6 +173,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
+import formatTime from '@/utils/formatTime'
 import PageHeader from '@/components/PageHeader'
 
 export default {
@@ -203,19 +196,19 @@ export default {
       form: {
         name: '',
         parentId: '0',
-        code: '',
+        fullCode: '',
         sortIndex: 100,
-        pcCoverUrl: '',
-        pcTempUrl: '',
-        pcContUrl: '',
-        mCoverUrl: '',
-        mTempUrl: '',
-        mContUrl: '',
+        pcCoverPageTemplateFile: '',
+        pcListPageTemplateFile: '',
+        pcContentPageTemplateFile: '',
+        mCoverPageTemplateFile: '',
+        mListPageTemplateFile: '',
+        mContentPageTemplateFile: '',
         title: '',
         keywords: '',
-        description: '',
+        desc: '',
         type: '1',
-        imgUrl: ''
+        thumbnail: ''
       },
       // 修改时传递的旧code
       oldCode: '',
@@ -232,9 +225,7 @@ export default {
       list: [],
       // 默认打开方式
       formTarget: '',
-      // 上传图片下拉框值
-      uploadImageAddress: '',
-      // 上传附件列表
+      // 附件列表
       fileList: [],
       // 删除所需当前行
       row: {},
@@ -253,51 +244,50 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.loading.global,
-      types: state => state.cms.widgetType,
-      states: state => state.cms.widgetStatus
+      types: state => state.cms.columnType
     })
   },
   created() {
-    this.widgetParentIdMapping()
-    this.widgetStatusMapping()
     this.onSearch()
   },
   methods: {
     ...mapActions({
-      getData: 'cms/beancurdCubeList',
-      add: 'cms/addBeancurdCube',
-      update: 'cms/updateBeancurdCube',
-      destroyData: 'cms/destroyBeancurdCube',
-      searchBeancurdCube: 'cms/searchBeancurdCube',
-      updateStatus: 'cms/widgetStatusSwitch',
-      widgetParentIdMapping: 'cms/widgetParentIdMapping',
-      widgetStatusMapping: 'cms/widgetStatusMapping'
+      getData: 'cms/channelList',
+      searchChannel: 'cms/searchChannel',
+      add: 'cms/addChannel',
+      update: 'cms/updateChannel',
+      destroyData: 'cms/destroyChannel',
+      previewPcCoverPage: 'cms/previewPcCoverPage',
+      previewPcListPage: 'cms/previewPcListPage',
+      previewMCoverPage: 'cms/previewMCoverPage',
+      previewMListPage: 'cms/previewMListPage',
+      uploadFile: 'cms/uploadFile',
+      columnParentIdMapping: 'cms/columnParentIdMapping'
     }),
     showModal(row = {}) {
-      this.widgetParentIdMapping().then(() => {
+      this.columnParentIdMapping().then(() => {
         if (row.id) {
           const query = { id: row.id }
-          this.searchBeancurdCube(query).then(res => {
-            const { widget: cube } = res.data
+          this.searchChannel(query).then(res => {
+            const { channel } = res.data
+            this.fileList = []
+            if (channel.thumbnail) {
+              const file = {
+                name: channel.thumbnail,
+                url: channel.thumbnail
+              }
+              this.fileList = [file]
+            }
             forEach(this.form, (v, k, o) => {
-              this.form[k] = cube[k] || ''
+              this.form[k] = channel[k] || ''
             })
-            this.form.id = cube.id
-            this.oldCode = cube.code
-            let tag = ''
-            if (cube.hotStatus === '1') {
-              tag = '1'
-            }
-            if (cube.newStatus === '1') {
-              tag = '2'
-            }
-            this.form.tag = tag
+            this.form.id = channel.id
+            // this.oldCode = channel.code
           })
           this.modalTitle = '编辑'
         } else {
           delete this.form.id
           this.modalTitle = '添加'
-          this.form.extra = ''
         }
       })
       this.home = true
@@ -312,26 +302,48 @@ export default {
         }
       })
       this.oldCode = ''
+      this.fileList = []
       delete this.form.id
     },
     resetModal() {
       this.$refs.searchForm.resetFields()
     },
-    // 下拉框选择本地上传
-    localUpload() {
-      if (this.uploadImageAddress === '1') {
-        this.$refs.upload.$el.click()
-      } else {
-        this.showIframeModal = true
-      }
+    // 预览封面列表
+    previewCoverPage(row) {
+      const methods = 'previewPcCoverPage' || 'previewMCoverPage'
+      this[methods]({ id: row.id }).then(res => {
+        const { data } = res
+        if (data && data.url) {
+          let prefix = ''
+          if (data.url.indexOf('https') === -1) {
+            prefix = 'https://'
+          }
+          window.open(prefix + data.url)
+        }
+      })
+    },
+    previewList(row) {
+      const methods = 'previewPcListPage' || 'previewMListPage'
+      this[methods]({ id: row.id }).then(res => {
+        const { data } = res
+        if (data && data.url) {
+          let prefix = ''
+          if (data.url.indexOf('https') === -1) {
+            prefix = 'https://'
+          }
+          window.open(prefix + data.url)
+        }
+      })
     },
     // 点击选择图片
     selectedFile(file) {
-      // 修改时imgUrl有值使用新上传文件替换
-      if (this.form.imgUrl) {
-        this.form.imgUrl = ''
+      const formData = new FormData()
+      formData.append('file', file.raw)
+      this.uploadFile(formData).then(thumbnail => (this.form.thumbnail = thumbnail))
+
+      if (this.form.thumbnail) {
+        this.form.thumbnail = ''
       }
-      this.fileList = [file]
     },
     showTipsModal(row) {
       this.row = row
@@ -347,16 +359,11 @@ export default {
       done()
     },
     getList(query = {}) {
-      const { name, state, createTime } = this.searchForm
-      if (name) {
-        query.name = name
-      }
-      if (state) {
-        query.status = state
-      }
+      const { name, createTime } = this.searchForm
+      query.name = name
       if (createTime) {
-        query.startTime = createTime[0]
-        query.endTime = createTime[1]
+        query.startTime = formatTime(new Date(createTime[0]).getTime())
+        query.endTime = formatTime(new Date(createTime[1]).getTime())
       }
       return this.getData(query).then(list => {
         this.list = list
@@ -374,20 +381,25 @@ export default {
       } else if (data.parentId && data.parentId >= 0) {
         parentId = data.parentId
       }
-      let extra = data.extra
-      if (typeof data.extra === 'object') {
-        extra = JSON.stringify(data.extra)
+      if (!parentId || !parentId.length) {
+        parentId = '0'
       }
-      formData.append('code', data.code)
+
       formData.append('name', data.name)
+      formData.append('fullCode', data.fullCode)
       formData.append('parentId', parentId)
       formData.append('desc', data.desc)
-      formData.append('url', data.url)
-      formData.append('target', data.target)
+      formData.append('titile', data.title)
+      formData.append('keywords', data.keywords)
+      formData.append('desc', data.desc)
       formData.append('sortIndex', data.sortIndex)
-      formData.append('status', data.status)
-      formData.append('extra', extra)
-      formData.append('content', data.content)
+      formData.append('thumbnail', data.thumbnail)
+      formData.append('pcCoverPageTemplateFile', data.pcCoverPageTemplateFile)
+      formData.append('pcListPageTemplateFile', data.pcListPageTemplateFile)
+      formData.append('pcContentPageTemplateFile', data.pcContentPageTemplateFile)
+      formData.append('mCoverPageTemplateFile', data.mCoverPageTemplateFile)
+      formData.append('mListPageTemplateFile', data.mListPageTemplateFile)
+      formData.append('mContentPageTemplateFile', data.mContentPageTemplateFile)
       return formData
     },
     submit() {
@@ -414,7 +426,9 @@ export default {
     },
     destroy() {
       const { id } = this.form
-      this.destroyData(id).then(res => {
+      const formData = new FormData()
+      formData.append('id', id)
+      this.destroyData(formData).then(res => {
         this.closeTipsModal()
         this.onSearch()
         delete this.form.id
@@ -483,6 +497,9 @@ export default {
 .tips {
   font-size: 12px;
   color: #606266;
+}
+.local-upload {
+  width: 350px;
 }
 .column-form .required >>> .el-form-item__label:before {
   content: '*';
