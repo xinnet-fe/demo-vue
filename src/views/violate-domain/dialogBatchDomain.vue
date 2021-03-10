@@ -39,10 +39,10 @@ export default {
       type: Boolean,
       default: false
     },
-    row: {
-      type: Object,
+    ids: {
+      type: Array,
       default() {
-        return {}
+        return []
       }
     }
   },
@@ -99,19 +99,19 @@ export default {
       }
       if (this.batchForm.operationScope === 'check' && !this.ids.length) {
         this.$message({
-          message: '请选择',
+          message: '请选择域名',
           type: 'warning'
         })
       } else {
         query.ids = this.batchForm.operationScope === 'search' ? '' : this.ids
         this.$store.dispatch('violateDomain/setViolateDomain', query).then(res => {
           if (res.code === '0') {
-            this.handleClose()
             this.$alert(`<p>成功：${res.successCount}个</p><p>失败：${res.faildCount}个</p>`, '提示', {
               dangerouslyUseHTMLString: true,
               confirmButtonText: '确定',
               callback: () => {
-                this.$emit('GetList')
+                this.$emit('refreshList')
+                this.handleClose()
               }
             })
           }

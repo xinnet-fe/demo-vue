@@ -43,13 +43,13 @@
 
           <el-table-column label="所属账号(重复次数）" width="150">
             <template slot-scope="scope">
-              {{ scope.row.agentCode }}({{ scope.row.agentCodeCount }})
+              {{ scope.row.agentCode }} ({{ scope.row.agentCodeCount ? scope.row.agentCodeCount : 0 }})
             </template>
           </el-table-column>
 
           <el-table-column label="模板ID(重复次数）" width="150">
             <template slot-scope="scope">
-              {{ scope.row.templateCode }}({{ scope.row.agentCodeCount }})
+              {{ scope.row.serviceCode }} ({{ scope.row.templateCodeCount ? scope.row.templateCodeCount : 0 }})
             </template>
           </el-table-column>
 
@@ -241,7 +241,7 @@ export default {
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.effects['violateDomain/queryAllViolateDomainList']
+      loading: state => state.loading.effects['violateDomain/queryViolateDomainList']
     })
   },
   watch: {
@@ -252,7 +252,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('violateDomain', ['queryAllViolateDomainList', 'queryViolateDomainInfo', 'queryViolateDomainTemplate', 'queryViolateDomainAgent', 'queryAllSameTemplateViolateDomainList']),
+    ...mapActions('violateDomain', ['queryViolateDomainList', 'queryViolateDomainInfo', 'queryViolateDomainTemplate', 'queryViolateDomainAgent', 'querySameTemplateViolateDomainList']),
     onSubmit(formName) {
       this.page.currentPage = 1
       this.GetList()
@@ -272,7 +272,7 @@ export default {
         this.page.page = 1
       }
       console.log(query)
-      this.queryAllViolateDomainList(query).then(res => {
+      this.queryViolateDomainList(query).then(res => {
         if (res.code === '0') {
           console.log(res)
           this.listdata = res.list
@@ -328,7 +328,7 @@ export default {
     // 同模板域名
     openDialogTemplateDomain(row) {
       this.dialogTemplateDomain = true
-      this.queryAllSameTemplateViolateDomainList({ id: row.id }).then(res => {
+      this.querySameTemplateViolateDomainList({ id: row.id }).then(res => {
         if (res.code === '0') {
           this.row = res
         }

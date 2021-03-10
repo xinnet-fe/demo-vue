@@ -83,16 +83,20 @@
 
           <el-table-column label="所属账号(重复次数）" width="150">
             <template slot-scope="scope">
-              {{ scope.row.agentCode }}({{ scope.row.agentCodeCount }})
+              {{ scope.row.agentCode }} ({{ scope.row.agentCodeCount ? scope.row.agentCodeCount : 0 }})
             </template>
           </el-table-column>
 
           <el-table-column label="模板ID(重复次数）" width="150">
             <template slot-scope="scope">
-              {{ scope.row.templateCode }}({{ scope.row.agentCodeCount }})
+              {{ scope.row.serviceCode }} ({{ scope.row.templateCodeCount ? scope.row.templateCodeCount : 0 }})
             </template>
           </el-table-column>
-
+          <el-table-column label="真实模板ID" width="150">
+            <template slot-scope="scope">
+              {{ scope.row.templateCode }}
+            </template>
+          </el-table-column>
           <el-table-column label="添加时间">
             <template slot-scope="scope">
               {{ scope.row.createTime }}
@@ -169,7 +173,7 @@
     <DialogRegInfo v-if="dialogRegInfo" :visible.sync="dialogRegInfo" :row.sync="row" @refreshList="GetList" />
     <DialogTemplateDomain v-if="dialogTemplateDomain" :visible.sync="dialogTemplateDomain" :row.sync="row" @refreshList="GetList" />
     <DialogTemplate v-if="dialogTemplate" :visible.sync="dialogTemplate" :row.sync="row" @refreshList="GetList" />
-    <DialogBatch v-if="dialogBatch" :visible.sync="dialogBatch" :row.sync="row" @refreshList="GetList" />
+    <DialogBatch v-if="dialogBatch" :visible.sync="dialogBatch" :ids.sync="ids" @refreshList="GetList" />
     <DialogAddDomain v-if="dialogAddDomain" :visible.sync="dialogAddDomain" :row.sync="row" @refreshList="GetList" />
   </div>
 </template>

@@ -114,12 +114,12 @@ export default {
           }
           this.$store.dispatch('violateDomain/createViolateDomain', query).then(res => {
             if (res.code === '0') {
-              this.handleClose()
               this.$alert(`<p>成功：${res.successCount}个</p><p>失败：${res.faildCount}个</p>`, '提示', {
                 dangerouslyUseHTMLString: true,
                 confirmButtonText: '确定',
                 callback: () => {
-                  this.$emit('GetList')
+                  this.$emit('refreshList')
+                  this.handleClose()
                 }
               })
             }
