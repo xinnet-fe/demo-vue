@@ -89,6 +89,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$parent.searchForm)
   },
   methods: {
     handleSubmit() {
@@ -103,7 +104,16 @@ export default {
           type: 'warning'
         })
       } else {
-        query.ids = this.batchForm.operationScope === 'search' ? '' : this.ids
+        if (this.batchForm.operationScope === 'search') {
+          query.ids = ''
+          query[this.$parent.searchForm.type] = this.$parent.searchForm.word
+          query.createTimeBegin = this.$parent.searchForm.createTimeBegin
+          query.createTimeEnd = this.$parent.searchForm.createTimeEnd
+          query.status = this.$parent.searchForm.status
+          query.holdSource = this.$parent.searchForm.holdSource
+        } else {
+          query.ids = this.ids
+        }
         this.$store.dispatch('violateDomain/setViolateDomain', query).then(res => {
           if (res.code === '0') {
             this.$alert(`<p>成功：${res.successCount}个</p><p>失败：${res.faildCount}个</p>`, '提示', {
@@ -113,6 +123,11 @@ export default {
                 this.$emit('refreshList')
                 this.handleClose()
               }
+            })
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'error'
             })
           }
         }).catch(error => {

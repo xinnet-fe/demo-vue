@@ -60,7 +60,7 @@
           </el-form-item>
         </el-form>
         <el-table :data="listdata" :loading="loading" style="width: 100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55" />
+          <el-table-column type="selection" :selectable="checkSelectable" width="55" />
 
           <el-table-column label="域名">
             <template slot-scope="scope">
@@ -438,6 +438,9 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+    checkSelectable(row) {
+      return row.status === 0
     }
   },
   mounted() {
