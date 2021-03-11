@@ -94,10 +94,13 @@ export default {
         empName: this.empName
       }
       this.selectEhrData(query).then((res) => {
-        this.list = res.data
+        if (res.code === 200) {
+          this.list = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
       }).catch((error) => {
-        this.$message.error('加载失败，请稍后再试或减少查询数据量')
-        console.log(error)
+        this.$message.error(error.msg)
       })
     },
     getRow(index, row) {
