@@ -104,7 +104,9 @@ export default {
         custId: this.row.id
       }
       this.getCustomerDetailAndProtectById(query).then((res) => {
+        // if (res.status === 101) {
         this.obj = res.data.customer
+        // }
       }).catch((error) => {
         console.log(error)
       })

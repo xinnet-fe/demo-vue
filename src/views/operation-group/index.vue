@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       row: {},
-      list: [{ id: 1 }, { id: 2 }],
+      list: [{ id: '79C2842FC70C4575AD575A19CF6D2EFF' }, { id: '79C2842FC70C4575AD575A19CF6D2EFF' }],
       page: {
         total: 0,
         page: 0,

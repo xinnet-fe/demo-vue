@@ -46,22 +46,26 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     // mock必返回code，请求接口错误才返回code
-    const code = res.code
-
+    let code = res.code
+    code = 101
     // 925010 访问拒绝
-    if (code && code === 925010) {
-      app.$router.push(`/401`)
-      initLoading()
-      return errorResult('访问拒绝')
-    } else if (code && code in errorCode) {
-      initLoading()
-      return errorResult(res.msg || errorCode[code])
-    } else if (code && code > 920001 && code < 924999) {
-      initLoading()
-      return errorResult('应用服务定义的自定义异常')
-    } else if (code && code > 925000 && code < 929999) {
-      initLoading()
-      return errorResult('公共异常')
+    if (code !== 101) {
+      if (code && code === 925010) {
+        app.$router.push(`/401`)
+        initLoading()
+        return errorResult('访问拒绝')
+      } else if (code && code in errorCode) {
+        initLoading()
+        return errorResult(res.msg || errorCode[code])
+      } else if (code && code > 920001 && code < 924999) {
+        initLoading()
+        return errorResult('应用服务定义的自定义异常')
+      } else if (code && code > 925000 && code < 929999) {
+        initLoading()
+        return errorResult('公共异常')
+      } else {
+        return errorResult(res.msg)
+      }
     }
 
     // demos

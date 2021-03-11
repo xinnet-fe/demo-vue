@@ -21,7 +21,7 @@ const defaultProxy = {
     changeOrigin: true
   },
   '/security': {
-    target: 'http://10.12.52.224:3000/mock/149',
+    target: 'http://test-cescrm.ceboss.cn/',
     changeOrigin: true,
     // pathRewrite: {
     //   '^/api': ''

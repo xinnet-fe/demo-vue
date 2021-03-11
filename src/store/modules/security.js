@@ -49,6 +49,42 @@ const actions = {
     }).catch(error => {
       return error
     })
+  },
+
+  findSmaEmpPosition(context, payload) {
+    return api.findSmaEmpPosition(payload).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  getAreaByRole(context, payload) {
+    return api.getAreaByRole(payload).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  getSubByRole(context, payload) {
+    return api.getSubByRole(payload).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  getDeptByRole(context, payload) {
+    return api.getDeptByRole(payload).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
+  },
+  getAllSalersByDeptId(context, payload) {
+    return api.getAllSalersByDeptId(payload).then(res => {
+      return res
+    }).catch(error => {
+      return error
+    })
   }
 
 }

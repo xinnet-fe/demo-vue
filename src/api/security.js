@@ -48,4 +48,43 @@ export function getCustomerDetailAndProtectById(query) {
     params: query
   })
 }
-
+// 获取员工角色--王志军
+export function findSmaEmpPosition(query) {
+  return request({
+    url: '/security/emp/findSmaEmpPosition',
+    method: 'get',
+    params: query
+  })
+}
+// 筛选条件初始化-区域
+export function getAreaByRole(query) {
+  return request({
+    url: '/security/org/getAreaByRole',
+    method: 'get',
+    params: query
+  })
+}
+// 筛选条件初始化-分司
+export function getSubByRole(query) {
+  return request({
+    url: '/security/org/getSubByRole',
+    method: 'get',
+    params: query
+  })
+}
+// 筛选条件初始化-部门
+export function getDeptByRole(query) {
+  return request({
+    url: '/security/org/getDeptByRole',
+    method: 'get',
+    params: query
+  })
+}
+// 筛选条件初始化-商务
+export function getAllSalersByDeptId(query) {
+  return request({
+    url: '/security/cluecustomer/getAllSalersByDeptId',
+    method: 'get',
+    params: query
+  })
+}
