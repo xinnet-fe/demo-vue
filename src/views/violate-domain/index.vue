@@ -422,21 +422,28 @@ export default {
       })
     },
     handleSetViolateDomain(row, status) {
-      const query = {
-        type: 'check',
-        setStatus: status,
-        ids: row.id
-      }
-      this.$store.dispatch('violateDomain/setViolateDomain', query).then(res => {
-        if (res.code === '0') {
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          })
-          this.GetList()
+      this.$confirm(`请确认是否${status === 1 ? '显示' : '隐藏'}该违规数据?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const query = {
+          type: 'check',
+          setStatus: status,
+          ids: row.id
         }
-      }).catch(error => {
-        console.log(error)
+        this.$store.dispatch('violateDomain/setViolateDomain', query).then(res => {
+          if (res.code === '0') {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.GetList()
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
       })
     },
     checkSelectable(row) {

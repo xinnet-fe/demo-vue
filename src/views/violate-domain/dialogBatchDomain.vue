@@ -57,7 +57,7 @@ export default {
           label: '批量隐藏',
           value: '2'
         }],
-        operationScope: 'search',
+        operationScope: 'check',
         operationScopeOptions: [{
           label: '全部筛选结果',
           value: 'search'
