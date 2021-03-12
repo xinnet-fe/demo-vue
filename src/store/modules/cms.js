@@ -81,7 +81,7 @@ import {
   infoAuthedMapping,
   infoSensitiveMapping,
   previewPcContentPage,
-  previewMContentPage,
+  previewMContentPage
 } from '@/api/cms'
 import map from 'lodash/map'
 

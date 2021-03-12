@@ -562,7 +562,7 @@ export function infoList(query) {
 
 export function searchInfo(params) {
   return request({
-    url: '/admin/Info/search',
+    url: '/admin/info/search',
     method: 'get',
     params
   })

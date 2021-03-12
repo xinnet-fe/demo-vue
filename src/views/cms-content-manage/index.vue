@@ -1,6 +1,6 @@
 <template>
   <div class="order-form cms-content-manage">
-    <template v-if="!home">
+    <template v-if="home">
       <el-row>
         <el-col :span="isCollapse ? 1 : 4">
           <div class="column-menu-title">
@@ -138,9 +138,10 @@
                   />
                   <el-table-column label="操作" fixed="right" width="210">
                     <template v-slot="{ row }">
-                      <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
-                      <el-button type="text" size="mini" @click="preview(row)">重置审核</el-button>
-                      <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
+                      <el-button type="text" size="medium" @click="showAuditTips">编辑</el-button>
+                      <el-button type="text" size="mini" @click="toResetAudit(row)">重置审核</el-button>
+                      <el-button type="text" size="mini" @click="previewPc(row)">预览PC</el-button>
+                      <el-button type="text" size="mini" @click="previewM(row)">预览M</el-button>
                       <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
                     </template>
                   </el-table-column>
@@ -148,7 +149,7 @@
                     <div class="table-footer">
                       <div class="table-operation">
                         <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
-                        <el-button size="mini">删除</el-button>
+                        <el-button size="mini" @click="destroyAll">删除</el-button>
                       </div>
                       <pagination
                         :total="page.count"
@@ -226,7 +227,8 @@
                     <template v-slot="{ row }">
                       <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
                       <el-button type="text" size="mini" @click="toAudit(row)">审核</el-button>
-                      <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
+                      <el-button type="text" size="mini" @click="previewPc(row)">预览PC</el-button>
+                      <el-button type="text" size="mini" @click="previewM(row)">预览M</el-button>
                       <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
                     </template>
                   </el-table-column>
@@ -254,7 +256,7 @@
     <!-- table -->
 
     <!-- form -->
-    <div v-if="home">
+    <div v-if="!home">
       <page-header :go-back="goBack" :title="modalTitle" />
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="标题" prop="title">
@@ -335,7 +337,7 @@
             v-model="form.author"
             @change="changeAuthors"
           >
-            <el-radio v-for="({ value, key }) in tags" :key="value" :label="value">
+            <el-radio v-for="({ value, key }) in authors" :key="value" :label="value">
               {{ key }}
             </el-radio>
             <!-- 选中其他显示自定义输入框 -->
@@ -371,6 +373,16 @@
       </div>
     </div>
     <!-- form -->
+
+    <!-- 重置审核提示 -->
+    <el-dialog width="400px" title="提示" :visible.sync="showResetAudit" :before-close="beforeCloseResetAuditModal">
+      <p>此操作执行重置审核，重置审核成功后，文章将不在前端页面展示，需要重新审核后才能上线，是否重置审核？</p>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="showResetAudit = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="resetAudit()">确认</el-button>
+      </div>
+    </el-dialog>
+    <!-- 重置审核提示 -->
 
     <!-- 审核提示 -->
     <el-dialog width="400px" title="提示" :visible.sync="showAudit" :before-close="beforeCloseAuditModal">
@@ -437,7 +449,7 @@ export default {
         operateTime: ''
       },
       // 一级页面
-      home: false,
+      home: true,
       // 模板弹框
       showTemplate: false,
       // 预发提示弹框
@@ -484,6 +496,7 @@ export default {
       showTips: false,
       // 审核弹框
       showAudit: false,
+      showResetAudit: false,
       // 表格的数据
       list: [],
       // 分页
@@ -655,6 +668,7 @@ export default {
       destroyData: 'cms/destroyInfo',
       destroyDatas: 'cms/destroyInfos',
       authedInfo: 'cms/authedInfo',
+      uploadFile: 'cms/uploadFile',
       resetAuthedInfo: 'cms/resetAuthedInfo',
       resetAuthedInfos: 'cms/resetAuthedInfos',
       infoAuthedMapping: 'cms/infoAuthedMapping',
@@ -663,6 +677,26 @@ export default {
       previewMContentPage: 'cms/previewMContentPage',
       columnParentIdMapping: 'cms/columnParentIdMapping'
     }),
+    showAuditTips() {
+      this.$message.warning('文章已发布，不支持编辑，请先”重置审核“后，再修改。')
+    },
+    toResetAudit(row) {
+      this.row = row
+      this.showResetAudit = true
+    },
+    resetAudit() {
+      const formData = new FormData()
+      formData.append('id', this.row.id)
+      this.resetAuthedInfo(formData).then(res => {
+        this.showResetAudit = false
+        this.$message.success(res.msg)
+        this.onSearch()
+      })
+    },
+    beforeCloseResetAuditModal(done) {
+      this.showResetAudit = false
+      done()
+    },
     // 敏感词审核
     toAudit(row) {
       this.row = row
@@ -684,6 +718,7 @@ export default {
       this.authedInfo(formData).then(res => {
         this.showAudit = false
         this.$message.success(res.msg)
+        this.onSearch()
       })
     },
     getSensitiveName(sensitive) {
@@ -774,31 +809,82 @@ export default {
     },
     goInto(row = {}) {
       if (row.id) {
+        this.row = row
         const query = { id: row.id }
         this.searchInfo(query).then(res => {
-          const { page } = res.data
-          forEach(this.form, (v, k, o) => {
-            this.form[k] = page[k] || ''
-          })
-          this.form.id = page.id
-          this.oldCode = page.code
-          let tag = ''
-          if (page.hotStatus === '1') {
-            tag = '1'
+          const { info } = res.data
+          const { form } = this
+          let tags = []
+          if (info.tags) {
+            tags = info.tags.split(',')
+            forEach(tags, (tag, index) => {
+              const res = find(this.tags, o => {
+                return tag === o.value
+              })
+              if (!res) {
+                form.otherTag = tag
+                tags[index] = 'other'
+              }
+            })
           }
-          if (page.newStatus === '1') {
-            tag = '2'
+
+          const toped = []
+          if (info.toped) {
+            toped.push('part')
           }
-          this.form.tag = tag
+          if (info.globeToped) {
+            toped.push('global')
+          }
+
+          if (info.thumbnail) {
+            const file = {
+              name: info.thumbnail,
+              url: info.thumbnail
+            }
+            this.fileList = [file]
+            form.contentType = 'image'
+          }
+          if (info.videoAddr) {
+            form.videoAddr = info.videoAddr
+            form.contentType = 'video'
+          }
+
+          let author = info.author
+          const isAuthor = find(this.authors, o => o.value === author)
+          if (!isAuthor) {
+            form.otherAuthor = author
+            author = 'other'
+          }
+
+          if (info.newStatus) {
+            form.titleTags.push('new')
+          }
+          if (info.hotStatus) {
+            form.titleTags.push('hot')
+          }
+
+          form.title = info.title
+          form.keywords = info.keywords
+          form.tags = tags
+          form.desc = info.description
+          form.toped = toped
+          form.author = author
+          form.abstr = info.abstr
+          form.content = info.content
+          form.newStatus = info.newStatus
+          form.hotStatus = info.hotStatus
+          form.clickcount = info.clickcount
+          form.copyright = info.copyright
+          form.sortIndex = info.sortIndex
         })
         this.action = 'modify'
         this.modalTitle = '编辑'
       } else {
         this.action = 'add'
-        delete this.form.id
+        this.row = {}
         this.modalTitle = '添加'
       }
-      this.home = true
+      this.home = false
     },
     handleClickTabs() {
       this.onSearch()
@@ -818,7 +904,7 @@ export default {
       }
     },
     goBack() {
-      this.home = false
+      this.home = true
       forEach(this.form, (v, k, o) => {
         o[k] = ''
       })
@@ -830,10 +916,10 @@ export default {
       this.form.contentType = 'image'
       this.form.sortIndex = 0
       this.form.clickcount = 100
-      delete this.form.id
+      this.row = {}
     },
     showTipsModal(row) {
-      this.form.id = row.id
+      this.row = row
       this.showTips = true
     },
     closeTipsModal() {
@@ -858,8 +944,29 @@ export default {
         this.closePreReleaseModal()
       })
     },
-    preview(row) {
-      window.open('http://xcms.xinnet.com' + row.linkUrl)
+    previewPc(row) {
+      this.previewPcContentPage({ id: row.id }).then(res => {
+        const { data } = res
+        if (data && data.url) {
+          let prefix = ''
+          if (data.url.indexOf('https') === -1) {
+            prefix = 'https://'
+          }
+          window.open(prefix + data.url)
+        }
+      })
+    },
+    previewM(row) {
+      this.previewMContentPage({ id: row.id }).then(res => {
+        const { data } = res
+        if (data && data.url) {
+          let prefix = ''
+          if (data.url.indexOf('https') === -1) {
+            prefix = 'https://'
+          }
+          window.open(prefix + data.url)
+        }
+      })
     },
     getList(query = {}) {
       const { title, infoSensitiveType, operateTime } = this.searchForm
@@ -929,7 +1036,7 @@ export default {
       return formData
     },
     submit() {
-      const { id } = this.form
+      const { id } = this.row
       const formData = this.getParams(id)
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -951,11 +1058,23 @@ export default {
       })
     },
     destroy() {
-      const { id } = this.form
-      this.destroyData(id).then(res => {
+      const { id } = this.row
+      const formData = new FormData()
+      formData.append('id', id)
+      this.destroyData(formData).then(res => {
         this.closeTipsModal()
         this.onSearch()
-        delete this.form.id
+        this.row = {}
+      })
+    },
+    destroyAll() {
+      const ids = reduce(this.multipleSelection, (res, row) => {
+        res.push(row.id)
+        return res
+      }, [])
+      this.destroyDatas({ ids }).then(res => {
+        this.closeTipsModal()
+        this.onSearch()
       })
     },
     sortChildren(data, order) {
@@ -1055,6 +1174,9 @@ export default {
   font-size: 13px;
   font-weight: bold;
   padding: 0 5px 10px;
+}
+.local-upload {
+  width: 350px;
 }
 .cms-content-manage >>> .el-radio {
   padding: 10px 0;

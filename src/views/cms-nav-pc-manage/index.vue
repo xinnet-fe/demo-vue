@@ -1,6 +1,6 @@
 <template>
   <div class="order-form">
-    <template v-if="!home">
+    <template v-if="home">
       <!-- search -->
       <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
         <el-form-item label="名称" prop="name">
@@ -81,7 +81,7 @@
     </template>
 
     <!-- form -->
-    <div v-if="home">
+    <div v-if="!home">
       <page-header :go-back="goBack" :title="modalTitle" />
       <!-- 基本属性 -->
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
@@ -105,22 +105,15 @@
           <el-input v-model="form.desc" :rows="3" type="textarea" />
         </el-form-item>
         <el-form-item label="图片地址" prop="imgUrl">
-          <el-col :span="24">
-            <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
-          </el-col>
-          <el-col :span="24">
-            <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
-              <el-option label="本地上传" value="1" />
-              <el-option label="文件服务器" value="2" />
-            </el-select>
-          </el-col>
           <el-upload
-            style="display: none;"
+            ref="uploadImg"
             class="local-upload"
             action="/api/upload/img"
+            list-type="picture"
             :limit="1"
             :auto-upload="false"
             :on-change="selectedFile"
+            :file-list="fileList"
           >
             <el-button ref="upload" size="small" type="primary">点击上传</el-button>
           </el-upload>
@@ -236,8 +229,7 @@ export default {
         '显示': 1,
         '隐藏': 0
       },
-      // 弹框
-      home: false,
+      home: true,
       modalTitle: '添加',
       // 弹框表单数据
       form: {
@@ -361,6 +353,13 @@ export default {
             if (nav.newStatus === '1') {
               tag = '2'
             }
+            if (nav.imgUrl) {
+              const file = {
+                name: nav.imgUrl,
+                url: nav.imgUrl
+              }
+              this.fileList = [file]
+            }
             this.form.tag = tag
           })
           this.modalTitle = '编辑'
@@ -370,10 +369,10 @@ export default {
         }
       })
       this.form.target = this.formTarget
-      this.home = true
+      this.home = false
     },
     goBack() {
-      this.home = false
+      this.home = true
       forEach(this.form, (v, k, o) => {
         if (k === 'parentId') {
           o[k] = '0'
@@ -538,5 +537,8 @@ export default {
 }
 .new-page-footer {
   margin-left: 100px;
+}
+.local-upload {
+  width: 350px;
 }
 </style>

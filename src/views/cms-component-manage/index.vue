@@ -1,6 +1,6 @@
 <template>
   <div class="order-form">
-    <template v-if="!home">
+    <template v-if="home">
       <!-- search -->
       <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
         <el-form-item label="名称" prop="name">
@@ -90,7 +90,7 @@
     </template>
 
     <!-- form -->
-    <div v-if="home">
+    <div v-if="!home">
       <page-header :go-back="goBack" :title="modalTitle" />
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="名称" prop="name">
@@ -172,7 +172,7 @@ export default {
         state: '',
         createTime: ''
       },
-      home: false,
+      home: true,
       modalTitle: '添加',
       // 弹框表单数据
       form: {
@@ -252,10 +252,10 @@ export default {
           this.form.extra = ''
         }
       })
-      this.home = true
+      this.home = false
     },
     goBack() {
-      this.home = false
+      this.home = true
       forEach(this.form, (v, k, o) => {
         if (k === 'parentId') {
           o[k] = '0'

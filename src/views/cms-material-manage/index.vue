@@ -1,6 +1,6 @@
 <template>
   <div class="order-form">
-    <template v-if="!home">
+    <template v-if="home">
       <!-- search -->
       <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
         <el-form-item label="标题" prop="title">
@@ -103,7 +103,7 @@
     <!-- table -->
 
     <!-- form -->
-    <div v-if="home">
+    <div v-if="!home">
       <page-header :go-back="goBack" :title="modalTitle" />
       <el-form ref="form" :model="form" label-width="100px" :rules="rules">
         <el-form-item label="资料标题" prop="title">
@@ -120,7 +120,7 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item v-if="form.materialType === 'productIntroduce'" label="产品标识">
-          <el-select v-model="form.productIdent" placeholder="请选择产品标识" @change="localUpload">
+          <el-select v-model="form.productIdent" placeholder="请选择产品标识" @change="changeProductIntroduce">
             <el-option v-for="({ value, key }) in productIndents" :key="value" :label="key" :value="value" />
           </el-select>
         </el-form-item>
@@ -147,19 +147,11 @@
           <div class="tips">多个产品名称用“空格”区分。</div>
         </el-form-item> -->
         <el-form-item label="图片地址" prop="imgUrl">
-          <el-col :span="24">
-            <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
-          </el-col>
-          <el-col :span="24">
-            <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
-              <el-option label="本地上传" value="1" />
-              <el-option label="文件服务器" value="2" />
-            </el-select>
-          </el-col>
           <el-upload
-            style="display: none;"
+            ref="uploadImg"
             class="local-upload"
-            action="/"
+            action="/api/upload/img"
+            list-type="picture"
             :limit="1"
             :auto-upload="false"
             :on-change="selectedFile"
@@ -246,7 +238,7 @@ export default {
         materialType: ''
       },
       // 一级页面
-      home: false,
+      home: true,
       // 模板弹框
       showTemplate: false,
       // 预发提示弹框
@@ -378,6 +370,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      uploadFile: 'cms/uploadFile',
       getData: 'cms/singlePageList',
       add: 'cms/addSinglePage',
       update: 'cms/updateSinglePage',
@@ -391,18 +384,17 @@ export default {
       listIndustryCategory: 'cms/listIndustryCategory'
     }),
     // 下拉框选择本地上传
-    localUpload() {
-      if (this.uploadImageAddress === '1') {
-        this.$refs.upload.$el.click()
-      }
+    changeProductIntroduce() {
     },
     // 点击选择图片
     selectedFile(file) {
-      // 修改时imgUrl有值使用新上传文件替换
-      if (this.form.imgUrl) {
-        this.form.imgUrl = ''
+      const formData = new FormData()
+      formData.append('file', file.raw)
+      this.uploadFile(formData).then(thumbnail => (this.form.thumbnail = thumbnail))
+
+      if (this.form.thumbnail) {
+        this.form.thumbnail = ''
       }
-      this.fileList = [file]
     },
     checkLabels(val) {
       const labelLen = Object.keys(this.industries).length
@@ -437,6 +429,13 @@ export default {
           if (page.newStatus === '1') {
             tag = '2'
           }
+          if (page.imgUrl) {
+            const file = {
+              name: page.imgUrl,
+              url: page.imgUrl
+            }
+            this.fileList = [file]
+          }
           this.form.tag = tag
         })
         this.action = 'modify'
@@ -446,7 +445,7 @@ export default {
         delete this.form.id
         this.modalTitle = '添加'
       }
-      this.home = true
+      this.home = false
     },
     changeProvinces(provinceCity) {
       this.form.provinceCity = provinceCity
@@ -466,7 +465,7 @@ export default {
       }
     },
     goBack() {
-      this.home = false
+      this.home = true
       forEach(this.form, (v, k, o) => {
         if (k === 'parentId') {
           o[k] = '0'
@@ -684,6 +683,9 @@ export default {
 .tips {
   font-size: 12px;
   color: #606266;
+}
+.local-upload {
+  width: 350px;
 }
 .column-table-dropdown >>> .el-button--text {
   color: #606266;
