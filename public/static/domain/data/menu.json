@@ -1,5 +1,25 @@
 [
   {
+    "code": "productionMgmt",
+    "parentCode": "",
+    "icon": "",
+    "text": "域名生产处理",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
+    "code": "addOrder",
+    "parentCode": "",
+    "icon": "",
+    "text": "补入域名订单",
+    "url": "",
+    "target": "tab",
+    "hidden": false,
+    "param": ""
+  },
+  {
     "code": "violate-domain",
     "parentCode": "",
     "icon": "",

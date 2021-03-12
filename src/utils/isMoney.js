@@ -1,9 +1,13 @@
 import addRuleFunc from './addRuleFunc'
 
 export function isMoney(val) {
-  return /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/.test(val)
+  const reg = /^(([1-9]\d*)|0)(\.\d{1,2})?$/
+  if (val && !reg.test(val)) {
+    return false
+  }
+  return true
 }
-
-isMoney.message = '格式有误'
+// 可以为0的金额
+isMoney.message = '货币格式错误！'
 
 export default addRuleFunc(isMoney)

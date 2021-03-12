@@ -49,7 +49,7 @@
 
           <el-table-column label="模板ID(重复次数）" width="150">
             <template slot-scope="scope">
-              {{ scope.row.serviceCode }} ({{ scope.row.templateCodeCount ? scope.row.templateCodeCount : 0 }})
+              {{ scope.row.serviceCode }} ({{ scope.row.serviceCodeCount ? scope.row.serviceCodeCount : 0 }})
             </template>
           </el-table-column>
 
