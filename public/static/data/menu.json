@@ -1,14 +1,5 @@
 [
-    {
-        "code": "operation-system/see-through",
-        "parentCode": "",
-        "icon": "",
-        "text": "客户洞察管理",
-        "url": "",
-        "target": "tab",
-        "hidden": false,
-        "param": ""
-    },
+    
     {
         "code": "operation-insight",
         "parentCode": "",

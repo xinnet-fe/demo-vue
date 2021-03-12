@@ -1,5 +1,8 @@
 <template>
   <div class="order-form">
+    <div>
+      <Customer></Customer>
+    </div>
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true" class="search-form">
       <el-form-item label="模板名称">
@@ -135,13 +138,15 @@
   </div>
 </template>
 <script>
+import Customer from '@/components/operation-system/customer.vue'
 import { mapActions, mapState } from 'vuex'
 import Pagination from '@/components/Pagination'
 import clearFormData from '@/utils/clearFormData.js'
 export default {
   name: 'AgentManageApply',
   components: {
-    Pagination
+    Pagination,
+    Customer
   },
   data() {
     return {

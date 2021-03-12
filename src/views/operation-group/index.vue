@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="search-form" />
+    <div class="search-form">
+      <Swarm></Swarm>
+    </div>  
     <div class="order-form">
       <!-- operate -->
       <el-form ref="operateForm" class="operate-form" :inline="true">
@@ -57,13 +59,14 @@
 </template>
 
 <script>
+import Swarm from '@/components/operation-system/swarm.vue'
 import { mapActions, mapState } from 'vuex'
 import dialogIssue from './dialogIssue.vue'
 import Pagination from '@/components/Pagination'
 import DetailOperation from '@/components/DetailOperation/index'
 export default {
   name: 'AchievementList',
-  components: { Pagination, dialogIssue, DetailOperation },
+  components: { Pagination, dialogIssue, DetailOperation, Swarm },
   data() {
     return {
       row: {},

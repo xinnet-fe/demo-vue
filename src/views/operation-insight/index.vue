@@ -1,7 +1,9 @@
 <template>
   <div>
     <!-- search -->
-    <div class="search-form" />
+    <div class="search-form">
+      <Search />
+    </div>
     <!-- search -->
     <div class="order-form">
       <!-- operate -->
@@ -114,6 +116,7 @@
   </div>
 </template>
 <script>
+import Search from '@/components/operation-system/search.vue'
 import { mapState } from 'vuex'
 import Pagination from '@/components/Pagination'
 import DetailOperation from '@/components/DetailOperation/index'
@@ -122,7 +125,8 @@ export default {
   name: 'AgentManageApply',
   components: {
     Pagination,
-    DetailOperation
+    DetailOperation,
+    Search
   },
   data() {
     return {

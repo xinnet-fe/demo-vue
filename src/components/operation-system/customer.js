@@ -21,7 +21,9 @@ export default {
     // 获取列表
     this.getList()
     // 显示第一个列表的内容
-    this.showTemplateDetail(this.List[0])
+    if (this.List.length > 0) {
+      this.showTemplateDetail(this.List[0])
+    }
     // 锁定内容容器（不需要操作表单）
     this.$refs.tempform1.syncOnlyread(true)
   }
