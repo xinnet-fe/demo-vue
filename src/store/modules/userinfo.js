@@ -11,10 +11,17 @@ const state = {
     verifcode: ''
   }
 }
+const isProduction = process.env.NODE_ENV !== 'development'
 
 const mutations = {
   SET_USER: (state, user) => {
-    state.user = user
+    // 解决本地环境登录超时不登出问题
+    // 前端设置cookie不指定域名、后端指定了域名，导致cookie中的domain不同登出失败
+    if (isProduction) {
+      state.user = user
+    } else if (!state.user.email) {
+      state.user = user
+    }
   },
   SET_MENUS: (state, menus) => {
     state.menus = menus

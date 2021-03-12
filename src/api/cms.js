@@ -550,3 +550,108 @@ export function columnParentIdMapping(params) {
     params
   })
 }
+
+// 内容
+export function infoList(query) {
+  return request({
+    url: '/admin/info/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function searchInfo(params) {
+  return request({
+    url: '/admin/Info/search',
+    method: 'get',
+    params
+  })
+}
+
+export function addInfo(data) {
+  return request({
+    url: '/admin/info/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateInfo(data) {
+  return request({
+    url: '/admin/info/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function destroyInfo(data) {
+  return request({
+    url: '/admin/info/del',
+    method: 'post',
+    data
+  })
+}
+
+export function destroyInfos(data) {
+  return request({
+    url: '/admin/info/dels',
+    method: 'post',
+    data
+  })
+}
+
+export function authedInfo(data) {
+  return request({
+    url: '/admin/info/authed',
+    method: 'post',
+    data
+  })
+}
+
+export function resetAuthedInfo(data) {
+  return request({
+    url: '/admin/info/resetAuthed',
+    method: 'post',
+    data
+  })
+}
+
+export function resetAuthedInfos(data) {
+  return request({
+    url: '/admin/info/authed',
+    method: 'post',
+    data
+  })
+}
+
+export function infoAuthedMapping(params) {
+  return request({
+    url: '/admin/info/authedMapping',
+    method: 'get',
+    params
+  })
+}
+
+export function infoSensitiveMapping(params) {
+  return request({
+    url: '/admin/info/sensitiveMapping',
+    method: 'get',
+    params
+  })
+}
+
+export function previewPcContentPage(params) {
+  return request({
+    url: '/admin/info/previewPcContentPage',
+    method: 'get',
+    params
+  })
+}
+
+export function previewMContentPage(params) {
+  return request({
+    url: '/admin/info/previewMContentPage',
+    method: 'get',
+    params
+  })
+}

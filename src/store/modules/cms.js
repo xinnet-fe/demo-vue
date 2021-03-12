@@ -67,7 +67,21 @@ import {
   previewPcListPage,
   previewMCoverPage,
   previewMListPage,
-  columnParentIdMapping
+  columnParentIdMapping,
+  // 内容
+  infoList,
+  searchInfo,
+  addInfo,
+  updateInfo,
+  destroyInfo,
+  destroyInfos,
+  authedInfo,
+  resetAuthedInfo,
+  resetAuthedInfos,
+  infoAuthedMapping,
+  infoSensitiveMapping,
+  previewPcContentPage,
+  previewMContentPage,
 } from '@/api/cms'
 import map from 'lodash/map'
 
@@ -102,7 +116,11 @@ const state = {
   // 单页面-类型
   singlePageType: [],
   // 页面站点类型
-  singlePageSiteType: []
+  singlePageSiteType: [],
+  // 内容-审核类型
+  infoAuthedType: [],
+  // 内容-敏感状态
+  infoSensitiveType: []
 }
 
 const mutations = {
@@ -160,6 +178,14 @@ const mutations = {
   SINGLE_PAGE_SITE_MAPPING: (state, res) => {
     const { list } = res.data
     state.singlePageSiteType = list
+  },
+  INFO_AUTHED_MAPPING: (state, res) => {
+    const { list } = res.data
+    state.infoAuthedType = list
+  },
+  INFO_SENSITIVE_MAPPING: (state, res) => {
+    const { list } = res.data
+    state.infoSensitiveType = list
   }
 }
 
@@ -492,6 +518,46 @@ const actions = {
   },
   columnParentIdMapping({ commit }, query) {
     return columnParentIdMapping(query).then(res => commit('COLUMN_PARENT_ID_MAPPING', res))
+  },
+  // 内容
+  infoList(_, query) {
+    return infoList(query).then(processListData)
+  },
+  searchInfo(_, query) {
+    return searchInfo(query)
+  },
+  addInfo(_, query) {
+    return addInfo(query)
+  },
+  updateInfo(_, query) {
+    return updateInfo(query)
+  },
+  destroyInfo(_, query) {
+    return destroyInfo(query)
+  },
+  destroyInfos(_, query) {
+    return destroyInfos(query)
+  },
+  authedInfo(_, query) {
+    return authedInfo(query)
+  },
+  resetAuthedInfo(_, query) {
+    return resetAuthedInfo(query)
+  },
+  resetAuthedInfos(_, query) {
+    return resetAuthedInfos(query)
+  },
+  infoAuthedMapping({ commit }, query) {
+    return infoAuthedMapping(query).then(res => commit('INFO_AUTHED_MAPPING', res))
+  },
+  infoSensitiveMapping({ commit }, query) {
+    return infoSensitiveMapping(query).then(res => commit('INFO_SENSITIVE_MAPPING', res))
+  },
+  previewPcContentPage(_, query) {
+    return previewPcContentPage(query)
+  },
+  previewMContentPage(_, query) {
+    return previewMContentPage(query)
   }
 }
 

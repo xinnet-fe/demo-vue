@@ -1,201 +1,255 @@
 <template>
-  <div class="order-form">
+  <div class="order-form cms-content-manage">
     <template v-if="!home">
-      <!-- search -->
-      <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="searchForm.title" placeholder="请输入标题" clearable />
-        </el-form-item>
-        <el-form-item label="业务类型" prop="businessType">
-          <el-select v-model="searchForm.businessType" placeholder="请输入业务类型">
-            <el-option v-for="({ value, key }) in businessTypes" :key="value" :label="key" :value="value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="资料类型" prop="materialType">
-          <el-select v-model="searchForm.materialType" placeholder="请输入资料类型">
-            <el-option v-for="({ value, key }) in materialTypes" :key="value" :label="key" :value="value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
-          <el-button @click="resetModal">重置</el-button>
-        </el-form-item>
-      </el-form>
-      <!-- search -->
-
-      <div class="operate-form">
-        <el-button size="mini" @click="goInto()">添加</el-button>
-        <!-- <el-upload
-          class="local-upload"
-          action="/"
-          :limit="1"
-          :auto-upload="false"
-          :on-change="operSelectedFile"
-          :file-list="operFileList"
-        >
-          <el-button size="mini">
-            <i class="el-icon-upload2" /> 违禁词
-          </el-button>
-        </el-upload> -->
-      </div>
-
-      <!-- table -->
-      <el-tabs v-model="activeName" @tab-click="handleClickTabs">
-        <el-tab-pane :label="publishedLabel" name="published">
-          <el-table
-            ref="table"
-            v-loading="loading"
-            :data="list"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column
-              type="selection"
-              width="60"
-            />
-            <el-table-column
-              prop="id"
-              label="ID"
-              width="80"
-            />
-            <el-table-column
-              prop="title"
-              label="标题"
-            />
-            <el-table-column
-              prop="category"
-              label="分类"
-            />
-            <el-table-column
-              ref="sortIndex"
-              prop="sortIndex"
-              label="序号"
-              sortable
-              width="80"
-              :sort-method="sortByNumber"
-            />
-            <el-table-column
-              prop="prohibitedWords"
-              label="违禁词"
-            />
-            <el-table-column
-              prop="issuer"
-              label="发布者"
-            />
-            <el-table-column
-              prop="department"
-              label="部门"
-            />
-            <el-table-column
-              prop="auditState"
-              label="审核状态"
-            />
-            <el-table-column
-              prop="modifyTime"
-              label="操作时间"
-            />
-            <el-table-column label="操作" fixed="right" width="210">
-              <template v-slot="{ row }">
-                <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
-                <el-button type="text" size="mini" @click="preview(row)">重置审核</el-button>
-                <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
-                <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
-              </template>
-            </el-table-column>
-            <template v-if="list.length" v-slot:append>
-              <div class="table-footer">
-                <div class="table-operation">
-                  <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
-                  <el-button size="mini">删除</el-button>
-                </div>
-                <pagination
-                  :total="page.count"
-                  :page.sync="page.pageNum"
-                  :limit.sync="page.pageSize"
-                  @pagination="getList"
+      <el-row>
+        <el-col :span="isCollapse ? 1 : 4">
+          <div class="column-menu-title">
+            <!-- <el-button type="text" @click="isCollapse = !isCollapse">栏目列表</el-button> -->
+            栏目列表
+          </div>
+          <el-scrollbar wrap-class="scrollbar-wrapper">
+            <el-menu
+              class="el-menu-vertical"
+              mode="vertical"
+              :collapse="isCollapse"
+              :unique-opened="false"
+              :collapse-transition="false"
+              @open="openMenu"
+              @close="openMenu"
+            >
+              <sidebar
+                v-for="column in columnType"
+                :key="column.id"
+                :row="column"
+                icon="search"
+                :show-icon="column.parentId === 0"
+                :open="openMenu"
+              />
+            </el-menu>
+          </el-scrollbar>
+        </el-col>
+        <el-col v-if="columnId" :span="isCollapse ? 23 : 20">
+          <div class="column-menu-wrap">
+            <!-- search -->
+            <el-form ref="searchForm" class="search-form" :model="searchForm" :inline="true">
+              <el-form-item label="标题" prop="title">
+                <el-input v-model="searchForm.title" placeholder="请输入标题" clearable />
+              </el-form-item>
+              <el-form-item label="违禁词" prop="infoSensitiveType">
+                <el-select v-model="searchForm.infoSensitiveType" placeholder="请输入业务类型">
+                  <el-option v-for="({ value, key }) in infoSensitiveType" :key="value" :label="key" :value="value" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="操作时间" prop="operateTime">
+                <el-date-picker
+                  v-model="searchForm.createTime"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
                 />
-              </div>
-            </template>
-          </el-table>
-        </el-tab-pane>
-        <el-tab-pane :label="auditLabel" name="audit">
-          <el-table
-            ref="table"
-            v-loading="loading"
-            :data="list"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column
-              type="selection"
-              width="60"
-            />
-            <el-table-column
-              prop="id"
-              label="ID"
-              width="80"
-            />
-            <el-table-column
-              prop="title"
-              label="标题"
-            />
-            <el-table-column
-              prop="category"
-              label="分类"
-            />
-            <el-table-column
-              ref="sortIndex"
-              prop="sortIndex"
-              label="序号"
-              sortable
-              width="80"
-              :sort-method="sortByNumber"
-            />
-            <el-table-column
-              prop="prohibitedWords"
-              label="违禁词"
-            />
-            <el-table-column
-              prop="issuer"
-              label="发布者"
-            />
-            <el-table-column
-              prop="department"
-              label="部门"
-            />
-            <el-table-column
-              prop="auditState"
-              label="审核状态"
-            />
-            <el-table-column
-              prop="modifyTime"
-              label="操作时间"
-            />
-            <el-table-column label="操作" fixed="right" width="210">
-              <template v-slot="{ row }">
-                <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
-                <el-button type="text" size="mini" @click="preview(row)">审核</el-button>
-                <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
-                <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
-              </template>
-            </el-table-column>
-            <template v-if="list.length" v-slot:append>
-              <div class="table-footer">
-                <div class="table-operation">
-                  <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
-                  <el-button size="mini">删除</el-button>
-                </div>
-                <pagination
-                  :total="page.count"
-                  :page.sync="page.pageNum"
-                  :limit.sync="page.pageSize"
-                  @pagination="getList"
-                />
-              </div>
-            </template>
-          </el-table>
-        </el-tab-pane>
-      </el-tabs>
+              </el-form-item>
+              <el-form-item>
+                <el-button :loading="loading" type="primary" size="medium" @click="onSearch">搜索</el-button>
+                <el-button @click="resetModal">重置</el-button>
+              </el-form-item>
+            </el-form>
+            <!-- search -->
+
+            <div class="operate-form">
+              <el-button size="mini" @click="goInto()">添加</el-button>
+              <!-- <el-upload
+                class="local-upload"
+                action="/"
+                :limit="1"
+                :auto-upload="false"
+                :on-change="operSelectedFile"
+                :file-list="operFileList"
+              >
+                <el-button size="mini">
+                  <i class="el-icon-upload2" /> 违禁词
+                </el-button>
+              </el-upload> -->
+            </div>
+
+            <!-- table -->
+            <el-tabs v-model="activeName" @tab-click="handleClickTabs">
+              <el-tab-pane :label="publishedLabel" name="published">
+                <el-table
+                  ref="table"
+                  v-loading="loading"
+                  :data="list"
+                  style="width: 100%"
+                  @selection-change="handleSelectionChange"
+                >
+                  <el-table-column
+                    type="selection"
+                    width="60"
+                  />
+                  <el-table-column
+                    prop="id"
+                    label="ID"
+                    width="80"
+                  />
+                  <el-table-column
+                    prop="title"
+                    label="标题"
+                  />
+                  <el-table-column
+                    label="分类"
+                  >
+                    <template v-slot="{ row }">
+                      {{ getCategoryNameByValue(row.chanId) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    ref="sortIndex"
+                    prop="sortIndex"
+                    label="序号"
+                    sortable
+                    width="80"
+                    :sort-method="sortByNumber"
+                  />
+                  <el-table-column
+                    label="违禁词"
+                  >
+                    <template v-slot="{ row }">
+                      {{ getSensitiveName(row.sensitive) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="createUser"
+                    label="发布者"
+                  />
+                  <el-table-column
+                    prop="createUserDepartment"
+                    label="部门"
+                  />
+                  <el-table-column
+                    label="审核状态"
+                  >
+                    <template v-slot="{ row }">
+                      {{ getAuditNameByValue(row.authed) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="modifyTime"
+                    label="操作时间"
+                  />
+                  <el-table-column label="操作" fixed="right" width="210">
+                    <template v-slot="{ row }">
+                      <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
+                      <el-button type="text" size="mini" @click="preview(row)">重置审核</el-button>
+                      <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
+                      <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
+                    </template>
+                  </el-table-column>
+                  <template v-if="list.length" v-slot:append>
+                    <div class="table-footer">
+                      <div class="table-operation">
+                        <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
+                        <el-button size="mini">删除</el-button>
+                      </div>
+                      <pagination
+                        :total="page.count"
+                        :page.sync="page.pageNum"
+                        :limit.sync="page.pageSize"
+                        @pagination="getList"
+                      />
+                    </div>
+                  </template>
+                </el-table>
+              </el-tab-pane>
+              <el-tab-pane :label="auditLabel" name="audit">
+                <el-table
+                  ref="table"
+                  v-loading="loading"
+                  :data="list"
+                  style="width: 100%"
+                  @selection-change="handleSelectionChange"
+                >
+                  <el-table-column
+                    type="selection"
+                    width="60"
+                  />
+                  <el-table-column
+                    prop="id"
+                    label="ID"
+                    width="80"
+                  />
+                  <el-table-column
+                    prop="title"
+                    label="标题"
+                  />
+                  <el-table-column
+                    label="分类"
+                  >
+                    <template v-slot="{ row }">
+                      {{ getCategoryNameByValue(row.chanId) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    ref="sortIndex"
+                    prop="sortIndex"
+                    label="序号"
+                    sortable
+                    width="80"
+                    :sort-method="sortByNumber"
+                  />
+                  <el-table-column
+                    label="违禁词"
+                  >
+                    <template v-slot="{ row }">
+                      {{ getSensitiveName(row.sensitive) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="createUser"
+                    label="发布者"
+                  />
+                  <el-table-column
+                    prop="createUserDepartment"
+                    label="部门"
+                  />
+                  <el-table-column
+                    label="审核状态"
+                  >
+                    <template v-slot="{ row }">
+                      {{ getAuditNameByValue(row.authed) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="modifyTime"
+                    label="操作时间"
+                  />
+                  <el-table-column label="操作" fixed="right" width="210">
+                    <template v-slot="{ row }">
+                      <el-button type="text" size="medium" @click="goInto(row)">编辑</el-button>
+                      <el-button type="text" size="mini" @click="toAudit(row)">审核</el-button>
+                      <el-button type="text" size="mini" @click="preview(row)">预览</el-button>
+                      <el-button type="text" size="medium" @click="showTipsModal(row)">删除</el-button>
+                    </template>
+                  </el-table-column>
+                  <template v-if="list.length" v-slot:append>
+                    <div class="table-footer">
+                      <div class="table-operation">
+                        <el-button size="mini" @click="handleSelectionChangeAll">全选</el-button>
+                        <el-button size="mini">删除</el-button>
+                      </div>
+                      <pagination
+                        :total="page.count"
+                        :page.sync="page.pageNum"
+                        :limit.sync="page.pageSize"
+                        @pagination="getList"
+                      />
+                    </div>
+                  </template>
+                </el-table>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
+        </el-col>
+      </el-row>
     </template>
     <!-- table -->
 
@@ -213,17 +267,17 @@
         </el-form-item>
         <el-form-item label="关键词">
           <el-checkbox-group
-            v-model="form.cKeywords"
+            v-model="form.tags"
             class="input-checkbox-group"
             :max="5"
             @change="changeKeywords"
           >
-            <el-checkbox v-for="({ value, key }) in cKeywords" :key="value" :label="value">
+            <el-checkbox v-for="({ value, key }) in tags" :key="value" :label="value">
               {{ key }}
             </el-checkbox>
             <!-- 选中其他显示自定义输入框 -->
-            <el-form-item prop="otherValue" class="other-value">
-              <el-input v-if="form.cKeywords.indexOf('other') !== -1" v-model="form.otherValue" placeholder="请输入来源名称" />
+            <el-form-item v-if="form.tags.indexOf('other') !== -1" prop="otherTag" class="other-tag">
+              <el-input v-model="form.otherTag" placeholder="请输入来源名称" />
             </el-form-item>
           </el-checkbox-group>
           <div class="tips">多个关键词用","号隔开</div>
@@ -238,20 +292,12 @@
         </el-form-item>
         <!-- 显示内容取决于内容类型 -->
         <template v-if="form.contentType === 'image'">
-          <el-form-item label="图片地址" prop="imgUrl">
-            <el-col :span="24">
-              <el-input v-model="form.imgUrl" placeholder="默认图片路径" disabled />
-            </el-col>
-            <el-col :span="24">
-              <el-select v-model="uploadImageAddress" placeholder="请选择" @change="localUpload">
-                <el-option label="本地上传" value="1" />
-                <el-option label="文件服务器" value="2" />
-              </el-select>
-            </el-col>
+          <el-form-item label="图片地址" prop="thumbnail">
             <el-upload
-              style="display: none;"
+              ref="uploadImg"
               class="local-upload"
-              action="/"
+              action="/api/upload/img"
+              list-type="picture"
               :limit="1"
               :auto-upload="false"
               :on-change="selectedFile"
@@ -259,39 +305,49 @@
             >
               <el-button ref="upload" size="small" type="primary">点击上传</el-button>
             </el-upload>
-            <div class="tips">支持扩展名：.png .jpg .svg</div>
           </el-form-item>
         </template>
         <template v-else-if="form.contentType === 'video'">
-          <el-form-item label="预览视频" prop="video">
-            <el-input v-model="form.video" placeholder="请填写视频链接地址" />
+          <el-form-item label="预览视频" prop="videoAddr">
+            <el-input v-model="form.videoAddr" placeholder="请填写视频链接地址" />
           </el-form-item>
         </template>
         <el-form-item label="置顶">
-          <el-checkbox-group v-model="form.topStates" @change="checkLabels">
-            <el-checkbox v-for="({ value, key }) in topStates" :key="value" :label="value">
+          <el-checkbox-group v-model="form.toped">
+            <el-checkbox v-for="({ value, key }) in toped" :key="value" :label="value">
               {{ key }}
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="内容简介">
-          <el-input v-model="form.desc" type="textarea" placeholder="填写简介，限定300字以内。" max-length="300" />
+          <el-input v-model="form.abstr" type="textarea" placeholder="填写简介，限定300字以内。" max-length="300" />
         </el-form-item>
         <el-form-item label="Keywords">
           <el-input v-model="form.keywords" type="textarea" placeholder="请输入" />
           <div class="tips">Keywords一般不超过3个关键词，每个关键词之间使用英文逗号分隔，保证页面内容的K密度10%内，且可读性。</div>
         </el-form-item>
         <el-form-item label="Description">
-          <el-input v-model="form.description" type="textarea" max-length="150" />
+          <el-input v-model="form.desc" type="textarea" max-length="150" placeholder="请输入" />
           <div class="tips">Description字数应界于50~150个汉字之间，推荐50~80字。</div>
         </el-form-item>
-        <el-form-item label="作者">
-          <el-input v-model="form.author" placeholder="请填写作者" />
+        <el-form-item label="文章来源">
+          <el-radio-group
+            v-model="form.author"
+            @change="changeAuthors"
+          >
+            <el-radio v-for="({ value, key }) in tags" :key="value" :label="value">
+              {{ key }}
+            </el-radio>
+            <!-- 选中其他显示自定义输入框 -->
+            <el-form-item v-if="form.author === 'other'" prop="otherAuthor" class="other-author">
+              <el-input v-model="form.otherAuthor" placeholder="请输入来源名称" />
+            </el-form-item>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="预设点击量">
-          <el-input-number v-model="form.click" placeholder="请输入，默认0" />
+          <el-input-number v-model="form.clickcount" placeholder="请输入，默认0" />
         </el-form-item>
-        <el-form-item label="正文内容" prop="textContent">
+        <el-form-item label="正文内容" prop="content">
           <editor
             id="editor_id"
             width="760px"
@@ -299,7 +355,7 @@
             plugins-path="/static/kindeditor/plugins/"
             upload-json="/order/upload/"
             :items="editorItems"
-            :content="editorText"
+            :content="form.content"
             :load-style-mode="false"
             @on-content-change="handleContentChange"
           />
@@ -315,6 +371,16 @@
       </div>
     </div>
     <!-- form -->
+
+    <!-- 审核提示 -->
+    <el-dialog width="400px" title="提示" :visible.sync="showAudit" :before-close="beforeCloseAuditModal">
+      <p>文章中含有违禁词，是否跳过违禁词默认审核通过？</p>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="audit(-1)">取消</el-button>
+        <el-button size="medium" type="primary" @click="audit(1)">确认</el-button>
+      </div>
+    </el-dialog>
+    <!-- 审核提示 -->
 
     <!-- 删除提示 -->
     <el-dialog width="400px" title="提示" :visible.sync="showTips">
@@ -341,18 +407,25 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import forEach from 'lodash/forEach'
+import find from 'lodash/find'
+import reduce from 'lodash/reduce'
+import flattenArray from '@/utils/flattenArray'
+import formatTime from '@/utils/formatTime'
 import PageHeader from '@/components/PageHeader'
 import Pagination from '@/components/Pagination'
+import Sidebar from '@/components/Sidebar'
 
 export default {
   name: 'CmsContentManage',
   cname: '内容管理',
   components: {
     PageHeader,
-    Pagination
+    Pagination,
+    Sidebar
   },
   data() {
     return {
+      isCollapse: false,
       // tab选中名称
       activeName: 'published',
       publishedLabel: '已发布',
@@ -360,8 +433,8 @@ export default {
       // 搜索框
       searchForm: {
         title: '',
-        buniesslType: '',
-        materialType: ''
+        infoSensitiveType: '',
+        operateTime: ''
       },
       // 一级页面
       home: false,
@@ -374,21 +447,28 @@ export default {
       form: {
         title: '',
         titleTags: [],
-        cKeywords: [],
+        hotStatus: false,
+        newStatus: false,
+        tags: [],
         sortIndex: 0,
         contentType: 'image',
-        materialType: 'file',
-        imgUrl: '',
-        video: '',
-        topStates: [],
-        desc: '',
+        // 图片和视频二选一
+        thumbnail: '',
+        videoAddr: '',
+        toped: [],
+        abstr: '',
         keywords: '',
-        description: '',
+        desc: '',
         author: '',
-        click: 100,
-        textContent: '',
+        clickcount: 100,
+        content: '',
         copyright: '',
-        otherValue: ''
+        otherTag: '',
+        otherAuthor: '',
+        // 无用字段传空值
+        subTitle: '',
+        // 无用字段传空值
+        origin: ''
       },
       operImgUrl: '',
       // 修改时传递的旧code
@@ -397,10 +477,13 @@ export default {
       rules: {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
         copyright: [{ required: true, message: '请输入版权信息', trigger: 'blur' }],
-        otherValue: [{ required: true, message: '请输入来源名称', trigger: 'blur' }]
+        otherTag: [{ required: true, message: '请输入来源名称', trigger: 'blur' }],
+        otherAuthor: [{ required: true, message: '请输入来源名称', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
+      // 审核弹框
+      showAudit: false,
       // 表格的数据
       list: [],
       // 分页
@@ -411,8 +494,6 @@ export default {
       },
       // 临时row数据
       row: {},
-      // 模板内容
-      editorText: '',
       editorItems: [
         'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
         'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
@@ -420,60 +501,26 @@ export default {
       ],
       preReleaseRow: {},
       action: '',
-      singlePageTypes: [
+      authors: [
         {
-          key: 'PC',
-          value: 'PC'
+          key: '门户云',
+          value: 'mhy'
         },
         {
-          key: 'M站',
-          value: 'M站'
-        }
-      ],
-      businessTypes: [
-        {
-          key: 'toB',
-          value: 'toB'
+          key: '推广大师',
+          value: 'tgds'
         },
         {
-          key: 'toC',
-          value: 'toC'
-        }
-      ],
-      materialTypes: [
-        {
-          key: '公共文件',
-          value: 'file'
+          key: '电商商城',
+          value: 'dssc'
         },
         {
-          key: '解决方案',
-          value: 'scheme'
-        }
-      ],
-      labels: [
-        {
-          key: '机械制造',
-          value: '1'
+          key: '中企动力市场中心',
+          value: 'zqdlsczx'
         },
         {
-          key: '医疗器械',
-          value: '2'
-        },
-        {
-          key: '人工智能',
-          value: '3'
-        },
-        {
-          key: '仪器仪表',
-          value: '4'
-        },
-        {
-          key: '新能源',
-          value: '5'
-        },
-        {
-          key: '五金配件',
-          value: '6'
+          key: '其他',
+          value: 'other'
         }
       ],
       titleTags: [
@@ -496,7 +543,7 @@ export default {
           value: 'video'
         }
       ],
-      topStates: [
+      toped: [
         {
           key: '分类下置顶',
           value: 'part'
@@ -506,7 +553,7 @@ export default {
           value: 'global'
         }
       ],
-      cKeywords: [
+      tags: [
         {
           key: '全网门户',
           value: 'qwmh'
@@ -568,8 +615,6 @@ export default {
           value: 'other'
         }
       ],
-      // 上传图片下拉框值
-      uploadImageAddress: '',
       // 上传附件列表
       fileList: [],
       // 筛选项中上传附件列表
@@ -578,51 +623,130 @@ export default {
       checkAll: false,
       // 表单-选择全部标签不确定状态
       isIndeterminate: false,
-      multipleSelection: []
+      multipleSelection: [],
+      columnId: null,
+      promise: null
     }
   },
   computed: {
     ...mapState({
-      loading: state => state.loading.global
-      // singlePageTypes: state => state.cms.singlePageType
+      loading: state => state.loading.global,
+      infoAuthedType: state => state.cms.infoAuthedType,
+      infoSensitiveType: state => state.cms.infoSensitiveType,
+      columnType: state => state.cms.columnType
     })
   },
   created() {
-    this.singlePageTypeMapping()
-    this.onSearch()
+    this.columnParentIdMapping()
+    this.promise = this.when(
+      this.infoAuthedMapping(),
+      this.infoSensitiveMapping()
+    )
+  },
+  destroyed() {
+    this.promise = null
   },
   methods: {
     ...mapActions({
-      getData: 'cms/singlePageList',
-      add: 'cms/addSinglePage',
-      update: 'cms/updateSinglePage',
-      destroyData: 'cms/destroySinglePage',
-      searchSinglePage: 'cms/searchSinglePage',
-      singlePageTypeMapping: 'cms/singlePageTypeMapping',
-      mkHtml: 'cms/mkHtml',
-      searchTemplate: 'cms/searchTemplate',
-      editTemplate: 'cms/editTemplate'
+      getData: 'cms/infoList',
+      searchInfo: 'cms/searchInfo',
+      add: 'cms/addInfo',
+      update: 'cms/updateInfo',
+      destroyData: 'cms/destroyInfo',
+      destroyDatas: 'cms/destroyInfos',
+      authedInfo: 'cms/authedInfo',
+      resetAuthedInfo: 'cms/resetAuthedInfo',
+      resetAuthedInfos: 'cms/resetAuthedInfos',
+      infoAuthedMapping: 'cms/infoAuthedMapping',
+      infoSensitiveMapping: 'cms/infoSensitiveMapping',
+      previewPcContentPage: 'cms/previewPcContentPage',
+      previewMContentPage: 'cms/previewMContentPage',
+      columnParentIdMapping: 'cms/columnParentIdMapping'
     }),
+    // 敏感词审核
+    toAudit(row) {
+      this.row = row
+      if (row.sensitive) {
+        this.showAudit = true
+      } else {
+        this.audit(1)
+      }
+    },
+    beforeCloseAuditModal(done) {
+      this.showAudit = false
+      done()
+    },
+    // 不敏感词审核
+    audit(authedType) {
+      const formData = new FormData()
+      formData.append('id', this.row.id)
+      formData.append('authedType', authedType)
+      this.authedInfo(formData).then(res => {
+        this.showAudit = false
+        this.$message.success(res.msg)
+      })
+    },
+    getSensitiveName(sensitive) {
+      return sensitive ? '敏感' : '不敏感'
+    },
+    getCategoryNameByValue(id) {
+      const columnType = []
+      flattenArray(this.columnType, columnType)
+      const res = find(columnType, row => {
+        return row.id === parseInt(id, 10)
+      })
+      if (res) {
+        return res.name
+      }
+      return ''
+    },
+    getAuditNameByValue(value) {
+      const res = find(this.infoAuthedType, row => {
+        return row.value === parseInt(value, 10)
+      })
+      if (res) {
+        return res.key
+      }
+      return ''
+    },
+    openMenu(param) {
+      let id
+      // 子菜单
+      if (typeof param === 'object') {
+        id = param.index
+      // 展开折叠菜单
+      } else {
+        id = param
+      }
+      this.columnId = id
+      if (this.promise) {
+        this.promise.then(() => {
+          this.onSearch()
+        })
+      }
+    },
     // 关键词复选框变更
     changeKeywords(keywords) {
       if (keywords.indexOf('other') === -1) {
         this.$refs.form.clearValidate()
-        this.form.otherValue = ''
+        this.form.otherTag = ''
       }
     },
-    // 下拉框选择本地上传
-    localUpload() {
-      if (this.uploadImageAddress === '1') {
-        this.$refs.upload.$el.click()
+    changeAuthors(author) {
+      if (author === 'other') {
+        this.$refs.form.clearValidate()
+        this.form.otherAuthor = ''
       }
     },
     // 点击选择图片
     selectedFile(file) {
-      // 修改时imgUrl有值使用新上传文件替换
-      if (this.form.imgUrl) {
-        this.form.imgUrl = ''
+      const formData = new FormData()
+      formData.append('file', file.raw)
+      this.uploadFile(formData).then(thumbnail => (this.form.thumbnail = thumbnail))
+
+      if (this.form.thumbnail) {
+        this.form.thumbnail = ''
       }
-      this.fileList = [file]
     },
     // 筛选项中点击选择图片
     operSelectedFile(file) {
@@ -651,7 +775,7 @@ export default {
     goInto(row = {}) {
       if (row.id) {
         const query = { id: row.id }
-        this.searchSinglePage(query).then(res => {
+        this.searchInfo(query).then(res => {
           const { page } = res.data
           forEach(this.form, (v, k, o) => {
             this.form[k] = page[k] || ''
@@ -676,9 +800,8 @@ export default {
       }
       this.home = true
     },
-    handleChange() {},
-    handleClickTabs(tab) {
-      this.onSearch(tab.name)
+    handleClickTabs() {
+      this.onSearch()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -697,13 +820,16 @@ export default {
     goBack() {
       this.home = false
       forEach(this.form, (v, k, o) => {
-        if (k === 'parentId') {
-          o[k] = '0'
-        } else {
-          o[k] = ''
-        }
+        o[k] = ''
       })
-      this.oldCode = ''
+      this.form.titleTags = []
+      this.form.tags = []
+      this.form.toped = []
+      this.form.hotStatus = false
+      this.form.newStatus = false
+      this.form.contentType = 'image'
+      this.form.sortIndex = 0
+      this.form.clickcount = 100
       delete this.form.id
     },
     showTipsModal(row) {
@@ -712,16 +838,6 @@ export default {
     },
     closeTipsModal() {
       this.showTips = false
-    },
-    showTemplateModal(row) {
-      this.row = row
-      this.searchTemplate(row.id).then(res => {
-        const { data } = res
-        if (data && data.content) {
-          this.editorText = data.content
-        }
-        this.showTemplate = true
-      })
     },
     showPreReleaseModal(row) {
       this.showPreRelease = true
@@ -745,38 +861,15 @@ export default {
     preview(row) {
       window.open('http://xcms.xinnet.com' + row.linkUrl)
     },
-    closeTemplateModal() {
-      this.showTemplate = false
-      this.resetTemplateData()
-    },
-    resetTemplateData() {
-      this.row = {}
-      this.editorText = ''
-    },
-    submitTemplate() {
-      const formData = new FormData()
-      formData.append('id', this.row.id)
-      formData.append('content', this.editorText)
-      this.editTemplate(formData).then(res => {
-        this.$message.success(res.data.msg)
-        this.showTemplate = false
-        this.resetTemplateData()
-      })
-    },
-    beforeTemplateClose(done) {
-      this.resetTemplateData()
-      done()
-    },
     getList(query = {}) {
-      const { name, type, url } = this.searchForm
-      if (name) {
-        query.name = name
-      }
-      if (type) {
-        query.type = type
-      }
-      if (url) {
-        query.url = url
+      const { title, infoSensitiveType, operateTime } = this.searchForm
+      query.chanId = this.columnId
+      query.authod = this.activeName === 'audit' ? '0' : '1'
+      query.title = title
+      query.sensitive = infoSensitiveType
+      if (operateTime) {
+        query.startTime = formatTime(new Date(operateTime[0]).getTime())
+        query.endTime = formatTime(new Date(operateTime[1]).getTime())
       }
       return this.getData(query).then(res => {
         const { list, page } = res
@@ -784,9 +877,9 @@ export default {
         this.page = page
       })
     },
-    onSearch(tabName) {
+    onSearch() {
       const { pageNum, pageSize } = this.page
-      const query = { pageNum, pageSize, tabName }
+      const query = { pageNum, pageSize }
       this.getList(query)
     },
     resetModal() {
@@ -795,15 +888,43 @@ export default {
     getParams(id) {
       const formData = new FormData()
       const data = this.form
+      const hotStatus = data.titleTags.indexOf('hot') !== -1 ? '1' : '0'
+      const newStatus = data.titleTags.indexOf('new') !== -1 ? '1' : '0'
+      const toped = data.toped.indexOf('part') !== -1 ? '1' : '0'
+      const globeToped = data.toped.indexOf('global') !== -1 ? '1' : '0'
+      const author = data.author === 'other' ? data.otherAuthor : data.author
+      let tags
+      if (data.tags.indexOf('other') !== -1) {
+        tags = reduce(data.tags, (res, tag, index) => {
+          if (tag === 'other') {
+            res.push(this.form.otherTag)
+          } else {
+            res.push(tag)
+          }
+          return res
+        }, []).join(',')
+      } else {
+        tags = data.tags.join(',')
+      }
 
-      formData.append('name', data.name)
-      formData.append('type', data.type)
+      formData.append('chanId', this.columnId)
       formData.append('title', data.title)
-      formData.append('desc', data.desc)
       formData.append('keywords', data.keywords)
-      formData.append('linkUrl', data.linkUrl)
-      formData.append('linkUrlAlias', data.linkUrlAlias)
-      formData.append('templateFile', data.templateFile)
+      formData.append('tags', tags)
+      formData.append('desc', data.desc)
+      formData.append('subTitle', '')
+      formData.append('toped', toped)
+      formData.append('globeToped', globeToped)
+      formData.append('thumbnail', data.thumbnail)
+      formData.append('videoAddr', data.videoAddr)
+      formData.append('author', author)
+      formData.append('origin', '')
+      formData.append('abstr', data.abstr)
+      formData.append('content', data.content)
+      formData.append('newStatus', newStatus)
+      formData.append('hotStatus', hotStatus)
+      formData.append('clickcount', data.clickcount)
+      formData.append('copyright', data.copyright)
       formData.append('sortIndex', data.sortIndex)
       return formData
     },
@@ -818,14 +939,12 @@ export default {
             this.update(formData).then(res => {
               this.goBack()
               this.onSearch()
-              this.singlePageTypeMapping()
             })
           // 新增
           } else {
             this.add(formData).then(res => {
               this.goBack()
               this.onSearch()
-              this.singlePageTypeMapping()
             })
           }
         }
@@ -871,7 +990,7 @@ export default {
       this.showIframeModal = false
     },
     handleContentChange(val) {
-      this.editorText = val
+      this.form.content = val
     }
   }
 }
@@ -922,9 +1041,23 @@ export default {
   display: inline-block;
   margin-left: 10px;
 }
-.other-value {
+.other-tag {
   display: inline-block;
   margin-left: 10px;
+}
+.other-author {
+  display: inline-block;
+}
+.column-menu-wrap {
+  margin-left: 20px;
+}
+.column-menu-title {
+  font-size: 13px;
+  font-weight: bold;
+  padding: 0 5px 10px;
+}
+.cms-content-manage >>> .el-radio {
+  padding: 10px 0;
 }
 .column-table-dropdown >>> .el-button--text {
   color: #606266;

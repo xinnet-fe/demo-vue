@@ -65,10 +65,16 @@
               </span>
               <el-dropdown-menu slot="dropdown" class="column-table-dropdown">
                 <el-dropdown-item>
-                  <el-button type="text" size="mini" @click="previewCoverPage(row)">预览封面</el-button>
+                  <el-button type="text" size="mini" @click="previewCoverPage(row, 'pc')">预览PC封面</el-button>
                 </el-dropdown-item>
                 <el-dropdown-item>
-                  <el-button type="text" size="mini" @click="previewList(row)">预览列表</el-button>
+                  <el-button type="text" size="mini" @click="previewList(row, 'pc')">预览PC列表</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button type="text" size="mini" @click="previewCoverPage(row, 'm')">预览M站封面</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button type="text" size="mini" @click="previewList(row, 'm')">预览M站列表</el-button>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -130,12 +136,12 @@
           <el-input v-model="form.desc" :rows="3" type="textarea" placeholder="请输入Description" max-length="150" />
           <div class="tips">Description字数应界于50~150个汉字之间，推荐50~80字。</div>
         </el-form-item>
-        <el-form-item label="栏目类型" prop="type">
+        <!-- <el-form-item label="栏目类型" prop="type">
           <el-radio-group v-model="form.type">
             <el-radio v-for="({ value, key }) in columnTypes" :key="value" :label="value">{{ key }}</el-radio>
           </el-radio-group>
           <div class="tips">提示：容器栏目不支持添加内容</div>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="图片地址" prop="thumbnail">
           <el-upload
             ref="uploadImg"
@@ -207,7 +213,7 @@ export default {
         title: '',
         keywords: '',
         desc: '',
-        type: '1',
+        // type: '1',
         thumbnail: ''
       },
       // 修改时传递的旧code
@@ -216,8 +222,8 @@ export default {
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
         code: [{ required: true, message: '请输入CODE标识', trigger: 'blur' }],
-        sortIndex: [{ required: true, message: '请输入序号', trigger: 'blur' }],
-        type: [{ required: true, message: '请输栏目类型', trigger: 'blur' }]
+        sortIndex: [{ required: true, message: '请输入序号', trigger: 'blur' }]
+        // type: [{ required: true, message: '请输栏目类型', trigger: 'blur' }]
       },
       // 删除弹框
       showTips: false,
@@ -309,8 +315,8 @@ export default {
       this.$refs.searchForm.resetFields()
     },
     // 预览封面列表
-    previewCoverPage(row) {
-      const methods = 'previewPcCoverPage' || 'previewMCoverPage'
+    previewCoverPage(row, type) {
+      const methods = type === 'pc' ? 'previewPcCoverPage' : 'previewMCoverPage'
       this[methods]({ id: row.id }).then(res => {
         const { data } = res
         if (data && data.url) {
@@ -322,8 +328,8 @@ export default {
         }
       })
     },
-    previewList(row) {
-      const methods = 'previewPcListPage' || 'previewMListPage'
+    previewList(row, type) {
+      const methods = type === 'pc' ? 'previewPcListPage' : 'previewMListPage'
       this[methods]({ id: row.id }).then(res => {
         const { data } = res
         if (data && data.url) {
