@@ -21,7 +21,7 @@ const defaultProxy = {
     changeOrigin: true
   },
   '/security': {
-    target: 'http://test-cescrm.ceboss.cn/',
+    target: 'http://test-api-scrm.ceboss.cn',
     changeOrigin: true,
     // pathRewrite: {
     //   '^/api': ''
