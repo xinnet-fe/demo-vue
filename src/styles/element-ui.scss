@@ -170,3 +170,27 @@
 .el-tooltip__popper {
   max-width: 300px;
 }
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .data-chart {
+    width: 100%;
+    height: calc(100% - 40px);
+  }
+
+  .fixed-button {
+    position: absolute;
+    top: 50px;
+    right: 15px;
+    z-index: 91;
+  }
+}
+
+.dapan-chart {
+  .el-checkbox__label {
+    font-size: 12px !important;
+  }
+}

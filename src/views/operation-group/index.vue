@@ -1,59 +1,46 @@
 <template>
-<<<<<<< HEAD
-  <div class="">
-    <Swarm />
-    <div>
-      客户分群管理
-    </div>
-=======
-  <div class="order-form">
-    <el-tabs
-      v-model="activeName"
-      @tab-click="handleTabClick"
-    >
-      <el-tab-pane label="系统推荐" name="system">
-        <system ref="list-system" @getList="getList" />
-      </el-tab-pane>
-      <el-tab-pane label="自定义模板" name="custom">
-        <custom ref="list-custom" @getList="getList" />
-      </el-tab-pane>
-    </el-tabs>
-    <!-- operate -->
-    <el-form ref="operateForm" class="operate-form" :inline="true">
-      <el-form-item>
-        <span class="pageSize">共{{ page.total }}条，已选中{{ ids.length }}条</span>
-        <el-button size="mini" :loading="loading" @click="handleIssue">下发任务</el-button>
-      </el-form-item>
-    </el-form>
-    <!-- operate -->
-    <el-table
-      ref="multipleTable"
-      v-loading="loading"
-      :data="list"
-      highlight-current-row
-      style="width: 100%"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column
-        type="selection"
-        width="55"
+  <div>
+    <div class="search-form" />
+    <div class="order-form">
+      <!-- operate -->
+      <el-form ref="operateForm" class="operate-form" :inline="true">
+        <el-form-item>
+          <span class="pageSize">共{{ page.total }}条，已选中{{ ids.length }}条</span>
+          <el-button size="mini" :loading="loading" @click="handleIssue">下发任务</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- operate -->
+      <el-table
+        ref="multipleTable"
+        v-loading="loading"
+        :data="list"
+        highlight-current-row
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
+        <el-table-column label="客户名称" prop="agentCode" width="100">
+          <template slot-scope="scope">
+            <span @click="handleDetail(scope.row)">阿萨德加拉时代峻峰</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="建档时间" prop="goodsName" />
+        <el-table-column label="客户类型" prop="serviceCode" />
+        <el-table-column label="所属行业" prop="orderCode" />
+        <el-table-column label="所在区域" prop="orderCode" />
+        <el-table-column label="所在分司" prop="orderCode" />
+        <el-table-column label="商务" prop="orderCode" />
+      </el-table>
+      <pagination
+        :total="page.total"
+        :page.sync="page.page"
+        :limit.sync="page.limit"
+        @pagination="getList"
       />
-      <el-table-column label="客户名称" prop="agentCode" width="100">
-        <span @click="handleDetail()">阿萨德加拉时代峻峰</span>
-      </el-table-column>
-      <el-table-column label="建档时间" prop="goodsName" />
-      <el-table-column label="客户类型" prop="serviceCode" />
-      <el-table-column label="所属行业" prop="orderCode" />
-      <el-table-column label="所在区域" prop="orderCode" />
-      <el-table-column label="所在分司" prop="orderCode" />
-      <el-table-column label="商务" prop="orderCode" />
-    </el-table>
-    <pagination
-      :total="page.total"
-      :page.sync="page.page"
-      :limit.sync="page.limit"
-      @pagination="getList"
-    />
+    </div>
     <dialogIssue v-if="dialogIssueShow" :visible.sync="dialogIssueShow" :ids.sync="ids" @getList="getList" />
     <el-drawer
       title=""
@@ -64,41 +51,23 @@
       :destroy-on-close="true"
     >
       <i class="el-icon-close btn-close" @click="drawerShow=false" />
-      <detail-operation />
+      <detail-operation :row="row" />
     </el-drawer>
->>>>>>> ee2cbba30f0ade2d3bfd9a5a1a5bc6068f2b4e6b
   </div>
 </template>
 
 <script>
-<<<<<<< HEAD
-import Swarm from '@/components/operation-system/swarm.vue'
-
-export default {
-  components: {
-    Swarm
-  },
-  methods: {
-  }
-}
-</script>
-
-<style lang="scss" scoped>
-=======
 import { mapActions, mapState } from 'vuex'
-import system from './system.vue'
-import custom from './custom.vue'
 import dialogIssue from './dialogIssue.vue'
 import Pagination from '@/components/Pagination'
 import DetailOperation from '@/components/DetailOperation/index'
 export default {
   name: 'AchievementList',
-  components: { Pagination, system, custom, dialogIssue, DetailOperation },
+  components: { Pagination, dialogIssue, DetailOperation },
   data() {
     return {
-      activeName: 'system',
       row: {},
-      list: [{ id: 1 }, { id: 2 }],
+      list: [{ id: '79C2842FC70C4575AD575A19CF6D2EFF' }, { id: '79C2842FC70C4575AD575A19CF6D2EFF' }],
       page: {
         total: 0,
         page: 0,
@@ -106,7 +75,8 @@ export default {
       },
       ids: [],
       dialogIssueShow: false,
-      drawerShow: false
+      drawerShow: false,
+      isSaved: true
     }
   },
   computed: {
@@ -157,7 +127,7 @@ export default {
     },
     // 下发任务
     handleIssue() {
-      if (this.$refs[`list-${this.activeName}`].isSaved) {
+      if (this.isSaved) {
         if (!this.ids.length) {
           this.$message({
             message: '请选择',
@@ -175,13 +145,21 @@ export default {
         })
       }
     },
-    handleDetail() {
+    handleDetail(row) {
+      this.row = row
       this.drawerShow = true
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.search-form{
+  height: 200px;
+  border-bottom: 20px solid #f3f7fa;
+}
+.order-form{
+  padding-top: 0px;
+}
 .pageSize{
   float: left;
   font-size: 12px;
@@ -200,5 +178,4 @@ export default {
     color: #fff;
   }
 }
->>>>>>> ee2cbba30f0ade2d3bfd9a5a1a5bc6068f2b4e6b
 </style>

@@ -18,7 +18,7 @@ export default {
       // 当前选择项
       currentPlaneItem: {},
       // 运营客户跟进（表单的遮罩层）
-      onlyread: false,   // 为true时表示只读
+      onlyread: false, // 为true时表示只读
       orlStyle: {
         width: '0px',
         height: '0px'
@@ -149,8 +149,8 @@ export default {
       }
     },
     showTemplateDetail(payload) {
-      //console.log(payload.result)
-      //console.log(this.form)
+      // console.log(payload.result)
+      // console.log(this.form)
       this.form = payload.result
       this.syncOrlStyle()
     }

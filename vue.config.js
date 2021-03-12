@@ -19,6 +19,13 @@ const defaultProxy = {
   '/portal': {
     target: 'http://119.10.116.247:8082',
     changeOrigin: true
+  },
+  '/security': {
+    target: 'http://test-api-scrm.ceboss.cn',
+    changeOrigin: true,
+    // pathRewrite: {
+    //   '^/api': ''
+    // }
   }
 }
 const proxy = merge(defaultProxy, customWebpackConfig.proxy)

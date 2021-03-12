@@ -41,14 +41,20 @@ Object.keys(filters).forEach(key => {
 Vue.config.productionTip = false
 Vue.prototype.echarts = Echarts
 Vue.prototype.echartsColorList = [
-  '#4f7acb',
-  '#ff9019',
-  '#5b9bd5',
-  '#ffc000',
-  '#ff6666',
-  '#1bb3f3',
-  '#29cb97',
-  '#ca65ff'
+  // 蓝
+  '#6395f9',
+  // 绿
+  '#62daab',
+  // 黄
+  // '#ffce66'
+  // 紫
+  '#d2b5f1',
+  // 红
+  '#ec7387',
+  // 青
+  '#65b95f',
+  // 橙
+  '#ff9e40'
 ]
 
 const app = new Vue({

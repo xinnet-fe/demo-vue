@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="form" ref="formTable">
+    <div ref="formTable" class="form">
       <table>
         <tr :class="onceCss">
           <td class="td3">
@@ -70,7 +70,7 @@
                   </td>
                 </tr>
               </template>
-              <tr :class="onceCss" v-if="!onlyread">
+              <tr v-if="!onlyread" :class="onceCss">
                 <td class="td1">
                   <div class="line" />
                   <div class="line2" />
@@ -84,7 +84,7 @@
           </td>
         </tr>
       </table>
-      <div v-if="onlyread" class="onlyreadLayer" :style="orlStyle"></div>
+      <div v-if="onlyread" class="onlyreadLayer" :style="orlStyle" />
     </div>
   </div>
 </template>

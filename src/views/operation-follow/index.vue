@@ -3,7 +3,7 @@
     <!-- search -->
     <el-form ref="form" :model="form" :inline="true" class="search-form">
       <el-form-item label="模板名称">
-        <el-input v-model="form.agentCode" :placeholder="placeholder" :clearable="true" />
+        <el-input v-model="form.template" :placeholder="placeholder" :clearable="true" />
       </el-form-item>
       <el-form-item label="任务下发">
         <el-date-picker
@@ -16,7 +16,7 @@
         />
       </el-form-item>
       <el-form-item label="创建人">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="form.createPeople" placeholder="请选择">
           <el-option
             v-for="item in createPeopleList"
             :key="item.value"
@@ -26,7 +26,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="分配人">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="form.distributor" placeholder="请选择">
           <el-option
             v-for="item in distributorList"
             :key="item.value"
@@ -36,7 +36,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="商务">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="form.business" placeholder="请选择">
           <el-option
             v-for="item in businessList"
             :key="item.value"
@@ -132,7 +132,6 @@
         @pagination="onSearch"
       />
     </div>
-    <dialog-apply-form v-if="formVisible" :visible.sync="formVisible" :row.sync="row" />
   </div>
 </template>
 <script>
@@ -223,15 +222,15 @@ export default {
         query.pageSize = this.page.limit
         this.page.page = 1
       }
-      this.findDlApply(query).then(res => {
-        if (!res.code) {
-          console.log(res)
-          this.list = res.data.list
-          this.page.total = res.data.count
-        }
-      }).catch(error => {
-        console.log(error)
-      })
+      // this.findDlApply(query).then(res => {
+      //   if (!res.code) {
+      //     console.log(res)
+      //     this.list = res.data.list
+      //     this.page.total = res.data.count
+      //   }
+      // }).catch(error => {
+      //   console.log(error)
+      // })
     },
     resetForm() {
       clearFormData(this.form)

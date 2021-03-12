@@ -51,7 +51,7 @@ export default {
     // 获取自定义模板列表
     getCustomList() {
       this.$refs.tempform1.getCustomList((payload) => {
-        //console.log('获取自定义模板列表', payload)
+        // console.log('获取自定义模板列表', payload)
         this.tcrl.customList = payload.list
       })
     },
