@@ -18,7 +18,10 @@ const tabData = [
         unit: '',
         value: '',
         valueOptions: [],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '客户ID',
@@ -27,7 +30,10 @@ const tabData = [
         unit: '',
         value: '',
         valueOptions: [],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '所属区域',
@@ -89,7 +95,10 @@ const tabData = [
             value: '深圳区'
           }
         ],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '所属分司',
@@ -99,25 +108,34 @@ const tabData = [
         value: '',
         valueOptions: [
           {
-            label: '大连分公司'
+            label: '大连分公司',
+            value: '大连分公司'
           },
           {
-            label: '哈尔滨分公司'
+            label: '哈尔滨分公司',
+            value: '哈尔滨分公司'
           },
           {
-            label: '锦州分公司'
+            label: '锦州分公司',
+            value: '锦州分公司'
           },
           {
-            label: '沈阳分公司'
+            label: '沈阳分公司',
+            value: '沈阳分公司'
           },
           {
-            label: '长春分公司'
+            label: '长春分公司',
+            value: '长春分公司'
           },
           {
-            label: '哈尔滨第二分公司'
+            label: '哈尔滨第二分公司',
+            value: '哈尔滨第二分公司'
           }
         ],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '成立日期',
@@ -128,7 +146,7 @@ const tabData = [
         valueOptions: [],
         valueDefault: ''
       },
-      {
+      /* {
         label: '所在行业',
         labelValue: '所在行业',
         type: '多选',
@@ -139,8 +157,11 @@ const tabData = [
             label: '科学研究和技术服务业'
           }
         ],
-        valueDefault: ''
-      },
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{label:'包含任一'}, {label:'都不包含'}],
+        operationValue: '包含任一'
+      },*/
       {
         label: '所属行业',
         labelValue: '所属行业',
@@ -160,7 +181,10 @@ const tabData = [
             ]
           }
         ],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '注册资金',
@@ -178,7 +202,10 @@ const tabData = [
         unit: '',
         value: '',
         valueOptions: [],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '是否含进出口',
@@ -228,7 +255,10 @@ const tabData = [
             label: '新网会员'
           }
         ],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '是否有商标',
@@ -584,7 +614,10 @@ const tabData = [
             label: '到期'
           }
         ],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '产品开通时间',
@@ -605,7 +638,7 @@ const tabData = [
       {
         label: '产品服务是否过期',
         labelValue: '产品服务是否过期',
-        type: '',
+        type: '布尔',
         value: '',
         valueOptions: [
           {
@@ -630,7 +663,10 @@ const tabData = [
             label: '已开始(运营中）'
           }
         ],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       }
     ]
   }, {
@@ -646,7 +682,10 @@ const tabData = [
             label: '中企所有SKU的产品分类'
           }
         ],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '产品名称',
@@ -658,7 +697,10 @@ const tabData = [
             label: '中企所有SKU的产品分类'
           }
         ],
-        valueDefault: ''
+        valueDefault: '',
+        operation: '包含任一、都不包含',
+        operationOptions: [{ label: '包含任一' }, { label: '都不包含' }],
+        operationValue: '包含任一'
       },
       {
         label: '是否有优惠政策',

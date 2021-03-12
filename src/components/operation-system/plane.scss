@@ -1,0 +1,21 @@
+
+.plane{
+  
+  .planeList{
+    height: 300px;
+    overflow: auto;
+
+    .pl-row{
+      height: 30px;
+      line-height: 30px;
+      padding-left: 10px;
+    }
+    .pl-row:hover{
+      background-color: rgb(230, 236, 234);
+    }
+  }
+}
+
+.plane /deep/ .el-tabs__content {
+  padding: 0px;
+}

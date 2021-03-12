@@ -1,0 +1,56 @@
+$borderColor: #e8e8e8;
+
+.swarm{
+  .top-container{
+    .tc-row0{
+      height: 50px;
+      line-height: 50px;
+      font-size: 16px;
+      font-weight: bold;
+      border-bottom: 1px solid $borderColor;
+    }
+    .tc-row1{
+      .tcr-left{
+        float: left;
+        width: 280px;
+        border-right: 1px solid $borderColor;
+
+        .tcrl-box{
+          height: 320px;
+          overflow: auto;
+          .tcrlb-row{
+            height: 30px;
+            line-height: 30px;
+          }
+        }
+      }
+      .tcr-right{
+        float: left;
+        width: calc(100% - 280px);
+        overflow: auto;
+        height: 409px;
+      }
+    }
+    .tc-row2{
+      border-top: 1px solid $borderColor;
+      text-align: right;
+    }
+    .tc-row3{
+      .ss-box{
+        cursor: pointer;
+        background: rgb(240, 235, 235);
+        width: 50px;
+        text-align: center;
+        height: 20px;
+        line-height: 20px;
+        margin: 0 auto;
+      }
+    }
+  }
+}
+
+.clearfix:after {
+  content: ""; 
+  display: block; 
+  clear: both; 
+}

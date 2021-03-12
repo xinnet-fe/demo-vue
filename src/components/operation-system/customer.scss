@@ -1,0 +1,28 @@
+.customer{
+  .container{
+    .left{
+      float: left;
+      width: 300px;
+      .row{
+        height: 30px;
+        line-height: 30px;
+        padding-left: 10px;
+
+        span{
+          cursor: pointer;
+        }
+      }
+    }
+    .right{
+      float: left;
+      width: calc(100% - 300px);
+    }
+  }
+}
+/*
+.clearfix:after {
+  content: ""; 
+  display: block; 
+  clear: both; 
+}
+*/

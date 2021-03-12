@@ -1,0 +1,217 @@
+$boderColor: rgb(219, 217, 217);
+
+.mainpage{
+  margin: 20px;
+
+  .search-container{
+    position: relative;
+
+    .search-box{
+
+      .search-row{
+        .search-itemlabel,.search-itemcontainer{
+          float: left;
+        }
+        .search-itemlabel{
+          text-align: right;
+          font-weight: bold;
+          width: 150px;
+          font-size: 14px;
+          color: #333;
+          padding-top: 21px;
+        }
+        .search-itemcontainer{
+          width: calc(100% - 150px);
+
+          .item-box{
+            float: left;
+            position:relative;
+            padding: 10px 30px 10px 10px;
+            
+            .floatlayer{
+              width: 160px;
+              margin-right: 10px;
+            }
+            .btnClose{
+              display: none;
+            }
+          }
+          .btnClose{
+            position:absolute;
+            right: 10px;
+            top: 20px;
+          }
+          .item-box:hover{
+            box-shadow: 2px 2px 12px 0 rgba(0,0,0,.3);
+            .btnClose{
+              display: block;
+              cursor: pointer;
+            }
+          }
+
+          .item-button{
+            float: left;
+            padding: 10px;
+          }
+        }
+      }
+    }
+
+    .search-selected{
+      font-size: 14px;
+      border-top: 1px solid $boderColor;
+      padding: 10px;
+
+      .search-selectedLabel{
+        float: left;
+        padding-top: 10px;
+        width: 90px;
+      }
+      .search-selectedBox{
+        float: left;
+        width: calc(100% - 180px);
+
+        .search-sc{
+
+          .sc-tag{
+            margin-right: 10px;
+            margin-bottom: 10px;
+          }
+        }
+      }
+      .search-selectedLabelName{
+        float: left;
+        width: 90px;
+      }
+    }
+
+    .ss-container{
+      
+      .ss-box{
+        width: 50px;
+        height: 20px;
+        margin: 0 auto;
+        background: rgb(240, 238, 238);
+        cursor: pointer;
+        text-align: center;
+        line-height: 20px;
+      }
+    }
+
+
+    .rightContainer{
+      position: absolute;
+      top: 0px;
+      right: 0px;
+  
+      .rightBox{
+        position: absolute;
+        top: 0px;
+        right: 210px;
+
+        .rightBoxLabel{
+          position: absolute;
+          top: 70px;
+          left: 0px;
+          width: 40px;
+          text-align: center;
+          height: 100px;
+          box-shadow: 2px 2px 6px 0 rgba(0,0,0,.3);
+          background: white;
+          cursor: pointer;
+          font-size: 14px;
+          color: #666;
+          padding-top: 10px;
+          border-bottom-left-radius: 5px;
+          border-top-left-radius: 5px;
+        }
+        .rightBoxContent{
+          position: absolute;
+          top: 0px;
+          left: 40px;
+          box-shadow: 2px 2px 6px 0 rgba(0,0,0,.3);
+          background: white;
+          width: 190px;
+          font-size: 14px;
+          color: #666;
+
+          .rbc-title{
+            border-bottom: 1px solid $boderColor;
+            height: 50px;
+            line-height: 50px;
+            padding-left: 10px;
+          }
+          .rbc-content{
+            padding: 5px 0px;
+            height: 320px;
+            overflow: auto;
+
+            .rbc-row{
+              position: relative;
+              padding-left: 5px;
+              height: 30px;
+              line-height: 30px;
+              margin: 0px 5px;
+
+              .el-icon-close{
+                position: absolute;
+                right: 7px;
+                top: 7px;
+                cursor: pointer;
+                display: none;
+              }
+
+              span{
+                cursor: pointer;
+              }
+            }
+            .rbc-row:hover{
+              background: #f5f7fa;
+              .el-icon-close{
+                display: block;
+              }
+            }
+          }
+
+        }
+      }
+    }
+
+  }
+
+  
+}
+
+.mainpage /deep/ .el-form-item__label{
+  width: 80px;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;  
+}
+
+.dialogTempName{
+  margin-top: 20px;
+}
+.dialogTempName /deep/ .el-form-item__label{
+  width: 120px;
+}
+.dialogTempName /deep/ .el-input{
+  width: calc(100% - 120px);
+}
+.dialogTempName /deep/ .el-form-item__error{
+  margin-left: 120px;
+}
+.mainpage /deep/ .el-form-item {
+  margin-bottom: 0px;
+}
+
+.el-select-dropdown__item.selected{
+  color: #606266 !important;
+  font-weight: normal;
+}
+
+.clearfix:after {
+    content: ""; 
+    display: block; 
+    clear: both; 
+}

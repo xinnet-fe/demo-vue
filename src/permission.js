@@ -12,7 +12,7 @@ router.beforeEach(async(to, from, next) => {
   NProgress.start()
 
   document.title = getPageTitle(to.meta.title)
-  const hasXbToken = getToken('xbtoken') || getToken('xbtoken_id')
+  const hasXbToken = getToken('xbtoken') || getToken('xbtoken_id') || true
 
   if (hasXbToken) {
     if (to.path === '/login') {
