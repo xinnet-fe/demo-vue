@@ -1,10 +1,10 @@
 <template>
   <el-dialog custom-class="dialogSetLeader" :close-on-click-modal="false" :append-to-body="true" :before-close="beforeClose" destroy-on-close title="设置负责人" :visible.sync="dialogSetLeaderVisible" width="600px">
     <div class="order-form">
-      <el-form ref="searchForm" class="search-form" :inline="true">
-        <el-form-item label="员工姓名">
+      <el-form ref="form" class="search-form" :inline="true" :model="form" :rules="rules">
+        <el-form-item label="员工姓名" prop="empName">
           <el-input
-            v-model="empName"
+            v-model="form.empName"
             placeholder="请输入姓名查询"
           />
         </el-form-item>
@@ -22,6 +22,7 @@
         v-loading="loading"
         :data="list"
         highlight-current-row
+        :empty-text="emptyText"
         style="width: 100%"
       >
         <el-table-column width="50">
@@ -40,7 +41,7 @@
     </div>
 
     <div slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">关 闭</el-button>
+      <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" :disabled="loadingBtn" @click="handleSubmit">确定</el-button>
     </div>
   </el-dialog>
@@ -65,12 +66,20 @@ export default {
   },
   data() {
     return {
-      empName: '',
+      emptyText: '暂无数据',
       eid: '',
       employeeName: '',
       company: '',
       id: '',
-      list: []
+      list: [],
+      form: {
+        empName: ''
+      },
+      rules: {
+        empName: [
+          { required: true, message: '请输入员工姓名', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -90,17 +99,22 @@ export default {
   methods: {
     ...mapActions('region', ['selectEhrData', 'updateRegionData']),
     getList() {
-      const query = {
-        empName: this.empName
-      }
-      this.selectEhrData(query).then((res) => {
-        if (res.code === 200) {
-          this.list = res.data
-        } else {
-          this.$message.error(res.msg)
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          const query = {
+            empName: this.empName
+          }
+          this.selectEhrData(query).then((res) => {
+            if (res.code === 200) {
+              this.emptyText = '未查到员工信息'
+              this.list = res.data
+            } else {
+              this.$message.error(res.msg)
+            }
+          }).catch((error) => {
+            this.$message.error(error.msg)
+          })
         }
-      }).catch((error) => {
-        this.$message.error(error.msg)
       })
     },
     getRow(index, row) {
@@ -111,25 +125,29 @@ export default {
       this.company = row.OrgNamePath
     },
     handleSubmit() {
-      const query = {
-        employeeName: this.employeeName,
-        eid: this.eid,
-        company: this.company,
-        id: this.row.id
-      }
-      this.updateRegionData(query).then((res) => {
-        if (res.code === 200) {
-          this.$message({
-            message: '操作成功',
-            type: 'success'
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          const query = {
+            employeeName: this.employeeName,
+            eid: this.eid,
+            company: this.company,
+            id: this.row.id
+          }
+          this.updateRegionData(query).then((res) => {
+            if (res.code === 200) {
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.handleClose()
+              this.$emit('getList')
+            } else {
+              this.$message.error(res.msg)
+            }
+          }).catch((error) => {
+            this.$message.error(error)
           })
-          this.handleClose()
-          this.$emit('getList')
-        } else {
-          this.$message.error(res.msg)
         }
-      }).catch((error) => {
-        this.$message.error(error)
       })
     },
     handleClose() {

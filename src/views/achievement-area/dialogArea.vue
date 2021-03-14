@@ -44,10 +44,10 @@ export default {
       },
       rules: {
         superId: [
-          { required: true, message: '必须填写！', trigger: 'change' }
+          { required: true, message: '请选择上级区域', trigger: 'change' }
         ],
         regionName: [
-          { required: true, message: '必须填写！', trigger: 'blur' }
+          { required: true, message: '请填写区域名称', trigger: 'blur' }
         ]
       },
       regionList: [],
